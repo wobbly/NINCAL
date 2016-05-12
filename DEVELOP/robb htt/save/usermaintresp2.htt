@@ -1,0 +1,26 @@
+
+<form action='' name='newuserForm' id='newuserForm' method='POST'>
+		<input type='hidden' name='function' value='1' />
+		<input type='hidden' name='SID' value='<%=SID%>' />
+		<input type='hidden' name='cgiuserid' value='<%=cgiuserid%>' />
+    <table border='0' cellpadding='2' cellspacing='2' align='center'>
+				<tr>
+						<td colspan="2">
+								<span class='errorMsg'><%=errorMsg%></span>
+						</td>
+				</tr>
+        <tr>
+            <td class='title' colspan='2' align=center>
+                Member Information
+                <br>
+            </td>
+        </tr>
+        				<tr>
+							<td colspan="2">
+									<span class='errorMsg'>You have permanently deleted&nbsp;<%=cgifname%>&nbsp;<%=cgilname%>&nbsp;from the database.<%=errorMsg%></span>
+							</td>
+				</tr>
+
+    </table>
+</form>
+

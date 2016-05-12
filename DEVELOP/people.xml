@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<PEOPLE>
+	<PERSON PERSONID="5622">
+		<NAME>John Smith</NAME>
+		<ADDRESS>512 Every Road</ADDRESS>
+		<PHONE>(111) 123-6645</PHONE>
+	</PERSON>
+	<PERSON PERSONID="6109">
+		<NAME>James Jones</NAME>
+		<ADDRESS>513 Every Road</ADDRESS>
+		<PHONE>(111) 123-4567</PHONE>
+	</PERSON>
+</PEOPLE>

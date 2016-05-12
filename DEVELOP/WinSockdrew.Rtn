@@ -1,0 +1,890 @@
+
+*******************************************************************************
+*                                                                             *
+*     Program Name         : Socket.RtS Version 1.2                           *
+*                                                                             *
+*     Type of program      : Windows socket driver                            *
+*                                                                             *
+*     Compilation          : Compile standalone as a ROUTINE                  *
+*                                                                             *
+*     Author               : Festus Redelinghuys - plbsa@icon.co.za           *
+*                                                                             *
+*     Date                 : 01 November 1998                                 *
+*                                                                             *
+*     Copyright            : All rights reserved                              *
+*                                                                             *
+*     Upgrade - Version    : 1.1 11/14/98                                     *
+*                            Changed error codes,Added error codes text list  *
+*                          : 1.2 12/06/00                                     *
+*                            Added KeepListen for ComClose                    *
+*******************************************************************************
+
+.   Error codes returned from winsock
+.   Values returned in SocketStatus
+
+ErrorList Init "00 - Error Unknown                                                              ":
+               "01 - Successfull, NO errors                                                     ":
+               "02 - Reserved - For use by other application ( Eq. Smtp )                       ":
+               "03 - Reserved                                                                   ":
+               "04 - Host IP is invalid. ( LP=0)                                                ":
+               "05 - Server 'Listen' port number invalid ( port = 0)                            ":
+               "06 - Server 'Listen' port number invalid ( port = EOS)                          ":
+               "07 - Invalid port open method. Must be 'O' or 'C'                               ":
+               "08 - Invalid data packet type. Must be 'R' or 'C'                               ":
+               "09 - Invalid buffer sizes. Buffer sizes must be equal or less than 4096         ":
+               "10 - Invalid communication port parameters                                      ":
+               "11 - Connection error during connection - Socket error                          ":
+               "12 - Socket not open when it should have been                                   ":
+               "13 - Socket not open when it should have been                                   ":
+               "14 - Not connected when connection should have been                             ":
+               "15 - Socket error during last read                                              ":
+               "16 - Socket error during last read                                              ":
+               "17 - Socket/line was dropped during last reception                              ":
+               "30 - Socket not open during write                                               ":
+               "31 - Connection lost during transmission                                        ":
+               "32 - Socket error during write                                                  ":
+               "33 - Error during last write                                                    ":
+               "34 - Socket/line was dropped during last transmission                           ":
+               "35 - WinSock.Rtn variable pointers NOT initialized,Call SocketConnect first.    "
+ScanCode       Dim              5                      ; Error list scan key
+
+.   Windows socket handler
+
+Socket1         Comfile
+Socket2         Comfile
+SockType        Init            "S"                  ; S=Windows Socket - ALWAYS
+HostConnection  Dim             26(2)                ; Work strorage
+Connected       Form            1(2)                 ; 0=Not Connected,1=Connected
+Status          Dim             20(2)                ; Socket status
+Writing         Form            1(2)                 ; 0=Wrt Disabled,1=Wrt Enabled
+Reading         Form            1(2)                 ; 0=Read Disabled,1=Read Enabled
+SocketError     Form            1(2)                 ; 0=NO error,1=Error
+GenericError    Dim             8(2)                 ; Coms generic error code
+NativeError     Dim             8(2)                 ; Coms Native error code
+LastRead        Form            1(2)                 ; Final Read buffer status 0=Bad,1=Good
+LastWrite       Form            1(2)                 ; Final Write buffer status 0=Bad,1=Good
+SocketOpen      Form            1(2)                 ; 0=Socket Closed,1=Socket Open
+Dropped         Form            1(2)                 ; Connection was dropped since prev read
+IOstatus        Dim             10                   ; Read/Write status for the Logfile
+PortD           Dim             5(2)                 ; Port number(Dim format)
+
+Comma            Init           ","                  ; Just what it is
+Null             Init           0
+F1               Form           1
+F2               Form           2
+D1               Dim            1
+D2               Dim            2
+D4               Dim            4
+D5               Dim            5
+ReadRetry        Form           6
+WriteRetry       Form           6
+Log              Form           1
+DelCont          Init           0x0D,"*",0x0A,"*"
+Blanks           Init           "                                        ":
+                                "                                        "
+
+.   SLEEP wait timer Api call
+TRUE             Integer         4,"1"                 ; TRUE
+FALSE            Integer         4,"0"                 ; FALSE
+Result           Integer         4,"0"
+SleepTime        Integer         4,"200"               ; Our wait timer * Milli seconds
+SleepProfile     Profile         kernel32.Dll,SleepEx,Int4,Int4,Int4
+
+.==============================================================================
+.   This routine does the TCP/IP connection to the server
+
+SocketStatus     Form            ^                      ; LROUTINE return status
+StatusText       Dim             ^                      ; Human readable text for above code
+HostIP           Dim             ^(2)                   ; Host IP number
+Port             Form            ^(2)                   ; 'LISTEN' Port number
+Method           Dim             ^(2)                   ; O=Open,C=Create
+PacketType       Dim             ^(2)                   ; R=Raw,C=Cooked
+SocketReadRetry  Form            ^(2)                   ; Loop counter
+SocketWriteRetry Form            ^(2)                   ; Loop counter
+RxBuffer         Dim             ^(2)                   ; Receive buffer
+TxBuffer         Dim             ^(2)                   ; Transmit buffer
+szRxBuffer       Form            ^(2)                   ; Rx buffer size(less one for Zero Term)
+szTxBuffer       Form            ^(2)                   ; Tx buffer size(less one for Zero Term)
+LogFile          Dim             ^                      ; Log all IO to file specified
+DispMode         Form            ^                      ; Display Logfile entries as they are made
+ETX              Dim             ^(2)                   ; Read End of TeX characters
+Filter           Dim             ^(2)                   ; Read filter out characters
+Time             Form            ^(2)                   ; Read timeout between characters(3)
+i                Form            ^                      ; Current selected socket
+EventCheck       Form            ^                      ; Do EventCheck in loop,0=No(Default),1=yes
+KeepListen       Form            ^(2)                   ; On ComClose, 0=Close completely,1=Close but keep listen open
+.==============================================================================
+
+
+.   Socket connection entry point.
+.   Besides 'Connect' making a connection does it also initialize the
+.   variables pointer addresses. If any other routine in Winsock is called
+.   before 'Connect' is called would it result in an error because the variable
+.   pointers were not initialized.
+.   We also have got 2 Windows sockets. Because 'Cur' is uninitialized at time
+.   of entry can we NOT use it's contents for the index to initialize the other
+.   variables. We therefore enter under two different entry points.
+
+Connect1         ROUTINE        SocketStatus:             ; Status returned
+                                StatusText:               ; Human readable text for above code
+                                HostIP(1):                ; Host IP number
+                                Port(1):                  ; 'LISTEN' Port number
+                                Method(1):                ; O=Open,C=Create
+                                PacketType(1):            ; R=Raw,C=Cooked
+                                SocketReadRetry(1):       ; Loop counter
+                                SocketWriteRetry(1):      ; Loop counter
+                                RxBuffer(1):              ; Receive buffer
+                                TxBuffer(1):              ; Transmit buffer
+                                szRxBuffer(1):            ; RxBuffer size
+                                szTxBuffer(1):            ; TxBuffer size
+                                LogFile:                  ; Log all IO to file specified
+                                DispMode:                 ; Verify only,disable actual IO
+                                ETX(1):                   ; Read End of TeX characters
+                                Filter(1):                ; Read filter out characters
+                                Time(1):                  ; Read timeout between characters(3)
+                                i:                        ; Current selected socket
+                                EventCheck:               ; Do EventCheck in loop,0=No(Default),1=yes
+                                KeepListen(1)             ; On ComClose, 0=Close completely,1=Close but keep listen open
+                 Goto           VarInit                   ; Variable addresses initialized
+
+Connect2         ROUTINE        SocketStatus:             ; Status returned
+                                StatusText:               ; Human readable text for above code
+                                HostIP(2):                ; Host IP number
+                                Port(2):                  ; 'LISTEN' Port number
+                                Method(2):                ; O=Open,C=Create
+                                PacketType(2):            ; R=Raw,C=Cooked
+                                SocketReadRetry(2):       ; Loop counter
+                                SocketWriteRetry(2):      ; Loop counter
+                                RxBuffer(2):              ; Receive buffer
+                                TxBuffer(2):              ; Transmit buffer
+                                szRxBuffer(2):            ; RxBuffer size
+                                szTxBuffer(2):            ; TxBuffer size
+                                LogFile:                  ; Log all IO to file specified
+                                DispMode:                 ; Verify only,disable actual IO
+                                ETX(2):                   ; Read End of TeX characters
+                                Filter(2):                ; Read filter out characters
+                                Time(2):                  ; Read timeout between characters(3)
+                                i:                        ; Current selected socket
+                                EventCheck:               ; Do EventCheck in loop,0=No(Default),1=yes
+                                KeepListen(2)             ; On ComClose, 0=Close completely,1=Close but keep listen open
+                Goto            VarInit                   ; Variable addresses initialized
+VarInit
+
+.   Validate info passed to LROUTINE
+
+                MoveLPtr        HostIP(i),F2                    ; Have we got anything in there
+                If              ( F2 < 1 )
+                 Move           "04",SocketStatus               ; Invalid parameter error
+                 Call           ErrorText                       ; Convert to human readable text
+                 SetFlag        Not Equal                       ; Indicate error
+                 RETURN                                         ; With error message
+                Endif
+
+.   Properly format and validate the server port
+
+                If              ( Port(i) < 0 )
+                 Move           "05",SocketStatus               ; Invalid parameter error
+                 Call           ErrorText                       ; Convert to human readable text
+                 SetFlag        Not Equal                       ; Indicate error
+                 RETURN                                         ; With error message
+                Else
+                 Move           Port(i),PortD(i)
+                 Loop
+                  Cmatch        " ",PortD(i)
+                 While          Equal
+                  Bump          PortD(i),1
+                  If            EOS
+                   Move         "06",SocketStatus               ; Invalid parameter error
+                   Call         ErrorText                       ; Convert to human readable text
+                   SetFlag      Not Equal                       ; Indicate error
+                   RETURN
+                  Endif
+                 REPEAT
+                 Move           PortD(i),D5
+                 Pack           PortD(i),D5
+                Endif
+
+.   Validate local port open or create
+
+                Cmatch          "O",Method(i)
+                If              Not equal
+                 Cmatch         "C",Method(i)
+                 If             Not equal
+                  Move          "07",SocketStatus               ; Invalid parameter error
+                  Call          ErrorText                       ; Convert to human readable text
+                  SetFlag       Not Equal                       ; Indicate error
+                  RETURN                                        ; With error message
+                 Endif
+                Endif
+
+.   Validate Data packet types
+
+                Cmatch          "R",PacketType(i)
+                If              Not equal
+                 Cmatch         "C",PacketType(i)
+                 If             Not equal
+                  Move          "08",SocketStatus               ; Invalid parameter error
+                  Call          ErrorText                       ; Convert to human readable text
+                  SetFlag       Not Equal                       ; Indicate error
+                  RETURN                                        ; With error message
+                 Endif
+                Endif
+
+.   Validate buffer request size
+
+                If              ( szRxBuffer(i) > 4096 | szTxBuffer(i) > 4096)
+                 Move           "09",SocketStatus               ; Buffer size to big error message
+                 Call           ErrorText                       ; Convert to human readable text
+                 SetFlag        Not Equal                       ; Indicate error
+                 RETURN                                         ; With error message
+                Else
+..                 Sformat        RxBuffer(i),szRxBuffer(i)     ;Format buffer size
+..                 Sformat        TxBuffer(i),szTxBuffer(i)     ;Format buffer size
+                Endif
+
+.   Validate if we must log IO
+
+                MoveLPtr         LogFile,F2                     ;If path/filename then
+                If               ( F2 > 1 )                     ;we log all io subject
+                 Move            "1",Log                        ;to a valid path and
+                Else                                            ;file name.We don't
+                 Move            "0",Log                        ;test if the file exist.
+                Endif                                           ;We just prepare it.
+
+.   Initialize the Rx and Tx buffers.
+
+                Move            " ",RxBuffer(i)
+                Move            " ",TxBuffer(i)
+
+.   Initialize the Windows socket and return the status
+
+                Call            OpenSocket                      ; Open coms port
+
+.   Respond to any errors
+
+                If              ( Connected(i) = 0 )            ; Connect error
+                 Move           "10",SocketStatus               ; Invalid server/com port parameters
+                 Call           ErrorText                       ; Convert to human readable text
+                 SetFlag        Not Equal                       ; Indicate error
+                 RETURN                                         ; With error message
+                Endif
+                If              ( SocketError(i) = 1 )          ; Connect error
+                 Move           "11",SocketStatus               ; Invalid server/com port parameters
+                 Call           ErrorText                       ; Convert to human readable text
+                 SetFlag        Not Equal                       ; Indicate error
+                 RETURN                                         ; With error message
+                Endif
+                If              ( SocketOpen(i) = 0 )           ; Connect error
+                 Move           "12",SocketStatus               ; Invalid server/com port parameters
+                 Call           ErrorText                       ; Convert to human readable text
+                 SetFlag        Not Equal                       ; Indicate error
+                 RETURN                                         ; With error message
+                Endif
+
+                Move            "01",SocketStatus               ; SUCCESSFULL
+                Call           ErrorText                        ; Convert to human readable text
+                SetFlag        Equal                            ; Successfull
+                RETURN
+
+...............................................................................
+.   Read the windows socket
+Read            ROUTINE
+                IF              ( SocketOpen(i) = 0 )
+                 Move           "13",SocketStatus               ; Socket not initialized
+                 Call           ErrorText                       ; Convert to human readable text
+                 SetFlag        Not Equal                       ; Indicate error
+                 RETURN                                         ; With error code
+                Else If         ( Connected(i) = 0 )
+                 Move           "14",SocketStatus               ; Connection lost
+                 Call           ErrorText                       ; Convert to human readable text
+                 SetFlag        Not Equal                       ; Indicate error
+                 RETURN                                         ; With error code
+                Endif
+
+                Call            ReadSocket                      ; Read windows socket
+
+                If              ( LastRead(i) != 1 )
+                 Move           "16",SocketStatus               ; Last read was bad
+                 Call           ErrorText                       ; Convert to human readable text
+                 SetFlag        Not Equal                       ; Indicate error
+                 RETURN                                         ; With error code
+                Else If         ( SocketError(i) = 1 )
+                 Move           "15",SocketStatus               ; Error during socket read
+                 Call           ErrorText                       ; Convert to human readable text
+                 SetFlag        Not Equal                       ; Indicate error
+                 RETURN                                         ; With error code
+                Else If         ( Dropped(i) = 1 )
+                 Move           "17",SocketStatus               ; Error getting last status
+                 Call           ErrorText                       ; Convert to human readable text
+                 SetFlag        Not Equal                       ; Indicate error
+                 RETURN                                         ; With error code
+                Endif
+
+                Move            "01",SocketStatus               ; SUCCESSFULL
+                Call            ErrorText                       ; Convert to human readable text
+                SetFlag         Equal
+                RETURN
+
+...............................................................................
+.   Write to the windows socket
+Write           ROUTINE
+                IF              ( SocketOpen(i) = 0 )
+                 Move           "30",SocketStatus               ; Socket not initialized
+                 Call           ErrorText                       ; Convert to human readable text
+                 SetFlag        Not Equal                       ; Indicate error
+                 RETURN                                         ; With error code
+                Else If         ( Connected(i) = 0 )
+                 Move           "31",SocketStatus               ; Connection lost
+                 Call           ErrorText                       ; Convert to human readable text
+                 SetFlag        Not Equal                       ; Indicate error
+                 RETURN                                         ; With error code
+                Endif
+
+                Call            WriteSocket                     ; Write windows socket
+
+                If              ( SocketError(i) = 1 )
+                 Move           "32",SocketStatus               ; Error during socket write
+                 Call           ErrorText                       ; Convert to human readable text
+                 SetFlag        Not Equal                       ; Indicate error
+                 RETURN                                         ; With error code
+                Else If         ( LastWrite(i) != 1 )
+                 Move           "33",SocketStatus               ; Last write was bad
+                 Call           ErrorText                       ; Convert to human readable text
+                 SetFlag        Not Equal                       ; Indicate error
+                 RETURN                                         ; With error code
+                Else If         ( Dropped(i) = 1 )
+                 Move           "34",SocketStatus               ; Error getting last status
+                 Call           ErrorText                       ; Convert to human readable text
+                 SetFlag        Not Equal                       ; Indicate error
+                 RETURN                                         ; With error code
+                Endif
+
+                Move            "01",SocketStatus               ; SUCCESSFULL
+                Call            ErrorText                       ; Convert to human readable text
+                SetFlag         Equal
+                RETURN
+.==============================================================================
+.                               SUB ROUTINES
+.==============================================================================
+
+.   Open the Windows Socket.
+.   When we call GetSocketStatus we also test to see if the connection is still
+.   valid ( SocketOpen).
+
+OPENSOCKET
+                 Call           GetSocketStatus                 ;Get the latest status
+                 If             ( SocketOpen(i) = 0 )           ;Is the socket open
+                  Pack          HostConnection(i),SockType:     ; S=Windows Socket
+                                               Comma:           ; Seperator
+                                               Method(i):       ;
+                                               Comma:           ; Seperator
+                                               HostIP(i):       ;
+                                               Comma:           ; Seperator
+                                               PortD(i):        ;
+                                               Comma:           ; Seperator
+                                               PacketType(i)
+                  Call          LogO If ( Log = 1 )             ;Log all
+                  Trap          InvalidSocket if IO             ;Respond to ERROR
+                  If            ( i = 1 )
+                   Comopen      Socket1,HostConnection(i)       ;Open the socket and connect to the host
+                  Else
+                   Comopen      Socket2,HostConnection(i)       ;Open the socket and connect to the host
+                  Endif
+                  TrapClr       IO                              ;NO IO error in socket
+                  Move          "1",SocketOpen(i)               ;Socket OPENed
+                  Call          GetSocketStatus                 ;Get the latest status
+                  If            ( Connected(i) = 0 | SocketError(i) = 1 | Dropped(i) = 1) Error during open
+                   Move         "0",Connected(i)                ;Error connecting to Host
+                  Endif
+                 Endif
+                 SetFlag        Equal
+                 RETURN
+
+.   Either the Windows Socket (HostConnection) parameters are incorrect or
+.   a connection with the host server on the specified port could not be made.
+.   This means that you MUST have a server program running on the host with
+.   the same PORT number used. This port number is the port on which the
+.   server LISTEN's for new connections before the host hands a connection over
+.   to an "internal client on the servers Winsock2". Obviously the server must
+.   have a STATIC IP address. Watchout for DHCP on a WinNT system, the IP addr is
+.   then dynamic.
+
+InvalidSocket
+                Move            "0",Connected(i)                ;We could not connect
+                Move            "0",SocketOpen(i)               ;Socket is NOT open
+                SetFlag         Not Equal
+                RETURN                                          ;TO ERROR+NEXT LINE
+
+...............................................................................
+
+.   Read the Windows socket.
+.   After every read you MUST test ALL the status flags.
+.   Wait for READ status to be good before reading
+.   the socket. After the read has been completed test the port status again
+.   to make sure that it has not changed. If it did then the data received
+.   would be in question.
+READSOCKET
+                 IF             ( SocketOpen(i) = 0 | Connected(i) = 0 | SocketError(i) = 1 ) ;Open error?,Return with codes
+                  SetFlag       Not Equal
+                  RETURN
+                 Endif
+
+                 Move           "0",LastRead(i)                 ;Assume READ Failure
+                 Move           "0",ReadRetry                   ;Avoid indeffinite loop
+
+.   Read the socket
+                 Loop
+                  If            ( EventCheck = 1 )              ;Want an EventCheck done?
+                   EventCheck                                   ;Process event queue
+                  Endif
+.   Test status before we read
+                  Call          GetSocketStatus                 ;Get the latest status
+                  If            ( SocketError(i) = 1 | Connected(i) = 0 | Dropped(i) = 1)
+                   Call         CloseSocket
+                   BREAK
+.   Test if socket is ready for us to read it.
+                  Else If       ( Reading(i) = 1 )              ;Socket ready to be read?
+                   If           ( i = 1 )
+...                    Comread     Socket1,ETX(i),Filter(i);*T=Time(i),RxBuffer(i) ;Yes, All conditions safe
+                    Comread     Socket1,ETX(i),Filter(i);RxBuffer(i) ;Yes, All conditions safe
+                   Else
+...                    Comread     Socket2,ETX(i),Filter(i);*T=Time(i),RxBuffer(i) ;Yes, All conditions safe
+                    Comread     Socket2,ETX(i),Filter(i);RxBuffer(i) ;Yes, All conditions safe
+                   Endif
+                   If           Over                            ;Time out occured?
+                    Move        "Timeout  ",IOstatus            ;Set status for logfile
+                    Move        "0",LastRead(i)                 ;Last read is BAD
+                    SetFlag     Not Equal                       ;Set result flag
+                   Else IF      EOS                             ;End Of Text char recv'd?
+                    Move        "EOT Recvd",IOstatus            ;Set status for logfile
+                    Move        "1",LastRead(i)                 ;Last read is GOOD
+                    SetFlag     Equal                           ;Status OK
+                   Else IF      Equal                           ;Normal good read?
+                    Move        "Ok Recvd ",IOstatus            ;Set status for logfile
+                    Move        "1",LastRead(i)                 ;Last read is GOOD
+                    SetFlag     Equal                           ;Status OK
+                   Else IF      NOT Equal                       ;Error during read?
+                    Move        "Error    ",IOstatus            ;Set status for logfile
+                    Move        "0",LastRead(i)                 ;Last read is BAD
+                    SetFlag     Not Equal                       ;Set result flag
+                   Endif
+                   Call         LogR If ( Log = 1 )             ;Log all
+                   Call         GetSocketStatus                 ;See if there are errors during socket read
+                   If           ( Connected(i) = 0 | SocketError(i) = 1 | Dropped(i) = 1) ;No errors?)
+                    Move        "0",LastRead(i)                 ;We got last data + EOF close socket connection
+                    If          ( Connected(i) = 1 )            ;Was not a Ftp EOF signal/
+                     Call        CloseSocket                    ;Close socket for other errors
+                    Endif
+                   Endif
+                   BREAK                                        ;Read completed successfully
+.   Socket is not ready for reading, wait a while
+                  Else
+                   Add           "1",ReadRetry                   ;Socket NOT ready to be read
+                   Call          LogRr If ( Log = 1 & ReadRetry > SocketReadRetry(i))
+                   BREAK         IF ( ReadRetry > SocketReadRetry(i)) ;Wait some more
+                   WinApi        SleepProfile Giving Result Using SleepTime,FALSE Sleep for 100 ms
+                  Endif
+.   Try again
+                 REPEAT                                         ;Go try again
+                 SetFlag        Equal
+                 RETURN                                         ;To caller with
+.                                                               status flags
+...............................................................................
+
+.   The Write is basically the same as a read, with the same SocketStatus
+.   checking
+WRITESOCKET
+                 RETURN IF      ( SocketOpen(i) = 0 | Connected(i) = 0 | SocketError(i) = 1 ) ;Open error?,Return with codes
+
+                 Move           "0",LastWrite(i)                ;Assume Write Failure
+                 Move           "0",WriteRetry                  ;Avoid indeffinite loop
+.   Write to the socket.
+                 Loop
+                  If            ( EventCheck = 1 )              ;Want an EventCheck done?
+                   EventCheck                                   ;Process event queue
+                  Endif
+.   But first check if the latest socket status.
+                  Call          GetSocketStatus                 ;Get the latest status
+                  IF            ( SocketError(i) = 1 | Connected(i) = 0 | Dropped(i) = 1)
+                   Call         CloseSocket
+                   SetFlag      NOT Equal                       ;Set exit flag BAD
+                   BREAK                                        ;Abort Com write
+.   Is the socket ready to accept our data?
+                  Else If       ( Writing(i) = 1 )              ;Are we ready to write?
+                   If           ( i = 1 )
+...                    ComWrite    Socket1;*T=Time(i),*LL,TxBuffer(i)     ;Yes, All conditions safe
+                    ComWrite    Socket1;*LL,TxBuffer(i)     ;Yes, All conditions safe
+                   Else
+...                    ComWrite    Socket2;*T=Time(i),*LL,TxBuffer(i)     ;Yes, All conditions safe
+                    ComWrite    Socket2;*LL,TxBuffer(i)     ;Yes, All conditions safe
+                   Endif
+                   If           Over                            ;Time out occured?
+                    Move        "Timeout  ",IOstatus            ;Set status for logfile
+                    Move        "0",LastWrite(i)                ;Last write is BAD
+                   Else IF      Equal                           ;Normal good read?
+                    Move        "Ok Send  ",IOstatus            ;Set status for logfile
+                    Move        "1",LastWrite(i)                ;Last write is GOOD
+                   Else IF      NOT Equal                       ;Error during write?
+                    Move        "Error    ",IOstatus            ;Set status for logfile
+                    Move        "0",LastWrite(i)                ;Last write is BAD
+                   Endif
+                   Call         LogW If ( Log = 1 )             ;Log all
+                   Call         GetSocketStatus                 ;See if there are errors during socket read
+                   If           ( Connected(i) = 0 | SocketError(i) = 1 | Dropped(i) = 1) ;No errors?
+                    Move        "0",LastWrite(i)                ;Something went wrong after write
+                    Call        CloseSocket
+                   Endif
+                   SetFlag      Equal                           ;Set exit flag Ok
+                   BREAK                                        ;Write successfully completed
+.   Socket is not ready to accept our data, wait a while.
+                  Else
+                   Add          "1",WriteRetry                  ;Add another try
+                   Call         LogTw If ( Log = 1 & WriteRetry > SocketWriteRetry(i))
+                   BREAK        IF ( WriteRetry > SocketWriteRetry(i)) ;Something is wrong
+                   WinApi       SleepProfile Giving Result Using SleepTime,FALSE
+                  Endif
+                 REPEAT
+                 SetFlag        Equal
+                 RETURN                                         ;To caller with
+.                                                                status flags
+...............................................................................
+
+.   This routine reads the status of the Windows Socket
+
+GetSocketStatus
+                Move         "0",Connected(i)                   ;Assume NOT connected
+                Move         "0",Writing(i)                     ;Assume Writing NOT allowed
+                Move         "0",Reading(i)                     ;Assume Reading NOT allowed
+                Move         "1",SocketError(i)                 ;Assume we have a socket error
+                Move         "        ",GenericError(i)         ;Clear any prev error codes
+                Move         "        ",NativeError(i)          ;Clear any prev error codes
+                If           ( SocketOpen(i) = 1 )              ;ONLY test stat if socket is open
+                 Move        "1",Dropped(i)                     ;Assume that the socket dropped
+                 Trap        SocketNOTopen if IO                ;Incase the socket dropped
+                 If          ( i = 1 )
+                  Comstat    Socket1,Status(i)                  ;Get the Socket status
+                 Else
+                  Comstat    Socket2,Status(i)                  ;Get the Socket status
+                 Endif
+                 Trapclr     IO                                 ;Remove trap
+                 Move        "0",Dropped(i)                     ;Line did not drop, set status
+                 Unpack      Status(i),Connected(i):            ;Decode receive socket status
+                                    Writing(i):
+                                    Reading(i):
+                                    SocketError(i):
+                                    GenericError(i):
+                                    NativeError(i)
+                 Call        LogS If ( Log = 1 )                ;Log all
+                Endif
+                SetFlag      Equal
+                RETURN
+
+.   The socket was closed by the host or some local windows program without our
+.   SocketOpen status being updated. This caused an IO error. Correct the problem
+.   This is a critical condition insofar as syncronised download from the server.
+.   If the line was dropped the the server would also have detected it and the
+.   download syncronization between the server and client(us) be lost.
+SocketNOTopen
+                Move         "1",Dropped(i)                     ;Line was dropped from prev read
+                Move         "0",SocketOpen(i)                  ;Socket is NOT open
+                Trapclr      IO                                 ;Remove trap
+                Call         LogE If ( Log = 1 )                ;Log all
+                Noreturn                                        ;Default status already set
+                SetFlag      Not Equal
+                RETURN
+...............................................................................
+.   Close the socket
+CloseSocket     ROUTINE
+                Move         "0",Connected(i)                   ; NOT connected
+                Move         "0",Writing(i)                     ; Writing NOT allowed
+                Move         "0",Reading(i)                     ; Reading NOT allowed
+                Move         "0",SocketError(i)                 ; No socket error
+                RETURN IF    ( SocketOpen(i) = 0 )              ; Socket should be open
+                If           ( i = 1 )
+                 Comclose    Socket1,KeepListen(1)              ;Yes,Then close socket
+                Else
+                 Comclose    Socket2,KeepListen(2)              ;Yes,Then close socket
+                Endif
+                Move         "0",SocketOpen(i)                  ; Socket now closed
+                Call         LogC If ( Log = 1 )
+                Setflag      Equal
+                RETURN
+
+...............................................................................
+.   Terminate all write pending operations on the window socket
+
+CLEARSOCKET     ROUTINE
+                RETURN IF    ( SocketOpen(i) = 0 )              ; Socket should be open
+                If           ( i = 1 )
+                 Comclr      Socket1                            ;Yes,cancel writes
+                Else
+                 Comclr      Socket2                            ;Yes,cancel writes
+                Endif
+                Call         LogCl If ( Log = 1 )
+                Setflag      Equal
+                RETURN
+
+.===============================================================================
+.   Log all IO. If 'Log' is 1 then all IO will be logged by these routines.
+.   The LogFile will automatically be created for a session
+
+LogRecorder     File
+LogEntry        Dim             1000
+Seq             Form            "-1"
+BufferBytes     Form            4
+LogOpen         Form            1                   ;Logfile open/close flag
+
+.   Prepare the LOG file. The file would it be overwritten if it already exist
+
+PrepLog
+                Erase           LogFile                         ;Erase if it already exists
+                Trap            NoLogFile if IO
+                Prepare         LogRecorder,LogFile             ;Create a new log file
+                Move            "1",LogOpen                     ;Remember log file is open
+                SetFlag         Equal
+                RETURN
+
+.   Any errors during the creation of the log file will result in the logging facility
+.   being disabled. 'Log'=1 could be tested after return for successfull logging
+.   or not.
+
+NoLogFile
+                NORETURN
+                Move            "0",LogOpen                     ;Log file NOT ready
+                Move            "0",Log                         ;Disable logging
+ alert stop,"no log file",f1
+                SetFlag         Equal
+                RETURN                                          ;Abort logging
+
+.   Log all socket read actions
+.   Note that the buffer data of socket 2 is NOT written to the logfile because
+.   the data is binary for FTP. Instead the bytecount is written
+
+LogR
+                Call            PrepLog if ( LogOpen != 1 )     ;Open log file
+                If              ( i = 1 )
+                 Pack           LogEntry,"Socket ",i," ":       ;We need to know which socket
+                                         "Read Socket    -":    ;Action
+                                         IOstatus:              ;Status returned from read
+                                         "-":                   ;Seperator
+                                         RxBuffer(i)            ;Buffer Data
+                Else
+                 MoveLPtr       RxBuffer(i),BufferBytes         ;Get count of bytes
+                 Pack           LogEntry,"Socket ",i," ":       ;We need to know which socket
+                                         "Read Socket    -":    ;Action
+                                         IOstatus:              ;Status returned from read
+                                         "-":                   ;Seperator
+                                         "Socket 2 Data bytes = ":
+                                         BufferBytes            ;Say how many bytes
+                Endif
+                Replace         DelCont,LogEntry                ;Convert control characters
+                Call            DisplayEntry IF ( DispMode != 0 ) ;Display entries
+                Write           LogRecorder,Seq;*LL,LogEntry    ;Put in log
+                SetFlag         Equal
+                RETURN
+
+.   Log all socket write actions
+.   Note that the buffer data of socket 2 is NOT written to the logfile because
+.   the data is binary for FTP. Instead the bytecount is written
+
+LogW
+                Call            PrepLog if ( LogOpen != 1 )     ;Open log file
+                If              ( i = 1 )
+                 Pack           LogEntry,"Socket ",i," ":       ;We need to know which socket
+                                         "Write Socket   -":    ;Action
+                                         IOstatus:              ;Status returned from read
+                                         "-":                   ;Seperator
+                                         TxBuffer(i)            ;Buffer Data
+                Else
+                 MoveLPtr       TxBuffer(i),BufferBytes         ;Get count of bytes
+                 Pack           LogEntry,"Socket ",i," ":       ;We need to know which socket
+                                         "Write Socket   -":    ;Action
+                                         IOstatus:              ;Status returned from read
+                                         "-":                   ;Seperator
+                                         "Socket 2 Data bytes = ":
+                                         BufferBytes            ;Say how many bytes
+                Endif
+                Replace         DelCont,LogEntry                ;Convert control characters
+                Call            DisplayEntry IF ( DispMode != 0 ) ;Display entries
+                Write           LogRecorder,Seq;*LL,LogEntry    ;Put in log
+                SetFlag         Equal
+                RETURN
+
+.   Log socket open actions
+
+LogO
+                Call            PrepLog if ( LogOpen != 1 )     ;Open log file
+                Pack            LogEntry,"Socket ",i," ":       ;We need to know which socket
+                                         "Open Socket    -":    ;Action
+                                         " SockType=",SockType: ; S=Windows Socket
+                                         " Meth=",Method(i):    ;
+                                         " Host=",HostIP(i):    ;
+                                         " Port=",PortD(i):     ;
+                                         " Pack=",PacketType(i)
+                Call            DisplayEntry IF ( DispMode != 0 ) ;Display entries
+                Write           LogRecorder,Seq;*LL,LogEntry    ;Put in log
+                SetFlag         Equal
+                RETURN
+
+.   Log all socket close actions
+.   The Logfile session is as long as the socket session
+LogC
+
+                If              ( LogOpen = 0 )                 ;Is log open
+                 Setflag        Equal
+                 RETURN
+                Else
+                 Pack           LogEntry,"Socket ",i," ":       ;We need to know which socket
+                                         "Close Socket   -"     ;Action
+                 Replace        DelCont,LogEntry                ;Convert control characters
+                 Call           DisplayEntry IF ( DispMode != 0 ) ;Display entries
+                 Write          LogRecorder,Seq;*LL,LogEntry    ;Put in log
+                 RETURN         If ( SocketOpen(1) = 1 | SocketOpen(2) = 1 )
+                 WEOF           LogRecorder,Seq
+                 Close          LogRecorder
+                 Move           "0",LogOpen                     ;Remember it is closed
+                 Setflag        Equal
+                 RETURN
+                Endif
+
+.   Log all socket clear actions
+LogCl
+
+                If              ( LogOpen = 0 )                 ;Is log open
+                 Setflag        Equal
+                 RETURN
+                Else
+                 Pack           LogEntry,"Socket ",i," ":       ;We need to know which socket
+                                         "Clear Socket   -"     ;Action
+                 Replace        DelCont,LogEntry                ;Convert control characters
+                 Call           DisplayEntry IF ( DispMode != 0 ) ;Display entries
+                 Write          LogRecorder,Seq;*LL,LogEntry    ;Put in log
+                 Setflag        Equal
+                 RETURN
+                Endif
+.
+.   Log all gracefull socket closures actions
+LogCG
+
+                If              ( LogOpen = 0 )                 ;Is log open
+                 Setflag        Equal
+                 RETURN
+                Else
+                 Pack           LogEntry,"Socket ",i," ":       ;We need to know which socket
+                                         "Gracefull Close-"     ;Action
+                 Replace        DelCont,LogEntry                ;Convert control characters
+                 Call           DisplayEntry IF ( DispMode != 0 ) ;Display entries
+                 Write          LogRecorder,Seq;*LL,LogEntry    ;Put in log
+                 Setflag        Equal
+                 RETURN
+                Endif
+
+.   Log all socket status reads in it's native form
+LogS
+                Call            PrepLog if ( LogOpen != 1 )     ;Open log file
+                Pack            LogEntry,"Socket ",i," ":       ;We need to know which socket
+                                         "Socket Status  -":    ;Action
+                                         " Cnt=",Connected(i):
+                                         " Tx Rdy=",Writing(i):
+                                         " Rx Rdy=",Reading(i):
+                                         " Soc Err=",SocketError(i):
+                                         " Gen Err=",GenericError(i):
+                                         " Nat Err=",NativeError(i)
+                Call            DisplayEntry IF ( DispMode != 0 )    ;Display entries
+                Write           LogRecorder,Seq;*LL,LogEntry         ;Put in log
+                SetFlag         Equal
+                RETURN
+
+.   Log all Socket not open errors. This is normally the result of an
+.   invalid connection/IP address
+
+LogE
+                Call            PrepLog if ( LogOpen != 1 )     ;Open log file
+                Pack            LogEntry,"Socket ",i," ":       ;We need to know which socket
+                                         "Socket not Open-":    ;Action
+                                         HostConnection(i)      ;Buffer Data
+                Call            DisplayEntry IF ( DispMode != 0 ) ;Display entries
+                Write           LogRecorder,Seq;*LL,LogEntry    ;Put in log
+                SetFlag         Equal
+                RETURN
+
+.   Timeout-Read. A timeout has occured by virtue of the SleepEx
+.   loop counter being completed without the expected action being completed.
+.
+LogRr
+                Call            PrepLog if ( LogOpen != 1 )     ;Open log file
+                Pack            LogEntry,"Socket ",i," ":       ;We need to know which socket
+                                         "Timeout - Read -":    ;Action
+                                         SocketReadRetry(i)     ;Buffer Data
+                Call            DisplayEntry IF ( DispMode != 0 ) ;Display entries
+                Write           LogRecorder,Seq;*LL,LogEntry    ;Put in log
+                SetFlag         Equal
+                RETURN
+
+.   Timeout-Write. A timeout has occured by virtue of the SleepEx
+.   loop counter being completed without the expected action being completed.
+.
+LogTw
+                Call            PrepLog if ( LogOpen != 1 )     ;Open log file
+                Pack            LogEntry,"Socket ",i," ":       ;We need to know which socket
+                                         "Timeout - Write-":    ;Action
+                                         SocketWriteRetry(i)    ;Buffer Data
+                Call            DisplayEntry IF ( DispMode != 0 ) ;Display entries
+                Write           LogRecorder,Seq;*LL,LogEntry    ;Put in log
+                SetFlag         Equal
+                RETURN
+.   For debugging puposes can you insert any data into the log file at your
+.   convenience
+
+LogInsert       Dim             ^                               ;Data to insert
+LogInsert       ROUTINE         LogInsert
+                Call            PrepLog if ( LogOpen != 1 )     ;Open log file
+                Call            DisplayEntry IF ( DispMode != 0 ) ;Display entries
+                Replace         DelCont,LogInsert               ;Convert control characters
+                Write           LogRecorder,Seq;*LL,LogInsert   ;Put in log
+                SetFlag         Equal
+                RETURN
+
+.   If display selected display Logfile entry on screen as entries are made
+.   We don't know what application would use this Winsock.Rtn and therefore
+.   make sure that cursor possitioning is done under control.
+
+InitCursor      Form            "0"                             ;Init cursor possition
+
+DisplayEntry
+                If              ( InitCursor = 0 )              ;Cursor init done?
+                 Display        *P1:1," ",*C                    ;Possition cursor
+                 Move           "1",InitCursor                  ;Remember it is done
+                Endif
+
+                Display         *N,LogEntry                     ;Display entry
+
+                If              ( DispMode = 2 )             ;Hold on display requested
+                 Keyin          D1                              ;Hold program
+                Endif
+
+                SetFlag         Equal
+                RETURN
+...............................................................................
+.   This routine converts the Socket error code to a human readable text string
+.   and returns it to the caller
+
+ErrorText       ROUTINE
+        Move    Blanks,StatusText                               Clear out garbage
+        Move    SocketStatus,D2                                 Get the code
+        Replace " 0",D2                                         Make sure in right format
+        Pack    ScanCode,D2," - "                               Build a unique scan code
+        SetLPtr ErrorList                                       .Make sure we use full code list
+        Reset   ErrorList                                       .From the beginning
+        Scan    ScanCode,ErrorList                              Find the error code in out list
+        If      Equal                                           We found it!
+         Bump   ErrorList,5                                     Point to start of text of code
+         Move   ErrorList,StatusText                            Get the text message
+         SetLPtr StatusText,75                                  Cut of extra garbage
+        Else                                                    We did NOT find it
+         Pack   StatusText,"Unknown Error Code = ",ScanCode     We don't have a text for this code
+        Endif
+        SetFlag Equal
+        RETURN                                                  With a text message
+
+...............................................................................

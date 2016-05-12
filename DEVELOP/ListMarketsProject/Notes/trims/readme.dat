@@ -1,0 +1,7 @@
+01/19/99
+
+Sub-directory contains code for following sub-routines found in
+comlogic.inc:  TRIM, RTRIM, LTRIM, ISNULL.  Code for these sub-routines
+written by ASH.
+
+ASH

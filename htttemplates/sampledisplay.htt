@@ -1,0 +1,69 @@
+<!-- custom content goes here -->
+
+<form action='listsearch.plc' name='sampledisplayform' id='sampledisplayform' method='POST'>
+	<input type='hidden' name='cgifunction' value='1' />
+	<input type='hidden' name='SID' value='<%=SID%>' />
+<!--	<input type='hidden' name='cgimailer' value='<%=cgimailer%>' /> -->
+	<input type='hidden' name='cgimlrname' value='<%=cgimlrname%>' />
+
+	<table border='0' cellpadding='2' cellspacing='2' align='center'>
+		<tr>
+			<td class='title' colspan='2' align=center>
+				Samples
+				<br>
+				<%=cgimlrname%>
+				<br><br>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<span class='errorMsg'><%=errorMsg%></span>
+			</td>
+		</tr>
+		<tr>
+			<td align='center' valign='top' colspan='2'>
+				<br><br>
+				<table class=datacontainer cellpadding='2' cellspacing='0'>
+					<tr>
+						<th>Number</th>
+						<th>Description</th>
+						<th>Date</th>
+						<th>Link</th>
+					</tr>
+<%DISPLAYSAMPLES%>
+					<tr class='datarow<%=cgidatarow%>'>
+						<td><%=cgisamplenumber%></td>
+						<td><%=cgisampledescrip%></td>
+						<td><%=cgisampledate%></td>
+						<td><%=cgisamplelink%></td>
+					</tr>
+<%/DISPLAYSAMPLES%>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=2 align=center>
+				<br>
+				<br>
+				<input type=button value='Back' onclick='history.back()'>
+			</td>
+		</tr>
+		<tr>
+			<td align='center' colspan="2" class="text">
+			<br>
+			<br>
+			There is a known issue with the QuickTime media player that can cause sample images to
+			not display correctly.  If you have trouble viewing samples because of this incompatibility,
+<!-- START PATCH 1/4/2006 ASH REPLACED LOGIC -->
+<!--			please contact your NIN representative to receive a .pdf of any Sample you wish to view.  -->
+			please contact your <a href="/index.php/contact-us/";>NIN representative</a> to receive a .pdf of any Sample you wish to view.
+<!-- END PATCH 1/4/2006 ASH REPLACED LOGIC -->
+			<br>
+			<br>
+			Sample images are stored in the TIFF file format.  If you need a TIFF viewer, you can download
+			<a target="_blank" href="http://www.download.com/Brava-Reader/3000-2079_4-10333088.html">Brava-Reader</a> for free.
+			</td>
+		</tr>
+	</table>
+</form>
+<!-- end custom content -->

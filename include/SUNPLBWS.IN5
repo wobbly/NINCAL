@@ -1,0 +1,526 @@
+*==============================================================================
+. Process MENU 5 for TOOLS
+.
+. Put MENU 5 ( Compiler	) into the MAIN	MENU BAR
+.
+KEY1	 DIM	   1
+OPT1	 DIM	   13
+OPT2	 DIM	   13
+#A1	 DIM	   1
+#MNU5	 MENU
+#MNU5ITM INIT	   ")Tools;":		     ;Tools menu list
+		   ")Designer;":	     ;PLBDSIGN
+		   "-;":		     ;Separator	line
+		   ")Compiler;":	     ;PLBCMP
+		   "-;":		     ;Separator	line
+		   ")Editor"		     ;SUNED
+.
+#MNU5RES INTEGER   1
+#RSLT	 INTEGER   1
+MNU5PTR	 FORM	   2
+MNU5POP	 POPUPMENU		       ;Popupmenu for output options
+MNU5POPD INIT	   ")None;":	      ;Options popupmen	list
+		   "N)one;":	      ;
+		   ")Display;":	      ;
+		   ")List"	      ;
+.
+#WORK	 DIM	   20
+DEFARR	 DIM	   4(4):
+LSIZE		   ("8"):
+DEFEXT		   ("PLS"):
+DEFPAGE		   ("53"):
+BUFSIZE		   ("256")
+LABEL	 DIM	   15
+EQU	 DIM	   4
+.
+OPT_OUT	 INIT	   " DL"	       ;
+OPT_HDR	 DIM	   40		       ;Heading
+.
+#OPTWORK DIM	   10
+#OPTLIN	 DIM	   60
+#OPTPTR	 FORM	   2
+#OPT1ARR DIM	   2(12):
+		   ("A"):
+		   ("E"):
+		   ("I"):
+		   ("N"):
+		   ("P"):
+		   ("S"):
+		   ("Y"):
+		   ("ZC"):
+		   ("ZD"):
+		   ("ZH"):
+		   ("ZI"):
+		   ("L")
+.
+#OPT2ARR DIM	   3(10):
+		   ("E="):
+		   ("F"):
+		   ("L="):
+		   ("O"):
+		   ("Q"):
+		   ("V"):
+		   ("X"):
+		   ("ZA="):
+		   ("ZG"):
+		   ("ZT")
+.
+CGOPT1D	 INIT	   "Auto Execute (A);":
+		   "List errors	only (E);":
+		   "Ignore warnings (I);":
+		   "No duplicate default (N);":
+		   "Print file (P);":
+		   "Write debug	file (S);":
+		   "Stop on 1st	error (Y);":
+		   "Compatibility mode (ZC);":
+		   "LISTOFF override (ZD);":
+		   "Delete obj if error	(ZH);":
+		   "Pause on error (ZI);":
+		   "List to printer (L);":
+		   "Verify command"
+.
+CGOPT2D	 INIT	   "Set	Default	Extension (E=PLS);":
+		   "List false IF (F);":
+		   "Set	label size (L=8);":
+		   "Object output (O);":
+		   "Append to Print (Q);":
+		   "Equate label (Vlabel=);":
+		   "Cross reference (X);":
+		   "Buffer size	Isam/Aam (ZA=256);":
+		   "GUI	statements (ZG);":
+		   "Open file Read Only	(ZT);":
+		   "Print Heading;":
+		   "(nnn) Set lines per	page :(53);":
+		   "Clear all boxes"
+.
+#WORKARR DIM	   1(13)
+#MNU5DLG DIALOG
+#MNU5E	 INIT	   "TYPE=MODAL,TITLE='DEFAULT EXTENSION',SIZE=60:6,":
+		   "BUTTON=6:6:10:20:'&Ok',":			;#1
+		   "BUTTON=6:6:30:40:'&Cancel',":		;#2
+		   "EDIT=2:2:26:50,":				;#3
+		   "TEXT=2:2:5:25:'Enter default extension:',"	;#4
+.
+#MNU5L	 INIT	   "TYPE=MODAL,TITLE='LABEL SIZE',SIZE=60:6,":
+		   "BUTTON=6:6:10:20:'&Ok',":			;#1
+		   "BUTTON=6:6:30:40:'&Cancel',":		;#2
+		   "EDIT=2:2:26:50,":				;#3
+		   "TEXT=2:2:5:25:'Enter label size:',"		;#4
+.
+#MNU5ZA	 INIT	   "TYPE=MODAL,TITLE='BUFFER SIZE ISI AAM',SIZE=60:6,":
+		   "BUTTON=6:6:10:20:'&Ok',":			;#1
+		   "BUTTON=6:6:30:40:'&Cancel',":		;#2
+		   "EDIT=2:2:26:50,":				;#3
+		   "TEXT=2:2:5:25:'Enter buffer	size:',"	;#4
+.
+#MNU5NNN INIT	   "TYPE=MODAL,TITLE='SET LINES	PER PAGE ',SIZE=60:6,":
+		   "BUTTON=6:6:10:20:'&Ok',":			;#1
+		   "BUTTON=6:6:30:40:'&Cancel',":		;#2
+		   "EDIT=2:2:26:50,":				;#3
+		   "TEXT=2:2:5:25:'Enter lines per page:',"	;#4
+.
+#MNU5P	 INIT	   "TYPE=MODAL,TITLE='PRINT HEADER ',SIZE=60:6,":
+		   "BUTTON=6:6:10:20:'&Ok',":			;#1
+		   "BUTTON=6:6:30:40:'&Cancel',":		;#2
+		   "EDIT=2:2:26:50,":				;#3
+		   "TEXT=2:2:5:25:'Enter print header:',"	;#4
+.
+#MNU5V	 INIT	   "TYPE=MODAL,TITLE='SET EQUATE VAR ',SIZE=60:6,":
+		   "BUTTON=6:6:10:20:'&Ok',":			;#1
+		   "BUTTON=6:6:30:40:'&Cancel',":		;#2
+		   "EDIT=2:2:26:50,":				;#3
+		   "TEXT=2:2:5:25:'Enter label:',":		;#4
+		   "EDIT=4:4:26:50,":				;#5
+		   "TEXT=4:4:5:25:'Enter equ:',"		;#6
+.
+. This object is a PROGRESS object because the value of	the EDIT
+. object is to be set after the	DIALOG has been	activated.
+.
+#MNU5Z	 INIT	   "TYPE=PROGRESS,TITLE='Verify	PLBCMP Command',":
+		   "SIZE=50:6,":
+		   "BUTTON=6:6:10:20:'&Ok',":		   ;#1
+		   "BUTTON=6:6:30:40:'&Cancel',":	   ;#2
+		   "EDIT=2:2:02:48"			   ;#3
+*==============================================================================
+. Process MENU 5 for TOOLS
+.
+MAK5
+	 CREATE	   #MNU5,#MNU5ITM
+	 ACTIVATE  #MNU5,MNU5EXE,#MNU5RES
+	 RETURN
+ENAMNU5
+	 ENABLEITEM #MNU5
+	 RETURN
+DISMNU5
+	 DISABLEITEM #MNU5
+	 RETURN
+DEACT5
+	 IF ( MENUSEL =	5 )
+	   GETITEM   #MNU5,#MNU5RES,#WORK  ;Retrieve the menu entry name
+	   IF (	#MNU5RES = 3 )
+	     DEACTIVATE	 MNU5POP
+	   ENDIF
+	 ENDIF
+	 RETURN
+*==============================================================================
+.
+MNU5EXE
+	 MOVE	   "5",MENUSEL
+.
+	 CALL	   MENUSOFF
+.
+	 CLEAR	   TEMP:	       ;Clear Temporary	work variable
+		   INPUT:	       ;Clear the INPUT	variable
+		   ABORT:	       ;Clear the ABORT	flag
+		   FLAGS
+.
+	 DISPLAY   *SETSWALL=1:25:1:80,*ES
+	 GOTO	   PLBDSIGN IF ( #MNU5RES = 1 )
+	 CALL	   SETOK	       ;Create OK Button
+	 CALL	   SETCAN	       ;Create CANCEL Button
+.
+	 GETITEM   #MNU5,#MNU5RES,UNAME	 ;Retrieve the menu entry name
+.
+	 PACK	   DIM40,"Sunbelt Workshop: ",UNAME
+	 SETWTITLE DIM40
+	 MOVE	   "Input:",INPUTQ
+.
+	 PERFORM   #MNU5RES,,,COMPILE,,SUNED
+	 RETURN
+.------------------------------------------------------------------------------
+. Start	another	task for the DESIGNER.
+.
+PLBDSIGN
+	 BATCH	   "PLBDSIGN"
+	 IF	   OVER
+	   ALERT     STOP,"Unable to execute PLBDSIGN.",RES
+	   STOP
+	 ENDIF
+	 CALL	   MENUSON
+	 RETURN
+.------------------------------------------------------------------------------
+. Set up screen	for 'SUNED'.
+.
+SUNED
+	 CALL	   SETBG
+	 CALL	   GETCLIP	       ;Check for pre-defined name
+	 CALL	   SETINP
+	 CALL	   RESETBG
+	 CALL	   ACTALL
+	 SETFOCUS  INPUTF
+	 RETURN
+.------------------------------------------------------------------------------
+. Set up screen	for 'PLBCMP'
+.
+COMPILE
+	 CALL	   SETBG
+	 CALL	   GETCLIP	       ;Check for pre-defined name
+	 CALL	   SETINP	       ;Create field for INPUT
+	 CALL	   SETOUT	       ;Create field for OUTPUT
+	 CALL	   SETSPL	       ;Create field for SPOOL
+	 CALL	   RESETBG
+	 CALL	   SETOPTC
+	 CALL	   ACTALL
+	 CALL	   SETBOX
+.
+. Create Output	Options	Popupmenu
+.
+	 CREATE	   MNU5POP=12:12:65:79,"",MNU5POPD
+	 ACTIVATE  MNU5POP,MNU5POPR,MNUXRES
+	 SETFOCUS  INPUTF
+	 RETURN
+.------------------------------------------------------------------------------
+.
+MNU5POPR
+	 MOVE	   MNUXRES,MNU5PTR
+	 RETURN
+.------------------------------------------------------------------------------
+. MODAL	DIALOG ROUTINES
+.
+MNU5ER
+	 IF ( #RSLT = 1	)	       ;OK
+	   DESTROY   #MNU5DLG
+	 ELSE IF ( #RSLT = 2 )	       ;Cancel
+	   DESTROY   #MNU5DLG
+	   CLEAR     DEFEXT
+	 ELSE IF ( #RSLT = 3 )	       ;Edit
+	   GETITEM   #MNU5DLG,3,0,DEFEXT
+	 ENDIF
+	 RETURN
+.------------------------------------------------------------------------------
+.
+MNU5LR
+	 IF ( #RSLT = 1	)	       ;OK
+	   DESTROY   #MNU5DLG
+	 ELSE IF ( #RSLT = 2 )	       ;Cancel
+	   DESTROY   #MNU5DLG
+	   CLEAR     LSIZE
+	 ELSE IF ( #RSLT = 3 )	       ;Edit
+	   GETITEM   #MNU5DLG,3,0,LSIZE
+	 ENDIF
+	 RETURN
+.------------------------------------------------------------------------------
+.
+MNU5ZAR
+	 IF ( #RSLT = 1	)	       ;OK
+	   DESTROY   #MNU5DLG
+	 ELSE IF ( #RSLT = 2 )	       ;Cancel
+	   DESTROY   #MNU5DLG
+	 ELSE IF ( #RSLT = 3 )	       ;Edit
+	   GETITEM   #MNU5DLG,3,0,BUFSIZE
+	 ENDIF
+	 RETURN
+.------------------------------------------------------------------------------
+.
+MNU5NR
+	 IF ( #RSLT = 1	)	       ;OK
+	   DESTROY   #MNU5DLG
+	 ELSE IF ( #RSLT = 2 )	       ;Cancel
+	   DESTROY   #MNU5DLG
+	 ELSE IF ( #RSLT = 3 )	       ;Edit
+	   GETITEM   #MNU5DLG,3,0,DEFPAGE
+	 ENDIF
+	 RETURN
+.------------------------------------------------------------------------------
+.
+MNU5PR
+	 IF ( #RSLT = 1	)	       ;OK
+	   DESTROY   #MNU5DLG
+	 ELSE IF ( #RSLT = 2 )	       ;Cancel
+	   DESTROY   #MNU5DLG
+	 ELSE IF ( #RSLT = 3 )	       ;Edit
+	   GETITEM   #MNU5DLG,3,0,OPT_HDR
+	 ENDIF
+	 RETURN
+.------------------------------------------------------------------------------
+.
+MNU5VR
+	 IF ( #RSLT = 1	)	       ;OK
+	   DESTROY   #MNU5DLG
+	 ELSE IF ( #RSLT = 2 )	       ;Cancel
+	   DESTROY   #MNU5DLG
+	 ELSE IF ( #RSLT = 3 )	       ;Edit
+	   GETITEM   #MNU5DLG,3,0,LABEL
+	 ELSE IF ( #RSLT = 5 )
+	   GETITEM   #MNU5DLG,3,0,EQU
+	 ENDIF
+	 RETURN
+.------------------------------------------------------------------------------
+.
+OPT2R
+	 MOVE	   MNUXRES,F3
+	 IF	   ( F3	= 13 )	       ;Clear all boxes
+	   CLEAR     #OPTPTR
+	   LOOP
+	     ADD       "1",#OPTPTR
+	     SETITEM   CGOPT1,#OPTPTR,0
+	     SETITEM   CGOPT2,#OPTPTR,0
+	   REPEAT UNTIL	( #OPTPTR = 13 )
+	 ELSE
+	   GETITEM   CGOPT2,F3,MNUXRES
+	   IF (	MNUXRES	= 0 )
+	     SETITEM   CGOPT2,F3,1
+	     IF	( F3 = 1 )
+	       CREATE	 #MNU5DLG,#MNU5E
+	       SETFOCUS	 #MNU5DLG,3
+	       ACTIVATE	 #MNU5DLG,MNU5ER,#RSLT
+	     ELSE IF ( F3 = 3 )
+	       CREATE	 #MNU5DLG,#MNU5L
+	       SETFOCUS	 #MNU5DLG,3
+	       ACTIVATE	 #MNU5DLG,MNU5LR,#RSLT
+	     ELSE IF ( F3 = 8 )
+	       CREATE	 #MNU5DLG,#MNU5ZA
+	       SETFOCUS	 #MNU5DLG,3
+	       ACTIVATE	 #MNU5DLG,MNU5ZAR,#RSLT
+	     ELSE IF ( F3 = 12 )
+	       CREATE	 #MNU5DLG,#MNU5NNN
+	       SETFOCUS	 #MNU5DLG,3
+	       ACTIVATE	 #MNU5DLG,MNU5NR,#RSLT
+	     ENDIF
+	   ELSE
+	     SETITEM   CGOPT2,F3,0
+	   ENDIF
+	 ENDIF
+	 RETURN
+.------------------------------------------------------------------------------
+. Update the options file.
+.
+UPDOPTS
+	 CLEAR	   #OPTPTR,OPT1,OPT2
+	 LOOP
+	   ADD	     "1",#OPTPTR
+	   GETITEM   CGOPT1,#OPTPTR,MNUXRES
+	   MOVE	     MNUXRES,F1
+	   APPEND    F1,OPT1
+	   GETITEM   CGOPT2,#OPTPTR,MNUXRES
+	   MOVE	     MNUXRES,F1
+	   APPEND    F1,OPT2
+	 REPEAT	UNTIL (	#OPTPTR	= 13 )
+	 RESET	   OPT1
+	 RESET	   OPT2
+	 WRITE	   OPTFL,ZERO;OPT1,OPT2,LSIZE,DEFEXT,DEFPAGE,BUFSIZE
+	 RETURN
+.------------------------------------------------------------------------------
+. Update the options based on the information in the file.
+.
+SETBOX
+	 READ	   OPTFL,ZERO;OPT1,OPT2,LSIZE,DEFEXT,DEFPAGE,BUFSIZE
+	 CLEAR	   #OPTPTR
+	 LOOP
+	   ADD	     "1",#OPTPTR
+	   MOVE	     OPT1,ANS
+	   MOVE	     ANS,F1
+	   SETITEM   CGOPT1,#OPTPTR,F1
+	   MOVE	     OPT2,ANS
+	   MOVE	     ANS,F1
+	   SETITEM   CGOPT2,#OPTPTR,F1
+	   BUMP	     OPT1
+	   BUMP	     OPT2
+	 REPEAT	UNTIL EOS
+	 RETURN
+.------------------------------------------------------------------------------
+. Create the save information file.
+.
+WRTOPT
+	 MOVE	   "000000000000",OPT1
+	 MOVE	   "000000000000",OPT2
+	 MOVE	   "8",LSIZE
+	 MOVE	   "PLS",DEFEXT
+	 MOVE	   "53",DEFPAGE
+	 MOVE	   "256",BUFSIZE
+	 PREP	   OPTFL,"SUNPLBWS"
+	 WRITE	   OPTFL,SEQ;OPT1,OPT2,LSIZE,DEFEXT,DEFPAGE,BUFSIZE
+	 WEOF	   OPTFL,SEQ
+	 RETURN
+.------------------------------------------------------------------------------
+. OK button was	entered.
+.
+MNU5OK
+	 TYPE	   INPUT
+	 RETURN	   IF EOS	       ;Must have at least a file name
+	 BRANCH	   #MNU5RES,,,MNU5OKC,,MNU5OKE
+	 RETURN
+.----------------------------------------------------------------------------
+. Execute the Editor
+.
+MNU5OKE
+	 MOVE	   "SUNED",UNAME
+	 GOTO	   GENEXEC
+.----------------------------------------------------------------------------
+. Build	and execute a compile command
+.
+MNU5OKC
+	 CLEAR	   #OPTPTR,#OPTWORK,#OPTLIN
+.
+. Get source output option.
+.
+	 RESET	   OPT_OUT,MNU5PTR
+	 MOVE	   OPT_OUT,#A1
+	 APPEND	   #A1,#OPTLIN
+.
+. OPT1
+.
+	 LOOP
+	   ADD	     "1",#OPTPTR
+	   GETITEM   CGOPT1,#OPTPTR,MNUXRES
+	   IF (	MNUXRES	= 1 )
+	     APPEND    ",",#OPTLIN
+	     APPEND    #OPT1ARR(#OPTPTR),#OPTLIN
+	   ENDIF
+	 REPEAT	UNTIL (	#OPTPTR	= 12 )
+.
+. OPT2
+.
+	 CLEAR	   #OPTPTR
+	 LOOP
+	   ADD	     "1",#OPTPTR
+	 BREAK IF ( #OPTPTR = 13 )
+	   GETITEM   CGOPT2,#OPTPTR,MNUXRES
+	   IF (	MNUXRES	= 1 )
+	     IF	( #OPTPTR = 1 )
+	       CMATCH	 " ",DEFEXT
+	       IF	 NOT EOS
+		 APPEND	   ",E=",#OPTLIN
+		 APPEND	   DEFEXT,#OPTLIN
+	       ENDIF
+	     ELSE IF	    (#OPTPTR=3)	     ; L=
+	       CMATCH	 " ",LSIZE
+	       IF	 NOT EOS
+		 APPEND	   ",L=",#OPTLIN
+		 APPEND	   LSIZE,#OPTLIN
+	       ENDIF
+	     ELSE IF	    (#OPTPTR=6)	     ; V=
+	       CREATE	 #MNU5DLG,#MNU5V
+	       SETFOCUS	 #MNU5DLG,3
+	       ACTIVATE	 #MNU5DLG,MNU5VR,#MNU5RES
+	       CMATCH	 " ",LABEL
+	       IF	 NOT EOS
+		 APPEND	   ",V",#OPTLIN
+		 APPEND	   LABEL,#OPTLIN
+		 APPEND	   "=",#OPTLIN
+		 APPEND	   EQU,#OPTLIN
+	       ENDIF
+	     ELSE IF	    (#OPTPTR=8)	     ; ZA=
+	       CMATCH	 " ",BUFSIZE
+	       IF	 NOT EOS
+		 APPEND	   ",ZA=",#OPTLIN
+		 APPEND	   BUFSIZE,#OPTLIN
+	       ENDIF
+	     ELSE IF	    (#OPTPTR=11)      ;	PRINT HDR=
+	       CREATE	 #MNU5DLG,#MNU5P
+	       SETFOCUS	 #MNU5DLG,3
+	       ACTIVATE	 #MNU5DLG,MNU5PR,#MNU5RES
+	       CMATCH	 " ",OPT_HDR
+	       IF	 NOT EOS
+		 APPEND	   ",#"",#OPTLIN
+		 APPEND	   OPT_HDR,#OPTLIN
+		 APPEND	   "#"",#OPTLIN
+	       ENDIF
+	     ELSE IF	    (#OPTPTR=12)      ;	nnn=
+	       CMATCH	 " ",BUFSIZE
+	       IF	 NOT EOS
+		 APPEND	   ",",#OPTLIN
+		 APPEND	   DEFPAGE,#OPTLIN
+	       ENDIF
+	     ELSE
+	       APPEND	 ",",#OPTLIN
+	       APPEND	 #OPT2ARR(#OPTPTR),#OPTLIN
+	     ENDIF
+	   ENDIF
+	 REPEAT
+	 RESET	   #OPTLIN
+.
+. Make command line
+.
+	 PACK	   S$CMDLIN,"PLBCMP ":
+			    INPUT,",":
+			    OUTPUT,",":
+			    SPOOL," -":
+			    #OPTLIN
+.
+. Display command if requested.
+.
+	 GETITEM	 CGOPT1,13,MNUXRES
+	 IF ( MNUXRES =	1 )
+	   CREATE    #MNU5DLG,#MNU5Z
+	   ACTIVATE  #MNU5DLG,MNU5DIAL,#RSLT	;PROGRESS DIALOG
+	   RETURN IF ( #RSLT = 99 )
+	 ENDIF
+	 PACK	   DIM40,"PLB_NAME=",INPUT
+	 CLIPSET   DIM40
+	 CALL	   UPDOPTS
+	 CHAIN	   S$CMDLIN	       ;Compile	it
+.------------------------------------------------------------------------------
+. Process the PROGRESS DIALOG
+.
+MNU5DIAL			       ;Process	the PROGRESS DIALOG
+	 IF ( #RSLT = 0	)	    ;Initialize	PROGRESS DIALOG
+	   SETITEM   #MNU5DLG,3,0,S$CMDLIN
+	 ELSE IF ( #RSLT = 1 )	    ;OK	to continue
+	   GETITEM   #MNU5DLG,3,0,S$CMDLIN
+	   DESTROY   #MNU5DLG
+	 ELSE IF ( #RSLT = 2 )	    ;CANCEL
+	   MOVE	     "99",#RSLT
+	   DESTROY   #MNU5DLG
+	 ENDIF
+	 RETURN

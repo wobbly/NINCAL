@@ -1,0 +1,14 @@
+This folder contains prototypes for logic added to nord002l.pls regarding
+the formatting of .DCX files using PRTPAGE.  Initial thought was to delete
+faxtester.pls and faxtester.plf and save only the second versions of these,
+however, I believe the first version is the one which will rifle through the
+pages correctly.
+
+ASH     10/21/98
+
+The third copies, faxtester3.pls & faxtester3.plf, use a new
+option with Picture objects that pulls total page numbers of the object.
+This logic replaces kludgey logic which trapped for Object errors to 
+determine when page number had been exhausted.
+
+ASH 	12/01/98

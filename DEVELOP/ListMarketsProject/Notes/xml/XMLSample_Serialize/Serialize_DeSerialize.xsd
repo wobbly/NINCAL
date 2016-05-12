@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2005 rel. 3 U (http://www.altova.com) by Festus Coetzee Redelinghuys (Westel, Inc.) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="Employee">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Id"/>
+				<xs:element name="FirstName"/>
+				<xs:element name="LastName"/>
+				<xs:element name="Ssn"/>
+				<xs:element name="DateOfBirth"/>
+				<xs:element name="Employment">
+					<xs:complexType>
+						<xs:sequence maxOccurs="10">
+							<xs:element name="Division"/>
+							<xs:element name="Branch"/>
+							<xs:element name="Department"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Address">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Street" maxOccurs="2"/>
+							<xs:element name="City"/>
+							<xs:element name="State"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Salary">
+					<xs:complexType>
+						<xs:sequence maxOccurs="20">
+							<xs:element name="Date"/>
+							<xs:element name="Comment" maxOccurs="5"/>
+							<xs:element name="Amount"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

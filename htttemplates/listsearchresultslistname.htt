@@ -1,0 +1,169 @@
+<!-- custom content goes here -->
+<script>
+function changepg(newpos)
+{
+	document.listsearchForm.cgireadpos.value = newpos;
+  	document.listsearchForm.cgifunction.value = 1;
+	document.listsearchForm.submit();
+}
+</script>
+<!-- START PATCH 12OCT2005 ASH ADDED LOGIC -->
+<script>
+function searchAgain()
+{
+	document.listsearchForm.cgifunction.value = 0;
+	document.listsearchForm.cgikeyword.value = "";
+	document.listsearchForm.cgilistname.value = "";
+	document.listsearchForm.submit();  
+}
+function detailSub(mailer,mlrname)
+{
+  document.listsearchForm.cgimailer.value = mailer;
+  document.listsearchForm.cgimlrname.value = mlrname;
+  document.listsearchForm.cgifunction.value = '2';
+  document.listsearchForm.submit();
+}
+</script>
+<!-- END PATCH 12OCT2005 ASH ADDED LOGIC -->
+<form action='listsearch.plc' name='listsearchForm' id='listsearchForm' method='POST'>
+		<input type='hidden' name='SID' value='<%=SID%>' />
+		<input type='hidden' name='cgifunction' value='0' />
+<!-- START PATCH 12OCT2005 ASH ADDED LOGIC -->
+		<input type='hidden' name='cgimlrname' value='0' />
+		<input type='hidden' name='cgimailer' value='0' />
+<!-- END PATCH 12OCT2005 ASH ADDED LOGIC -->
+<!-- START PATCH 21NOV2005 ASH MOVED LOGIC -->
+	<input type='hidden' name='cgikeyword' size='10' maxsize='10' value='<%=cgikeyword%>' />
+	<input type='hidden' name='cgilisttype' size='20' maxsize='32' value='<%=cgilisttype%>' />
+	<input type='hidden' name='cgiminquanity' size='15' maxsize='32' value='<%=cgiminquanity%>' />
+	<input type='hidden' name='cgilistname' size='15' maxsize='32'value='<%=cgilistname%>' />
+<!-- END PATCH 21NOV2005 ASH MOVED LOGIC -->
+<!-- START PATCH 1DEC2005 ASH ADDED LOGIC -->
+	<input type='hidden' name='cgisearchtype' value='<%=cgisearchtype%>' />
+<!-- END PATCH 1DEC2005 ASH ADDED LOGIC -->
+<center> <!-- 09/27/2010 BJACKSON -->
+    <table border='0' cellpadding='2' cellspacing='2' align='center'>
+			<tr>
+					<td class='title' colspan='4' align=center>
+							List Inquiry
+							<br>
+							Search results for phrase in <%=cgisearchtype%>:
+							<br>
+							<%=cgilistname%>
+							<br>
+					</td>
+			</tr>
+<!-- START PATCH 21NOV2005 ASH ADDED LOGIC -->
+<!-- START PATCH 28DEC2005 ASH REPLACED LOGIC -->
+<!--
+	        <tr>
+	            <td colspan='4' align=center>
+	            	A link to "Samples" will be displayed in list search results
+				</td>
+	        </tr>
+			<tr>
+				<td colspan='4' align=center>
+	            	for all organizations with acquisition packages on file.
+	            </td>
+	        </tr>
+-->
+	        <tr>
+	            <td colspan='4' align=center>
+	            	A link to "Samples" will be displayed in list search results
+	            	<br>
+	            	for all organizations with acquisition packages on file.
+				</td>
+	        </tr>
+			<tr>
+				<td colspan='4' align=center>
+	            	Datacards & Samples are provided in a printable format.
+	            </td>
+	        </tr>
+<!-- START PATCH 26APR2006 ASH REPLACED LOGIC -->
+			<tr>
+				<td colspan='4' align=center>
+					<font class='smallformtext'>
+	            	Bolded items are Names in the News Exclusive Datacards.
+					</font>
+	            </td>
+	        </tr>
+<!-- END PATCH 26APR2006 ASH REPLACED LOGIC -->
+<!-- END PATCH 28DEC2005 ASH REPLACED LOGIC -->
+<!-- END PATCH 21NOV2005 ASH ADDED LOGIC -->
+			<tr>
+					<td colspan="2">
+						<span class='errorMsg'><%=errorMsg%></span>
+					</td>
+			</tr>
+			<tr>
+				<td>
+					<table class="datacontainer" cellpadding="2" cellspacing="0" width=500>
+						<tr>
+							<th>Name</th>
+							<th>Quantity</th>
+							<th>List Type</th>
+							<th>Description</th>
+<!-- START PATCH 12OCT2005 ASH ADDED LOGIC -->
+							<th>          </th>
+<!-- END PATCH 12OCT2005 ASH ADDED LOGIC -->
+						</tr>
+<%DISPLAYRESULTS%>
+						<tr class="datarow<%=cgidatarow%>">
+							 <td valign=top><a href="/datacards/data<%=cgilistnumber%>.htm" target="_blank"><%=cgilistname%></a></td>
+							 <td valign=top align=right><%=cgiquantity%></td>
+							 <td valign=top align=center><%=cgilisttypedesc%></td>
+							 <td valign=top><%=cgilistdescription%></td>
+<!-- START PATCH 12OCT2005 ASH ADDED LOGIC -->
+							 <td><%=cgilistsample%></td>
+<!-- END PATCH 12OCT2005 ASH ADDED LOGIC -->
+						</tr>
+<%/DISPLAYRESULTS%>
+<!-- START PATCH 21NOV2005 ASH REPLACED LOGIC -->
+<!--
+<!--						<tr>
+<!--								<td align='center' valign='top' colspan='4'>
+<!--										<input type='hidden' name='cgikeyword' size='10' maxsize='10' value='<%=cgikeyword%>'>
+<!--										<input type='hidden' name='cgilisttype' size='20' maxsize='32' value='<%=cgilisttype%>'>
+<!--										<input type='hidden' name='cgiminquanity' size='15' maxsize='32' value='<%=cgiminquanity%>'>
+<!--										<input type='hidden' name='cgilistname' size='15' maxsize='32'value='<%=cgilistname%>'>
+<!--										<%=cgilinks%>
+<!--										<br>
+<!--<!-- START PATCH 12OCT2005 ASH REPLACED LOGIC -->
+<!--<!--									<input type=submit value='Search Again'> -->
+<!--										<input type=button value='Search Again' onclick='searchAgain()'>
+<!--<!-- END PATCH 12OCT2005 ASH REPLACED LOGIC -->
+<!--								</td>
+<!--						</tr>
+-->
+						<tr>
+							<td colspan="6" align=center>
+								<%=cgilinks%>
+							</td>
+						</tr>
+<!-- START PATCH 11/22/2005 ADDED LOGIC -->
+						<tr>
+							<td colspan="6" align=center>Page <%=cgiPageNum%> of <%=cgiTotPage%></td>
+						</tr>
+						<tr>
+							<td colspan="6" align=center><%=cgiRecNum%> Records Found</td>
+						</tr>
+<!-- END PATCH 11/22/2005 ADDED LOGIC -->
+						<tr>
+							<td colspan="6" align=center>
+								<input type=button value='Search Again' onclick='searchAgain()'>
+							</td>
+						</tr>
+<!-- END PATCH 21NOV2005 ASH REPLACED LOGIC -->
+					</table>
+				</td>
+			</tr>
+		</table>
+	<input type='hidden' name='cgidatasource' value='<%=cgidatasource%>' />
+	<input type='hidden' name='cgireadpos' value='<%=cgireadpos%>' />
+<!-- START PATCH 11/22/2005 ADDED LOGIC -->
+		<input type='hidden' name='cgiTotPage' value='<%=cgiTotPage%>' />
+		<input type='hidden' name='cgiRecNum' value='<%=cgiRecNum%>' />
+<!-- END PATCH 11/22/2005 ADDED LOGIC -->
+</center> <!-- 09/27/2010 BJACKSON -->
+</form>
+<!-- end custom content -->

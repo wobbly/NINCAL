@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2005 rel. 3 U (http://www.altova.com) by Festus Coetzee Redelinghuys (Westel, Inc.) -->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xsd:element name="Employee">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="Id"/>
+				<xsd:element name="FirstName"/>
+				<xsd:element name="LastName"/>
+				<xsd:element name="Ssn"/>
+				<xsd:element name="DateOfBirth"/>
+				<xsd:element name="Employment">
+					<xsd:complexType>
+						<xsd:sequence maxOccurs="10">
+							<xsd:element name="Division"/>
+							<xsd:element name="Branch"/>
+							<xsd:element name="Department"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="Address">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="Street" maxOccurs="2"/>
+							<xsd:element name="City"/>
+							<xsd:element name="State"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="Salary">
+					<xsd:complexType>
+						<xsd:sequence maxOccurs="20">
+							<xsd:element name="Date"/>
+							<xsd:element name="Comment" maxOccurs="5"/>
+							<xsd:element name="Amount"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

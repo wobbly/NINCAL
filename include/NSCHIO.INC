@@ -1,0 +1,158 @@
+..............................................................................
+.
+. NSCHIO INCLUSION
+. NIN MAILDATE SCHEDULE FILE I/O ROUTINES
+.
+. FILE NAME : MAILDATE
+. REC LENGTH: 26 FIXED
+. INDEX KEY : 1-6 (6 POSITION LIST#)
+.
+..............................................................................
+.
+. ENTRY POINT : NSCHAIM
+. REQUIRED    : 'NSCHFLD'
+. RETURNED    : SCHEDULE RECORD
+. DESCRIPTION : EXACT ISAM KEY READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NSCHAIM  BRANCH    NSCHFLAG TO NSCH9
+         CALL      NSCHOPEN
+NSCH9    FILEPI    1;NSCHFILE
+         READ      NSCHFILE,NSCHFLD,NSCHFLD2,NSCHFLD3;SCHKEY:      1-6   LIST NUMBER
+				SCHYEAR:         7-8   YEAR SCHEDULED (ASSUMED TO BE CURRENT YEAR IF
+				SCHMONTH:        9-10   MONTH SCHEDULED
+				SCHDAY:          11-12   DAY SCHEDULED (ALWAYS A MONDAY).
+				SCHMLR:          13-19   MAILER DESC KEYED IN
+				SCHQUANT         20-26   QUANTITY SCHEDULED KEYED IN.
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NSCHTST
+. REQUIRED    : NSCHFLD
+. RETURNED    :
+. DESCRIPTION : TEST KEY
+.
+NSCHTST  BRANCH    NSCHFLAG TO NSCH2
+         CALL      NSCHOPEN
+NSCH2    FILEPI    1;NSCHFILE
+         READ      NSCHFILE,NSCHFLD,NSCHFLD2,NSCHFLD3;STR1
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NSCHKG
+. REQUIRED    :
+. RETURNED    : SCHEDULE RECORD
+. DESCRIPTION : AIM KEY GENERIC READ
+.
+NSCHKG   BRANCH    NSCHFLAG TO NSCH10
+         CALL      NSCHOPEN
+NSCH10   FILEPI    1;NSCHFILE
+         READKG    NSCHFILE;SCHKEY:      1-6   LIST NUMBER
+				SCHYEAR:         7-8   YEAR SCHEDULED (ASSUMED TO BE CURRENT YEAR IF
+				SCHMONTH:        9-10   MONTH SCHEDULED
+				SCHDAY:          11-12   DAY SCHEDULED (ALWAYS A MONDAY).
+				SCHMLR:          13-19   MAILER DESC KEYED IN
+				SCHQUANT         20-26   QUANTITY SCHEDULED KEYED IN.
+         RETURN
+..............................................................................
+.
+	 IFNZ	    PC
+. ENTRY POINT : NSCHKP
+. REQUIRED    :
+. RETURNED    : SCHEDULE RECORD
+. DESCRIPTION : PREVIOUS AIM KEY GENERIC READ
+.
+NSCHKGP  BRANCH    NSCHFLAG TO NSCH11
+         CALL      NSCHOPEN
+NSCH11   FILEPI    1;NSCHFILE
+         READKGP    NSCHFILE;SCHKEY:      1-6   LIST NUMBER
+				SCHYEAR:         7-8   YEAR SCHEDULED (ASSUMED TO BE CURRENT YEAR IF
+				SCHMONTH:        9-10   MONTH SCHEDULED
+				SCHDAY:          11-12   DAY SCHEDULED (ALWAYS A MONDAY).
+				SCHMLR:          13-19   MAILER DESC KEYED IN
+				SCHQUANT         20-26   QUANTITY SCHEDULED KEYED IN.
+         RETURN
+	 XIF
+..............................................................................
+.
+. ENTRY POINT : NSCHSEQ
+. REQUIRED    :
+. RETURNED    : SCHEDULE RECORD
+. DESCRIPTION : SEQUENTIAL MAILER FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NSCHSEQ	 BRANCH    NSCHFLAG TO NSCH4
+         CALL      NSCHOPEN
+NSCH4    FILEPI    1;NSCHFILE
+         READ      NSCHFILE,SEQ;SCHKEY:      1-6   LIST NUMBER
+				SCHYEAR:         7-8   YEAR SCHEDULED (ASSUMED TO BE CURRENT YEAR IF
+				SCHMONTH:        9-10   MONTH SCHEDULED
+				SCHDAY:          11-12   DAY SCHEDULED (ALWAYS A MONDAY).
+				SCHMLR:          13-19   MAILER DESC KEYED IN
+				SCHQUANT         20-26   QUANTITY SCHEDULED KEYED IN.
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NSCHWRT
+. REQUIRED    : 'NSCHFLD'
+. RETURNED    :
+. DESCRIPTION : EXACT AIM KEY TXT/ISI INSERT
+.
+NSCHWRT  BRANCH    NSCHFLAG TO NSCH5
+         CALL      NSCHOPEN
+NSCH5    FILEPI    1;NSCHFILE
+         WRITE     NSCHFILE;SCHKEY:      1-6   LIST NUMBER
+				SCHYEAR:         7-8   YEAR SCHEDULED 
+				SCHMONTH:        9-10   MONTH SCHEDULED
+				SCHDAY:          11-12   DAY SCHEDULED
+				SCHMLR:          13-19   MAILER DESC 
+				SCHQUANT         20-26   QUANTITY SCHEDULED
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NSCHUPD
+. REQUIRED    : A PREVIOUS KEY READ
+. RETURNED    :
+. DESCRIPTION : KEY UPDATE SCHEDULE FILE
+.
+NSCHUPD  BRANCH    NSCHFLAG TO NSCH6
+         CALL      NSCHOPEN
+NSCH6    FILEPI    1;NSCHFILE
+         UPDATE    NSCHFILE;SCHKEY:      1-6   LIST NUMBER
+				SCHYEAR:         7-8   YEAR SCHEDULED 
+				SCHMONTH:        9-10   MONTH SCHEDULED
+				SCHDAY:          11-12   DAY SCHEDULED
+				SCHMLR:          13-19   MAILER DESC KEYED IN
+				SCHQUANT         20-26   QUANTITY SCHEDULED KEYED IN.
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NSCHDEL
+. REQUIRED    : 'PREVIOUS VALID READ'
+. RETURNED    :
+. DESCRIPTION : EXACT  KEY  DELETE
+.
+NSCHDEL  BRANCH    NSCHFLAG TO NSCH7
+         CALL      NSCHOPEN
+NSCH7    FILEPI    1;NSCHFILE
+         DELETE    NSCHFILE
+         RETURN
+...............................................................................
+.
+. ENTRY POINT : NSCHOPEN
+. REQUIRED    : 'NSCHFLAG'
+. RETURNED    : 'NSCHFLAG' SET TO '1' IF OPENNED
+. DESCRIPTION : OPEN NIN MAILER FILE
+.               DISPLAY ERROR AND ABORT IF NOT ON-LINE.
+.
+NSCHOPEN TRAP      NSCHGONE IF IO
+         OPEN      NSCHFILE,NSCHNAME
+         TRAPCLR   IO
+         MOVE      C1 TO NSCHFLAG
+         RETURN
+.
+NSCHGONE MOVE      NSCHNAME TO FILENAME
+         CALL      FILEGONE
+.
+..............................................................................
+

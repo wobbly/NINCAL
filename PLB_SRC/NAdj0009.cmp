@@ -1,0 +1,30 @@
+[Main]
+Type=2
+Src=NAdj0009.pls
+Targ=\\nts0\c\LIBRARY\PLB_SRC\NAdj0009.exe
+Icon=C:\Program Files\WinBatch\icons\Artowl7.ico
+CmpVersion=4
+[Options]
+TechWebPage=
+UACManifestSelection=asInvoker
+UACManifestUI=false
+CodeSign=0
+CodeSignDetails=~~
+RunHidden=0
+LargeExtractDest=0
+PreventAutoExtract=0
+[Version Info]
+Comments=
+CompanyName=
+FileDescription=NAdj0009
+FileVersion=1.0
+InternalName=NAdj0009.exe
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=NAdj0009.exe
+ProductName=NAdj0009
+ProductVersion=1.0
+[Other Files]
+Count=0
+[Extenders]
+Count=0

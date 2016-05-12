@@ -1,0 +1,46 @@
+<!-- custom content goes here -->
+<form action='/plb-bin/onlineinvoicing.plc' name='optionlineinvForm' id='optionlineinvForm' method='GET'>
+	<input type='hidden' name='cgifunction' value='1' />
+	<input type='hidden' name='SID' value='<%=SID%>' />
+<center> <!-- 09/29/2010 BJACKSON -->
+	<table border='0' cellpadding='2' cellspacing='2' align='center'>
+		<tr>
+			<td class='title' align=center>
+				Online Invoicing Signup
+				<br><br><br>
+			</td>
+		</tr>
+		<tr>
+			<td align=center><h5>Terms and Conditions</h5></td>
+		</tr>
+		<tr>
+			<td align=center><span class='errorMsg'><%=errorMsg%></span></td>
+		</tr>
+		<tr>
+			<td>
+				Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Duis faucibus mauris eget ante. Maecenas lacinia hendrerit neque. Donec justo lorem, posuere non, accumsan sit amet, lobortis in, risus. Sed id felis. Ut ac arcu ac pede luctus tincidunt. Morbi risus ligula, malesuada id, interdum eget, cursus hendrerit, eros. Suspendisse enim mi, auctor non, nonummy at, pharetra non, orci. Mauris laoreet nulla eget felis. Pellentesque bibendum lobortis tellus. Nam leo sem, accumsan vitae, bibendum eget, luctus id, diam. Phasellus venenatis ipsum ac lacus. In hac habitasse platea dictumst. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Vestibulum quis purus eget quam viverra volutpat.
+				<br><br>
+				Curabitur est. Nullam viverra elementum wisi. Morbi magna wisi, bibendum quis, sollicitudin ultricies, gravida vel, magna. Curabitur eleifend mollis nunc. Integer tellus dui, convallis ac, commodo id, suscipit sit amet, tortor. Aenean pellentesque lacus nec diam. Cras massa. Etiam commodo diam sed tellus. Fusce dui urna, eleifend vel, elementum nec, tristique sit amet, dolor. Vivamus lacinia, velit in feugiat ultrices, nisl tortor dictum metus, eu lacinia mauris erat placerat ante.
+				<br><br>
+				Duis vestibulum fringilla massa. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos hymenaeos. Vestibulum at sapien. Integer sodales consequat enim. Pellentesque mauris. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Phasellus nec velit. Phasellus egestas metus in nisl. Aliquam erat volutpat. Phasellus eu wisi non dolor lacinia aliquam. Vestibulum pede orci, gravida sit amet, dignissim lacinia, tempor sit amet, arcu. Quisque at turpis et sem lacinia faucibus. Fusce dolor diam, tempus sit amet, sollicitudin vitae, convallis ac, leo.
+				<br><br>
+				Morbi pellentesque dignissim nibh. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Aenean elementum augue sit amet nibh. Donec vel elit et enim euismod varius. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean tristique, ligula eget ultricies posuere, justo sem porttitor est, et luctus augue odio mollis ipsum. Aenean quis diam ut justo sagittis ultrices. Cras sodales. Suspendisse et odio. Etiam pharetra libero ut erat. Sed rhoncus. Suspendisse at velit. Quisque in enim. Quisque eu risus. Mauris sed neque. Donec consectetuer ante eget enim pretium dignissim. Fusce eget ipsum. Suspendisse aliquet, pede quis adipiscing tincidunt, velit nisl imperdiet augue, quis consequat lectus leo a lorem. Nulla volutpat viverra tortor. Nunc varius pulvinar sapien.
+				<br><br>
+				Morbi nec mi. Suspendisse lacinia commodo lectus. Maecenas cursus orci ut odio. Quisque sit amet arcu ultricies pede eleifend ultricies. Sed erat elit, fringilla dictum, consequat eget, rhoncus vel, mauris. Nam interdum porta felis. Duis non ipsum. Morbi ultrices molestie nulla. Donec sed felis sit amet nibh laoreet dapibus. Curabitur sagittis dignissim quam. Sed faucibus libero in nibh. Vestibulum orci velit, eleifend quis, pulvinar nonummy, vehicula vel, velit. Morbi varius ullamcorper est.
+				<br><br>
+			</td>
+		</tr>
+		<tr>
+			<td align="center">
+				<input type="checkbox" name="cgiagree" /> I have read and agree to these Terms and Conditions.
+				<br>
+				<br>
+				<input type="Submit" name="Submit" value="Submit" />
+				<br>
+				<br>
+			</td>
+		</tr>
+	</table>
+</center> <!-- 09/29/2010 BJACKSON -->
+</form>
+<!-- end custom content -->

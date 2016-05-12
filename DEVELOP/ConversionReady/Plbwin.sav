@@ -1,0 +1,15 @@
+;    Last change:  AH   10 Jul 1998    1:45 pm
+[version]
+Interpreter=8.2
+
+[environment]
+PLB_port=112
+PLB_SPLEXT=ON
+PLB_TERM=ansi
+PLB_RDCLR=No
+PLB_PLC=F:\library\develop\conversionready
+PLB_DBC=F:\library\develop\conversionready
+PLB_PATH=g:\data\index;g:\data\text;G:\data;f:\data;f:\library\develop\conversionready;f:\library\include;F:\LIBRARY\PLB_SRC;f:\library\develop
+PLB_SYSTEM=F:\APPS\PLB\code
+PLBWIN_ICON=f:\netutils\ninca2.ico
+PLBCMP_OUT=F:\LIBRARY\DEVELOP\conversionready

@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="BrokerReport.xsl"?>
+
+
+<BrokerReport xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="BrokerReport.xsd">
+
+  <Date>4-4-2006</Date>
+  
+  <Broker>
+    <BrokerNumber>0105</BrokerNumber>
+    <BrokerCntNumber>020</BrokerCntNumber>
+    <BrokerContact>Carol Zippel</BrokerContact>
+    <BrokerCompany>AB Data</BrokerCompany>
+    <BrokerFax>4145405050</BrokerFax>
+    <BrokerEmail>czippel@abdata.com</BrokerEmail>
+  </Broker>
+  
+  <Records>
+    <OrderRecord>
+        <Account>
+          <List>Freedom From Hunger</List>
+          <Mailer>
+            <MailerName>Technoserve</MailerName>
+            <MailerStatus></MailerStatus>
+          </Mailer>
+        </Account>
+        <LRRecord>
+          <LRNumber>616780</LRNumber>
+          <PONumber>D01020665</PONumber>
+          <Quantity>13,940</Quantity>
+          <ReturnDate>04/05/2006</ReturnDate>
+          <OrderDate></OrderDate>
+          <ClearStat>Pending List Owner Approval</ClearStat>
+        </LRRecord>
+    </OrderRecord>
+    <OrderRecord>
+        <Account>
+          <List>Population Communications Intl</List>
+          <Mailer>
+            <MailerName>Technoserve</MailerName>
+            <MailerStatus></MailerStatus>
+          </Mailer>
+        </Account>
+        <LRRecord>
+          <LRNumber>616779</LRNumber>
+          <PONumber>D01020670</PONumber>
+          <Quantity>13,940</Quantity>
+          <ReturnDate>04/05/2006</ReturnDate>
+          <OrderDate></OrderDate>
+          <ClearStat>Pending List Owner Approval</ClearStat>
+        </LRRecord>
+    </OrderRecord>
+    <OrderRecord>
+        <Account>
+          <List>EngenderHealth</List>
+          <Mailer>
+            <MailerName>Technoserve</MailerName>
+            <MailerStatus>Bad Mailer Status</MailerStatus>
+          </Mailer>
+        </Account>
+        <LRRecord>
+          <LRNumber>616781</LRNumber>
+          <PONumber>D01020664</PONumber>
+          <Quantity>7,567</Quantity>
+          <ReturnDate>04/05/2006</ReturnDate>
+          <OrderDate></OrderDate>
+	  <ClearStat>Pending List Owner Approval</ClearStat>
+	</LRRecord>
+    </OrderRecord>
+    <ShippingRecord>
+        <Account>
+          <List>Friends of John Kerry</List>
+          <Mailer>
+            <MailerName>Bob Casey for Senate</MailerName>
+            <MailerStatus></MailerStatus>
+          </Mailer>
+        </Account>
+        <LRRecord>
+          <LRNumber>615110</LRNumber>
+          <PONumber>D01020520</PONumber>
+          <Quantity></Quantity>
+          <ReturnDate></ReturnDate>
+          <OrderDate></OrderDate>
+          <ClearStat></ClearStat>
+        </LRRecord>
+      <Shipping>
+        <ShipQuantity>30,000</ShipQuantity>
+        <ShipDate>03/22/2006</ShipDate>
+        <ShipText>Email</ShipText>
+        <ShipTracking></ShipTracking>
+      </Shipping>
+    </ShippingRecord>
+    <NewLCRRecord>
+        <Account>
+          <List>Best Friends Animal Society</List>
+          <Mailer>
+            <MailerName>Habitat for Humanity</MailerName>
+            <MailerStatus></MailerStatus>
+          </Mailer>
+        </Account>
+        <LRRecord>
+          <LRNumber>616877</LRNumber>
+          <PONumber></PONumber>
+          <Quantity>15,000</Quantity>
+          <ReturnDate></ReturnDate>
+          <OrderDate>03/31/2006</OrderDate>
+          <ClearStat>Received</ClearStat>
+        </LRRecord>
+    </NewLCRRecord>
+    <NewLCRRecord>
+        <Account>
+          <List>Best Friends Animal Society</List>
+          <Mailer>
+            <MailerName>Habitat for Humanity</MailerName>
+            <MailerStatus>
+            </MailerStatus>
+          </Mailer>
+        </Account>
+        <LRRecord>
+          <LRNumber>616878</LRNumber>
+          <PONumber></PONumber>
+          <Quantity>15,000</Quantity>
+          <ReturnDate></ReturnDate>
+          <OrderDate>03/31/2006</OrderDate>
+          <ClearStat>Received</ClearStat>
+        </LRRecord>
+    </NewLCRRecord>
+  </Records>
+  
+</BrokerReport>

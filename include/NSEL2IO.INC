@@ -1,0 +1,185 @@
+..............................................................................
+.
+. NSEL2IO INCLUSION
+. SELECT NAME/PRICE/UNIVERSE STORAGE FILE I/O ROUTINES
+.
+. FILE NAME :  NINSEL2
+. REC LENGTH:  176 VAR
+. INDEX KEY :  1-6 (6 BYTE LR NUMBER
+. AIMDEX KEY: 11-85 (75 BYTE SELECT NAME)
+.
+..............................................................................
+.
+. ENTRY POINT : NSEL2KEY
+. REQUIRED    : 'NSELFLD'
+. RETURNED    : SELECT NAME/PRICE/UNIVERSE RECORD
+. DESCRIPTION : EXACT ISAM KEY READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NSEL2KEY
+	BRANCH	NSEL2FLAG,NSEL21
+	CALL	NSEL2OPEN
+NSEL21
+	trap	IOMssg giving Error if IO
+.	FILEPI	1;NSEL2FILE
+	READ	NSEL2FILE,NSEL2FLD;NSEL2VARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSEL2TST
+. REQUIRED    : NSEL2FLD
+. RETURNED    :
+. DESCRIPTION : TEST KEY
+.
+NSEL2TST
+	BRANCH	NSEL2FLAG,NSEL22
+	CALL	NSEL2OPEN
+NSEL22
+	trap	IOMssg giving Error if IO
+.	FILEPI	1;NSEL2FILE
+	READ	NSEL2FILE,NSEL2FLD;;
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSEL2KS
+. REQUIRED    :
+. RETURNED    : SELECT NAME/PRICE/UNIVERSE RECORD
+. DESCRIPTION : KEY SEQUENTIAL SELECT NAME/PRICE/UNIVERSE FILE READ
+.
+NSEL2KS
+	BRANCH	NSEL2FLAG,NSEL23
+	CALL	NSEL2OPEN
+NSEL23
+	trap	IOMssg giving Error if IO
+.	FILEPI	1;NSEL2FILE
+	READKS	NSEL2FILE;NSEL2VARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSEL2SEQ
+. REQUIRED    :
+. RETURNED    : SELECT NAME/PRICE/UNIVERSE RECORD
+. DESCRIPTION : SEQUENTIAL SELECT NAME/PRICE/UNIVERSE FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NSEL2SEQ
+	BRANCH	NSEL2FLAG,NSEL24
+	CALL	NSEL2OPEN
+NSEL24
+	trap	IOMssg giving Error if IO
+.	FILEPI	1;NSEL2FILE
+	READ	NSEL2FILE,SEQ;NSEL2VARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSEL2WRT
+. REQUIRED    : 'NSEL2FLD'
+. RETURNED    :
+. DESCRIPTION : EXACT ISAM KEY TXT/ISI INSERT
+.
+NSEL2WRT
+	BRANCH	NSEL2FLAG,NSEL25
+	CALL	NSEL2OPEN
+NSEL25
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NSEL2FLIST
+	WRITE	NSEL2FLIST;NSEL2VARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSEL2UPD
+. REQUIRED    : A PREVIOUS KEY READ
+. RETURNED    :
+. DESCRIPTION : KEY UPDATE RECORD NUMBER FILE
+.
+NSEL2UPD
+	BRANCH	NSEL2FLAG,NSEL26
+	CALL	NSEL2OPEN
+NSEL26
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NSEL2FLIST
+	UPDATE	NSEL2FLIST;NSEL2VARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSEL2DEL
+. REQUIRED    : 'NSEL2FLD'
+. RETURNED    :
+. DESCRIPTION : EXACT ISAM KEY TXT/ISI DELETE
+.
+NSEL2DEL
+	BRANCH	NSEL2FLAG,NSEL27
+	CALL	NSEL2OPEN
+NSEL27
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NSEL2FLIST
+	DELETE	NSEL2FLIST
+	trapclr	IO
+	RETURN
+
+..............................................................................
+. ENTRY POINT : NSEL2AIM
+. REQUIRED    : NSEL2FLD1
+. RETURNED    : RECORD
+. DESCRIPTION : AIM FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NSEL2AIM
+	BRANCH	NSEL2FLAG,NSEL28
+	CALL	NSEL2OPEN
+NSEL28
+	trap	IOMssg giving Error if IO
+	READ	NSEL2FLE2,NSEL2FLD1;NSEL2VARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSEL2KG
+. REQUIRED    : VALID PREVIOUS AIM READ
+. RETURNED    : RECORD
+. DESCRIPTION : AIM KEY GENERIC FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NSEL2KG
+	BRANCH	NSEL2FLAG,NSEL210
+	CALL	NSEL2OPEN
+NSEL210
+	trap	IOMssg giving Error if IO
+	READKG	NSEL2FLE2;NSEL2VARS
+	trapclr	IO
+	RETURN
+
+...............................................................................
+.
+. ENTRY POINT : NSEL2OPEN
+. REQUIRED    : 'NSEL2FLAG'
+. RETURNED    : 'NSEL2FLAG' SET TO '1' IF OPENNED
+. DESCRIPTION : OPEN NIN SELECT NAME/PRICE/UNIVERSE FILE
+.               DISPLAY ERROR AND ABORT IF NOT ON-LINE.
+.
+NSEL2OPEN
+	TRAP	NSEL2GONE giving Error if IO
+.	OPEN	NSEL2FLIST,EXCLUSIVE
+	OPEN	NSEL2FLIST
+	trapclr	IO
+	MOVE	C1,NSEL2FLAG
+	RETURN
+.
+NSEL2GONE
+	MOVE	NSEL2FNAME,FILENAME
+	CALL	FILEGONE
+.
+..............................................................................

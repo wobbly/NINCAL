@@ -1,0 +1,3124 @@
+...............................................................................
+.1 MsWord.API - Microsoft Word interface definitions
+.2
+.2
+.5 04/04/01 GW Wrote Program
+...............................................................................
+         %IFNDEF   MsWord
+MsWord   EQU       1
+.
+.
+         %IFDEF    WdMailSystem         .Class WdMailSystem
+wdNoMailSystem DEFINE 0
+wdMAPI DEFINE 1
+wdPowerTalk DEFINE 2
+wdMAPIandPowerTalk DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdTemplateType       .Class WdTemplateType
+wdNormalTemplate DEFINE 0
+wdGlobalTemplate DEFINE 1
+wdAttachedTemplate DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdContinue      .Class WdContinue
+wdContinueDisabled DEFINE 0
+wdResetList DEFINE 1
+wdContinueList DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdIMEMode       .Class WdIMEMode
+wdIMEModeNoControl DEFINE 0
+wdIMEModeOn DEFINE 1
+wdIMEModeOff DEFINE 2
+wdIMEModeHiragana DEFINE 4
+wdIMEModeKatakana DEFINE 5
+wdIMEModeKatakanaHalf DEFINE 6
+wdIMEModeAlphaFull DEFINE 7
+wdIMEModeAlpha DEFINE 8
+wdIMEModeHangulFull DEFINE 9
+wdIMEModeHangul DEFINE 10
+         %ENDIF
+.
+         %IFDEF    WdBaselineAlignment       .Class WdBaselineAlignment
+wdBaselineAlignTop DEFINE 0
+wdBaselineAlignCenter DEFINE 1
+wdBaselineAlignBaseline DEFINE 2
+wdBaselineAlignFarEast50 DEFINE 3
+wdBaselineAlignAuto DEFINE 4
+         %ENDIF
+.
+         %IFDEF    WdIndexFilter        .Class WdIndexFilter
+wdIndexFilterNone DEFINE 0
+wdIndexFilterAiueo DEFINE 1
+wdIndexFilterAkasatana DEFINE 2
+wdIndexFilterChosung DEFINE 3
+wdIndexFilterLow DEFINE 4
+wdIndexFilterMedium DEFINE 5
+wdIndexFilterFull DEFINE 6
+         %ENDIF
+.
+         %IFDEF    WdIndexSortBy        .Class WdIndexSortBy
+wdIndexSortByStroke DEFINE 0
+wdIndexSortBySyllable DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdJustificationMode       .Class WdJustificationMode
+wdJustificationModeExpand DEFINE 0
+wdJustificationModeCompress DEFINE 1
+wdJustificationModeCompressKana DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdFarEastLineBreakLevel        .Class WdFarEastLineBreakLevel
+wdFarEastLineBreakLevelNormal DEFINE 0
+wdFarEastLineBreakLevelStrict DEFINE 1
+wdFarEastLineBreakLevelCustom DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdMultipleWordConversionsMode       .Class WdMultipleWordConversionsMode
+wdHangulToHanja DEFINE 0
+wdHanjaToHangul DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdColorIndex         .Class WdColorIndex
+wdAuto DEFINE 0
+wdBlack DEFINE 1
+wdBlue DEFINE 2
+wdTurquoise DEFINE 3
+wdBrightGreen DEFINE 4
+wdPink DEFINE 5
+wdRed DEFINE 6
+wdYellow DEFINE 7
+wdWhite DEFINE 8
+wdDarkBlue DEFINE 9
+wdTeal DEFINE 10
+wdGreen DEFINE 11
+wdViolet DEFINE 12
+wdDarkRed DEFINE 13
+wdDarkYellow DEFINE 14
+wdGray50 DEFINE 15
+wdGray25 DEFINE 16
+wdByAuthor DEFINE (0-1)
+wdNoHighlight DEFINE 0
+         %ENDIF
+.
+         %IFDEF    WdTextureIndex       .Class WdTextureIndex
+wdTextureNone DEFINE 0
+wdTexture2Pt5Percent DEFINE 25
+wdTexture5Percent DEFINE 50
+wdTexture7Pt5Percent DEFINE 75
+wdTexture10Percent DEFINE 100
+wdTexture12Pt5Percent DEFINE 125
+wdTexture15Percent DEFINE 150
+wdTexture17Pt5Percent DEFINE 175
+wdTexture20Percent DEFINE 200
+wdTexture22Pt5Percent DEFINE 225
+wdTexture25Percent DEFINE 250
+wdTexture27Pt5Percent DEFINE 275
+wdTexture30Percent DEFINE 300
+wdTexture32Pt5Percent DEFINE 325
+wdTexture35Percent DEFINE 350
+wdTexture37Pt5Percent DEFINE 375
+wdTexture40Percent DEFINE 400
+wdTexture42Pt5Percent DEFINE 425
+wdTexture45Percent DEFINE 450
+wdTexture47Pt5Percent DEFINE 475
+wdTexture50Percent DEFINE 500
+wdTexture52Pt5Percent DEFINE 525
+wdTexture55Percent DEFINE 550
+wdTexture57Pt5Percent DEFINE 575
+wdTexture60Percent DEFINE 600
+wdTexture62Pt5Percent DEFINE 625
+wdTexture65Percent DEFINE 650
+wdTexture67Pt5Percent DEFINE 675
+wdTexture70Percent DEFINE 700
+wdTexture72Pt5Percent DEFINE 725
+wdTexture75Percent DEFINE 750
+wdTexture77Pt5Percent DEFINE 775
+wdTexture80Percent DEFINE 800
+wdTexture82Pt5Percent DEFINE 825
+wdTexture85Percent DEFINE 850
+wdTexture87Pt5Percent DEFINE 875
+wdTexture90Percent DEFINE 900
+wdTexture92Pt5Percent DEFINE 925
+wdTexture95Percent DEFINE 950
+wdTexture97Pt5Percent DEFINE 975
+wdTextureSolid DEFINE 1000
+wdTextureDarkHorizontal DEFINE (0-1)
+wdTextureDarkVertical DEFINE (0-2)
+wdTextureDarkDiagonalDown DEFINE (0-3)
+wdTextureDarkDiagonalUp DEFINE (0-4)
+wdTextureDarkCross DEFINE (0-5)
+wdTextureDarkDiagonalCross DEFINE (0-6)
+wdTextureHorizontal DEFINE (0-7)
+wdTextureVertical DEFINE (0-8)
+wdTextureDiagonalDown DEFINE (0-9)
+wdTextureDiagonalUp DEFINE (0-10)
+wdTextureCross DEFINE (0-11)
+wdTextureDiagonalCross DEFINE (0-12)
+         %ENDIF
+.
+         %IFDEF    WdUnderline          .Class WdUnderline
+wdUnderlineNone DEFINE 0
+wdUnderlineSingle DEFINE 1
+wdUnderlineWords DEFINE 2
+wdUnderlineDouble DEFINE 3
+wdUnderlineDotted DEFINE 4
+wdUnderlineThick DEFINE 6
+wdUnderlineDash DEFINE 7
+wdUnderlineDotDash DEFINE 9
+wdUnderlineDotDotDash DEFINE 10
+wdUnderlineWavy DEFINE 11
+wdUnderlineWavyHeavy DEFINE 27
+wdUnderlineDottedHeavy DEFINE 20
+wdUnderlineDashHeavy DEFINE 23
+wdUnderlineDotDashHeavy DEFINE 25
+wdUnderlineDotDotDashHeavy DEFINE 26
+wdUnderlineDashLong DEFINE 39
+wdUnderlineDashLongHeavy DEFINE 55
+wdUnderlineWavyDouble DEFINE 43
+         %ENDIF
+.
+         %IFDEF    WdEmphasisMark       .Class WdEmphasisMark
+wdEmphasisMarkNone DEFINE 0
+wdEmphasisMarkOverSolidCircle DEFINE 1
+wdEmphasisMarkOverComma DEFINE 2
+wdEmphasisMarkOverWhiteCircle DEFINE 3
+wdEmphasisMarkUnderSolidCircle DEFINE 4
+         %ENDIF
+.
+         %IFDEF    WdInternationalIndex      .Class WdInternationalIndex
+wdListSeparator DEFINE 17
+wdDecimalSeparator DEFINE 18
+wdThousandsSeparator DEFINE 19
+wdCurrencyCode DEFINE 20
+wd24HourClock DEFINE 21
+wdInternationalAM DEFINE 22
+wdInternationalPM DEFINE 23
+wdTimeSeparator DEFINE 24
+wdDateSeparator DEFINE 25
+wdProductLanguageID DEFINE 26
+         %ENDIF
+.
+         %IFDEF    WdAutoMacros         .Class WdAutoMacros
+wdAutoExec DEFINE 0
+wdAutoNew DEFINE 1
+wdAutoOpen DEFINE 2
+wdAutoClose DEFINE 3
+wdAutoExit DEFINE 4
+         %ENDIF
+.
+         %IFDEF    WdCaptionPosition         .Class WdCaptionPosition
+wdCaptionPositionAbove DEFINE 0
+wdCaptionPositionBelow DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdCountry       .Class WdCountry
+wdUS DEFINE 1
+wdCanada DEFINE 2
+wdLatinAmerica DEFINE 3
+wdNetherlands DEFINE 31
+wdFrance DEFINE 33
+wdSpain DEFINE 34
+wdItaly DEFINE 39
+wdUK DEFINE 44
+wdDenmark DEFINE 45
+wdSweden DEFINE 46
+wdNorway DEFINE 47
+wdGermany DEFINE 49
+wdPeru DEFINE 51
+wdMexico DEFINE 52
+wdArgentina DEFINE 54
+wdBrazil DEFINE 55
+wdChile DEFINE 56
+wdVenezuela DEFINE 58
+wdJapan DEFINE 81
+wdTaiwan DEFINE 886
+wdChina DEFINE 86
+wdKorea DEFINE 82
+wdFinland DEFINE 358
+wdIceland DEFINE 354
+         %ENDIF
+.
+         %IFDEF    WdHeadingSeparator        .Class WdHeadingSeparator
+wdHeadingSeparatorNone DEFINE 0
+wdHeadingSeparatorBlankLine DEFINE 1
+wdHeadingSeparatorLetter DEFINE 2
+wdHeadingSeparatorLetterLow DEFINE 3
+wdHeadingSeparatorLetterFull DEFINE 4
+         %ENDIF
+.
+         %IFDEF    WdSeparatorType      .Class WdSeparatorType
+wdSeparatorHyphen DEFINE 0
+wdSeparatorPeriod DEFINE 1
+wdSeparatorColon DEFINE 2
+wdSeparatorEmDash DEFINE 3
+wdSeparatorEnDash DEFINE 4
+         %ENDIF
+.
+         %IFDEF    WdPageNumberAlignment          .Class WdPageNumberAlignment
+wdAlignPageNumberLeft DEFINE 0
+wdAlignPageNumberCenter DEFINE 1
+wdAlignPageNumberRight DEFINE 2
+wdAlignPageNumberInside DEFINE 3
+wdAlignPageNumberOutside DEFINE 4
+         %ENDIF
+.
+         %IFDEF    WdBorderType         .Class WdBorderType
+wdBorderTop DEFINE (0-1)
+wdBorderLeft DEFINE (0-2)
+wdBorderBottom DEFINE (0-3)
+wdBorderRight DEFINE (0-4)
+wdBorderHorizontal DEFINE (0-5)
+wdBorderVertical DEFINE (0-6)
+wdBorderDiagonalDown DEFINE (0-7)
+wdBorderDiagonalUp DEFINE (0-8)
+         %ENDIF
+.
+. Class WdBorderTypeHID
+. emptyenum DEFINE 0
+.
+         %IFDEF    WdFramePosition      .Class WdFramePosition
+wdFrameTop DEFINE (0-999999)
+wdFrameLeft DEFINE (0-999998)
+wdFrameBottom DEFINE (0-999997)
+wdFrameRight DEFINE (0-999996)
+wdFrameCenter DEFINE (0-999995)
+wdFrameInside DEFINE (0-999994)
+wdFrameOutside DEFINE (0-999993)
+         %ENDIF
+.
+         %IFDEF    WdAnimation          .Class WdAnimation
+wdAnimationNone DEFINE 0
+wdAnimationLasVegasLights DEFINE 1
+wdAnimationBlinkingBackground DEFINE 2
+wdAnimationSparkleText DEFINE 3
+wdAnimationMarchingBlackAnts DEFINE 4
+wdAnimationMarchingRedAnts DEFINE 5
+wdAnimationShimmer DEFINE 6
+         %ENDIF
+.
+         %IFDEF    WdCharacterCase      .Class WdCharacterCase
+wdNextCase DEFINE (0-1)
+wdLowerCase DEFINE 0
+wdUpperCase DEFINE 1
+wdTitleWord DEFINE 2
+wdTitleSentence DEFINE 4
+wdToggleCase DEFINE 5
+wdHalfWidth DEFINE 6
+wdFullWidth DEFINE 7
+wdKatakana DEFINE 8
+wdHiragana DEFINE 9
+         %ENDIF
+.
+. Class WdCharacterCaseHID
+. emptyenum DEFINE 0
+.
+         %IFDEF    WdSummaryMode        .Class WdSummaryMode
+wdSummaryModeHighlight DEFINE 0
+wdSummaryModeHideAllButSummary DEFINE 1
+wdSummaryModeInsert DEFINE 2
+wdSummaryModeCreateNew DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdSummaryLength      .Class WdSummaryLength
+wd10Sentences DEFINE (0-2)
+wd20Sentences DEFINE (0-3)
+wd100Words DEFINE (0-4)
+wd500Words DEFINE (0-5)
+wd10Percent DEFINE (0-6)
+wd25Percent DEFINE (0-7)
+wd50Percent DEFINE (0-8)
+wd75Percent DEFINE (0-9)
+         %ENDIF
+.
+         %IFDEF    WdStyleType          .Class WdStyleType
+wdStyleTypeParagraph DEFINE 1
+wdStyleTypeCharacter DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdUnits         .Class WdUnits
+wdCharacter DEFINE 1
+wdWord DEFINE 2
+wdSentence DEFINE 3
+wdParagraph DEFINE 4
+wdLine DEFINE 5
+wdStory DEFINE 6
+wdScreen DEFINE 7
+wdSection DEFINE 8
+wdColumn DEFINE 9
+wdRow DEFINE 10
+wdWindow DEFINE 11
+wdCell DEFINE 12
+wdCharacterFormatting DEFINE 13
+wdParagraphFormatting DEFINE 14
+wdTable DEFINE 15
+wdItem DEFINE 16
+         %ENDIF
+.
+         %IFDEF    WdGoToItem      .Class WdGoToItem
+wdGoToBookmark DEFINE (0-1)
+wdGoToSection DEFINE 0
+wdGoToPage DEFINE 1
+wdGoToTable DEFINE 2
+wdGoToLine DEFINE 3
+wdGoToFootnote DEFINE 4
+wdGoToEndnote DEFINE 5
+wdGoToComment DEFINE 6
+wdGoToField DEFINE 7
+wdGoToGraphic DEFINE 8
+wdGoToObject DEFINE 9
+wdGoToEquation DEFINE 10
+wdGoToHeading DEFINE 11
+wdGoToPercent DEFINE 12
+wdGoToSpellingError DEFINE 13
+wdGoToGrammaticalError DEFINE 14
+wdGoToProofreadingError DEFINE 15
+         %ENDIF
+.
+         %IFDEF    WdGoToDirection      .Class WdGoToDirection
+wdGoToFirst DEFINE 1
+wdGoToLast DEFINE (0-1)
+wdGoToNext DEFINE 2
+wdGoToRelative DEFINE 2
+wdGoToPrevious DEFINE 3
+wdGoToAbsolute DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdCollapseDirection       .Class WdCollapseDirection
+wdCollapseStart DEFINE 1
+wdCollapseEnd DEFINE 0
+         %ENDIF
+.
+         %IFDEF    WdRowHeightRule      .Class WdRowHeightRule
+wdRowHeightAuto DEFINE 0
+wdRowHeightAtLeast DEFINE 1
+wdRowHeightExactly DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdFrameSizeRule      .Class WdFrameSizeRule
+wdFrameAuto DEFINE 0
+wdFrameAtLeast DEFINE 1
+wdFrameExact DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdInsertCells        .Class WdInsertCells
+wdInsertCellsShiftRight DEFINE 0
+wdInsertCellsShiftDown DEFINE 1
+wdInsertCellsEntireRow DEFINE 2
+wdInsertCellsEntireColumn DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdDeleteCells        .Class WdDeleteCells
+wdDeleteCellsShiftLeft DEFINE 0
+wdDeleteCellsShiftUp DEFINE 1
+wdDeleteCellsEntireRow DEFINE 2
+wdDeleteCellsEntireColumn DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdListApplyTo        .Class WdListApplyTo
+wdListApplyToWholeList DEFINE 0
+wdListApplyToThisPointForward DEFINE 1
+wdListApplyToSelection DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdAlertLevel         .Class WdAlertLevel
+wdAlertsNone DEFINE 0
+wdAlertsMessageBox DEFINE (0-2)
+wdAlertsAll DEFINE (0-1)
+         %ENDIF
+.
+         %IFDEF    WdCursorType         .Class WdCursorType
+wdCursorWait DEFINE 0
+wdCursorIBeam DEFINE 1
+wdCursorNormal DEFINE 2
+wdCursorNorthwestArrow DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdEnableCancelKey         .Class WdEnableCancelKey
+wdCancelDisabled DEFINE 0
+wdCancelInterrupt DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdRulerStyle         .Class WdRulerStyle
+wdAdjustNone DEFINE 0
+wdAdjustProportional DEFINE 1
+wdAdjustFirstColumn DEFINE 2
+wdAdjustSameWidth DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdParagraphAlignment      .Class WdParagraphAlignment
+wdAlignParagraphLeft DEFINE 0
+wdAlignParagraphCenter DEFINE 1
+wdAlignParagraphRight DEFINE 2
+wdAlignParagraphJustify DEFINE 3
+wdAlignParagraphDistribute DEFINE 4
+wdAlignParagraphJustifyMed DEFINE 5
+wdAlignParagraphJustifyHi DEFINE 7
+wdAlignParagraphJustifyLow DEFINE 8
+         %ENDIF
+.
+. Class WdParagraphAlignmentHID
+. emptyenum DEFINE 0
+.
+         %IFDEF    WdListLevelAlignment      .Class WdListLevelAlignment
+wdListLevelAlignLeft DEFINE 0
+wdListLevelAlignCenter DEFINE 1
+wdListLevelAlignRight DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdRowAlignment       .Class WdRowAlignment
+wdAlignRowLeft DEFINE 0
+wdAlignRowCenter DEFINE 1
+wdAlignRowRight DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdTabAlignment       .Class WdTabAlignment
+wdAlignTabLeft DEFINE 0
+wdAlignTabCenter DEFINE 1
+wdAlignTabRight DEFINE 2
+wdAlignTabDecimal DEFINE 3
+wdAlignTabBar DEFINE 4
+wdAlignTabList DEFINE 6
+         %ENDIF
+.
+         %IFDEF    WdVerticalAlignment       .Class WdVerticalAlignment
+wdAlignVerticalTop DEFINE 0
+wdAlignVerticalCenter DEFINE 1
+wdAlignVerticalJustify DEFINE 2
+wdAlignVerticalBottom DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdCellVerticalAlignment        .Class WdCellVerticalAlignment
+wdCellAlignVerticalTop DEFINE 0
+wdCellAlignVerticalCenter DEFINE 1
+wdCellAlignVerticalBottom DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdTrailingCharacter       .Class WdTrailingCharacter
+wdTrailingTab DEFINE 0
+wdTrailingSpace DEFINE 1
+wdTrailingNone DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdListGalleryType         .Class WdListGalleryType
+wdBulletGallery DEFINE 1
+wdNumberGallery DEFINE 2
+wdOutlineNumberGallery DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdListNumberStyle         .Class WdListNumberStyle
+wdListNumberStyleArabic DEFINE 0
+wdListNumberStyleUppercaseRoman DEFINE 1
+wdListNumberStyleLowercaseRoman DEFINE 2
+wdListNumberStyleUppercaseLetter DEFINE 3
+wdListNumberStyleLowercaseLetter DEFINE 4
+wdListNumberStyleOrdinal DEFINE 5
+wdListNumberStyleCardinalText DEFINE 6
+wdListNumberStyleOrdinalText DEFINE 7
+wdListNumberStyleKanji DEFINE 10
+wdListNumberStyleKanjiDigit DEFINE 11
+wdListNumberStyleAiueoHalfWidth DEFINE 12
+wdListNumberStyleIrohaHalfWidth DEFINE 13
+wdListNumberStyleArabicFullWidth DEFINE 14
+wdListNumberStyleKanjiTraditional DEFINE 16
+wdListNumberStyleKanjiTraditional2 DEFINE 17
+wdListNumberStyleNumberInCircle DEFINE 18
+wdListNumberStyleAiueo DEFINE 20
+wdListNumberStyleIroha DEFINE 21
+wdListNumberStyleArabicLZ DEFINE 22
+wdListNumberStyleBullet DEFINE 23
+wdListNumberStyleGanada DEFINE 24
+wdListNumberStyleChosung DEFINE 25
+wdListNumberStyleGBNum1 DEFINE 26
+wdListNumberStyleGBNum2 DEFINE 27
+wdListNumberStyleGBNum3 DEFINE 28
+wdListNumberStyleGBNum4 DEFINE 29
+wdListNumberStyleZodiac1 DEFINE 30
+wdListNumberStyleZodiac2 DEFINE 31
+wdListNumberStyleZodiac3 DEFINE 32
+wdListNumberStyleTradChinNum1 DEFINE 33
+wdListNumberStyleTradChinNum2 DEFINE 34
+wdListNumberStyleTradChinNum3 DEFINE 35
+wdListNumberStyleTradChinNum4 DEFINE 36
+wdListNumberStyleSimpChinNum1 DEFINE 37
+wdListNumberStyleSimpChinNum2 DEFINE 38
+wdListNumberStyleSimpChinNum3 DEFINE 39
+wdListNumberStyleSimpChinNum4 DEFINE 40
+wdListNumberStyleHanjaRead DEFINE 41
+wdListNumberStyleHanjaReadDigit DEFINE 42
+wdListNumberStyleHangul DEFINE 43
+wdListNumberStyleHanja DEFINE 44
+wdListNumberStyleHebrew1 DEFINE 45
+wdListNumberStyleArabic1 DEFINE 46
+wdListNumberStyleHebrew2 DEFINE 47
+wdListNumberStyleArabic2 DEFINE 48
+wdListNumberStyleLegal DEFINE 253
+wdListNumberStyleLegalLZ DEFINE 254
+wdListNumberStyleNone DEFINE 255
+         %ENDIF
+.
+. Class WdListNumberStyleHID
+. emptyenum DEFINE 0
+.
+         %IFDEF    WdNoteNumberStyle         .Class WdNoteNumberStyle
+wdNoteNumberStyleArabic DEFINE 0
+wdNoteNumberStyleUppercaseRoman DEFINE 1
+wdNoteNumberStyleLowercaseRoman DEFINE 2
+wdNoteNumberStyleUppercaseLetter DEFINE 3
+wdNoteNumberStyleLowercaseLetter DEFINE 4
+wdNoteNumberStyleSymbol DEFINE 9
+wdNoteNumberStyleArabicFullWidth DEFINE 14
+wdNoteNumberStyleKanji DEFINE 10
+wdNoteNumberStyleKanjiDigit DEFINE 11
+wdNoteNumberStyleKanjiTraditional DEFINE 16
+wdNoteNumberStyleNumberInCircle DEFINE 18
+wdNoteNumberStyleHanjaRead DEFINE 41
+wdNoteNumberStyleHanjaReadDigit DEFINE 42
+wdNoteNumberStyleTradChinNum1 DEFINE 33
+wdNoteNumberStyleTradChinNum2 DEFINE 34
+wdNoteNumberStyleSimpChinNum1 DEFINE 37
+wdNoteNumberStyleSimpChinNum2 DEFINE 38
+wdNoteNumberStyleHebrewLetter1 DEFINE 45
+wdNoteNumberStyleArabicLetter1 DEFINE 46
+wdNoteNumberStyleHebrewLetter2 DEFINE 47
+wdNoteNumberStyleArabicLetter2 DEFINE 48
+         %ENDIF
+.
+. Class WdNoteNumberStyleHID
+. emptyenum DEFINE 0
+.
+         %IFDEF    WdCaptionNumberStyle      .Class WdCaptionNumberStyle
+wdCaptionNumberStyleArabic DEFINE 0
+wdCaptionNumberStyleUppercaseRoman DEFINE 1
+wdCaptionNumberStyleLowercaseRoman DEFINE 2
+wdCaptionNumberStyleUppercaseLetter DEFINE 3
+wdCaptionNumberStyleLowercaseLetter DEFINE 4
+wdCaptionNumberStyleArabicFullWidth DEFINE 14
+wdCaptionNumberStyleKanji DEFINE 10
+wdCaptionNumberStyleKanjiDigit DEFINE 11
+wdCaptionNumberStyleKanjiTraditional DEFINE 16
+wdCaptionNumberStyleNumberInCircle DEFINE 18
+wdCaptionNumberStyleGanada DEFINE 24
+wdCaptionNumberStyleChosung DEFINE 25
+wdCaptionNumberStyleZodiac1 DEFINE 30
+wdCaptionNumberStyleZodiac2 DEFINE 31
+wdCaptionNumberStyleHanjaRead DEFINE 41
+wdCaptionNumberStyleHanjaReadDigit DEFINE 42
+wdCaptionNumberStyleTradChinNum2 DEFINE 34
+wdCaptionNumberStyleTradChinNum3 DEFINE 35
+wdCaptionNumberStyleSimpChinNum2 DEFINE 38
+wdCaptionNumberStyleSimpChinNum3 DEFINE 39
+wdCaptionNumberStyleHebrewLetter1 DEFINE 45
+wdCaptionNumberStyleArabicLetter1 DEFINE 46
+wdCaptionNumberStyleHebrewLetter2 DEFINE 47
+wdCaptionNumberStyleArabicLetter2 DEFINE 48
+         %ENDIF
+.
+. Class WdCaptionNumberStyleHID
+. emptyenum DEFINE 0
+.
+         %IFDEF    WdPageNumberStyle         .Class WdPageNumberStyle
+wdPageNumberStyleArabic DEFINE 0
+wdPageNumberStyleUppercaseRoman DEFINE 1
+wdPageNumberStyleLowercaseRoman DEFINE 2
+wdPageNumberStyleUppercaseLetter DEFINE 3
+wdPageNumberStyleLowercaseLetter DEFINE 4
+wdPageNumberStyleArabicFullWidth DEFINE 14
+wdPageNumberStyleKanji DEFINE 10
+wdPageNumberStyleKanjiDigit DEFINE 11
+wdPageNumberStyleKanjiTraditional DEFINE 16
+wdPageNumberStyleNumberInCircle DEFINE 18
+wdPageNumberStyleHanjaRead DEFINE 41
+wdPageNumberStyleHanjaReadDigit DEFINE 42
+wdPageNumberStyleTradChinNum1 DEFINE 33
+wdPageNumberStyleTradChinNum2 DEFINE 34
+wdPageNumberStyleSimpChinNum1 DEFINE 37
+wdPageNumberStyleSimpChinNum2 DEFINE 38
+wdPageNumberStyleHebrewLetter1 DEFINE 45
+wdPageNumberStyleArabicLetter1 DEFINE 46
+wdPageNumberStyleHebrewLetter2 DEFINE 47
+wdPageNumberStyleArabicLetter2 DEFINE 48
+         %ENDIF
+.
+. Class WdPageNumberStyleHID
+. emptyenum DEFINE 0
+.
+         %IFDEF    WdStatistic          .Class WdStatistic
+wdStatisticWords DEFINE 0
+wdStatisticLines DEFINE 1
+wdStatisticPages DEFINE 2
+wdStatisticCharacters DEFINE 3
+wdStatisticParagraphs DEFINE 4
+wdStatisticCharactersWithSpaces DEFINE 5
+wdStatisticFarEastCharacters DEFINE 6
+         %ENDIF
+.
+. Class WdStatisticHID
+. emptyenum DEFINE 0
+.
+         %IFDEF    WdBuiltInProperty         .Class WdBuiltInProperty
+wdPropertyTitle DEFINE 1
+wdPropertySubject DEFINE 2
+wdPropertyAuthor DEFINE 3
+wdPropertyKeywords DEFINE 4
+wdPropertyComments DEFINE 5
+wdPropertyTemplate DEFINE 6
+wdPropertyLastAuthor DEFINE 7
+wdPropertyRevision DEFINE 8
+wdPropertyAppName DEFINE 9
+wdPropertyTimeLastPrinted DEFINE 10
+wdPropertyTimeCreated DEFINE 11
+wdPropertyTimeLastSaved DEFINE 12
+wdPropertyVBATotalEdit DEFINE 13
+wdPropertyPages DEFINE 14
+wdPropertyWords DEFINE 15
+wdPropertyCharacters DEFINE 16
+wdPropertySecurity DEFINE 17
+wdPropertyCategory DEFINE 18
+wdPropertyFormat DEFINE 19
+wdPropertyManager DEFINE 20
+wdPropertyCompany DEFINE 21
+wdPropertyBytes DEFINE 22
+wdPropertyLines DEFINE 23
+wdPropertyParas DEFINE 24
+wdPropertySlides DEFINE 25
+wdPropertyNotes DEFINE 26
+wdPropertyHiddenSlides DEFINE 27
+wdPropertyMMClips DEFINE 28
+wdPropertyHyperlinkBase DEFINE 29
+wdPropertyCharsWSpaces DEFINE 30
+         %ENDIF
+.
+         %IFDEF    WdLineSpacing        .Class WdLineSpacing
+wdLineSpaceSingle DEFINE 0
+wdLineSpace1pt5 DEFINE 1
+wdLineSpaceDouble DEFINE 2
+wdLineSpaceAtLeast DEFINE 3
+wdLineSpaceExactly DEFINE 4
+wdLineSpaceMultiple DEFINE 5
+         %ENDIF
+.
+         %IFDEF    WdNumberType         .Class WdNumberType
+wdNumberParagraph DEFINE 1
+wdNumberListNum DEFINE 2
+wdNumberAllNumbers DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdListType      .Class WdListType
+wdListNoNumbering DEFINE 0
+wdListListNumOnly DEFINE 1
+wdListBullet DEFINE 2
+wdListSimpleNumbering DEFINE 3
+wdListOutlineNumbering DEFINE 4
+wdListMixedNumbering DEFINE 5
+         %ENDIF
+.
+         %IFDEF    WdStoryType          .Class WdStoryType
+wdMainTextStory DEFINE 1
+wdFootnotesStory DEFINE 2
+wdEndnotesStory DEFINE 3
+wdCommentsStory DEFINE 4
+wdTextFrameStory DEFINE 5
+wdEvenPagesHeaderStory DEFINE 6
+wdPrimaryHeaderStory DEFINE 7
+wdEvenPagesFooterStory DEFINE 8
+wdPrimaryFooterStory DEFINE 9
+wdFirstPageHeaderStory DEFINE 10
+wdFirstPageFooterStory DEFINE 11
+         %ENDIF
+.
+         %IFDEF    WdSaveFormat         .Class WdSaveFormat
+wdFormatDocument DEFINE 0
+wdFormatTemplate DEFINE 1
+wdFormatText DEFINE 2
+wdFormatTextLineBreaks DEFINE 3
+wdFormatDOSText DEFINE 4
+wdFormatDOSTextLineBreaks DEFINE 5
+wdFormatRTF DEFINE 6
+wdFormatUnicodeText DEFINE 7
+wdFormatEncodedText DEFINE 7
+wdFormatHTML DEFINE 8
+         %ENDIF
+.
+         %IFDEF    WdOpenFormat         .Class WdOpenFormat
+wdOpenFormatAuto DEFINE 0
+wdOpenFormatDocument DEFINE 1
+wdOpenFormatTemplate DEFINE 2
+wdOpenFormatRTF DEFINE 3
+wdOpenFormatText DEFINE 4
+wdOpenFormatUnicodeText DEFINE 5
+wdOpenFormatEncodedText DEFINE 5
+wdOpenFormatAllWord DEFINE 6
+wdOpenFormatWebPages DEFINE 7
+         %ENDIF
+.
+         %IFDEF    WdHeaderFooterIndex       .Class WdHeaderFooterIndex
+wdHeaderFooterPrimary DEFINE 1
+wdHeaderFooterFirstPage DEFINE 2
+wdHeaderFooterEvenPages DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdTocFormat          .Class WdTocFormat
+wdTOCTemplate DEFINE 0
+wdTOCClassic DEFINE 1
+wdTOCDistinctive DEFINE 2
+wdTOCFancy DEFINE 3
+wdTOCModern DEFINE 4
+wdTOCFormal DEFINE 5
+wdTOCSimple DEFINE 6
+         %ENDIF
+.
+         %IFDEF    WdTofFormat          .Class WdTofFormat
+wdTOFTemplate DEFINE 0
+wdTOFClassic DEFINE 1
+wdTOFDistinctive DEFINE 2
+wdTOFCentered DEFINE 3
+wdTOFFormal DEFINE 4
+wdTOFSimple DEFINE 5
+         %ENDIF
+.
+         %IFDEF    WdToaFormat          .Class WdToaFormat
+wdTOATemplate DEFINE 0
+wdTOAClassic DEFINE 1
+wdTOADistinctive DEFINE 2
+wdTOAFormal DEFINE 3
+wdTOASimple DEFINE 4
+         %ENDIF
+.
+         %IFDEF    WdLineStyle          .Class WdLineStyle
+wdLineStyleNone DEFINE 0
+wdLineStyleSingle DEFINE 1
+wdLineStyleDot DEFINE 2
+wdLineStyleDashSmallGap DEFINE 3
+wdLineStyleDashLargeGap DEFINE 4
+wdLineStyleDashDot DEFINE 5
+wdLineStyleDashDotDot DEFINE 6
+wdLineStyleDouble DEFINE 7
+wdLineStyleTriple DEFINE 8
+wdLineStyleThinThickSmallGap DEFINE 9
+wdLineStyleThickThinSmallGap DEFINE 10
+wdLineStyleThinThickThinSmallGap DEFINE 11
+wdLineStyleThinThickMedGap DEFINE 12
+wdLineStyleThickThinMedGap DEFINE 13
+wdLineStyleThinThickThinMedGap DEFINE 14
+wdLineStyleThinThickLargeGap DEFINE 15
+wdLineStyleThickThinLargeGap DEFINE 16
+wdLineStyleThinThickThinLargeGap DEFINE 17
+wdLineStyleSingleWavy DEFINE 18
+wdLineStyleDoubleWavy DEFINE 19
+wdLineStyleDashDotStroked DEFINE 20
+wdLineStyleEmboss3D DEFINE 21
+wdLineStyleEngrave3D DEFINE 22
+wdLineStyleOutset DEFINE 23
+wdLineStyleInset DEFINE 24
+         %ENDIF
+.
+         %IFDEF    WdLineWidth          .Class WdLineWidth
+wdLineWidth025pt DEFINE 2
+wdLineWidth050pt DEFINE 4
+wdLineWidth075pt DEFINE 6
+wdLineWidth100pt DEFINE 8
+wdLineWidth150pt DEFINE 12
+wdLineWidth225pt DEFINE 18
+wdLineWidth300pt DEFINE 24
+wdLineWidth450pt DEFINE 36
+wdLineWidth600pt DEFINE 48
+         %ENDIF
+.
+         %IFDEF    WdBreakType          .Class WdBreakType
+wdSectionBreakNextPage DEFINE 2
+wdSectionBreakContinuous DEFINE 3
+wdSectionBreakEvenPage DEFINE 4
+wdSectionBreakOddPage DEFINE 5
+wdLineBreak DEFINE 6
+wdPageBreak DEFINE 7
+wdColumnBreak DEFINE 8
+wdLineBreakClearLeft DEFINE 9
+wdLineBreakClearRight DEFINE 10
+wdTextWrappingBreak DEFINE 11
+         %ENDIF
+.
+         %IFDEF    WdTabLeader          .Class WdTabLeader
+wdTabLeaderSpaces DEFINE 0
+wdTabLeaderDots DEFINE 1
+wdTabLeaderDashes DEFINE 2
+wdTabLeaderLines DEFINE 3
+wdTabLeaderHeavy DEFINE 4
+wdTabLeaderMiddleDot DEFINE 5
+         %ENDIF
+.
+. Class WdTabLeaderHID
+. emptyenum DEFINE 0
+.
+         %IFDEF    WdMeasurementUnits        .Class WdMeasurementUnits
+wdInches DEFINE 0
+wdCentimeters DEFINE 1
+wdMillimeters DEFINE 2
+wdPoints DEFINE 3
+wdPicas DEFINE 4
+         %ENDIF
+.
+. Class WdMeasurementUnitsHID
+. emptyenum DEFINE 0
+.
+         %IFDEF    WdDropPosition       .Class WdDropPosition
+wdDropNone DEFINE 0
+wdDropNormal DEFINE 1
+wdDropMargin DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdNumberingRule      .Class WdNumberingRule
+wdRestartContinuous DEFINE 0
+wdRestartSection DEFINE 1
+wdRestartPage DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdFootnoteLocation        .Class WdFootnoteLocation
+wdBottomOfPage DEFINE 0
+wdBeneathText DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdEndnoteLocation         .Class WdEndnoteLocation
+wdEndOfSection DEFINE 0
+wdEndOfDocument DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdSortSeparator      .Class WdSortSeparator
+wdSortSeparateByTabs DEFINE 0
+wdSortSeparateByCommas DEFINE 1
+wdSortSeparateByDefaultTableSeparator DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdTableFieldSeparator          .Class WdTableFieldSeparator
+wdSeparateByParagraphs DEFINE 0
+wdSeparateByTabs DEFINE 1
+wdSeparateByCommas DEFINE 2
+wdSeparateByDefaultListSeparator DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdSortFieldType      .Class WdSortFieldType
+wdSortFieldAlphanumeric DEFINE 0
+wdSortFieldNumeric DEFINE 1
+wdSortFieldDate DEFINE 2
+wdSortFieldSyllable DEFINE 3
+wdSortFieldJapanJIS DEFINE 4
+wdSortFieldStroke DEFINE 5
+wdSortFieldKoreaKS DEFINE 6
+         %ENDIF
+.
+. Class WdSortFieldTypeHID
+. emptyenum DEFINE 0
+.
+         %IFDEF    WdSortOrder          .Class WdSortOrder
+wdSortOrderAscending DEFINE 0
+wdSortOrderDescending DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdTableFormat        .Class WdTableFormat
+wdTableFormatNone DEFINE 0
+wdTableFormatSimple1 DEFINE 1
+wdTableFormatSimple2 DEFINE 2
+wdTableFormatSimple3 DEFINE 3
+wdTableFormatClassic1 DEFINE 4
+wdTableFormatClassic2 DEFINE 5
+wdTableFormatClassic3 DEFINE 6
+wdTableFormatClassic4 DEFINE 7
+wdTableFormatColorful1 DEFINE 8
+wdTableFormatColorful2 DEFINE 9
+wdTableFormatColorful3 DEFINE 10
+wdTableFormatColumns1 DEFINE 11
+wdTableFormatColumns2 DEFINE 12
+wdTableFormatColumns3 DEFINE 13
+wdTableFormatColumns4 DEFINE 14
+wdTableFormatColumns5 DEFINE 15
+wdTableFormatGrid1 DEFINE 16
+wdTableFormatGrid2 DEFINE 17
+wdTableFormatGrid3 DEFINE 18
+wdTableFormatGrid4 DEFINE 19
+wdTableFormatGrid5 DEFINE 20
+wdTableFormatGrid6 DEFINE 21
+wdTableFormatGrid7 DEFINE 22
+wdTableFormatGrid8 DEFINE 23
+wdTableFormatList1 DEFINE 24
+wdTableFormatList2 DEFINE 25
+wdTableFormatList3 DEFINE 26
+wdTableFormatList4 DEFINE 27
+wdTableFormatList5 DEFINE 28
+wdTableFormatList6 DEFINE 29
+wdTableFormatList7 DEFINE 30
+wdTableFormatList8 DEFINE 31
+wdTableFormat3DEffects1 DEFINE 32
+wdTableFormat3DEffects2 DEFINE 33
+wdTableFormat3DEffects3 DEFINE 34
+wdTableFormatContemporary DEFINE 35
+wdTableFormatElegant DEFINE 36
+wdTableFormatProfessional DEFINE 37
+wdTableFormatSubtle1 DEFINE 38
+wdTableFormatSubtle2 DEFINE 39
+wdTableFormatWeb1 DEFINE 40
+wdTableFormatWeb2 DEFINE 41
+wdTableFormatWeb3 DEFINE 42
+         %ENDIF
+.
+         %IFDEF    WdTableFormatApply        .Class WdTableFormatApply
+wdTableFormatApplyBorders DEFINE 1
+wdTableFormatApplyShading DEFINE 2
+wdTableFormatApplyFont DEFINE 4
+wdTableFormatApplyColor DEFINE 8
+wdTableFormatApplyAutoFit DEFINE 16
+wdTableFormatApplyHeadingRows DEFINE 32
+wdTableFormatApplyLastRow DEFINE 64
+wdTableFormatApplyFirstColumn DEFINE 128
+wdTableFormatApplyLastColumn DEFINE 256
+         %ENDIF
+.
+         %IFDEF    WdLanguageID         .Class WdLanguageID
+wdLanguageNone DEFINE 0
+wdNoProofing DEFINE 1024
+wdAfrikaans DEFINE 1078
+wdAlbanian DEFINE 1052
+wdArabicAlgeria DEFINE 5121
+wdArabicBahrain DEFINE 15361
+wdArabicEgypt DEFINE 3073
+wdArabicIraq DEFINE 2049
+wdArabicJordan DEFINE 11265
+wdArabicKuwait DEFINE 13313
+wdArabicLebanon DEFINE 12289
+wdArabicLibya DEFINE 4097
+wdArabicMorocco DEFINE 6145
+wdArabicOman DEFINE 8193
+wdArabicQatar DEFINE 16385
+wdArabic DEFINE 1025
+wdArabicSyria DEFINE 10241
+wdArabicTunisia DEFINE 7169
+wdArabicUAE DEFINE 14337
+wdArabicYemen DEFINE 9217
+wdArmenian DEFINE 1067
+wdAssamese DEFINE 1101
+wdAzeriCyrillic DEFINE 2092
+wdAzeriLatin DEFINE 1068
+wdBasque DEFINE 1069
+wdByelorussian DEFINE 1059
+wdBengali DEFINE 1093
+wdBulgarian DEFINE 1026
+wdBurmese DEFINE 1109
+wdCatalan DEFINE 1027
+wdChineseHongKong DEFINE 3076
+wdChineseMacao DEFINE 5124
+wdSimplifiedChinese DEFINE 2052
+wdChineseSingapore DEFINE 4100
+wdTraditionalChinese DEFINE 1028
+wdCroatian DEFINE 1050
+wdCzech DEFINE 1029
+wdDanish DEFINE 1030
+wdBelgianDutch DEFINE 2067
+wdDutch DEFINE 1043
+wdEnglishAUS DEFINE 3081
+wdEnglishBelize DEFINE 10249
+wdEnglishCanadian DEFINE 4105
+wdEnglishCaribbean DEFINE 9225
+wdEnglishIreland DEFINE 6153
+wdEnglishJamaica DEFINE 8201
+wdEnglishNewZealand DEFINE 5129
+wdEnglishPhilippines DEFINE 13321
+wdEnglishSouthAfrica DEFINE 7177
+wdEnglishTrinidad DEFINE 11273
+wdEnglishUK DEFINE 2057
+wdEnglishUS DEFINE 1033
+wdEnglishZimbabwe DEFINE 12297
+wdEstonian DEFINE 1061
+wdFaeroese DEFINE 1080
+wdFarsi DEFINE 1065
+wdFinnish DEFINE 1035
+wdBelgianFrench DEFINE 2060
+wdFrenchCameroon DEFINE 11276
+wdFrenchCanadian DEFINE 3084
+wdFrenchCotedIvoire DEFINE 12300
+wdFrench DEFINE 1036
+wdFrenchLuxembourg DEFINE 5132
+wdFrenchMali DEFINE 13324
+wdFrenchMonaco DEFINE 6156
+wdFrenchReunion DEFINE 8204
+wdFrenchSenegal DEFINE 10252
+wdSwissFrench DEFINE 4108
+wdFrenchWestIndies DEFINE 7180
+wdFrenchZaire DEFINE 9228
+wdFrisianNetherlands DEFINE 1122
+wdGaelicIreland DEFINE 2108
+wdGaelicScotland DEFINE 1084
+wdGalician DEFINE 1110
+wdGeorgian DEFINE 1079
+wdGermanAustria DEFINE 3079
+wdGerman DEFINE 1031
+wdGermanLiechtenstein DEFINE 5127
+wdGermanLuxembourg DEFINE 4103
+wdSwissGerman DEFINE 2055
+wdGreek DEFINE 1032
+wdGujarati DEFINE 1095
+wdHebrew DEFINE 1037
+wdHindi DEFINE 1081
+wdHungarian DEFINE 1038
+wdIcelandic DEFINE 1039
+wdIndonesian DEFINE 1057
+wdItalian DEFINE 1040
+wdSwissItalian DEFINE 2064
+wdJapanese DEFINE 1041
+wdKannada DEFINE 1099
+wdKashmiri DEFINE 1120
+wdKazakh DEFINE 1087
+wdKhmer DEFINE 1107
+wdKirghiz DEFINE 1088
+wdKonkani DEFINE 1111
+wdKorean DEFINE 1042
+wdLao DEFINE 1108
+wdLatvian DEFINE 1062
+wdLithuanian DEFINE 1063
+wdMacedonian DEFINE 1071
+wdMalaysian DEFINE 1086
+wdMalayBruneiDarussalam DEFINE 2110
+wdMalayalam DEFINE 1100
+wdMaltese DEFINE 1082
+wdManipuri DEFINE 1112
+wdMarathi DEFINE 1102
+wdMongolian DEFINE 1104
+wdNepali DEFINE 1121
+wdNorwegianBokmol DEFINE 1044
+wdNorwegianNynorsk DEFINE 2068
+wdOriya DEFINE 1096
+wdPolish DEFINE 1045
+wdBrazilianPortuguese DEFINE 1046
+wdPortuguese DEFINE 2070
+wdPunjabi DEFINE 1094
+wdRhaetoRomanic DEFINE 1047
+wdRomanianMoldova DEFINE 2072
+wdRomanian DEFINE 1048
+wdRussianMoldova DEFINE 2073
+wdRussian DEFINE 1049
+wdSamiLappish DEFINE 1083
+wdSanskrit DEFINE 1103
+wdSerbianCyrillic DEFINE 3098
+wdSerbianLatin DEFINE 2074
+wdSindhi DEFINE 1113
+wdSlovak DEFINE 1051
+wdSlovenian DEFINE 1060
+wdSorbian DEFINE 1070
+wdSpanishArgentina DEFINE 11274
+wdSpanishBolivia DEFINE 16394
+wdSpanishChile DEFINE 13322
+wdSpanishColombia DEFINE 9226
+wdSpanishCostaRica DEFINE 5130
+wdSpanishDominicanRepublic DEFINE 7178
+wdSpanishEcuador DEFINE 12298
+wdSpanishElSalvador DEFINE 17418
+wdSpanishGuatemala DEFINE 4106
+wdSpanishHonduras DEFINE 18442
+wdMexicanSpanish DEFINE 2058
+wdSpanishNicaragua DEFINE 19466
+wdSpanishPanama DEFINE 6154
+wdSpanishParaguay DEFINE 15370
+wdSpanishPeru DEFINE 10250
+wdSpanishPuertoRico DEFINE 20490
+wdSpanishModernSort DEFINE 3082
+wdSpanish DEFINE 1034
+wdSpanishUruguay DEFINE 14346
+wdSpanishVenezuela DEFINE 8202
+wdSesotho DEFINE 1072
+wdSutu DEFINE 1072
+wdSwahili DEFINE 1089
+wdSwedishFinland DEFINE 2077
+wdSwedish DEFINE 1053
+wdTajik DEFINE 1064
+wdTamil DEFINE 1097
+wdTatar DEFINE 1092
+wdTelugu DEFINE 1098
+wdThai DEFINE 1054
+wdTibetan DEFINE 1105
+wdTsonga DEFINE 1073
+wdTswana DEFINE 1074
+wdTurkish DEFINE 1055
+wdTurkmen DEFINE 1090
+wdUkrainian DEFINE 1058
+wdUrdu DEFINE 1056
+wdUzbekCyrillic DEFINE 2115
+wdUzbekLatin DEFINE 1091
+wdVenda DEFINE 1075
+wdVietnamese DEFINE 1066
+wdWelsh DEFINE 1106
+wdXhosa DEFINE 1076
+wdZulu DEFINE 1077
+         %ENDIF
+.
+         %IFDEF    WdFieldType          .Class WdFieldType
+wdFieldEmpty DEFINE (0-1)
+wdFieldRef DEFINE 3
+wdFieldIndexEntry DEFINE 4
+wdFieldFootnoteRef DEFINE 5
+wdFieldSet DEFINE 6
+wdFieldIf DEFINE 7
+wdFieldIndex DEFINE 8
+wdFieldTOCEntry DEFINE 9
+wdFieldStyleRef DEFINE 10
+wdFieldRefDoc DEFINE 11
+wdFieldSequence DEFINE 12
+wdFieldTOC DEFINE 13
+wdFieldInfo DEFINE 14
+wdFieldTitle DEFINE 15
+wdFieldSubject DEFINE 16
+wdFieldAuthor DEFINE 17
+wdFieldKeyWord DEFINE 18
+wdFieldComments DEFINE 19
+wdFieldLastSavedBy DEFINE 20
+wdFieldCreateDate DEFINE 21
+wdFieldSaveDate DEFINE 22
+wdFieldPrintDate DEFINE 23
+wdFieldRevisionNum DEFINE 24
+wdFieldEditTime DEFINE 25
+wdFieldNumPages DEFINE 26
+wdFieldNumWords DEFINE 27
+wdFieldNumChars DEFINE 28
+wdFieldFileName DEFINE 29
+wdFieldTemplate DEFINE 30
+wdFieldDate DEFINE 31
+wdFieldTime DEFINE 32
+wdFieldPage DEFINE 33
+wdFieldExpression DEFINE 34
+wdFieldQuote DEFINE 35
+wdFieldInclude DEFINE 36
+wdFieldPageRef DEFINE 37
+wdFieldAsk DEFINE 38
+wdFieldFillIn DEFINE 39
+wdFieldData DEFINE 40
+wdFieldNext DEFINE 41
+wdFieldNextIf DEFINE 42
+wdFieldSkipIf DEFINE 43
+wdFieldMergeRec DEFINE 44
+wdFieldDDE DEFINE 45
+wdFieldDDEAuto DEFINE 46
+wdFieldGlossary DEFINE 47
+wdFieldPrint DEFINE 48
+wdFieldFormula DEFINE 49
+wdFieldGoToButton DEFINE 50
+wdFieldMacroButton DEFINE 51
+wdFieldAutoNumOutline DEFINE 52
+wdFieldAutoNumLegal DEFINE 53
+wdFieldAutoNum DEFINE 54
+wdFieldImport DEFINE 55
+wdFieldLink DEFINE 56
+wdFieldSymbol DEFINE 57
+wdFieldEmbed DEFINE 58
+wdFieldMergeField DEFINE 59
+wdFieldUserName DEFINE 60
+wdFieldUserInitials DEFINE 61
+wdFieldUserAddress DEFINE 62
+wdFieldBarCode DEFINE 63
+wdFieldDocVariable DEFINE 64
+wdFieldSection DEFINE 65
+wdFieldSectionPages DEFINE 66
+wdFieldIncludePicture DEFINE 67
+wdFieldIncludeText DEFINE 68
+wdFieldFileSize DEFINE 69
+wdFieldFormTextInput DEFINE 70
+wdFieldFormCheckBox DEFINE 71
+wdFieldNoteRef DEFINE 72
+wdFieldTOA DEFINE 73
+wdFieldTOAEntry DEFINE 74
+wdFieldMergeSeq DEFINE 75
+wdFieldPrivate DEFINE 77
+wdFieldDatabase DEFINE 78
+wdFieldAutoText DEFINE 79
+wdFieldCompare DEFINE 80
+wdFieldAddin DEFINE 81
+wdFieldSubscriber DEFINE 82
+wdFieldFormDropDown DEFINE 83
+wdFieldAdvance DEFINE 84
+wdFieldDocProperty DEFINE 85
+wdFieldOCX DEFINE 87
+wdFieldHyperlink DEFINE 88
+wdFieldAutoTextList DEFINE 89
+wdFieldListNum DEFINE 90
+wdFieldHTMLActiveX DEFINE 91
+         %ENDIF
+.
+         %IFDEF    WdBuiltinStyle       .Class WdBuiltinStyle
+wdStyleNormal DEFINE (0-1)
+wdStyleEnvelopeAddress DEFINE (0-37)
+wdStyleEnvelopeReturn DEFINE (0-38)
+wdStyleBodyText DEFINE (0-67)
+wdStyleHeading1 DEFINE (0-2)
+wdStyleHeading2 DEFINE (0-3)
+wdStyleHeading3 DEFINE (0-4)
+wdStyleHeading4 DEFINE (0-5)
+wdStyleHeading5 DEFINE (0-6)
+wdStyleHeading6 DEFINE (0-7)
+wdStyleHeading7 DEFINE (0-8)
+wdStyleHeading8 DEFINE (0-9)
+wdStyleHeading9 DEFINE (0-10)
+wdStyleIndex1 DEFINE (0-11)
+wdStyleIndex2 DEFINE (0-12)
+wdStyleIndex3 DEFINE (0-13)
+wdStyleIndex4 DEFINE (0-14)
+wdStyleIndex5 DEFINE (0-15)
+wdStyleIndex6 DEFINE (0-16)
+wdStyleIndex7 DEFINE (0-17)
+wdStyleIndex8 DEFINE (0-18)
+wdStyleIndex9 DEFINE (0-19)
+wdStyleTOC1 DEFINE (0-20)
+wdStyleTOC2 DEFINE (0-21)
+wdStyleTOC3 DEFINE (0-22)
+wdStyleTOC4 DEFINE (0-23)
+wdStyleTOC5 DEFINE (0-24)
+wdStyleTOC6 DEFINE (0-25)
+wdStyleTOC7 DEFINE (0-26)
+wdStyleTOC8 DEFINE (0-27)
+wdStyleTOC9 DEFINE (0-28)
+wdStyleNormalIndent DEFINE (0-29)
+wdStyleFootnoteText DEFINE (0-30)
+wdStyleCommentText DEFINE (0-31)
+wdStyleHeader DEFINE (0-32)
+wdStyleFooter DEFINE (0-33)
+wdStyleIndexHeading DEFINE (0-34)
+wdStyleCaption DEFINE (0-35)
+wdStyleTableOfFigures DEFINE (0-36)
+wdStyleFootnoteReference DEFINE (0-39)
+wdStyleCommentReference DEFINE (0-40)
+wdStyleLineNumber DEFINE (0-41)
+wdStylePageNumber DEFINE (0-42)
+wdStyleEndnoteReference DEFINE (0-43)
+wdStyleEndnoteText DEFINE (0-44)
+wdStyleTableOfAuthorities DEFINE (0-45)
+wdStyleMacroText DEFINE (0-46)
+wdStyleTOAHeading DEFINE (0-47)
+wdStyleList DEFINE (0-48)
+wdStyleListBullet DEFINE (0-49)
+wdStyleListNumber DEFINE (0-50)
+wdStyleList2 DEFINE (0-51)
+wdStyleList3 DEFINE (0-52)
+wdStyleList4 DEFINE (0-53)
+wdStyleList5 DEFINE (0-54)
+wdStyleListBullet2 DEFINE (0-55)
+wdStyleListBullet3 DEFINE (0-56)
+wdStyleListBullet4 DEFINE (0-57)
+wdStyleListBullet5 DEFINE (0-58)
+wdStyleListNumber2 DEFINE (0-59)
+wdStyleListNumber3 DEFINE (0-60)
+wdStyleListNumber4 DEFINE (0-61)
+wdStyleListNumber5 DEFINE (0-62)
+wdStyleTitle DEFINE (0-63)
+wdStyleClosing DEFINE (0-64)
+wdStyleSignature DEFINE (0-65)
+wdStyleDefaultParagraphFont DEFINE (0-66)
+wdStyleBodyTextIndent DEFINE (0-68)
+wdStyleListContinue DEFINE (0-69)
+wdStyleListContinue2 DEFINE (0-70)
+wdStyleListContinue3 DEFINE (0-71)
+wdStyleListContinue4 DEFINE (0-72)
+wdStyleListContinue5 DEFINE (0-73)
+wdStyleMessageHeader DEFINE (0-74)
+wdStyleSubtitle DEFINE (0-75)
+wdStyleSalutation DEFINE (0-76)
+wdStyleDate DEFINE (0-77)
+wdStyleBodyTextFirstIndent DEFINE (0-78)
+wdStyleBodyTextFirstIndent2 DEFINE (0-79)
+wdStyleNoteHeading DEFINE (0-80)
+wdStyleBodyText2 DEFINE (0-81)
+wdStyleBodyText3 DEFINE (0-82)
+wdStyleBodyTextIndent2 DEFINE (0-83)
+wdStyleBodyTextIndent3 DEFINE (0-84)
+wdStyleBlockQuotation DEFINE (0-85)
+wdStyleHyperlink DEFINE (0-86)
+wdStyleHyperlinkFollowed DEFINE (0-87)
+wdStyleStrong DEFINE (0-88)
+wdStyleEmphasis DEFINE (0-89)
+wdStyleNavPane DEFINE (0-90)
+wdStylePlainText DEFINE (0-91)
+wdStyleHtmlNormal DEFINE (0-95)
+wdStyleHtmlAcronym DEFINE (0-96)
+wdStyleHtmlAddress DEFINE (0-97)
+wdStyleHtmlCite DEFINE (0-98)
+wdStyleHtmlCode DEFINE (0-99)
+wdStyleHtmlDfn DEFINE (0-100)
+wdStyleHtmlKbd DEFINE (0-101)
+wdStyleHtmlPre DEFINE (0-102)
+wdStyleHtmlSamp DEFINE (0-103)
+wdStyleHtmlTt DEFINE (0-104)
+wdStyleHtmlVar DEFINE (0-105)
+         %ENDIF
+.
+         %IFDEF    WdWordDialogTab      .Class WdWordDialogTab
+wdDialogToolsOptionsTabView DEFINE 204
+wdDialogToolsOptionsTabGeneral DEFINE 203
+wdDialogToolsOptionsTabEdit DEFINE 224
+wdDialogToolsOptionsTabPrint DEFINE 208
+wdDialogToolsOptionsTabSave DEFINE 209
+wdDialogToolsOptionsTabProofread DEFINE 211
+wdDialogToolsOptionsTabTrackChanges DEFINE 386
+wdDialogToolsOptionsTabUserInfo DEFINE 213
+wdDialogToolsOptionsTabCompatibility DEFINE 525
+wdDialogToolsOptionsTabTypography DEFINE 739
+wdDialogToolsOptionsTabFileLocations DEFINE 225
+wdDialogToolsOptionsTabFuzzy DEFINE 790
+wdDialogToolsOptionsTabHangulHanjaConversion DEFINE 786
+wdDialogToolsOptionsTabBidi DEFINE 1029
+wdDialogFilePageSetupTabMargins DEFINE 150000
+wdDialogFilePageSetupTabPaperSize DEFINE 150001
+wdDialogFilePageSetupTabPaperSource DEFINE 150002
+wdDialogFilePageSetupTabLayout DEFINE 150003
+wdDialogFilePageSetupTabCharsLines DEFINE 150004
+wdDialogInsertSymbolTabSymbols DEFINE 200000
+wdDialogInsertSymbolTabSpecialCharacters DEFINE 200001
+wdDialogNoteOptionsTabAllFootnotes DEFINE 300000
+wdDialogNoteOptionsTabAllEndnotes DEFINE 300001
+wdDialogInsertIndexAndTablesTabIndex DEFINE 400000
+wdDialogInsertIndexAndTablesTabTableOfContents DEFINE 400001
+..wdDialogInsertIndexAndTablesTabTableOfFigures DEFINE 400002
+..wdDialogInsertIndexAndTablesTabTableOfAuthorities DEFINE 400003
+wdDialogOrganizerTabStyles DEFINE 500000
+wdDialogOrganizerTabAutoText DEFINE 500001
+wdDialogOrganizerTabCommandBars DEFINE 500002
+wdDialogOrganizerTabMacros DEFINE 500003
+wdDialogFormatFontTabFont DEFINE 600000
+wdDialogFormatFontTabCharacterSpacing DEFINE 600001
+wdDialogFormatFontTabAnimation DEFINE 600002
+wdDialogFormatBordersAndShadingTabBorders DEFINE 700000
+wdDialogFormatBordersAndShadingTabPageBorder DEFINE 700001
+wdDialogFormatBordersAndShadingTabShading DEFINE 700002
+wdDialogToolsEnvelopesAndLabelsTabEnvelopes DEFINE 800000
+..wdDialogToolsEnvelopesAndLabelsTabLabels DEFINE 800001
+wdDialogFormatParagraphTabIndentsAndSpacing DEFINE 1000000
+wdDialogFormatParagraphTabTextFlow DEFINE 1000001
+wdDialogFormatParagraphTabTeisai DEFINE 1000002
+wdDialogFormatDrawingObjectTabColorsAndLines DEFINE 1200000
+wdDialogFormatDrawingObjectTabSize DEFINE 1200001
+wdDialogFormatDrawingObjectTabPosition DEFINE 1200002
+wdDialogFormatDrawingObjectTabWrapping DEFINE 1200003
+wdDialogFormatDrawingObjectTabPicture DEFINE 1200004
+wdDialogFormatDrawingObjectTabTextbox DEFINE 1200005
+wdDialogFormatDrawingObjectTabWeb DEFINE 1200006
+wdDialogFormatDrawingObjectTabHR DEFINE 1200007
+wdDialogToolsAutoCorrectExceptionsTabFirstLetter DEFINE 1400000
+wdDialogToolsAutoCorrectExceptionsTabInitialCaps DEFINE 1400001
+wdDialogToolsAutoCorrectExceptionsTabHangulAndAlphabet DEFINE 1400002
+wdDialogToolsAutoCorrectExceptionsTabIac DEFINE 1400003
+wdDialogFormatBulletsAndNumberingTabBulleted DEFINE 1500000
+..wdDialogFormatBulletsAndNumberingTabNumbered DEFINE 1500001
+..wdDialogFormatBulletsAndNumberingTabOutlineNumbered DEFINE 1500002
+wdDialogLetterWizardTabLetterFormat DEFINE 1600000
+wdDialogLetterWizardTabRecipientInfo DEFINE 1600001
+wdDialogLetterWizardTabOtherElements DEFINE 1600002
+wdDialogLetterWizardTabSenderInfo DEFINE 1600003
+wdDialogToolsAutoManagerTabAutoCorrect DEFINE 1700000
+wdDialogToolsAutoManagerTabAutoFormatAsYouType DEFINE 1700001
+..wdDialogToolsAutoManagerTabAutoText DEFINE 1700002
+..wdDialogToolsAutoManagerTabAutoFormat DEFINE 1700003
+wdDialogEmailOptionsTabSignature DEFINE 1900000
+wdDialogEmailOptionsTabStationary DEFINE 1900001
+wdDialogEmailOptionsTabQuoting DEFINE 1900002
+wdDialogWebOptionsGeneral DEFINE 2000000
+wdDialogWebOptionsFiles DEFINE 2000001
+wdDialogWebOptionsPictures DEFINE 2000002
+wdDialogWebOptionsEncoding DEFINE 2000003
+wdDialogWebOptionsFonts DEFINE 2000004
+         %ENDIF
+.
+. Class WdWordDialogTabHID
+. emptyenum DEFINE 0
+.
+         %IFDEF    WdWordDialog         .Class WdWordDialog
+wdDialogHelpAbout DEFINE 9
+wdDialogHelpWordPerfectHelp DEFINE 10
+wdDialogHelpWordPerfectHelpOptions DEFINE 511
+wdDialogFormatChangeCase DEFINE 322
+wdDialogToolsOptionsFuzzy DEFINE 790
+wdDialogToolsWordCount DEFINE 228
+wdDialogDocumentStatistics DEFINE 78
+wdDialogFileNew DEFINE 79
+wdDialogFileOpen DEFINE 80
+wdDialogMailMergeOpenDataSource DEFINE 81
+wdDialogMailMergeOpenHeaderSource DEFINE 82
+wdDialogMailMergeUseAddressBook DEFINE 779
+wdDialogFileSaveAs DEFINE 84
+wdDialogFileSummaryInfo DEFINE 86
+wdDialogToolsTemplates DEFINE 87
+wdDialogOrganizer DEFINE 222
+wdDialogFilePrint DEFINE 88
+wdDialogMailMerge DEFINE 676
+wdDialogMailMergeCheck DEFINE 677
+wdDialogMailMergeQueryOptions DEFINE 681
+wdDialogMailMergeFindRecord DEFINE 569
+wdDialogMailMergeInsertIf DEFINE 4049
+wdDialogMailMergeInsertNextIf DEFINE 4053
+wdDialogMailMergeInsertSkipIf DEFINE 4055
+wdDialogMailMergeInsertFillIn DEFINE 4048
+wdDialogMailMergeInsertAsk DEFINE 4047
+wdDialogMailMergeInsertSet DEFINE 4054
+wdDialogMailMergeHelper DEFINE 680
+wdDialogLetterWizard DEFINE 821
+wdDialogFilePrintSetup DEFINE 97
+wdDialogFileFind DEFINE 99
+wdDialogMailMergeCreateDataSource DEFINE 642
+wdDialogMailMergeCreateHeaderSource DEFINE 643
+wdDialogEditPasteSpecial DEFINE 111
+wdDialogEditFind DEFINE 112
+wdDialogEditReplace DEFINE 117
+wdDialogEditGoToOld DEFINE 811
+wdDialogEditGoTo DEFINE 896
+wdDialogCreateAutoText DEFINE 872
+wdDialogEditAutoText DEFINE 985
+wdDialogEditLinks DEFINE 124
+wdDialogEditObject DEFINE 125
+wdDialogConvertObject DEFINE 392
+wdDialogTableToText DEFINE 128
+wdDialogTextToTable DEFINE 127
+wdDialogTableInsertTable DEFINE 129
+wdDialogTableInsertCells DEFINE 130
+wdDialogTableInsertRow DEFINE 131
+wdDialogTableDeleteCells DEFINE 133
+wdDialogTableSplitCells DEFINE 137
+wdDialogTableFormula DEFINE 348
+wdDialogTableAutoFormat DEFINE 563
+wdDialogTableFormatCell DEFINE 612
+wdDialogViewZoom DEFINE 577
+wdDialogNewToolbar DEFINE 586
+wdDialogInsertBreak DEFINE 159
+wdDialogInsertFootnote DEFINE 370
+wdDialogInsertSymbol DEFINE 162
+wdDialogInsertPicture DEFINE 163
+wdDialogInsertFile DEFINE 164
+wdDialogInsertDateTime DEFINE 165
+wdDialogInsertNumber DEFINE 812
+wdDialogInsertField DEFINE 166
+wdDialogInsertDatabase DEFINE 341
+wdDialogInsertMergeField DEFINE 167
+wdDialogInsertBookmark DEFINE 168
+wdDialogInsertHyperlink DEFINE 925
+wdDialogMarkIndexEntry DEFINE 169
+wdDialogMarkCitation DEFINE 463
+wdDialogEditTOACategory DEFINE 625
+wdDialogInsertIndexAndTables DEFINE 473
+wdDialogInsertIndex DEFINE 170
+wdDialogInsertTableOfContents DEFINE 171
+wdDialogMarkTableOfContentsEntry DEFINE 442
+wdDialogInsertTableOfFigures DEFINE 472
+wdDialogInsertTableOfAuthorities DEFINE 471
+wdDialogInsertObject DEFINE 172
+wdDialogFormatCallout DEFINE 610
+wdDialogDrawSnapToGrid DEFINE 633
+wdDialogDrawAlign DEFINE 634
+wdDialogToolsEnvelopesAndLabels DEFINE 607
+wdDialogToolsCreateEnvelope DEFINE 173
+wdDialogToolsCreateLabels DEFINE 489
+wdDialogToolsProtectDocument DEFINE 503
+wdDialogToolsProtectSection DEFINE 578
+wdDialogToolsUnprotectDocument DEFINE 521
+wdDialogFormatFont DEFINE 174
+wdDialogFormatParagraph DEFINE 175
+wdDialogFormatSectionLayout DEFINE 176
+wdDialogFormatColumns DEFINE 177
+wdDialogFileDocumentLayout DEFINE 178
+wdDialogFileMacPageSetup DEFINE 685
+wdDialogFilePrintOneCopy DEFINE 445
+wdDialogFileMacPageSetupGX DEFINE 444
+wdDialogFileMacCustomPageSetupGX DEFINE 737
+wdDialogFilePageSetup DEFINE 178
+wdDialogFormatTabs DEFINE 179
+wdDialogFormatStyle DEFINE 180
+wdDialogFormatStyleGallery DEFINE 505
+wdDialogFormatDefineStyleFont DEFINE 181
+wdDialogFormatDefineStylePara DEFINE 182
+wdDialogFormatDefineStyleTabs DEFINE 183
+wdDialogFormatDefineStyleFrame DEFINE 184
+wdDialogFormatDefineStyleBorders DEFINE 185
+wdDialogFormatDefineStyleLang DEFINE 186
+wdDialogFormatPicture DEFINE 187
+wdDialogToolsLanguage DEFINE 188
+wdDialogFormatBordersAndShading DEFINE 189
+wdDialogFormatDrawingObject DEFINE 960
+wdDialogFormatFrame DEFINE 190
+wdDialogFormatDropCap DEFINE 488
+wdDialogFormatBulletsAndNumbering DEFINE 824
+wdDialogToolsHyphenation DEFINE 195
+wdDialogToolsBulletsNumbers DEFINE 196
+wdDialogToolsHighlightChanges DEFINE 197
+wdDialogToolsAcceptRejectChanges DEFINE 506
+wdDialogToolsMergeDocuments DEFINE 435
+wdDialogToolsCompareDocuments DEFINE 198
+wdDialogTableSort DEFINE 199
+wdDialogToolsCustomizeMenuBar DEFINE 615
+wdDialogToolsCustomize DEFINE 152
+wdDialogToolsCustomizeKeyboard DEFINE 432
+wdDialogToolsCustomizeMenus DEFINE 433
+wdDialogListCommands DEFINE 723
+wdDialogToolsOptions DEFINE 974
+wdDialogToolsOptionsGeneral DEFINE 203
+wdDialogToolsAdvancedSettings DEFINE 206
+wdDialogToolsOptionsCompatibility DEFINE 525
+wdDialogToolsOptionsPrint DEFINE 208
+wdDialogToolsOptionsSave DEFINE 209
+wdDialogToolsOptionsSpellingAndGrammar DEFINE 211
+wdDialogToolsSpellingAndGrammar DEFINE 828
+wdDialogToolsThesaurus DEFINE 194
+wdDialogToolsOptionsUserInfo DEFINE 213
+wdDialogToolsOptionsAutoFormat DEFINE 959
+wdDialogToolsOptionsTrackChanges DEFINE 386
+wdDialogToolsOptionsEdit DEFINE 224
+wdDialogToolsMacro DEFINE 215
+wdDialogInsertPageNumbers DEFINE 294
+wdDialogFormatPageNumber DEFINE 298
+wdDialogNoteOptions DEFINE 373
+wdDialogCopyFile DEFINE 300
+wdDialogFormatAddrFonts DEFINE 103
+wdDialogFormatRetAddrFonts DEFINE 221
+wdDialogToolsOptionsFileLocations DEFINE 225
+wdDialogToolsCreateDirectory DEFINE 833
+wdDialogUpdateTOC DEFINE 331
+wdDialogInsertFormField DEFINE 483
+wdDialogFormFieldOptions DEFINE 353
+wdDialogInsertCaption DEFINE 357
+wdDialogInsertAutoCaption DEFINE 359
+wdDialogInsertAddCaption DEFINE 402
+wdDialogInsertCaptionNumbering DEFINE 358
+wdDialogInsertCrossReference DEFINE 367
+wdDialogToolsManageFields DEFINE 631
+wdDialogToolsAutoManager DEFINE 915
+wdDialogToolsAutoCorrect DEFINE 378
+..wdDialogToolsAutoCorrectExceptions DEFINE 762
+wdDialogConnect DEFINE 420
+wdDialogToolsOptionsBidi DEFINE 1029
+wdDialogToolsOptionsView DEFINE 204
+wdDialogInsertSubdocument DEFINE 583
+wdDialogFileRoutingSlip DEFINE 624
+wdDialogFontSubstitution DEFINE 581
+wdDialogEditCreatePublisher DEFINE 732
+wdDialogEditSubscribeTo DEFINE 733
+wdDialogEditPublishOptions DEFINE 735
+wdDialogEditSubscribeOptions DEFINE 736
+wdDialogToolsOptionsTypography DEFINE 739
+wdDialogToolsOptionsAutoFormatAsYouType DEFINE 778
+wdDialogControlRun DEFINE 235
+wdDialogFileVersions DEFINE 945
+wdDialogToolsAutoSummarize DEFINE 874
+wdDialogFileSaveVersion DEFINE 1007
+wdDialogWindowActivate DEFINE 220
+wdDialogToolsMacroRecord DEFINE 214
+wdDialogToolsRevisions DEFINE 197
+wdDialogEmailOptions DEFINE 863
+wdDialogWebOptions DEFINE 898
+wdDialogFitText DEFINE 983
+wdDialogPhoneticGuide DEFINE 986
+wdDialogHorizontalInVertical DEFINE 1160
+wdDialogTwoLinesInOne DEFINE 1161
+wdDialogFormatEncloseCharacters DEFINE 1162
+wdDialogFormatTheme DEFINE 855
+wdDialogTCSCTranslator DEFINE 1156
+         %ENDIF
+.
+. Class WdWordDialogHID
+. emptyenum DEFINE 0
+.
+         %IFDEF    WdFieldKind          .Class WdFieldKind
+wdFieldKindNone DEFINE 0
+wdFieldKindHot DEFINE 1
+wdFieldKindWarm DEFINE 2
+wdFieldKindCold DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdTextFormFieldType       .Class WdTextFormFieldType
+wdRegularText DEFINE 0
+wdNumberText DEFINE 1
+wdDateText DEFINE 2
+wdCurrentDateText DEFINE 3
+wdCurrentTimeText DEFINE 4
+wdCalculationText DEFINE 5
+         %ENDIF
+.
+         %IFDEF    WdChevronConvertRule      .Class WdChevronConvertRule
+wdNeverConvert DEFINE 0
+wdAlwaysConvert DEFINE 1
+wdAskToNotConvert DEFINE 2
+wdAskToConvert DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdMailMergeMainDocType         .Class WdMailMergeMainDocType
+wdNotAMergeDocument DEFINE (0-1)
+wdFormLetters DEFINE 0
+wdMailingLabels DEFINE 1
+wdEnvelopes DEFINE 2
+wdCatalog DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdMailMergeState          .Class WdMailMergeState
+wdNormalDocument DEFINE 0
+wdMainDocumentOnly DEFINE 1
+wdMainAndDataSource DEFINE 2
+wdMainAndHeader DEFINE 3
+wdMainAndSourceAndHeader DEFINE 4
+wdDataSource DEFINE 5
+         %ENDIF
+.
+         %IFDEF    WdMailMergeDestination         .Class WdMailMergeDestination
+wdSendToNewDocument DEFINE 0
+wdSendToPrinter DEFINE 1
+wdSendToEmail DEFINE 2
+wdSendToFax DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdMailMergeActiveRecord        .Class WdMailMergeActiveRecord
+wdNoActiveRecord DEFINE (0-1)
+wdNextRecord DEFINE (0-2)
+wdPreviousRecord DEFINE (0-3)
+wdFirstRecord DEFINE (0-4)
+wdLastRecord DEFINE (0-5)
+         %ENDIF
+.
+         %IFDEF    WdMailMergeDefaultRecord       .Class WdMailMergeDefaultRecord
+wdDefaultFirstRecord DEFINE 1
+wdDefaultLastRecord DEFINE (0-16)
+         %ENDIF
+.
+         %IFDEF    WdMailMergeDataSource          .Class WdMailMergeDataSource
+wdNoMergeInfo DEFINE (0-1)
+wdMergeInfoFromWord DEFINE 0
+wdMergeInfoFromAccessDDE DEFINE 1
+wdMergeInfoFromExcelDDE DEFINE 2
+wdMergeInfoFromMSQueryDDE DEFINE 3
+wdMergeInfoFromODBC DEFINE 4
+         %ENDIF
+.
+         %IFDEF    WdMailMergeComparison          .Class WdMailMergeComparison
+wdMergeIfEqual DEFINE 0
+wdMergeIfNotEqual DEFINE 1
+wdMergeIfLessThan DEFINE 2
+wdMergeIfGreaterThan DEFINE 3
+wdMergeIfLessThanOrEqual DEFINE 4
+wdMergeIfGreaterThanOrEqual DEFINE 5
+wdMergeIfIsBlank DEFINE 6
+wdMergeIfIsNotBlank DEFINE 7
+         %ENDIF
+.
+         %IFDEF    WdBookmarkSortBy          .Class WdBookmarkSortBy
+wdSortByName DEFINE 0
+wdSortByLocation DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdWindowState        .Class WdWindowState
+wdWindowStateNormal DEFINE 0
+wdWindowStateMaximize DEFINE 1
+wdWindowStateMinimize DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdPictureLinkType         .Class WdPictureLinkType
+wdLinkNone DEFINE 0
+wdLinkDataInDoc DEFINE 1
+wdLinkDataOnDisk DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdLinkType      .Class WdLinkType
+wdLinkTypeOLE DEFINE 0
+wdLinkTypePicture DEFINE 1
+wdLinkTypeText DEFINE 2
+wdLinkTypeReference DEFINE 3
+wdLinkTypeInclude DEFINE 4
+wdLinkTypeImport DEFINE 5
+wdLinkTypeDDE DEFINE 6
+wdLinkTypeDDEAuto DEFINE 7
+         %ENDIF
+.
+         %IFDEF    WdWindowType         .Class WdWindowType
+wdWindowDocument DEFINE 0
+wdWindowTemplate DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdViewType      .Class WdViewType
+wdNormalView DEFINE 1
+wdOutlineView DEFINE 2
+wdPrintView DEFINE 3
+wdPrintPreview DEFINE 4
+wdMasterView DEFINE 5
+wdWebView DEFINE 6
+         %ENDIF
+.
+         %IFDEF    WdSeekView      .Class WdSeekView
+wdSeekMainDocument DEFINE 0
+wdSeekPrimaryHeader DEFINE 1
+wdSeekFirstPageHeader DEFINE 2
+wdSeekEvenPagesHeader DEFINE 3
+wdSeekPrimaryFooter DEFINE 4
+wdSeekFirstPageFooter DEFINE 5
+wdSeekEvenPagesFooter DEFINE 6
+wdSeekFootnotes DEFINE 7
+wdSeekEndnotes DEFINE 8
+wdSeekCurrentPageHeader DEFINE 9
+wdSeekCurrentPageFooter DEFINE 10
+         %ENDIF
+.
+         %IFDEF    WdSpecialPane        .Class WdSpecialPane
+wdPaneNone DEFINE 0
+wdPanePrimaryHeader DEFINE 1
+wdPaneFirstPageHeader DEFINE 2
+wdPaneEvenPagesHeader DEFINE 3
+wdPanePrimaryFooter DEFINE 4
+wdPaneFirstPageFooter DEFINE 5
+wdPaneEvenPagesFooter DEFINE 6
+wdPaneFootnotes DEFINE 7
+wdPaneEndnotes DEFINE 8
+wdPaneFootnoteContinuationNotice DEFINE 9
+wdPaneFootnoteContinuationSeparator DEFINE 10
+wdPaneFootnoteSeparator DEFINE 11
+wdPaneEndnoteContinuationNotice DEFINE 12
+wdPaneEndnoteContinuationSeparator DEFINE 13
+wdPaneEndnoteSeparator DEFINE 14
+wdPaneComments DEFINE 15
+wdPaneCurrentPageHeader DEFINE 16
+wdPaneCurrentPageFooter DEFINE 17
+         %ENDIF
+.
+         %IFDEF    WdPageFit       .Class WdPageFit
+wdPageFitNone DEFINE 0
+wdPageFitFullPage DEFINE 1
+wdPageFitBestFit DEFINE 2
+wdPageFitTextFit DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdBrowseTarget       .Class WdBrowseTarget
+wdBrowsePage DEFINE 1
+wdBrowseSection DEFINE 2
+wdBrowseComment DEFINE 3
+wdBrowseFootnote DEFINE 4
+wdBrowseEndnote DEFINE 5
+wdBrowseField DEFINE 6
+wdBrowseTable DEFINE 7
+wdBrowseGraphic DEFINE 8
+wdBrowseHeading DEFINE 9
+wdBrowseEdit DEFINE 10
+wdBrowseFind DEFINE 11
+wdBrowseGoTo DEFINE 12
+         %ENDIF
+.
+         %IFDEF    WdPaperTray          .Class WdPaperTray
+wdPrinterDefaultBin DEFINE 0
+wdPrinterUpperBin DEFINE 1
+wdPrinterOnlyBin DEFINE 1
+wdPrinterLowerBin DEFINE 2
+wdPrinterMiddleBin DEFINE 3
+wdPrinterManualFeed DEFINE 4
+wdPrinterEnvelopeFeed DEFINE 5
+wdPrinterManualEnvelopeFeed DEFINE 6
+wdPrinterAutomaticSheetFeed DEFINE 7
+wdPrinterTractorFeed DEFINE 8
+wdPrinterSmallFormatBin DEFINE 9
+wdPrinterLargeFormatBin DEFINE 10
+wdPrinterLargeCapacityBin DEFINE 11
+wdPrinterPaperCassette DEFINE 14
+wdPrinterFormSource DEFINE 15
+         %ENDIF
+.
+         %IFDEF    WdOrientation        .Class WdOrientation
+wdOrientPortrait DEFINE 0
+wdOrientLandscape DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdSelectionType      .Class WdSelectionType
+wdNoSelection DEFINE 0
+wdSelectionIP DEFINE 1
+wdSelectionNormal DEFINE 2
+wdSelectionFrame DEFINE 3
+wdSelectionColumn DEFINE 4
+wdSelectionRow DEFINE 5
+wdSelectionBlock DEFINE 6
+wdSelectionInlineShape DEFINE 7
+wdSelectionShape DEFINE 8
+         %ENDIF
+.
+         %IFDEF    WdCaptionLabelID          .Class WdCaptionLabelID
+wdCaptionFigure DEFINE (0-1)
+wdCaptionTable DEFINE (0-2)
+wdCaptionEquation DEFINE (0-3)
+         %ENDIF
+.
+         %IFDEF    WdReferenceType      .Class WdReferenceType
+wdRefTypeNumberedItem DEFINE 0
+wdRefTypeHeading DEFINE 1
+wdRefTypeBookmark DEFINE 2
+wdRefTypeFootnote DEFINE 3
+wdRefTypeEndnote DEFINE 4
+         %ENDIF
+.
+         %IFDEF    WdReferenceKind      .Class WdReferenceKind
+wdContentText DEFINE (0-1)
+wdNumberRelativeContext DEFINE (0-2)
+wdNumberNoContext DEFINE (0-3)
+wdNumberFullContext DEFINE (0-4)
+wdEntireCaption DEFINE 2
+wdOnlyLabelAndNumber DEFINE 3
+wdOnlyCaptionText DEFINE 4
+wdFootnoteNumber DEFINE 5
+wdEndnoteNumber DEFINE 6
+wdPageNumber DEFINE 7
+wdPosition DEFINE 15
+wdFootnoteNumberFormatted DEFINE 16
+wdEndnoteNumberFormatted DEFINE 17
+         %ENDIF
+.
+         %IFDEF    WdIndexFormat        .Class WdIndexFormat
+wdIndexTemplate DEFINE 0
+wdIndexClassic DEFINE 1
+wdIndexFancy DEFINE 2
+wdIndexModern DEFINE 3
+wdIndexBulleted DEFINE 4
+wdIndexFormal DEFINE 5
+wdIndexSimple DEFINE 6
+         %ENDIF
+.
+         %IFDEF    WdIndexType          .Class WdIndexType
+wdIndexIndent DEFINE 0
+wdIndexRunin DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdRevisionsWrap      .Class WdRevisionsWrap
+wdWrapNever DEFINE 0
+wdWrapAlways DEFINE 1
+wdWrapAsk DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdRevisionType       .Class WdRevisionType
+wdNoRevision DEFINE 0
+wdRevisionInsert DEFINE 1
+wdRevisionDelete DEFINE 2
+wdRevisionProperty DEFINE 3
+wdRevisionParagraphNumber DEFINE 4
+wdRevisionDisplayField DEFINE 5
+wdRevisionReconcile DEFINE 6
+wdRevisionConflict DEFINE 7
+wdRevisionStyle DEFINE 8
+wdRevisionReplace DEFINE 9
+         %ENDIF
+.
+         %IFDEF    WdRoutingSlipDelivery          .Class WdRoutingSlipDelivery
+wdOneAfterAnother DEFINE 0
+wdAllAtOnce DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdRoutingSlipStatus       .Class WdRoutingSlipStatus
+wdNotYetRouted DEFINE 0
+wdRouteInProgress DEFINE 1
+wdRouteComplete DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdSectionStart       .Class WdSectionStart
+wdSectionContinuous DEFINE 0
+wdSectionNewColumn DEFINE 1
+wdSectionNewPage DEFINE 2
+wdSectionEvenPage DEFINE 3
+wdSectionOddPage DEFINE 4
+         %ENDIF
+.
+         %IFDEF    WdSaveOptions        .Class WdSaveOptions
+wdDoNotSaveChanges DEFINE 0
+wdSaveChanges DEFINE (0-1)
+wdPromptToSaveChanges DEFINE (0-2)
+         %ENDIF
+.
+         %IFDEF    WdDocumentKind       .Class WdDocumentKind
+wdDocumentNotSpecified DEFINE 0
+wdDocumentLetter DEFINE 1
+wdDocumentEmail DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdDocumentType       .Class WdDocumentType
+wdTypeDocument DEFINE 0
+wdTypeTemplate DEFINE 1
+wdTypeFrameset DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdOriginalFormat          .Class WdOriginalFormat
+wdWordDocument DEFINE 0
+wdOriginalDocumentFormat DEFINE 1
+wdPromptUser DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdRelocate      .Class WdRelocate
+wdRelocateUp DEFINE 0
+wdRelocateDown DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdInsertedTextMark        .Class WdInsertedTextMark
+wdInsertedTextMarkNone DEFINE 0
+wdInsertedTextMarkBold DEFINE 1
+wdInsertedTextMarkItalic DEFINE 2
+wdInsertedTextMarkUnderline DEFINE 3
+wdInsertedTextMarkDoubleUnderline DEFINE 4
+         %ENDIF
+.
+         %IFDEF    WdRevisedLinesMark        .Class WdRevisedLinesMark
+wdRevisedLinesMarkNone DEFINE 0
+wdRevisedLinesMarkLeftBorder DEFINE 1
+wdRevisedLinesMarkRightBorder DEFINE 2
+wdRevisedLinesMarkOutsideBorder DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdDeletedTextMark         .Class WdDeletedTextMark
+wdDeletedTextMarkHidden DEFINE 0
+wdDeletedTextMarkStrikeThrough DEFINE 1
+wdDeletedTextMarkCaret DEFINE 2
+wdDeletedTextMarkPound DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdRevisedPropertiesMark        .Class WdRevisedPropertiesMark
+wdRevisedPropertiesMarkNone DEFINE 0
+wdRevisedPropertiesMarkBold DEFINE 1
+wdRevisedPropertiesMarkItalic DEFINE 2
+wdRevisedPropertiesMarkUnderline DEFINE 3
+wdRevisedPropertiesMarkDoubleUnderline DEFINE 4
+         %ENDIF
+.
+         %IFDEF    WdFieldShading       .Class WdFieldShading
+wdFieldShadingNever DEFINE 0
+wdFieldShadingAlways DEFINE 1
+wdFieldShadingWhenSelected DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdDefaultFilePath         .Class WdDefaultFilePath
+wdDocumentsPath DEFINE 0
+wdPicturesPath DEFINE 1
+wdUserTemplatesPath DEFINE 2
+wdWorkgroupTemplatesPath DEFINE 3
+wdUserOptionsPath DEFINE 4
+wdAutoRecoverPath DEFINE 5
+wdToolsPath DEFINE 6
+wdTutorialPath DEFINE 7
+wdStartupPath DEFINE 8
+wdProgramPath DEFINE 9
+wdGraphicsFiltersPath DEFINE 10
+wdTextConvertersPath DEFINE 11
+wdProofingToolsPath DEFINE 12
+wdTempFilePath DEFINE 13
+wdCurrentFolderPath DEFINE 14
+wdStyleGalleryPath DEFINE 15
+wdBorderArtPath DEFINE 19
+         %ENDIF
+.
+         %IFDEF    WdCompatibility      .Class WdCompatibility
+wdNoTabHangIndent DEFINE 1
+wdNoSpaceRaiseLower DEFINE 2
+wdPrintColBlack DEFINE 3
+wdWrapTrailSpaces DEFINE 4
+wdNoColumnBalance DEFINE 5
+wdConvMailMergeEsc DEFINE 6
+wdSuppressSpBfAfterPgBrk DEFINE 7
+wdSuppressTopSpacing DEFINE 8
+wdOrigWordTableRules DEFINE 9
+wdTransparentMetafiles DEFINE 10
+wdShowBreaksInFrames DEFINE 11
+wdSwapBordersFacingPages DEFINE 12
+wdLeaveBackslashAlone DEFINE 13
+wdExpandShiftReturn DEFINE 14
+wdDontULTrailSpace DEFINE 15
+wdDontBalanceSingleByteDoubleByteWidth DEFINE 16
+wdSuppressTopSpacingMac5 DEFINE 17
+wdSpacingInWholePoints DEFINE 18
+wdPrintBodyTextBeforeHeader DEFINE 19
+wdNoLeading DEFINE 20
+wdNoSpaceForUL DEFINE 21
+wdMWSmallCaps DEFINE 22
+wdNoExtraLineSpacing DEFINE 23
+wdTruncateFontHeight DEFINE 24
+wdSubFontBySize DEFINE 25
+wdUsePrinterMetrics DEFINE 26
+wdWW6BorderRules DEFINE 27
+wdExactOnTop DEFINE 28
+wdSuppressBottomSpacing DEFINE 29
+wdWPSpaceWidth DEFINE 30
+wdWPJustification DEFINE 31
+wdLineWrapLikeWord6 DEFINE 32
+wdShapeLayoutLikeWW8 DEFINE 33
+wdFootnoteLayoutLikeWW8 DEFINE 34
+wdDontUseHTMLParagraphAutoSpacing DEFINE 35
+wdDontAdjustLineHeightInTable DEFINE 36
+wdForgetLastTabAlignment DEFINE 37
+wdAutospaceLikeWW7 DEFINE 38
+wdAlignTablesRowByRow DEFINE 39
+wdLayoutRawTableWidth DEFINE 40
+wdLayoutTableRowsApart DEFINE 41
+wdUseWord97LineBreakingRules DEFINE 42
+         %ENDIF
+.
+         %IFDEF    WdPaperSize          .Class WdPaperSize
+wdPaper10x14 DEFINE 0
+wdPaper11x17 DEFINE 1
+wdPaperLetter DEFINE 2
+wdPaperLetterSmall DEFINE 3
+wdPaperLegal DEFINE 4
+wdPaperExecutive DEFINE 5
+wdPaperA3 DEFINE 6
+wdPaperA4 DEFINE 7
+wdPaperA4Small DEFINE 8
+wdPaperA5 DEFINE 9
+wdPaperB4 DEFINE 10
+wdPaperB5 DEFINE 11
+wdPaperCSheet DEFINE 12
+wdPaperDSheet DEFINE 13
+wdPaperESheet DEFINE 14
+wdPaperFanfoldLegalGerman DEFINE 15
+wdPaperFanfoldStdGerman DEFINE 16
+wdPaperFanfoldUS DEFINE 17
+wdPaperFolio DEFINE 18
+wdPaperLedger DEFINE 19
+wdPaperNote DEFINE 20
+wdPaperQuarto DEFINE 21
+wdPaperStatement DEFINE 22
+wdPaperTabloid DEFINE 23
+wdPaperEnvelope9 DEFINE 24
+wdPaperEnvelope10 DEFINE 25
+wdPaperEnvelope11 DEFINE 26
+wdPaperEnvelope12 DEFINE 27
+wdPaperEnvelope14 DEFINE 28
+wdPaperEnvelopeB4 DEFINE 29
+wdPaperEnvelopeB5 DEFINE 30
+wdPaperEnvelopeB6 DEFINE 31
+wdPaperEnvelopeC3 DEFINE 32
+wdPaperEnvelopeC4 DEFINE 33
+wdPaperEnvelopeC5 DEFINE 34
+wdPaperEnvelopeC6 DEFINE 35
+wdPaperEnvelopeC65 DEFINE 36
+wdPaperEnvelopeDL DEFINE 37
+wdPaperEnvelopeItaly DEFINE 38
+wdPaperEnvelopeMonarch DEFINE 39
+wdPaperEnvelopePersonal DEFINE 40
+wdPaperCustom DEFINE 41
+         %ENDIF
+.
+         %IFDEF    WdCustomLabelPageSize          .Class WdCustomLabelPageSize
+wdCustomLabelLetter DEFINE 0
+wdCustomLabelLetterLS DEFINE 1
+wdCustomLabelA4 DEFINE 2
+wdCustomLabelA4LS DEFINE 3
+wdCustomLabelA5 DEFINE 4
+wdCustomLabelA5LS DEFINE 5
+wdCustomLabelB5 DEFINE 6
+wdCustomLabelMini DEFINE 7
+wdCustomLabelFanfold DEFINE 8
+wdCustomLabelVertHalfSheet DEFINE 9
+wdCustomLabelVertHalfSheetLS DEFINE 10
+wdCustomLabelHigaki DEFINE 11
+wdCustomLabelHigakiLS DEFINE 12
+wdCustomLabelB4JIS DEFINE 13
+         %ENDIF
+.
+         %IFDEF    WdProtectionType          .Class WdProtectionType
+wdNoProtection DEFINE (0-1)
+wdAllowOnlyRevisions DEFINE 0
+wdAllowOnlyComments DEFINE 1
+wdAllowOnlyFormFields DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdPartOfSpeech       .Class WdPartOfSpeech
+wdAdjective DEFINE 0
+wdNoun DEFINE 1
+wdAdverb DEFINE 2
+wdVerb DEFINE 3
+wdPronoun DEFINE 4
+wdConjunction DEFINE 5
+wdPreposition DEFINE 6
+wdInterjection DEFINE 7
+wdIdiom DEFINE 8
+wdOther DEFINE 9
+         %ENDIF
+.
+         %IFDEF    WdSubscriberFormats       .Class WdSubscriberFormats
+wdSubscriberBestFormat DEFINE 0
+wdSubscriberRTF DEFINE 1
+wdSubscriberText DEFINE 2
+wdSubscriberPict DEFINE 4
+         %ENDIF
+.
+         %IFDEF    WdEditionType        .Class WdEditionType
+wdPublisher DEFINE 0
+wdSubscriber DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdEditionOption      .Class WdEditionOption
+wdCancelPublisher DEFINE 0
+wdSendPublisher DEFINE 1
+wdSelectPublisher DEFINE 2
+wdAutomaticUpdate DEFINE 3
+wdManualUpdate DEFINE 4
+wdChangeAttributes DEFINE 5
+wdUpdateSubscriber DEFINE 6
+wdOpenSource DEFINE 7
+         %ENDIF
+.
+         %IFDEF    WdRelativeHorizontalPosition        .Class WdRelativeHorizontalPosition
+wdRelativeHorizontalPositionMargin DEFINE 0
+wdRelativeHorizontalPositionPage DEFINE 1
+wdRelativeHorizontalPositionColumn DEFINE 2
+wdRelativeHorizontalPositionCharacter DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdRelativeVerticalPosition          .Class WdRelativeVerticalPosition
+wdRelativeVerticalPositionMargin DEFINE 0
+wdRelativeVerticalPositionPage DEFINE 1
+wdRelativeVerticalPositionParagraph DEFINE 2
+wdRelativeVerticalPositionLine DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdHelpType      .Class WdHelpType
+wdHelp DEFINE 0
+wdHelpAbout DEFINE 1
+wdHelpActiveWindow DEFINE 2
+wdHelpContents DEFINE 3
+wdHelpExamplesAndDemos DEFINE 4
+wdHelpIndex DEFINE 5
+wdHelpKeyboard DEFINE 6
+wdHelpPSSHelp DEFINE 7
+wdHelpQuickPreview DEFINE 8
+wdHelpSearch DEFINE 9
+wdHelpUsingHelp DEFINE 10
+wdHelpIchitaro DEFINE 11
+wdHelpPE2 DEFINE 12
+wdHelpHWP DEFINE 13
+         %ENDIF
+.
+. Class WdHelpTypeHID
+. emptyenum DEFINE 0
+.
+         %IFDEF    WdKeyCategory        .Class WdKeyCategory
+wdKeyCategoryNil DEFINE (0-1)
+wdKeyCategoryDisable DEFINE 0
+wdKeyCategoryCommand DEFINE 1
+wdKeyCategoryMacro DEFINE 2
+wdKeyCategoryFont DEFINE 3
+wdKeyCategoryAutoText DEFINE 4
+wdKeyCategoryStyle DEFINE 5
+wdKeyCategorySymbol DEFINE 6
+wdKeyCategoryPrefix DEFINE 7
+         %ENDIF
+.
+         %IFDEF    WdKey           .Class WdKey
+wdNoKey DEFINE 255
+wdKeyShift DEFINE 256
+wdKeyControl DEFINE 512
+wdKeyCommand DEFINE 512
+wdKeyAlt DEFINE 1024
+wdKeyOption DEFINE 1024
+wdKeyA DEFINE 65
+wdKeyB DEFINE 66
+wdKeyC DEFINE 67
+wdKeyD DEFINE 68
+wdKeyE DEFINE 69
+wdKeyF DEFINE 70
+wdKeyG DEFINE 71
+wdKeyH DEFINE 72
+wdKeyI DEFINE 73
+wdKeyJ DEFINE 74
+wdKeyK DEFINE 75
+wdKeyL DEFINE 76
+wdKeyM DEFINE 77
+wdKeyN DEFINE 78
+wdKeyO DEFINE 79
+wdKeyP DEFINE 80
+wdKeyQ DEFINE 81
+wdKeyR DEFINE 82
+wdKeyS DEFINE 83
+wdKeyT DEFINE 84
+wdKeyU DEFINE 85
+wdKeyV DEFINE 86
+wdKeyW DEFINE 87
+wdKeyX DEFINE 88
+wdKeyY DEFINE 89
+wdKeyZ DEFINE 90
+wdKey0 DEFINE 48
+wdKey1 DEFINE 49
+wdKey2 DEFINE 50
+wdKey3 DEFINE 51
+wdKey4 DEFINE 52
+wdKey5 DEFINE 53
+wdKey6 DEFINE 54
+wdKey7 DEFINE 55
+wdKey8 DEFINE 56
+wdKey9 DEFINE 57
+wdKeyBackspace DEFINE 8
+wdKeyTab DEFINE 9
+wdKeyNumeric5Special DEFINE 12
+wdKeyReturn DEFINE 13
+wdKeyPause DEFINE 19
+wdKeyEsc DEFINE 27
+wdKeySpacebar DEFINE 32
+wdKeyPageUp DEFINE 33
+wdKeyPageDown DEFINE 34
+wdKeyEnd DEFINE 35
+wdKeyHome DEFINE 36
+wdKeyInsert DEFINE 45
+wdKeyDelete DEFINE 46
+wdKeyNumeric0 DEFINE 96
+wdKeyNumeric1 DEFINE 97
+wdKeyNumeric2 DEFINE 98
+wdKeyNumeric3 DEFINE 99
+wdKeyNumeric4 DEFINE 100
+wdKeyNumeric5 DEFINE 101
+wdKeyNumeric6 DEFINE 102
+wdKeyNumeric7 DEFINE 103
+wdKeyNumeric8 DEFINE 104
+wdKeyNumeric9 DEFINE 105
+wdKeyNumericMultiply DEFINE 106
+wdKeyNumericAdd DEFINE 107
+wdKeyNumericSubtract DEFINE 109
+wdKeyNumericDecimal DEFINE 110
+wdKeyNumericDivide DEFINE 111
+wdKeyF1 DEFINE 112
+wdKeyF2 DEFINE 113
+wdKeyF3 DEFINE 114
+wdKeyF4 DEFINE 115
+wdKeyF5 DEFINE 116
+wdKeyF6 DEFINE 117
+wdKeyF7 DEFINE 118
+wdKeyF8 DEFINE 119
+wdKeyF9 DEFINE 120
+wdKeyF10 DEFINE 121
+wdKeyF11 DEFINE 122
+wdKeyF12 DEFINE 123
+wdKeyF13 DEFINE 124
+wdKeyF14 DEFINE 125
+wdKeyF15 DEFINE 126
+wdKeyF16 DEFINE 127
+wdKeyScrollLock DEFINE 145
+wdKeySemiColon DEFINE 186
+wdKeyEquals DEFINE 187
+wdKeyComma DEFINE 188
+wdKeyHyphen DEFINE 189
+wdKeyPeriod DEFINE 190
+wdKeySlash DEFINE 191
+wdKeyBackSingleQuote DEFINE 192
+wdKeyOpenSquareBrace DEFINE 219
+wdKeyBackSlash DEFINE 220
+wdKeyCloseSquareBrace DEFINE 221
+wdKeySingleQuote DEFINE 222
+         %ENDIF
+.
+         %IFDEF    WdOLEType       .Class WdOLEType
+wdOLELink DEFINE 0
+wdOLEEmbed DEFINE 1
+wdOLEControl DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdOLEVerb       .Class WdOLEVerb
+wdOLEVerbPrimary DEFINE 0
+wdOLEVerbShow DEFINE (0-1)
+wdOLEVerbOpen DEFINE (0-2)
+wdOLEVerbHide DEFINE (0-3)
+wdOLEVerbUIActivate DEFINE (0-4)
+wdOLEVerbInPlaceActivate DEFINE (0-5)
+wdOLEVerbDiscardUndoState DEFINE (0-6)
+         %ENDIF
+.
+         %IFDEF    WdOLEPlacement       .Class WdOLEPlacement
+wdInLine DEFINE 0
+wdFloatOverText DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdEnvelopeOrientation          .Class WdEnvelopeOrientation
+wdLeftPortrait DEFINE 0
+wdCenterPortrait DEFINE 1
+wdRightPortrait DEFINE 2
+wdLeftLandscape DEFINE 3
+wdCenterLandscape DEFINE 4
+wdRightLandscape DEFINE 5
+wdLeftClockwise DEFINE 6
+wdCenterClockwise DEFINE 7
+wdRightClockwise DEFINE 8
+         %ENDIF
+.
+         %IFDEF    WdLetterStyle        .Class WdLetterStyle
+wdFullBlock DEFINE 0
+wdModifiedBlock DEFINE 1
+wdSemiBlock DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdLetterheadLocation      .Class WdLetterheadLocation
+wdLetterTop DEFINE 0
+wdLetterBottom DEFINE 1
+wdLetterLeft DEFINE 2
+wdLetterRight DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdSalutationType          .Class WdSalutationType
+wdSalutationInformal DEFINE 0
+wdSalutationFormal DEFINE 1
+wdSalutationBusiness DEFINE 2
+wdSalutationOther DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdSalutationGender        .Class WdSalutationGender
+wdGenderFemale DEFINE 0
+wdGenderMale DEFINE 1
+wdGenderNeutral DEFINE 2
+wdGenderUnknown DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdMovementType       .Class WdMovementType
+wdMove DEFINE 0
+wdExtend DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdConstants          .Class WdConstants
+wdUndefined DEFINE 9999999
+wdToggle DEFINE 9999998
+wdForward DEFINE 1073741823
+wdBackward DEFINE (0-1073741823)
+wdAutoPosition DEFINE 0
+wdFirst DEFINE 1
+wdCreatorCode DEFINE 1297307460
+         %ENDIF
+.
+         %IFDEF    WdPasteDataType      .Class WdPasteDataType
+wdPasteOLEObject DEFINE 0
+wdPasteRTF DEFINE 1
+wdPasteText DEFINE 2
+wdPasteMetafilePicture DEFINE 3
+wdPasteBitmap DEFINE 4
+wdPasteDeviceIndependentBitmap DEFINE 5
+wdPasteHyperlink DEFINE 7
+wdPasteShape DEFINE 8
+wdPasteEnhancedMetafile DEFINE 9
+wdPasteHTML DEFINE 10
+         %ENDIF
+.
+         %IFDEF    WdPrintOutItem       .Class WdPrintOutItem
+wdPrintDocumentContent DEFINE 0
+wdPrintProperties DEFINE 1
+wdPrintComments DEFINE 2
+wdPrintStyles DEFINE 3
+wdPrintAutoTextEntries DEFINE 4
+wdPrintKeyAssignments DEFINE 5
+wdPrintEnvelope DEFINE 6
+         %ENDIF
+.
+         %IFDEF    WdPrintOutPages      .Class WdPrintOutPages
+wdPrintAllPages DEFINE 0
+wdPrintOddPagesOnly DEFINE 1
+wdPrintEvenPagesOnly DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdPrintOutRange      .Class WdPrintOutRange
+wdPrintAllDocument DEFINE 0
+wdPrintSelection DEFINE 1
+wdPrintCurrentPage DEFINE 2
+wdPrintFromTo DEFINE 3
+wdPrintRangeOfPages DEFINE 4
+         %ENDIF
+.
+         %IFDEF    WdDictionaryType          .Class WdDictionaryType
+wdSpelling DEFINE 0
+wdGrammar DEFINE 1
+wdThesaurus DEFINE 2
+wdHyphenation DEFINE 3
+wdSpellingComplete DEFINE 4
+wdSpellingCustom DEFINE 5
+wdSpellingLegal DEFINE 6
+wdSpellingMedical DEFINE 7
+wdHangulHanjaConversion DEFINE 8
+wdHangulHanjaConversionCustom DEFINE 9
+         %ENDIF
+.
+. Class WdDictionaryTypeHID
+. emptyenum DEFINE 0
+.
+         %IFDEF    WdSpellingWordType        .Class WdSpellingWordType
+wdSpellword DEFINE 0
+wdWildcard DEFINE 1
+wdAnagram DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdSpellingErrorType       .Class WdSpellingErrorType
+wdSpellingCorrect DEFINE 0
+wdSpellingNotInDictionary DEFINE 1
+wdSpellingCapitalization DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdProofreadingErrorType        .Class WdProofreadingErrorType
+wdSpellingError DEFINE 0
+wdGrammaticalError DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdInlineShapeType         .Class WdInlineShapeType
+wdInlineShapeEmbeddedOLEObject DEFINE 1
+wdInlineShapeLinkedOLEObject DEFINE 2
+wdInlineShapePicture DEFINE 3
+wdInlineShapeLinkedPicture DEFINE 4
+wdInlineShapeOLEControlObject DEFINE 5
+wdInlineShapeHorizontalLine DEFINE 6
+wdInlineShapePictureHorizontalLine DEFINE 7
+wdInlineShapeLinkedPictureHorizontalLine DEFINE 8
+wdInlineShapePictureBullet DEFINE 9
+wdInlineShapeScriptAnchor DEFINE 10
+wdInlineShapeOWSAnchor DEFINE 11
+         %ENDIF
+.
+         %IFDEF    WdArrangeStyle       .Class WdArrangeStyle
+wdTiled DEFINE 0
+wdIcons DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdSelectionFlags          .Class WdSelectionFlags
+wdSelStartActive DEFINE 1
+wdSelAtEOL DEFINE 2
+wdSelOvertype DEFINE 4
+wdSelActive DEFINE 8
+wdSelReplace DEFINE 16
+         %ENDIF
+.
+         %IFDEF    WdAutoVersions       .Class WdAutoVersions
+wdAutoVersionOff DEFINE 0
+wdAutoVersionOnClose DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdOrganizerObject         .Class WdOrganizerObject
+wdOrganizerObjectStyles DEFINE 0
+wdOrganizerObjectAutoText DEFINE 1
+wdOrganizerObjectCommandBars DEFINE 2
+wdOrganizerObjectProjectItems DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdFindMatch          .Class WdFindMatch
+wdMatchParagraphMark DEFINE 65551
+wdMatchTabCharacter DEFINE 9
+wdMatchCommentMark DEFINE 5
+wdMatchAnyCharacter DEFINE 65599
+wdMatchAnyDigit DEFINE 65567
+wdMatchAnyLetter DEFINE 65583
+wdMatchCaretCharacter DEFINE 11
+wdMatchColumnBreak DEFINE 14
+wdMatchEmDash DEFINE 8212
+wdMatchEnDash DEFINE 8211
+wdMatchEndnoteMark DEFINE 65555
+wdMatchField DEFINE 19
+wdMatchFootnoteMark DEFINE 65554
+wdMatchGraphic DEFINE 1
+wdMatchManualLineBreak DEFINE 65551
+wdMatchManualPageBreak DEFINE 65564
+wdMatchNonbreakingHyphen DEFINE 30
+wdMatchNonbreakingSpace DEFINE 160
+wdMatchOptionalHyphen DEFINE 31
+wdMatchSectionBreak DEFINE 65580
+wdMatchWhiteSpace DEFINE 65655
+         %ENDIF
+.
+         %IFDEF    WdFindWrap      .Class WdFindWrap
+wdFindStop DEFINE 0
+wdFindContinue DEFINE 1
+wdFindAsk DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdInformation        .Class WdInformation
+wdActiveEndAdjustedPageNumber DEFINE 1
+wdActiveEndSectionNumber DEFINE 2
+wdActiveEndPageNumber DEFINE 3
+wdNumberOfPagesInDocument DEFINE 4
+wdHorizontalPositionRelativeToPage DEFINE 5
+wdVerticalPositionRelativeToPage DEFINE 6
+wdHorizontalPositionRelativeToTextBoundary DEFINE 7
+wdVerticalPositionRelativeToTextBoundary DEFINE 8
+wdFirstCharacterColumnNumber DEFINE 9
+wdFirstCharacterLineNumber DEFINE 10
+wdFrameIsSelected DEFINE 11
+wdWithInTable DEFINE 12
+wdStartOfRangeRowNumber DEFINE 13
+wdEndOfRangeRowNumber DEFINE 14
+wdMaximumNumberOfRows DEFINE 15
+wdStartOfRangeColumnNumber DEFINE 16
+wdEndOfRangeColumnNumber DEFINE 17
+wdMaximumNumberOfColumns DEFINE 18
+wdZoomPercentage DEFINE 19
+wdSelectionMode DEFINE 20
+wdCapsLock DEFINE 21
+wdNumLock DEFINE 22
+wdOverType DEFINE 23
+wdRevisionMarking DEFINE 24
+wdInFootnoteEndnotePane DEFINE 25
+wdInCommentPane DEFINE 26
+wdInHeaderFooter DEFINE 28
+wdAtEndOfRowMarker DEFINE 31
+wdReferenceOfType DEFINE 32
+wdHeaderFooterType DEFINE 33
+wdInMasterDocument DEFINE 34
+wdInFootnote DEFINE 35
+wdInEndnote DEFINE 36
+wdInWordMail DEFINE 37
+wdInClipboard DEFINE 38
+         %ENDIF
+.
+         %IFDEF    WdWrapType      .Class WdWrapType
+wdWrapSquare DEFINE 0
+wdWrapTight DEFINE 1
+wdWrapThrough DEFINE 2
+wdWrapNone DEFINE 3
+wdWrapTopBottom DEFINE 4
+         %ENDIF
+.
+         %IFDEF    WdWrapSideType       .Class WdWrapSideType
+wdWrapBoth DEFINE 0
+wdWrapLeft DEFINE 1
+wdWrapRight DEFINE 2
+wdWrapLargest DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdOutlineLevel       .Class WdOutlineLevel
+wdOutlineLevel1 DEFINE 1
+wdOutlineLevel2 DEFINE 2
+wdOutlineLevel3 DEFINE 3
+wdOutlineLevel4 DEFINE 4
+wdOutlineLevel5 DEFINE 5
+wdOutlineLevel6 DEFINE 6
+wdOutlineLevel7 DEFINE 7
+wdOutlineLevel8 DEFINE 8
+wdOutlineLevel9 DEFINE 9
+wdOutlineLevelBodyText DEFINE 10
+         %ENDIF
+.
+         %IFDEF    WdTextOrientation         .Class WdTextOrientation
+wdTextOrientationHorizontal DEFINE 0
+wdTextOrientationUpward DEFINE 2
+wdTextOrientationDownward DEFINE 3
+wdTextOrientationVerticalFarEast DEFINE 1
+wdTextOrientationHorizontalRotatedFarEast DEFINE 4
+         %ENDIF
+.
+. Class WdTextOrientationHID
+. emptyenum DEFINE 0
+.
+         %IFDEF    WdPageBorderArt      .Class WdPageBorderArt
+wdArtApples DEFINE 1
+wdArtMapleMuffins DEFINE 2
+wdArtCakeSlice DEFINE 3
+wdArtCandyCorn DEFINE 4
+wdArtIceCreamCones DEFINE 5
+wdArtChampagneBottle DEFINE 6
+wdArtPartyGlass DEFINE 7
+wdArtChristmasTree DEFINE 8
+wdArtTrees DEFINE 9
+wdArtPalmsColor DEFINE 10
+wdArtBalloons3Colors DEFINE 11
+wdArtBalloonsHotAir DEFINE 12
+wdArtPartyFavor DEFINE 13
+wdArtConfettiStreamers DEFINE 14
+wdArtHearts DEFINE 15
+wdArtHeartBalloon DEFINE 16
+wdArtStars3D DEFINE 17
+wdArtStarsShadowed DEFINE 18
+wdArtStars DEFINE 19
+wdArtSun DEFINE 20
+wdArtEarth2 DEFINE 21
+wdArtEarth1 DEFINE 22
+wdArtPeopleHats DEFINE 23
+wdArtSombrero DEFINE 24
+wdArtPencils DEFINE 25
+wdArtPackages DEFINE 26
+wdArtClocks DEFINE 27
+wdArtFirecrackers DEFINE 28
+wdArtRings DEFINE 29
+wdArtMapPins DEFINE 30
+wdArtConfetti DEFINE 31
+wdArtCreaturesButterfly DEFINE 32
+wdArtCreaturesLadyBug DEFINE 33
+wdArtCreaturesFish DEFINE 34
+wdArtBirdsFlight DEFINE 35
+wdArtScaredCat DEFINE 36
+wdArtBats DEFINE 37
+wdArtFlowersRoses DEFINE 38
+wdArtFlowersRedRose DEFINE 39
+wdArtPoinsettias DEFINE 40
+wdArtHolly DEFINE 41
+wdArtFlowersTiny DEFINE 42
+wdArtFlowersPansy DEFINE 43
+wdArtFlowersModern2 DEFINE 44
+wdArtFlowersModern1 DEFINE 45
+wdArtWhiteFlowers DEFINE 46
+wdArtVine DEFINE 47
+wdArtFlowersDaisies DEFINE 48
+wdArtFlowersBlockPrint DEFINE 49
+wdArtDecoArchColor DEFINE 50
+wdArtFans DEFINE 51
+wdArtFilm DEFINE 52
+wdArtLightning1 DEFINE 53
+wdArtCompass DEFINE 54
+wdArtDoubleD DEFINE 55
+wdArtClassicalWave DEFINE 56
+wdArtShadowedSquares DEFINE 57
+wdArtTwistedLines1 DEFINE 58
+wdArtWaveline DEFINE 59
+wdArtQuadrants DEFINE 60
+wdArtCheckedBarColor DEFINE 61
+wdArtSwirligig DEFINE 62
+wdArtPushPinNote1 DEFINE 63
+wdArtPushPinNote2 DEFINE 64
+wdArtPumpkin1 DEFINE 65
+wdArtEggsBlack DEFINE 66
+wdArtCup DEFINE 67
+wdArtHeartGray DEFINE 68
+wdArtGingerbreadMan DEFINE 69
+wdArtBabyPacifier DEFINE 70
+wdArtBabyRattle DEFINE 71
+wdArtCabins DEFINE 72
+wdArtHouseFunky DEFINE 73
+wdArtStarsBlack DEFINE 74
+wdArtSnowflakes DEFINE 75
+wdArtSnowflakeFancy DEFINE 76
+wdArtSkyrocket DEFINE 77
+wdArtSeattle DEFINE 78
+wdArtMusicNotes DEFINE 79
+wdArtPalmsBlack DEFINE 80
+wdArtMapleLeaf DEFINE 81
+wdArtPaperClips DEFINE 82
+wdArtShorebirdTracks DEFINE 83
+wdArtPeople DEFINE 84
+wdArtPeopleWaving DEFINE 85
+wdArtEclipsingSquares2 DEFINE 86
+wdArtHypnotic DEFINE 87
+wdArtDiamondsGray DEFINE 88
+wdArtDecoArch DEFINE 89
+wdArtDecoBlocks DEFINE 90
+wdArtCirclesLines DEFINE 91
+wdArtPapyrus DEFINE 92
+wdArtWoodwork DEFINE 93
+wdArtWeavingBraid DEFINE 94
+wdArtWeavingRibbon DEFINE 95
+wdArtWeavingAngles DEFINE 96
+wdArtArchedScallops DEFINE 97
+wdArtSafari DEFINE 98
+wdArtCelticKnotwork DEFINE 99
+wdArtCrazyMaze DEFINE 100
+wdArtEclipsingSquares1 DEFINE 101
+wdArtBirds DEFINE 102
+wdArtFlowersTeacup DEFINE 103
+wdArtNorthwest DEFINE 104
+wdArtSouthwest DEFINE 105
+wdArtTribal6 DEFINE 106
+wdArtTribal4 DEFINE 107
+wdArtTribal3 DEFINE 108
+wdArtTribal2 DEFINE 109
+wdArtTribal5 DEFINE 110
+wdArtXIllusions DEFINE 111
+wdArtZanyTriangles DEFINE 112
+wdArtPyramids DEFINE 113
+wdArtPyramidsAbove DEFINE 114
+wdArtConfettiGrays DEFINE 115
+wdArtConfettiOutline DEFINE 116
+wdArtConfettiWhite DEFINE 117
+wdArtMosaic DEFINE 118
+wdArtLightning2 DEFINE 119
+wdArtHeebieJeebies DEFINE 120
+wdArtLightBulb DEFINE 121
+wdArtGradient DEFINE 122
+wdArtTriangleParty DEFINE 123
+wdArtTwistedLines2 DEFINE 124
+wdArtMoons DEFINE 125
+wdArtOvals DEFINE 126
+wdArtDoubleDiamonds DEFINE 127
+wdArtChainLink DEFINE 128
+wdArtTriangles DEFINE 129
+wdArtTribal1 DEFINE 130
+wdArtMarqueeToothed DEFINE 131
+wdArtSharksTeeth DEFINE 132
+wdArtSawtooth DEFINE 133
+wdArtSawtoothGray DEFINE 134
+wdArtPostageStamp DEFINE 135
+wdArtWeavingStrips DEFINE 136
+wdArtZigZag DEFINE 137
+wdArtCrossStitch DEFINE 138
+wdArtGems DEFINE 139
+wdArtCirclesRectangles DEFINE 140
+wdArtCornerTriangles DEFINE 141
+wdArtCreaturesInsects DEFINE 142
+wdArtZigZagStitch DEFINE 143
+wdArtCheckered DEFINE 144
+wdArtCheckedBarBlack DEFINE 145
+wdArtMarquee DEFINE 146
+wdArtBasicWhiteDots DEFINE 147
+wdArtBasicWideMidline DEFINE 148
+wdArtBasicWideOutline DEFINE 149
+wdArtBasicWideInline DEFINE 150
+wdArtBasicThinLines DEFINE 151
+wdArtBasicWhiteDashes DEFINE 152
+wdArtBasicWhiteSquares DEFINE 153
+wdArtBasicBlackSquares DEFINE 154
+wdArtBasicBlackDashes DEFINE 155
+wdArtBasicBlackDots DEFINE 156
+wdArtStarsTop DEFINE 157
+wdArtCertificateBanner DEFINE 158
+wdArtHandmade1 DEFINE 159
+wdArtHandmade2 DEFINE 160
+wdArtTornPaper DEFINE 161
+wdArtTornPaperBlack DEFINE 162
+wdArtCouponCutoutDashes DEFINE 163
+wdArtCouponCutoutDots DEFINE 164
+         %ENDIF
+.
+         %IFDEF    WdBorderDistanceFrom      .Class WdBorderDistanceFrom
+wdBorderDistanceFromText DEFINE 0
+wdBorderDistanceFromPageEdge DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdReplace       .Class WdReplace
+wdReplaceNone DEFINE 0
+wdReplaceOne DEFINE 1
+wdReplaceAll DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdFontBias      .Class WdFontBias
+wdFontBiasDontCare DEFINE 255
+wdFontBiasDefault DEFINE 0
+wdFontBiasFareast DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdBrowserLevel       .Class WdBrowserLevel
+wdBrowserLevelV4 DEFINE 0
+wdBrowserLevelMicrosoftInternetExplorer5 DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdEnclosureType      .Class WdEnclosureType
+wdEnclosureCircle DEFINE 0
+wdEnclosureSquare DEFINE 1
+wdEnclosureTriangle DEFINE 2
+wdEnclosureDiamond DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdEncloseStyle       .Class WdEncloseStyle
+wdEncloseStyleNone DEFINE 0
+wdEncloseStyleSmall DEFINE 1
+wdEncloseStyleLarge DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdHighAnsiText       .Class WdHighAnsiText
+wdHighAnsiIsFarEast DEFINE 0
+wdHighAnsiIsHighAnsi DEFINE 1
+wdAutoDetectHighAnsiFarEast DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdLayoutMode         .Class WdLayoutMode
+wdLayoutModeDefault DEFINE 0
+wdLayoutModeGrid DEFINE 1
+wdLayoutModeLineGrid DEFINE 2
+wdLayoutModeGenko DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdDocumentMedium          .Class WdDocumentMedium
+wdEmailMessage DEFINE 0
+wdDocument DEFINE 1
+wdWebPage DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdMailerPriority          .Class WdMailerPriority
+wdPriorityNormal DEFINE 1
+wdPriorityLow DEFINE 2
+wdPriorityHigh DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdDocumentViewDirection        .Class WdDocumentViewDirection
+wdDocumentViewRtl DEFINE 0
+wdDocumentViewLtr DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdArabicNumeral      .Class WdArabicNumeral
+wdNumeralArabic DEFINE 0
+wdNumeralHindi DEFINE 1
+wdNumeralContext DEFINE 2
+wdNumeralSystem DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdMonthNames         .Class WdMonthNames
+wdMonthNamesArabic DEFINE 0
+wdMonthNamesEnglish DEFINE 1
+wdMonthNamesFrench DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdCursorMovement          .Class WdCursorMovement
+wdCursorMovementLogical DEFINE 0
+wdCursorMovementVisual DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdVisualSelection         .Class WdVisualSelection
+wdVisualSelectionBlock DEFINE 0
+wdVisualSelectionContinuous DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdTableDirection          .Class WdTableDirection
+wdTableDirectionRtl DEFINE 0
+wdTableDirectionLtr DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdFlowDirection      .Class WdFlowDirection
+wdFlowLtr DEFINE 0
+wdFlowRtl DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdDiacriticColor          .Class WdDiacriticColor
+wdDiacriticColorBidi DEFINE 0
+wdDiacriticColorLatin DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdGutterStyle        .Class WdGutterStyle
+wdGutterPosLeft DEFINE 0
+wdGutterPosTop DEFINE 1
+wdGutterPosRight DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdGutterStyleOld          .Class WdGutterStyleOld
+wdGutterStyleLatin DEFINE (0-10)
+wdGutterStyleBidi DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdSectionDirection        .Class WdSectionDirection
+wdSectionDirectionRtl DEFINE 0
+wdSectionDirectionLtr DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdDateLanguage       .Class WdDateLanguage
+wdDateLanguageBidi DEFINE 10
+wdDateLanguageLatin DEFINE 1033
+         %ENDIF
+.
+         %IFDEF    WdCalendarTypeBi          .Class WdCalendarTypeBi
+wdCalendarTypeBidi DEFINE 99
+wdCalendarTypeGregorian DEFINE 100
+         %ENDIF
+.
+         %IFDEF    WdCalendarType       .Class WdCalendarType
+wdCalendarWestern DEFINE 0
+wdCalendarArabic DEFINE 1
+wdCalendarHebrew DEFINE 2
+wdCalendarChina DEFINE 3
+wdCalendarJapan DEFINE 4
+wdCalendarThai DEFINE 5
+wdCalendarKorean DEFINE 6
+         %ENDIF
+.
+         %IFDEF    WdReadingOrder       .Class WdReadingOrder
+wdReadingOrderRtl DEFINE 0
+wdReadingOrderLtr DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdHebSpellStart      .Class WdHebSpellStart
+wdFullScript DEFINE 0
+wdPartialScript DEFINE 1
+wdMixedScript DEFINE 2
+wdMixedAuthorizedScript DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdAraSpeller         .Class WdAraSpeller
+wdNone DEFINE 0
+wdInitialAlef DEFINE 1
+wdFinalYaa DEFINE 2
+wdBoth DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdColor         .Class WdColor
+wdColorAutomatic DEFINE (0-16777216)
+wdColorBlack DEFINE 0
+wdColorBlue DEFINE 16711680
+wdColorTurquoise DEFINE 16776960
+wdColorBrightGreen DEFINE 65280
+wdColorPink DEFINE 16711935
+wdColorRed DEFINE 255
+wdColorYellow DEFINE 65535
+wdColorWhite DEFINE 16777215
+wdColorDarkBlue DEFINE 8388608
+wdColorTeal DEFINE 8421376
+wdColorGreen DEFINE 32768
+wdColorViolet DEFINE 8388736
+wdColorDarkRed DEFINE 128
+wdColorDarkYellow DEFINE 32896
+wdColorBrown DEFINE 13209
+wdColorOliveGreen DEFINE 13107
+wdColorDarkGreen DEFINE 13056
+wdColorDarkTeal DEFINE 6697728
+wdColorIndigo DEFINE 10040115
+wdColorOrange DEFINE 26367
+wdColorBlueGray DEFINE 10053222
+wdColorLightOrange DEFINE 39423
+wdColorLime DEFINE 52377
+wdColorSeaGreen DEFINE 6723891
+wdColorAqua DEFINE 13421619
+wdColorLightBlue DEFINE 16737843
+wdColorGold DEFINE 52479
+wdColorSkyBlue DEFINE 16763904
+wdColorPlum DEFINE 6697881
+wdColorRose DEFINE 13408767
+wdColorTan DEFINE 10079487
+wdColorLightYellow DEFINE 10092543
+wdColorLightGreen DEFINE 13434828
+wdColorLightTurquoise DEFINE 16777164
+wdColorPaleBlue DEFINE 16764057
+wdColorLavender DEFINE 16751052
+wdColorGray05 DEFINE 15987699
+wdColorGray10 DEFINE 15132390
+wdColorGray125 DEFINE 14737632
+wdColorGray15 DEFINE 14277081
+wdColorGray20 DEFINE 13421772
+wdColorGray25 DEFINE 12632256
+wdColorGray30 DEFINE 11776947
+wdColorGray35 DEFINE 10921638
+wdColorGray375 DEFINE 10526880
+wdColorGray40 DEFINE 10066329
+wdColorGray45 DEFINE 9211020
+wdColorGray50 DEFINE 8421504
+wdColorGray55 DEFINE 7566195
+wdColorGray60 DEFINE 6710886
+wdColorGray625 DEFINE 6316128
+wdColorGray65 DEFINE 5855577
+wdColorGray70 DEFINE 5000268
+wdColorGray75 DEFINE 4210752
+wdColorGray80 DEFINE 3355443
+wdColorGray85 DEFINE 2500134
+wdColorGray875 DEFINE 2105376
+wdColorGray90 DEFINE 1644825
+wdColorGray95 DEFINE 789516
+         %ENDIF
+.
+         %IFDEF    WdShapePosition      .Class WdShapePosition
+wdShapeTop DEFINE (0-999999)
+wdShapeLeft DEFINE (0-999998)
+wdShapeBottom DEFINE (0-999997)
+wdShapeRight DEFINE (0-999996)
+wdShapeCenter DEFINE (0-999995)
+wdShapeInside DEFINE (0-999994)
+wdShapeOutside DEFINE (0-999993)
+         %ENDIF
+.
+         %IFDEF    WdTablePosition      .Class WdTablePosition
+wdTableTop DEFINE (0-999999)
+wdTableLeft DEFINE (0-999998)
+wdTableBottom DEFINE (0-999997)
+wdTableRight DEFINE (0-999996)
+wdTableCenter DEFINE (0-999995)
+wdTableInside DEFINE (0-999994)
+wdTableOutside DEFINE (0-999993)
+         %ENDIF
+.
+         %IFDEF    WdDefaultListBehavior          .Class WdDefaultListBehavior
+wdWord8ListBehavior DEFINE 0
+wdWord9ListBehavior DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdDefaultTableBehavior         .Class WdDefaultTableBehavior
+wdWord8TableBehavior DEFINE 0
+wdWord9TableBehavior DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdAutoFitBehavior         .Class WdAutoFitBehavior
+wdAutoFitFixed DEFINE 0
+wdAutoFitContent DEFINE 1
+wdAutoFitWindow DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdPreferredWidthType      .Class WdPreferredWidthType
+wdPreferredWidthAuto DEFINE 1
+wdPreferredWidthPercent DEFINE 2
+wdPreferredWidthPoints DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdFarEastLineBreakLanguageID        .Class WdFarEastLineBreakLanguageID
+wdLineBreakJapanese DEFINE 1041
+wdLineBreakKorean DEFINE 1042
+wdLineBreakSimplifiedChinese DEFINE 2052
+wdLineBreakTraditionalChinese DEFINE 1028
+         %ENDIF
+.
+         %IFDEF    WdViewTypeOld        .Class WdViewTypeOld
+wdPageView DEFINE 3
+wdOnlineView DEFINE 6
+         %ENDIF
+.
+         %IFDEF    WdFramesetType       .Class WdFramesetType
+wdFramesetTypeFrameset DEFINE 0
+wdFramesetTypeFrame DEFINE 1
+         %ENDIF
+.
+         %IFDEF    WdFramesetSizeType        .Class WdFramesetSizeType
+wdFramesetSizeTypePercent DEFINE 0
+wdFramesetSizeTypeFixed DEFINE 1
+wdFramesetSizeTypeRelative DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdFramesetNewFrameLocation          .Class WdFramesetNewFrameLocation
+wdFramesetNewFrameAbove DEFINE 0
+wdFramesetNewFrameBelow DEFINE 1
+wdFramesetNewFrameRight DEFINE 2
+wdFramesetNewFrameLeft DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdScrollbarType                .Class WdScrollbarType
+wdScrollbarTypeAuto DEFINE 0
+wdScrollbarTypeYes DEFINE 1
+wdScrollbarTypeNo DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdTwoLinesInOneType            .Class WdTwoLinesInOneType
+wdTwoLinesInOneNone DEFINE 0
+wdTwoLinesInOneNoBrackets DEFINE 1
+wdTwoLinesInOneParentheses DEFINE 2
+wdTwoLinesInOneSquareBrackets DEFINE 3
+wdTwoLinesInOneAngleBrackets DEFINE 4
+wdTwoLinesInOneCurlyBrackets DEFINE 5
+         %ENDIF
+.
+         %IFDEF    WdHorizontalInVerticalType     .Class WdHorizontalInVerticalType
+wdHorizontalInVerticalNone DEFINE 0
+wdHorizontalInVerticalFitInLine DEFINE 1
+wdHorizontalInVerticalResizeLine DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdHorizontalLineAlignment      .Class WdHorizontalLineAlignment
+wdHorizontalLineAlignLeft DEFINE 0
+wdHorizontalLineAlignCenter DEFINE 1
+wdHorizontalLineAlignRight DEFINE 2
+         %ENDIF
+.
+         %IFDEF    WdHorizontalLineWidthType      .Class WdHorizontalLineWidthType
+wdHorizontalLinePercentWidth DEFINE (0-1)
+wdHorizontalLineFixedWidth DEFINE (0-2)
+         %ENDIF
+.
+         %IFDEF    WdPhoneticGuideAlignmentType   .Class WdPhoneticGuideAlignmentType
+wdPhoneticGuideAlignmentCenter DEFINE 0
+wdPhoneticGuideAlignmentZeroOneZero DEFINE 1
+wdPhoneticGuideAlignmentOneTwoOne DEFINE 2
+wdPhoneticGuideAlignmentLeft DEFINE 3
+wdPhoneticGuideAlignmentRight DEFINE 4
+         %ENDIF
+.
+         %IFDEF    WdNewDocumentType              .Class WdNewDocumentType
+wdNewBlankDocument DEFINE 0
+wdNewWebPage DEFINE 1
+wdNewEmailMessage DEFINE 2
+wdNewFrameset DEFINE 3
+         %ENDIF
+.
+         %IFDEF    WdKana                         .Class WdKana
+wdKanaKatakana DEFINE 8
+wdKanaHiragana DEFINE 9
+         %ENDIF
+.
+         %IFDEF    WdCharacterWidth               .Class WdCharacterWidth
+wdWidthHalfWidth DEFINE 6
+wdWidthFullWidth DEFINE 7
+         %ENDIF
+.
+         %IFDEF    WdNumberStyleWordBasicBiDi     .Class WdNumberStyleWordBasicBiDi
+wdListNumberStyleBidi1 DEFINE 49
+wdListNumberStyleBidi2 DEFINE 50
+wdCaptionNumberStyleBidiLetter1 DEFINE 49
+wdCaptionNumberStyleBidiLetter2 DEFINE 50
+wdNoteNumberStyleBidiLetter1 DEFINE 49
+wdNoteNumberStyleBidiLetter2 DEFINE 50
+wdPageNumberStyleBidiLetter1 DEFINE 49
+wdPageNumberStyleBidiLetter2 DEFINE 50
+         %ENDIF
+.
+         %IFDEF    WdTCSCConverterDirection       .Class WdTCSCConverterDirection
+wdTCSCConverterDirectionSCTC DEFINE 0
+wdTCSCConverterDirectionTCSC DEFINE 1
+wdTCSCConverterDirectionAuto DEFINE 2
+         %ENDIF
+.
+         %ENDIF
+.

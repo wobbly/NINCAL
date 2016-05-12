@@ -1,0 +1,21 @@
+\**************************************************************************************************************************************************************
+* NCRCDD.INC - VARIABLE INCLUDE FOR NINORD3 - CORRECTION/CANCELATION FILE.
+*******************************************************************************
+* LENGTH:    16     
+*
+* ACCESS:    ISI
+* KEY    :   1-6     NCRCKEY
+***********************
+.
+NCRCFILE IFILE    KEYLEN=12,FIXED=16                 *DUPLICATES ALLOWED.
+NCRCFLAG FORM     1
+NCRCNAME INIT      "NINORD3 "
+NCRCFLD  DIM      12
+.
+NCRCKEY  DIM      6      1-6       ORDER LR NUMBER.
+NCRCCODE DIM      1      7-7       STATUS 'R'=REVISED 'C'=CANCELLED.
+NCRCMM   DIM      2      8-9       DATE OF REVISION.
+NCRCDD   DIM      2     10-11      DATE OF REVISION.
+NCRCYY   DIM      2     12-13      DATE OF REVISION.
+NCRCTYP  DIM      3     14-16      WHO REVISED.
+. 

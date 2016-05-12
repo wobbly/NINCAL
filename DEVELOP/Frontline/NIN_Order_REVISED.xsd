@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+  <xsd:element name="ninlforders">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="lforder" type="LFOrderType" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:complexType name="LFOrderType">
+    <xsd:sequence>
+      <xsd:element name="lrnum" type="LRType" />
+      <xsd:element name="orderdate" type="xsd:date" />
+      <xsd:element name="mailername" type="xsd:string" />
+      <xsd:element name="listnum" type="ListNumType" />
+      <xsd:element name="listname" type="xsd:string" />
+      <xsd:element name="selection" type="xsd:string" />
+      <xsd:element name="qty" type="QtyType" />
+      <xsd:element name="keycode" type="xsd:string" />
+      <xsd:element name="ponum" type="xsd:string" />
+      <xsd:element name="media" type="xsd:string" />
+      <xsd:element name="shipcontact" type="xsd:string" />
+      <xsd:element name="shipcompany" type="xsd:string" />
+      <xsd:element name="shipaddr" type="xsd:string" />
+      <xsd:element name="shipcity" type="xsd:string" />
+      <xsd:element name="shipstate" type="xsd:string" />
+      <xsd:element name="shipzip" type="xsd:string" />
+      <xsd:element name="shipemail" type="xsd:string" />
+      <xsd:element name="maildate" type="xsd:date" />
+      <xsd:element name="shipdate" type="xsd:date" />
+      <xsd:element name="shipvia" type="xsd:string" />
+      <xsd:element name="oppm" type="PriceType" />
+      <xsd:element name="selprice" type="PriceType" />
+      <xsd:element name="specialselections" type="xsd:string" />
+      <xsd:element name="specialinstructions" type="xsd:string" />
+      <xsd:element name="opu" type="OpuType" />
+      <xsd:element name="contact" type="xsd:string" />
+      <xsd:element name="entirelist" type="xsd:string" />
+      <xsd:element name="orderterms" type="xsd:string" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:simpleType name="LRType">
+    <xsd:restriction base="xsd:unsignedInt">
+      <xsd:minInclusive value="1" />
+      <xsd:maxInclusive value="999999999" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="ListNumType">
+    <xsd:restriction base="xsd:unsignedInt">
+      <xsd:minInclusive value="1" />
+      <xsd:maxInclusive value="999999" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="QtyType">
+    <xsd:restriction base="xsd:unsignedLong">
+      <xsd:minInclusive value="1" />
+      <xsd:maxInclusive value="999999999999" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="PriceType">
+    <xsd:restriction base="xsd:decimal">
+      <xsd:maxInclusive value="99999.99" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="OpuType">
+    <xsd:sequence>
+      <xsd:element name="opulr" type="LRType" />
+      <xsd:element name="opudate" type="xsd:date" />
+      <xsd:element name="opuqty" type="QtyType" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+</xsd:schema>

@@ -1,0 +1,58 @@
+.          PATCH 1.3  INCREASED MAILER TO 6 BYTES - ASH - 10/29/2004
+.          PATCH 1.2  ADDED NEW AIM FILE
+.          PATCH 1.1  ADDED NEW VAR TO TRACK INACTIVE SAMPLES
+.NSMPDD.INC
+..START PATCH 1.3 REPLACED LOGIC
+..nsmpfile ifile     keylen=7,FIXED=89
+..START PATCH 1.2 REPLACED LOGIC
+..nsmpfile ifile     keylen=7,FIXED=93
+.NSMPFLIST FILELIST
+.nsmpfile ifile     keylen=7,FIXED=93,Name="NINSAMPL.ISI"
+.nsmpfle2 Afile     FIXED=93,Name="NINSAMPL.AAM"
+.                     FILELISTEND
+..END PATCH 1.2 REPLACED LOGIC
+.nsmpname init      "NINSAMPL"
+.NSMPFLD  DIM       7             .MAILER NUMBER + SAMPLE NUMBER.
+..START PATCH 1.2 ADDED LOGIC
+.NSMPFLD1 DIM       7             .MAILER NUMBER AIMKEY
+..END PATCH 1.2 ADDED LOGIC
+.NSMPFLAG FORM      1
+.NSMPLOCK FORM      1    0 or 1=File locks, 2=Record locks, 3=No locks
+..
+.NSMPVARS LIST
+.NSMPMLR  DIM       4       1-4   MAILER NUMBER
+.NSMPNUM  DIM       3       5-7   SAMPLE NUMBER
+.NSMPDES1 DIM       30      8-37  SAMPLE DESC
+.NSMPDES2 DIM       30     38-67  SAMPLE DESC LINE 2
+..NSMPDTE  DIM       6      68-73  DATE OF SAMPLE
+..NSMPDATE DIM       6      74-79  DATE ENTERED
+.NSMPDTE  DIM       8      68-75  DATE OF SAMPLE
+.NSMPDATE DIM       8      76-83  DATE ENTERED
+..START PATCH 1.1 REPLACED LOGIC
+..NSMPUSER DIM       10     84-93  UPDATED BY
+.NSMPUSER DIM       9      84-92  UPDATED BY
+.NSMPINACTIVE DIM   1      93-93  INACTIVE CODE: 1 = INACTIVE
+..END PATCH 1.1 REPLACED LOGIC
+......................................................................
+NSMPFLIST  FILELIST
+nsmpfile   ifile      keylen=9,FIXED=110,Name="NINSAMPL.ISI|NINS1:502"
+nsmpfle2   Afile      FIXED=110,Name="NINSAMPL.AAM|NINS1:502"
+                      FILELISTEND
+nsmpname   init       "NINSAMPL"
+NSMPFLD               DIM        9             .MAILER COMPAny (new) NUMBER + SAMPLE NUMBER.
+NSMPFLD1   DIM        9             .MAILER NUMBER AIMKEY
+NSMPFLAG   FORM       1
+NSMPLOCK   FORM       1    0 or 1=File locks, 2=Record locks, 3=No locks
+.
+NSMPVARS   LIST
+NSMPMLR               DIM        6       1-6   MAILER NUMBER
+NSMPNUM               DIM        3       7-9  SAMPLE NUMBER
+NSMPDES1   DIM        30     10-39  SAMPLE DESC
+NSMPDES2   DIM        30     40-69  SAMPLE DESC LINE 2
+NSMPDTE               DIM        8      70-77  DATE OF SAMPLE
+NSMPDATE   DIM        8      78-85  DATE ENTERED
+NSMPUSER   DIM        9      88-94  UPDATED BY
+NSMPINACTIVE          DIM        1      95-95  INACTIVE CODE: 1 = INACTIVE
+NSMPFILLER DIM        15     96-110 FILLER
+.END PATCH 1.3 REPLACED LOGIC
+         LISTEND

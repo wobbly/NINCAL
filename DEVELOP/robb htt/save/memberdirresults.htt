@@ -1,0 +1,103 @@
+<!-- custom content goes here -->
+
+<script language="javascript">
+function changepg(newpos)
+{
+	document.memberForm.cgireadpos.value = newpos;
+  document.memberForm.cgifunction.value = 1;
+	document.memberForm.submit();
+}
+</script>
+<!-- START PATCH 1/3/2006 REPLACED LOGIC -->
+<!--
+<script language="javascript">
+function searchAgain()
+{
+	document.memberForm.cgifname.value = "";
+	document.memberForm.cgilname.value = "";
+	document.memberForm.cgiorganization.value = "";
+	document.memberForm.cgizip.value = "";
+	document.memberForm.cgifunction.value = 0;
+	document.memberForm.submit();
+}
+</script>
+-->
+<script language="javascript">
+function searchAgain()
+{
+	document.memberForm.cgifname.value = "";
+	document.memberForm.cgilname.value = "";
+	document.memberForm.cgiorganization.value = "";
+	document.memberForm.cgiemail.value = "";
+	document.memberForm.cgizip.value = "";
+	document.memberForm.cgifunction.value = 0;
+	document.memberForm.submit();
+}
+</script>
+<!-- END PATCH 1/3/2006 REPLACED LOGIC -->
+
+<form action='memberdir.plc' name='memberForm' id='memberForm' method='POST'>
+		<input type='hidden' name='SID' value='<%=SID%>' />
+		<input type='hidden' name='cgifunction' value='0' />
+    <table border='0' cellpadding='2' cellspacing='2' align='center'>
+			<tr>
+					<td class='title' colspan='4' align=center>
+							Member Directory
+							<br>
+							Search Results
+							<br><br><br>
+					</td>
+			</tr>
+			<tr>
+					<td colspan="2">
+						<span class='errorMsg'><%=errorMsg%></span>
+					</td>
+			</tr>
+			<tr>
+				<td>
+					<table class="datacontainer" cellpadding="2" cellspacing="0">
+						<tr>
+							<th>First Name</th>
+							<th>Last Name</th>
+							<th>Organization</th>
+<!-- START PATCH 1/3/2006 ADDED LOGIC -->
+							<th>Email</th>
+<!-- END PATCH 1/3/2006 ADDED LOGIC -->
+							<th>Zip Code</th>
+						</tr>
+<%DISPLAYRESULTS%>
+						<tr class="datarow<%=cgidatarow%>">
+							 <td><%=cgifname%></td>
+							 <td><%=cgilname%></td>
+							 <td><%=cgiorganization%></td>
+<!-- START PATCH 1/3/2006 ADDED LOGIC -->
+							 <td><%=cgiemail%></td>
+<!-- END PATCH 1/3/2006 ADDED LOGIC -->
+							 <td><%=cgizip%></td>
+						</tr>
+<%/DISPLAYRESULTS%>
+							<tr>
+								<td colspan="6" align=center>
+									<%=cgilinks%>
+								</td>
+							</tr>
+						<tr>
+								<td align='center' valign='top' colspan='4'>
+									<input type='hidden' name='cgizip' size='10' maxsize='10' value='<%=cgizip%>'>
+									<input type='hidden' name='cgiorganization' size='20' maxsize='32' value='<%=cgiorganization%>'>
+<!-- START PATCH 1/3/2006 ADDED LOGIC -->
+									<input type='hidden' name='cgiemail' size='15' maxsize='60' value='<%=cgiemail%>'>
+<!-- END PATCH 1/3/2006 ADDED LOGIC -->
+									<input type='hidden' name='cgifname' size='15' maxsize='32' value='<%=cgifname%>'>
+									<input type='hidden' name='cgilname' size='15' maxsize='32'value='<%=cgilname%>'>
+									<input type='button' value='Search Again' onClick='searchAgain();'>
+									<input type="hidden" name="cgidatasource" value="<%=cgidatasource%>" />
+									<input type="hidden" name="cgireadpos" value="<%=cgireadpos%>" />
+								</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+</form>
+<!-- end custom content -->

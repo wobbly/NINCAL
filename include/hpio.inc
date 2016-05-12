@@ -1,0 +1,50 @@
+...HPIO.inc
+.common print subroutines that require HP.inc
+.create 10Feb00 DLH
+.............................................................................................
+.Portrait_Letter_head
+.release 1 10Feb00
+.requires open print device
+.prints letterhead form and repositions to top of page
+.programmers responsibility to restore to their font.
+PortraitLTRHEAD
+        print  033,"&l1E",033,"&a0c0R",033,"*p632x75Y":
+                 033,"(8U",033,"(s1p24.00v0s+3b5T",012,015,012,015,hpt250,"Names":
+               b2,033,"(8U",033,"(s1p24.00v1s-2b5T","in the News":
+                 012,015,hpln4,012,015:
+               033,"(8U",033,"(s1p12.00v0s-2b5T",hpt250," C  A  L  I  F  O  R  N  I  A        I  N  C .":
+                 "*p600x3038Y":
+                 033,"(8U",033,"(s1p10.00v0s-2b5T",012,015,hpt150,"180 Grand Ave, Oakland, CA 94612-3799 ":
+               bullet," 415-989-3350 ",bullet," Fax 415-433-7796",033,"&a0c0R";
+        return
+.............................................................................................
+.Landscape_Letter_head
+.release 1 10Feb00
+.requires open print device
+.prints letterhead form and repositions to top of page
+.programmers responsibility to restore to their font.
+LandscapeLTRHEAD
+          Print  033,"&l1E",033,"&a0c0R":
+               033,"*p2150x45Y":
+                 033,"(8U",033,"(s1p24.00v0s+3b5T",012,015,012,015,hpt400,"Names":
+               b2,033,"(8U",033,"(s1p24.00v1s-2b5T","in the News":
+               012,015,hpln5,012,015:
+               033,"(8U",033,"(s1p12.00v0s-2b5T",hpt400," C  A  L  I  F  O  R  N  I  A        I  N  C .":
+                 "*p2000x2425Y":
+                 033,"(8U",033,"(s1p6.00v0s-2b5T",hpt400,"180 Grand Ave, Oakland, CA 94612-3799 ":
+               bullet," 415-989-3350 ",bullet," Fax 415-433-7796",033,"*p0x0Y";
+        return
+.............................................................................................
+.Second_Request
+.release PRE 11Jan01
+.requires open print device
+.prints second request repositions to top of page
+.programmers responsibility to restore to their font.
+.SecondRequest
+.        print  033,"&l1E",033,"&a0c0R",033,"*p1200x900Y":
+.               033,"(8U",033,"(s32Sg40.00v0s-2b5T",hpt250,033,"*v0N"," 2nd Request",033,"*v1N":
+.                "*p600x3038Y":
+.              033,"&a0c0R";
+.        return
+.............................................................................................
+

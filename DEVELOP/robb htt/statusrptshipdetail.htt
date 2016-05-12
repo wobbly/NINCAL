@@ -1,0 +1,117 @@
+<!-- custom content goes here -->
+<script language="javascript">
+
+function shipSub(lrnumber,mlrname)
+{
+    document.statusrpt1Form.cgiordernum.value = lrnumber;
+	document.statusrpt1Form.cgimailername.value = mlrname;
+    document.statusrpt1Form.cgifunction.value = 2;
+    document.statusrpt1Form.submit();
+}
+
+</script>
+<!-- START PATCH 10/19/2005 ADDED LOGIC -->
+<script language="javascript">
+function lrView(lrnumber)
+{
+    document.statusrpt1Form.cgiordernum.value = lrnumber;
+    document.statusrpt1Form.cgifunction.value = 3;
+    document.statusrpt1Form.submit();
+}
+</script>
+<!-- END PATCH 10/19/2005 ADDED LOGIC -->
+
+<form action='statusrpt.plc' name='statusrpt1Form' id='statusrpt1Form' method='POST'>
+	<input type='hidden' name='cgifunction' value='0' />
+	<input type='hidden' name='SID' value='<%=SID%>' />
+	<input type='hidden' name='cgilistnum' value='<%=cgilistnum%>' />
+	<input type='hidden' name='cgiordernum' value='<%=cgiordernum%>' />
+	<input type='hidden' name='cgimailername' value='<%=cgimailername%>' />
+	<table border='0' cellpadding='2' cellspacing='2' align='center'>
+		<tr>
+			<td class='title' align=center>
+				Order Confirmation<br>
+				Order Number <%=cgiordernum%>
+				<br><br>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<table class="datacontainer" cellpadding="2" cellspacing="0">
+					<tr>
+						<th align="right" valign="top">Mailer PO: </th><td class=datarow1><%=cgiponum%></td></tr>
+					<tr>
+						<th align="right" valign="top">Order Date: </th><td class=datarow><%=cgiorderdate%></td></tr>
+					<tr>
+						<th align="right" valign="top">Mailer Name: </th><td class=datarow1><%=cgimailername%></td></tr>
+					<tr>
+						<th align="right" valign="top">Offer: </th><td class=datarow><%=cgioffer%></td>
+					</tr>
+						<th align="right" valign="top">List Name: </th><td class=datarow1><%=cgilistname%></td></tr>
+					<tr>
+						<th align="right" valign="top">Select: </th><td class=datarow><%=cgiselect%></td></tr>
+					<tr>
+						<th align="right" valign="top">Quantity: </th><td class=datarow1><%=cgiorderqty%></td></tr>
+<!-- START PATCH 4/27/2006 ADDED LOGIC -->
+					<tr>
+						<th align="right" valign="top">Exc/Rent: </th><td class=datarow><%=cgiexcrent%></td></tr>
+<!-- END PATCH 4/27/2006 ADDED LOGIC -->
+					<tr>
+						<th align="right" valign="top">Base Price: </th><td class=datarow1><%=cgibaseprice%></td></tr>
+					<tr>
+						<th align="right" valign="top">Key/List ID: </th><td class=datarow><%=cgimailerkey%></td>
+					</tr>
+					<tr>
+						<th align="right" valign="top">Mail Date: </th><td class=datarow1><%=cgimailerdate%></td></tr>
+					<tr>
+						<th align="right" valign="top">Special Instructions: </th><td class=datarow><%=cgispecinstructions%></td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+<!-- START PATCH 10/19/2005 ADDED LOGIC -->
+		<tr>
+				<td colspan="5" align=center>
+					<input type=button value='Printable View' onclick='lrView(<%=cgiordernum%>);'>
+				</td>
+<!-- END PATCH 10/19/2005 ADDED LOGIC -->
+		<tr>
+			<td class='title' align=center>
+				<br><br>Shipping Detail
+				<br><br>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<table class="datacontainer" cellpadding="2" cellspacing="0" align="center">
+					<tr>
+						<th align="right" valign="bottom">Shipping Method: </th><td class=datarow1><%=cgimethod%></td></tr>
+					<tr>
+						<th align="right" valign="bottom">Ship Date: </th><td class=datarow><%=cgishipdate%></td></tr>
+					<tr>
+						<th align="right" valign="bottom">Quantity: </th><td class=datarow1><%=cgiquantity%></td></tr>
+					<tr>
+						<th align="right" valign="bottom">Tracking Number: </th><td class=datarow><%=cgitrackingnum%></td>
+					</tr>
+<%DISPLAYDETAIL%>
+					<tr class="datarow<%=cgidatarow%>">
+					</tr>
+<%/DISPLAYDETAIL%>
+					</tr>
+					<tr>
+						<td colspan="5" align=center>
+<!-- START PATCH 21NOV2005 ASH REPLACED LOGIC -->
+<!--							<input type=submit value='Back'> -->
+							<input type=button value='Back' onclick=javascript:history.back()>
+<!-- END PATCH 21NOV2005 ASH REPLACED LOGIC -->
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+
+	</table>
+	<input type='hidden' name='cgidatasource' value='<%=cgidatasource%>' />
+	<input type='hidden' name='cgireadpos' value='<%=cgireadpos%>' />
+</form>
+<!-- end custom content -->

@@ -1,0 +1,236 @@
+<script language="javascript">
+function clearForm()
+ {
+    document.statusrptForm.cgiordernum.value="";
+    document.statusrptForm.cgicampaignnum.value="";
+    document.statusrptForm.cgiponum.value="";
+    document.statusrptForm.cgimailerkey.value="";
+    document.statusrptForm.cgifromdate.value="";
+    document.statusrptForm.cgitodate.value="";
+    document.statusrptForm.radio1[0].checked = false;
+    document.statusrptForm.radio1[1].checked = false;
+    document.statusrptForm.radio1[2].checked = false;
+    document.statusrptForm.radio1[3].checked = false;
+    document.statusrptForm.radio1[4].checked = false;
+ }
+ 
+function clickRadio()
+{
+    if(document.statusrptForm.radio1[0].checked == true)
+    {
+	    document.statusrptForm.cgiponum.value="";
+	    document.statusrptForm.cgicampaignnum.value="";
+	    document.statusrptForm.cgimailerkey.value="";
+		document.statusrptForm.cgilistnum.value = "";
+		document.statusrptForm.cgiponum.disabled = true;
+		document.statusrptForm.cgicampaignnum.disabled = true;
+		document.statusrptForm.cgimailerkey.disabled = true;
+		document.statusrptForm.cgilistnum.disabled = true;
+		document.statusrptForm.cgiordernum.disabled = false;
+		document.statusrptForm.cgiordernum.focus();
+	}
+    else if(document.statusrptForm.radio1[1].checked == true)
+    {
+		document.statusrptForm.cgiordernum.value="";
+		document.statusrptForm.cgicampaignnum.value="";
+		document.statusrptForm.cgimailerkey.value="";
+		document.statusrptForm.cgilistnum.value = "";
+		document.statusrptForm.cgiordernum.disabled = true;
+		document.statusrptForm.cgicampaignnum.disabled = true;
+		document.statusrptForm.cgimailerkey.disabled = true;
+		document.statusrptForm.cgilistnum.disabled = true;
+		document.statusrptForm.cgiponum.disabled = false;
+		document.statusrptForm.cgiponum.focus();
+    }
+    else if(document.statusrptForm.radio1[2].checked == true)
+    {
+		document.statusrptForm.cgiordernum.value="";
+		document.statusrptForm.cgiponum.value="";
+		document.statusrptForm.cgimailerkey.value="";
+		document.statusrptForm.cgilistnum.value = "";
+		document.statusrptForm.cgiordernum.disabled = true;
+		document.statusrptForm.cgiponum.disabled = true;
+		document.statusrptForm.cgimailerkey.disabled = true;
+		document.statusrptForm.cgilistnum.disabled = true;
+		document.statusrptForm.cgicampaignnum.disabled = false;
+        document.statusrptForm.cgicampaignnum.focus();
+    }
+    else if(document.statusrptForm.radio1[3].checked == true)
+    {
+		document.statusrptForm.cgiordernum.value="";
+		document.statusrptForm.cgiponum.value="";
+		document.statusrptForm.cgicampaignnum.value="";
+		document.statusrptForm.cgilistnum.value = "";
+		document.statusrptForm.cgiordernum.disabled = true;
+		document.statusrptForm.cgiponum.disabled = true;
+		document.statusrptForm.cgicampaignnum.disabled = true;
+		document.statusrptForm.cgilistnum.disabled = true;
+		document.statusrptForm.cgimailerkey.disabled = false;
+		document.statusrptForm.cgimailerkey.focus();
+    }
+    else if(document.statusrptForm.radio1[4].checked == true)
+    {
+		document.statusrptForm.cgiordernum.value="";
+		document.statusrptForm.cgiponum.value="";
+		document.statusrptForm.cgicampaignnum.value="";
+		document.statusrptForm.cgimailerkey.value="";
+		document.statusrptForm.cgiordernum.disabled = true;
+		document.statusrptForm.cgiponum.disabled = true;
+		document.statusrptForm.cgicampaignnum.disabled = true;
+		document.statusrptForm.cgimailerkey.disabled = true;
+		document.statusrptForm.cgilistnum.disabled = false;
+        document.statusrptForm.cgilistnum.focus();
+    }
+}
+</script>
+
+<form action='statusrpt.plc' name='statusrptForm' id='statusrptForm' method='POST' onSubmit='validDate();' onReset='disableall();'>
+	<input type='hidden' name='cgifunction' value='1' />
+	<input type='hidden' name='SID' value='<%=SID%>' />
+	<table border='0' cellpadding='2' cellspacing='2' align='center'>
+		<tr>
+			<td class='title' colspan='2' align=center>
+				View Order
+				<br><br><br>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<span class='errorMsg'><%=errorMsg%></span>
+			</td>
+		</tr>
+		<tr>
+			<td align='right' valign='top'>Order Number:
+			</td>
+			<td align='left' valign='top'><input type='radio' name='radio1' onClick='clickRadio();' checked><input type='text' name='cgiordernum' size='10' maxsize='10'value ='<%=cgiordernum%>'></td>
+		</tr>
+		<tr>
+			<td align='right' valign='top'>Purchase Order(s):
+			</td>
+			<td align='left' valign='top'><input type='radio' name='radio1' onClick='clickRadio();'><input type='text' name='cgiponum' size='10' maxsize='10'value ='<%=cgiponum%>' disabled='true'></td>
+		</tr>
+    <tr>
+      <td align=center colspan=2><font class='smallformtext'>* search criteria is case sensitive</font></td>
+    </tr>
+		<tr>
+			<td align='right' valign='top'>Campaign Number:
+			</td>
+			<td align='left' valign='top'><input type='radio' name='radio1' onClick='clickRadio();'><input type='text' name='cgicampaignnum' size='10' maxsize='10'value ='<%=cgicampaignnum%>' disabled='true'></td>
+		</tr>
+		<tr>
+			<td align='right' valign='top'>Mailer Key(s):
+			</td>
+			<td align='left' valign='top'><input type='radio' name='radio1' onClick='clickRadio();'><input type='text' name='cgimailerkey' size='10' maxsize='10'value ='<%=cgimailerkey%>' disabled='true'></td>
+		</tr>
+    <tr>
+      <td align=center colspan=2><font class='smallformtext'>* search criteria is case sensitive</font></td>
+    </tr>
+		<tr>
+			<td align='right' valign='top'>List Number:</td>
+			<td align='left' valign='top'><input type='radio' name='radio1' onClick='clickRadio();'>
+			<%DOLISTNUMBER%><%/DOLISTNUMBER%>
+			</td>
+		</tr>
+		<tr><td colspan="2"><hr></td><tr>
+		<tr><td colspan="2"><b>Advanced Search Options</b></td></tr>
+<!--
+START PATCH 10/03/2005 ASH REPLACED LOGIC
+		<tr><td colspan="2">Mail Date:</td></tr>
+		<tr>
+			<td align='right' valign='bottom'>From Date:</td>
+			<td align='left' valign='bottom'><input type='text' name='cgifromdate' size='10' maxsize='10'value ='<%=cgifromdate%>'>
+			(mm/dd/yyyy)</td>
+		</tr>
+		<tr>
+			<td align='right' valign='bottom'>To Date:</td>
+			<td align='left' valign='bottom'><input type='text' name='cgitodate' size='10' maxsize='10'value ='<%=cgitodate%>'>
+			(mm/dd/yyyy)</td>
+		</tr>
+		<tr><td colspan="2">Status:</td></tr>
+-->
+		<tr><td colspan="2">Mail Date: (mm/dd/yyyy)</td></tr>
+		<tr>
+			<td align='center' valign='bottom'>From Date:  <input type='text' name='cgifromdate' size='10' maxsize='10' value ='<%=cgifromdate%>'></td>
+			<td align='center' valign='bottom'>To Date:  <input type='text' name='cgitodate' size='10' maxsize='10'value ='<%=cgitodate%>'></td>
+		</tr>
+		<tr><td colspan="2">Status:</td></tr>
+<!--
+END PATCH 10/03/2005 ASH REPLACED LOGIC
+-->
+<!--
+START PATCH 10/03/2005 ASH REPLACED LOGIC
+		<tr>
+			<td align='right' valign='top'>Live Order</td>
+			<td align='left' valign='top'><input type='checkbox' name='cgiliveorder' value ='Y' checked='true'></td>
+		</tr>
+		<tr>
+			<td align='right' valign='top'>Billed Order</td>
+			<td align='left' valign='top'><input type='checkbox' name='cgibilledorder' value ='Y' checked='true'></td>
+		</tr>
+		<tr>
+			<td align='right' valign='top'>Cancelled/Billed Order</td>
+			<td align='left' valign='top'><input type='checkbox' name='cgicancelbilledorder' value ='Y' checked='true'></td>
+		</tr>
+		<tr>
+			<td align='right' valign='top'>Cancelled Order</td>
+			<td align='left' valign='top'><input type='checkbox' name='cgicancelorder' value ='Y' checked='true'></td>
+		</tr>
+		<tr>
+			<td align='right' valign='top'>Pending Order</td>
+			<td align='left' valign='top'><input type='checkbox' name='cgipendorder' value ='Y' checked='true'></td>
+		</tr>
+		<tr>
+			<td align='right' valign='top'>Cancelled Pending Order</td>
+			<td align='left' valign='top'><input type='checkbox' name='cgicancelpendorder' value ='Y' checked='true'></td>
+		</tr>
+		<tr>
+			<td align='right' valign='top'>LCR</td>
+			<td align='left' valign='top'><input type='checkbox' name='cgilcrorder' value ='Y' checked='true'></td>
+		</tr>
+		<tr>
+			<td align='right' valign='top'>Cancelled LCR</td>
+			<td align='left' valign='top'><input type='checkbox' name='cgicancellcrorder' value ='Y' checked='true'></td>
+		</tr>
+		<tr>
+			<td align='right' valign='top'>Other/Unknown</td>
+			<td align='left' valign='top'><input type='checkbox' name='cgiotherunknown' value ='Y' checked='true'></td>
+		</tr>
+-->
+		<tr>
+			<td align='center' valign='top'>Order<input type='checkbox' name='cgiliveorder' value ='Y' checked='true'></td>
+			<td align='left' valign='top'>LCR<input type='checkbox' name='cgilcrorder' value ='Y' checked='true'></td>
+		</tr>
+<!--
+END PATCH 10/03/2005 ASH REPLACED LOGIC
+-->
+		<tr>
+		</tr>
+		<tr>
+		</tr>
+		<tr>
+			<td align='center' valign='top' colspan='2'>You can view Orders for Mail Dates within the past 12 months.</td>
+		</tr>
+		<tr>
+			<td align='center' valign='top' colspan='2'>If you'd like to see an older Order, please contact your NIN representative.</td>
+		</tr>
+		<tr>
+			<td align='center' valign='top' colspan='2'>
+				<br>
+<!-- START PATCH 10/14/2005 REPLACED LOGIC -->
+<!--
+				<input type=submit value='Search'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type=reset value='Reset'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="button" value="Clear" onClick="clearForm();">
+-->
+				<input type=submit value='Search'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="button" value="Clear" onClick="clearForm();">
+<!-- END PATCH 10/14/2005 REPLACED LOGIC -->
+			</td>
+		</tr>
+	</table>
+</form>
+<!-- <script language="Javascript"> -->
+<!-- clickRadio(); -->
+<!-- document.statusrptForm.cgiordernum.focus(); -->
+<!-- </script> -->
+<!-- end custom content -->

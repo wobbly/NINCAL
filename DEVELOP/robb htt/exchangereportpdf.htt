@@ -1,0 +1,25 @@
+<!-- custom content goes here -->
+<form action='' name='exchangerpt1form' id='exchangerpt1form' method='POST'>
+	<input type='hidden' name='cgifunction' value='0' />
+	<input type='hidden' name='SID' value='<%=SID%>' />
+	<input type='hidden' name='cgimailername' value='<%=cgimailername%>' />
+	<table border='0' cellpadding='2' cellspacing='2' align='center' width="100%">
+		<tr>
+			<td class='title' align=center>
+				View Exchange Report
+				<br>
+				<%=cgimailername%>
+				<br>
+				<br>
+			</td>
+		</tr>
+		<tr>
+			<td>
+<%DISPLAYPDF%>
+<%/DISPLAYPDF%>
+			</td>
+		</tr>
+	</table>
+	<input type="hidden" name="cgidatasource" value="<%=cgidatasource%>" />
+</form>
+<!-- end custom content -->

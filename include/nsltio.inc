@@ -1,0 +1,184 @@
+..............................................................................
+.
+. NSLTIO INCLUSION
+. NIN DATACARD SELECTION FILE I/O ROUTINES
+.
+. FILE NAME : NINSLT
+. REC LENGTH: 29 VAR
+. INDEX KEY : 1-9 (6 BYTE LIST NUMBER + 3 BYTE RECORD #)
+.
+..............................................................................
+.
+. ENTRY POINT : NSLTKEY
+. REQUIRED    : 'NSLTFLD'
+. RETURNED    : DATACARD SELECTION RECORD
+. DESCRIPTION : EXACT ISAM KEY READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NSLTKEY
+	BRANCH	NSLTFLAG,NSLT1
+	CALL	NSLTOPEN
+NSLT1
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NSLTFILE
+	READ	NSLTFILE,NSLTFLD;NSLTVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSLTTST
+. REQUIRED    : NSLTFLD
+. RETURNED    :
+. DESCRIPTION : TEST KEY
+.
+NSLTTST
+	BRANCH	NSLTFLAG,NSLT2
+	CALL	NSLTOPEN
+NSLT2
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NSLTFILE
+	READ	NSLTFILE,NSLTFLD;;
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSLTKS
+. REQUIRED    :
+. RETURNED    : DATACARD SELECTION RECORD
+. DESCRIPTION : KEY SEQUENTIAL DATACARD SELECTION FILE READ
+.
+NSLTKS
+	BRANCH	NSLTFLAG,NSLT3
+	CALL	NSLTOPEN
+NSLT3
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NSLTFILE
+	READKS	NSLTFILE;NSLTVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSLTSEQ
+. REQUIRED    :
+. RETURNED    : DATACARD SELECTION RECORD
+. DESCRIPTION : SEQUENTIAL DATACARD SELECTION FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NSLTSEQ
+	BRANCH	NSLTFLAG,NSLT4
+	CALL	NSLTOPEN
+NSLT4
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NSLTFILE
+	READ	NSLTFILE,SEQ;NSLTVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSLTWRT
+. REQUIRED    : 'NSLTFLD'
+. RETURNED    :
+. DESCRIPTION : EXACT ISAM KEY TXT/ISI INSERT
+.
+NSLTWRT
+	BRANCH	NSLTFLAG,NSLT5
+	CALL	NSLTOPEN
+NSLT5
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NSLTFLIST
+	WRITE	NSLTFLIST;NSLTVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSLTUPD
+. REQUIRED    : A PREVIOUS KEY READ
+. RETURNED    :
+. DESCRIPTION : KEY UPDATE RECORD NUMBER FILE
+.
+NSLTUPD
+	BRANCH	NSLTFLAG,NSLT6
+	CALL	NSLTOPEN
+NSLT6
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NSLTFLIST
+	UPDATE	NSLTFLIST;NSLTVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSLTDEL
+. REQUIRED    : 'NSLTFLD'
+. RETURNED    :
+. DESCRIPTION : EXACT ISAM KEY TXT/ISI DELETE
+.
+NSLTDEL
+	BRANCH	NSLTFLAG,NSLT7
+	CALL	NSLTOPEN
+NSLT7
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NSLTFLIST
+	DELETE	NSLTFLIST
+	trapclr	IO
+	RETURN
+
+..............................................................................
+. ENTRY POINT : NSLTAIM
+. REQUIRED    : NSLTFLD2
+. RETURNED    : RECORD
+. DESCRIPTION : AIM FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NSLTAIM
+	BRANCH	NSLTFLAG,NSLT8
+	CALL	NSLTOPEN
+NSLT8   
+	trap	IOMssg giving Error if IO
+	READ	NSLTFLE2,NSLTFLD1;NSLTVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSLTKG
+. REQUIRED    : VALID PREVIOUS AIM READ
+. RETURNED    : RECORD
+. DESCRIPTION : AIM KEY GENEREIC FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NSLTKG
+	BRANCH	NSLTFLAG,NSLT10
+	CALL	NSLTOPEN
+NSLT10
+	trap	IOMssg giving Error if IO
+	READKG	NSLTFLE2;NSLTVARS
+	trapclr	IO
+	RETURN
+
+...............................................................................
+.
+. ENTRY POINT : NSLTOPEN
+. REQUIRED    : 'NSLTFLAG'
+. RETURNED    : 'NSLTFLAG' SET TO '1' IF OPENNED
+. DESCRIPTION : OPEN NIN DATACARD SELECTION FILE
+.               DISPLAY ERROR AND ABORT IF NOT ON-LINE.
+.
+NSLTOPEN
+	TRAP	NSLTGONE giving Error if IO
+	OPEN	NSLTFLIST	.,EXCLUSIVE
+.	OPEN	NSLTFLIST
+	trapclr	IO
+	MOVE	C1,NSLTFLAG
+	RETURN
+.
+NSLTGONE
+	MOVE	NSLTNAME,FILENAME
+	CALL	FILEGONE
+.
+..............................................................................

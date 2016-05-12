@@ -1,0 +1,24 @@
+<!-- custom content goes here -->
+<form action='' name='optionlineinvForm' id='optionlineinvForm' method='POST'>
+	<input type='hidden' name='function' value='0' />
+	<input type='hidden' name='SID' value='<%=SID%>' />
+<center> <!-- 09/29/2010 BJACKSON -->
+	<table border='0' cellpadding='2' cellspacing='2' align='center'>
+		<tr>
+			<td class='title' align=center>
+				View Invoice
+				<br><br><br>
+			</td>
+		</tr>
+		<tr>
+			<td align=center><h4>Invoices are not available at this time.</h4></td>
+		</tr>
+		<tr>
+			<td align=center>
+				Please contact the administrator.
+			</td>
+		</tr>
+	</table>
+</form>
+</center> <!-- 09/29/2010 BJACKSON -->
+<!-- end custom content -->

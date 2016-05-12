@@ -1,0 +1,32 @@
+         include   common.inc
+         include   cons.inc
+pc       equ       0
+PASSWRD DIM        4
+release  init      "1.0"
+         move      "testOday" to program
+         move      "Names in the News Ca." to compnme
+         call      paint
+main     keyin     *p10:10,"1 Test Exchange Program":
+                   *p10:12,"2 Test Windows Request for Counts  ":
+.                   *p10:14,"3 Old Order Program (Add Only)  ":
+                   *p15:17,str1
+        cmatch     star to str1
+        stop       if equal
+        move       c0 to n1
+        move       str1 to n1
+        branch     n1 of prog1,prog2,prog3,prog4
+        stop
+prog1   chain      "f:\apps\plb\code\ndat001a.plc"
+        stop                   
+prog2   execute    "f:\apps\plb\code\plbwin.exe f:\library\develop\nmdl0001.plc"
+        stop                   
+prog3   
+        chain      "f:\apps\plb\code\nord0001.plc"
+        stop                   
+prog4   
+         KEYIN     *P12:21,"ENTER PASSWORD PLEASE ",*eson,PASSWRD,*esoff
+         MATCH     "CHNG" TO PASSWRD
+        goto        main if not equal
+        chain      "f:\apps\plb\code\ndat0dh1.plc"
+        stop                   
+         include   comlogic.inc         

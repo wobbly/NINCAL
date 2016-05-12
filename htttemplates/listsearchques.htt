@@ -1,0 +1,217 @@
+<!-- custom content goes here -->
+
+<!-- START PATCH 10/14/2005 REPLACED LOGIC -->
+<!--
+<script>
+
+function formSub() {
+	var x = document.listsearchForm;
+	if (x.cgilistname.value == "" & x.cgiminquanity.value == '' & x.cgikeyword.value == "")
+	{
+		alert("Please enter one or more of the following: List Name, Minimum Quantity, Keywords.");
+		return;
+	}
+	document.listsearchForm.submit();
+}
+
+function clearFields() {
+	document.listsearchForm.cgilistname.value = "";
+	document.listsearchForm.cgiminquanity.value = "";
+	document.listsearchForm.cgikeyword.value = "";
+}
+</script>
+-->
+<!-- START PATCH 11/18/2005 REPLACED LOGIC -->
+<!--
+<script>
+function formSub() {
+	var x = document.listsearchForm;
+	if (x.cgilistname.value == "" & x.cgikeyword.value == "")
+	{
+		alert("Please enter one or more of the following: List Name, Keywords.");
+		return;
+	}
+	document.listsearchForm.submit();
+}
+function listkeypress()
+{
+	if (document.listsearchForm.cgilistname.value != "")
+	{
+		document.listsearchForm.cgikeyword.value = ""
+	}
+}
+function keykeypress()
+{
+	if (document.listsearchForm.cgikeyword.value != "")
+	{
+		document.listsearchForm.cgilistname.value = ""
+	}
+}
+</script>
+-->
+<script>
+function formSub() {
+	if (document.listsearchForm.cgilistname.value == "")
+	{
+		alert("Please enter a Search Phrase.");
+		return;
+	}
+    if(document.listsearchForm.radio1[0].checked == true)
+    {
+	    document.listsearchForm.cgisearchtype.value="List Name";
+	}
+    else if(document.listsearchForm.radio1[1].checked == true)
+    {
+	    document.listsearchForm.cgisearchtype.value="Text/Description";
+    }
+	document.listsearchForm.submit();
+}
+</script>
+<!-- END PATCH 11/18/2005 REPLACED LOGIC -->
+<!-- END PATCH 10/14/2005 REPLACED LOGIC -->
+
+<form action='listSearch.plc' name='listsearchForm' id='listsearchForm' method='POST' onSubmit="return formSub();">
+		<input type='hidden' name='SID' value='<%=SID%>' />
+		<input type='hidden' name='cgifunction' value='1' />
+<!-- START  PATCH 11/18/2005 ADDED LOGIC -->
+		<input type='hidden' name='cgisearchtype' value='0' />
+<!-- END PATCH 11/18/2005 ADDED LOGIC -->
+<center> <!-- 09/29/2010 BJACKSON -->
+    <table border='0' cellpadding='2' cellspacing='2' align='center'>
+        <tr>
+            <td class='title' colspan='4' align=center>
+                Datacard Search
+                <br><br><br>
+            </td>
+        </tr>
+				<tr>
+						<td colspan="4">
+							<span class='errorMsg'><%=errorMsg%></span>
+						</td>
+				</tr>
+<!-- START PATCH 11/18/2005 REPLACED LOGIC -->
+<!--        <tr>
+<!--            <td align='right' valign='top'>List Name:</td>
+<!--<!-- START PATCH 10/14/2005 REPLACED LOGIC -->
+<!--<!--            <td align='left' valign='top'><input type='text' name='cgilistname' size='15' maxsize='32' value='<%=cgilistname%>'></td> -->
+<!--            <td align='left' valign='top'><input type='text' name='cgilistname' size='15' maxsize='32' value='<%=cgilistname%>' onkeypress='listkeypress()'></td>
+<!--<!-- END PATCH 10/14/2005 REPLACED LOGIC -->
+<!--        </tr>
+<!--<!--
+<!--START PATCH 10/03/2005 ASH REPLACED LOGIC
+<!--        <tr>
+<!--            <td align='right' valign='top'>Quantity:</td>
+<!--            <td align='left' valign='top'><input type='text' name='cgiminquanity' size='15' maxsize='32'value='<%=cgiminquanity%>'></td>
+<!--        </tr>
+<!--        <tr>
+<!--					<td align='right' valign='top'>List Type:</td>
+<!--					<td	align='left' valign='top'>
+<!--						<select name='cgilisttype'>",newline:
+<!--						"<option value='1'>All</option>",newline
+<!--						"<option value='2'>Exchange</option>",newline
+<!--						"<option value='3'>Rental</option>",newline:
+<!--						"</select><br>
+<!--						</td>
+<!--        </tr>
+<!--        <tr>
+<!--            <td align='right' valign='top'>Keyword:</td>
+<!--            <td align='left' valign='top'><input type='text' name='cgikeyword' size='10' maxsize='10' value='<%=cgikeyword%>'></td>
+<!--        </tr>
+<!---->
+<!--
+<!--        <tr>
+<!--            <td> </td>
+<!--            <td align='left' valign='top'>OR</td>
+<!--        </tr>
+<!--        <tr>
+<!--            <td align='right' valign='top'>Keyword:</td>
+<!--<!-- START PATCH 10/14/2005 REPLACED LOGIC -->
+<!--<!--            <td align='left' valign='top'><input type='text' name='cgikeyword' size='10' maxsize='10' value='<%=cgikeyword%>'></td> -->
+<!--            <td align='left' valign='top'><input type='text' name='cgikeyword' size='10' maxsize='10' value='<%=cgikeyword%>' onkeypress='keykeypress()'></td>
+<!--<!-- END PATCH 10/14/2005 REPLACED LOGIC -->
+<!--        </tr>
+<!--		<tr><td colspan="2"><hr></td><tr>
+<!--		<tr><td colspan="2"><b>Advanced Search Options</b></td></tr>
+<!--        <tr>
+<!--			<td align='right' valign='top'>List Type:</td>
+<!--			<td	align='left' valign='top'>
+<!--				<select name='cgilisttype'>",newline:
+<!--				"<option value='1'>All</option>",newline
+<!--				"<option value='2'>Exchange</option>",newline
+<!--				"<option value='3'>Rental</option>",newline:
+<!--				"</select><br>
+<!--			</td>
+<!--        </tr>
+<!-- END PATCH 10/03/2005 ASH REPLACED LOGIC -->
+        <tr>
+            <td align='right' valign='top'>Search Phrase:</td>
+            <td align='left' valign='top'><input type='text' name='cgilistname' size='15' maxsize='32' value='<%=cgilistname%>'></td>
+			<td align='left' valign='top'><input type='radio' name='radio1' checked></td>
+			<td align='left' valign='top'>Search List Name</td>
+        </tr>
+        <tr>
+	        <td></td>
+   	        <td></td>
+			<td align='left' valign='top'><input type='radio' name='radio1' ></td>
+			<td align='left' valign='top'>Search Text/Description</td>
+        </tr>
+<!-- START PATCH 26APR2006 ADDED LOGIC -->
+  </table>
+  <table border='0' cellpadding='3' cellspacing='3' align='center' width="565">
+  	<tr>
+
+   		<td width="35%"></td>
+		<td align='left' valign='top' width="50%">
+			<font class='smallformtext2'>
+				Search Criteria:
+			</font>
+		</td>
+		<td width="15%"></td>
+	</tr>
+	<tr>
+   		<td width="35%"></td>
+		<td align='left' valign='top' width="50%">
+		  	<font class='smallformtext2'>
+			  <ul>
+			    <li>Can be partial</li>
+			  	<li>Must include at least 3 sequential, non-blank characters</li>
+			  	<li>Cannot include wildcards</li>
+			  	<li>*May be case sensitive</li>
+			  </ul>
+			</font>
+		</td>
+		<td width="15%"></td>
+	</tr>
+	</font>
+  </table>
+  <table border='0' cellpadding='2' cellspacing='2' align='center' width="565">
+<!-- END PATCH 26APR2006 ADDED LOGIC -->
+        <tr>
+            <td colspan='4' align=center>
+            	A link to "Samples" will be displayed in list search results
+			</td>
+        </tr>
+		<tr>
+			<td colspan='4' align=center>
+            	for all organizations with acquisition packages on file.
+            </td>
+        </tr>
+<!-- END PATCH 11/18/2005 REPLACED LOGIC -->
+        <tr>
+            <td align='center' valign='top' colspan='4'>
+                <br>
+                <br>
+<!-- START PATCH 10/14/2005 REPLACED LOGIC -->
+<!--                <input type='submit' value='Search'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type='reset' value='Reset'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type='button' value='Clear' onClick='clearFields();'>  -->
+                <input type='submit' value='Search'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type='reset' value='Clear'>
+<!-- END PATCH 10/14/2005 REPLACED LOGIC -->
+            </td>
+        </tr>
+    </table>
+</center> <!-- 09/29/2010 BJACKSON -->
+</form>
+<script language="JavaScript"> document.listsearchForm.cgilistname.focus(); </script>
+<!-- end custom content -->

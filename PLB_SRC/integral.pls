@@ -1,0 +1,1269 @@
+PC	EQU	1
+	include	common.inc
+	include	cons.inc
+	include	norddd.inc
+	include	ndatdd.inc
+.START PATCH 1.5 REPLACED LOGIC
+.        include nmlrdd.inc
+.        include nbrkdd.inc
+	include	compdd.inc
+	include	cntdd.inc
+.END PATCH 1.5 REPLACED LOGIC
+	include	nowndd.inc
+	include	nofrdd.inc
+	include	nxngdd.inc
+	include	nxchdd.inc
+	include	nxrfdd.inc
+	include	nmrgdd.inc
+	include	winapi.inc
+.START PATCH 1.1 ADDED LOGIC
+	include	nord4dd.inc
+	include	nord5dd.inc
+	include	npnddd.inc
+.END PATCH 1.1 ADDED LOGIC
+.START PATCH 1.2 ADDED LOGIC
+	include	nseldd.inc
+	include	ntxtdd.inc
+.END PATCH 1.2 ADDED LOGIC
+.START PATCH 1.3 ADDED LOGIC
+	include	ninvdd.inc
+.END PATCH 1.3 ADDED LOGIC
+.START PATCH 1.4 ADDED LOGIC
+	include	media.inc
+.END PATCH 1.4 ADDED LOGIC
+.START PATCH 1.6 ADDED LOGIC
+	include	nsel2dd.inc
+	include	nsel3dd.inc
+	include	nmoddd.inc
+	include	nadddd.inc
+	include	nsltdd.inc
+	include	nrefdd.inc
+.END PATCH 1.6 ADDED LOGIC
+.START PATCH 1.7 ADDED LOGIC
+	include	statsdd.inc
+.END PATCH 1.7 ADDED LOGIC
+.START PATCH 2.4 ADDED LOGIC
+	include	nintdd.inc
+.END PATCH 2.4 ADDED LOGIC
+
+Release          Init         "2.41.1"    24AUG2006 DMB   Added .0116 = African Wildlife Foundation
+.Release          Init         "2.41"    16AUG2006 JD   Added close, eliviate Format error on sort.
+.Release          Init         "2.4"    13JUN2006 ASH  Cleaned up Xref reformat.  Added logic to allow easier account cleanup
+.Release          Init         "2.3"    04MAY2006 ASH  Added CARE - cleaned up other accounts
+.Release          Init         "2.2"    30MAR2006 ASH  Added ONETRC
+.Release          Init         "2.1"    19DEC2005 ASH  Added DOW
+.Release          Init         "2.0"    28NOV2005 ASH  Added Farm Sanctuary
+.Release          Init         "1.99"    02NOV2005 ASH  Added NPCA
+.Release          Init         "1.98"    22JUN2005 ASH  Reformatted NINCNT to thwart errors on Integral's side
+.Release          Init         "1.97"    14JUN2005 ASH  Added Owner number to ListFile
+.Release          Init         "1.96"    24MAY2005 ASH  FTP files to Integral instead of Email.
+.Release          Init         "1.95"    09MAR2005 ASH  DCCC has moved to Cravers
+.Release          Init         "1.94"    22FEB2005 ASH  Added Logic to Match Select Names for Keyed In Selects
+.Release          Init         "1.93"    19JAN2005 ASH  Added PETA
+.Release          Init         "1.92"    18NOV2004 ASH  Added logic to include Test/Cont field for LRFile.dat
+.Release          Init         "1.91"    26OCT2004 ASH  Added logic to include Gender field for ListFile.dat
+.Release          Init         "1.9"    15OCT2004 ASH  Added logic to test for existence of NORDTEST.PLC prior to run of program
+.Release          Init         "1.8"    07SEP2004 ASH  Add new records.  Add ConFile.dat back in.
+.Release          Init         "1.7"    10AUG2004 ASH  Rewrite for Integral
+.				Old version of dd file renamed to Integralbak.inc
+.				Added reformat for copyfiles
+.Release          Init         "1.6"    02JUN2004 ASH  Added Price Information
+.Release          Init         "1.5"    26MAY2004 ASH  MAILER CONVERSION
+.Release          Init         "1.4"    20MAY2004 ASH  Added more info for Integral
+.Release          Init         "1.3"    03MAR2004 ASH  Added more info for Integral
+.Release          Init         "1.2"    03FEB2004 ASH  DATACARD CONVERSION
+.Release          Init         "1.11"    29Jan2004 DLH  new sort to long
+.
+.release	init	"1.1"	28JAN2004  ASH  ADDED FIELDS FOR INTEGRAL PER MEETING 1/28/2004
+.release	init	"1.0"
+
+.EXTERNAL ROUTINES FROM	NORDTEST.PLC
+GetNetLast external "NORDTEST;OrderGetNetLast"
+.START PATCH 1.94 ADDED LOGIC
+.EXTERNAL ROUTINES FROM	INTEGRAL3.PLC
+Integral3Run external "INTEGRAL3;Integral3Run"
+.END PATCH 1.94 ADDED LOGIC
+input	file
+output	file
+output2	file
+output3	file
+.START PATCH 1.4 ADDED LOGIC
+output4	file
+.END PATCH 1.4 ADDED LOGIC
+.START PATCH 1.6 ADDED LOGIC
+output5	file
+.END PATCH 1.6 ADDED LOGIC
+PERCENT	form	4.2
+Percent1 form	4.4
+CALCPER	form	7.4
+nordin	form	8
+nordinb	form	8
+nordoutb form	8
+nordout	form	8
+ExcRent	dim	1
+str46	dim	46
+b46	init	"                                              "
+startfp	form	4
+endfp	form	4
+DupeRate dim	6
+listhold dim	6
+mlrhold	dim	4
+LastUpdate form	5
+OHistBytes init "lLpeE*z"
+.hexeight	integer 4,"4294967295"
+.START PATCH 1.2 ADDED LOGIC
+.START PATCH 2.4 REPLACED LOGIC
+.hold	dim	4500
+PackData DataList
+hold	dim	500
+.END PATCH 2.4 REPLACED LOGIC
+.END PATCH 1.2 ADDED LOGIC
+.START PATCH 1.9 ADDED LOGIC
+time1   form    16
+time2   form    16
+time3   form    16
+.END PATCH 1.9 ADDED LOGIC
+
+mss1	plform	Error
+
+	formload mss1
+
+	move	C1,NDATPATH
+	move	C1,NXRFPATH
+	call	Paint
+.START PATCH 1.9 ADDED LOGIC
+	pack	APIFileName,"\\nts0\c\apps\plb\code\nordtest.plc",hexzero
+	clock	timestamp,timestamp
+	move	timestamp,time1
+	move	timestamp,str10
+	move	str10,str11
+	loop
+		call	FindFirstFile
+		if (APIResult = 0 | APIResult = hexeight)
+			clock	timestamp,timestamp
+			move	timestamp,time2
+			move	timestamp,str10
+			if (str11 <> str10)
+				add	"400000",time2		.Compensate for "base 60"
+			endif
+			sub	time1,time2,time3
+			if (time3 > 300000) ..30 Minutes Maximum
+				goto ShutDown
+			endif
+		endif
+		until (APIResult <> 0 & APIResult <> Hexeight)
+	repeat
+.END PATCH 1.9 ADDED LOGIC
+.
+	clock	timestamp,timestamp
+	unpack	timestamp,CC,YY,MM,DD,str4
+	unpack	str4,str2,str3
+	display	*p10:8,str2,":",str3
+	erase	"c:\work\trkfile.dat"
+	prepare	output3,"c:\work\trkfile.dat"
+	write	output3,SEQ;timestamp
+.
+.	goto Datacards
+.	goto ZipCreate
+.	goto FileCopies
+.	goto emailing
+.       goto opensort
+.
+	display	*P10:10,*EL,"Creating LRFile.dat"
+	display	*P10:12,*EL,"Cleaning up Records"
+;begin patch 1.11  ooops
+	erase	"c:\work\ninord.dat"
+.START PATCH 2.4 REPLACED LOGIC
+.	erase	"c:\work\ninord1.dat"
+	erase	"c:\work\ninord.new"
+	create	PackData=1:1:1:1
+.END PATCH 2.4 REPLACED LOGIC
+	erase	"c:\work\ninord.srt"
+	erase	"c:\work\LRFile.dat"
+.START PATCH 1.6 ADDED LOGIC
+	erase	"c:\work\PrcFile.dat"
+.END PATCH 1.6 ADDED LOGIC
+.START PATCH 1.7 ADDED LOGIC
+	erase	"c:\work\PkgFile2.dat"
+.END PATCH 1.7 ADDED LOGIC
+
+.START PATCH 2.4 REPLACED LOGIC
+.	display	*P10:12,*EL,"Sorting Records, Sort Number 1"
+..0173 = TNC
+..0170 = NWF
+..0179 = Nutrition Action	1
+..1746 = Emilys List	1
+..0274 = Audubon Society	1
+..0193 = DCCC	1
+..1604 = Special Olympics
+..0055 =	Unicef	1
+..0400 =	PETA
+..START PATCH 1.99 ADDED LOGIC
+..0620 = NPCA
+..END PATCH 1.99 ADDED LOGIC
+..START PATCH 2.0 ADDED LOGIC
+..3028 = Farm Sanctuary
+..END PATCH 2.0 ADDED LOGIC
+..START PATCH 2.1 ADDED LOGIC
+..0188 = Defenders of Wildlife
+..END PATCH 2.1 ADDED LOGIC
+..START PATCH 2.3 ADDED LOGIC
+..0601 = CARE
+..END PATCH 2.3 ADDED LOGIC
+.
+..START PATCH 2.3 REPLACED LOGIC
+...START PATCH 1.1 REPLACED LOGIC
+...	pack	taskname,"\\nins1\e\data\text\ninord.dat,c:\work\ninord.dat;S=#"2='0'&3='0173'|2='B'&3='0173'|2='X'&3='0173'|2='0'&3='0179'|2='B'&3='0179'|2='X'&3='0179'|2='0'&3='1746'|2='B'&3='1746'|2='X'&3='1746'#""
+...begin patch 1.11  ooops
+..	pack	taskname,"\\nins1\e\data\text\ninord.dat,c:\work\ninord.dat;S=#"2='0'&3='0173'|2='B'&3='0173'|2='X'&3='0173'|2='0'&3='0179'|2='B'&3='0179'|2='X'&3='0179'|2='0'&3='1746'|2='B'&3='1746'|2='X'&3='1746'#""
+..	sort	taskname
+...START PATCH 1.3 REPLACED LOGIC
+...	pack	taskname,"\\nins1\e\data\text\ninord.dat,c:\work\ninord1.dat;S=#"2='0'&3='0274'|2='B'&3='0274'|2='X'&3='0274'#""
+...START PATCH 1.95 REPLACED LOGIC
+...	pack	taskname,"\\nins1\e\data\text\ninord.dat,c:\work\ninord1.dat;S=#"2='0'&3='0274'|2='B'&3='0274'|2='X'&3='0274'|2='0'&3='0170'|2='B'&3='0170'|2='X'&3='0170'|2='0'&3='0193'|2='B'&3='0193'|2='X'&3='0193'#""
+...START PATCH 1.99 REPLACED LOGIC
+...	pack	taskname,"\\nins1\e\data\text\ninord.dat,c:\work\ninord1.dat;S=#"2='0'&3='0274'|2='B'&3='0274'|2='X'&3='0274'|2='0'&3='0170'|2='B'&3='0170'|2='X'&3='0170'#""
+..	pack	taskname,"\\nins1\e\data\text\ninord.dat,c:\work\ninord1.dat;S=#"2='0'&3='0274'|2='B'&3='0274'|2='X'&3='0274'|2='0'&3='0170'|2='B'&3='0170'|2='X'&3='0170'|2='0'&3='0620'|2='B'&3='0620'|2='X'&3='0620'#""
+...END PATCH 1.99 REPLACED LOGIC
+...END PATCH 1.95 REPLACED LOGIC
+...END PATCH 1.3 REPLACED LOGIC
+...	pack	taskname,"\\nins1\e\data\text\ninord.dat,c:\work\ninord.dat;S=#"2='0'&3='0173'|2='B'&3='0173'|2='X'&3='0173'|2='0'&3='0179'|2='B'&3='0179'|2='X'&3='0179'|2='0'&3='1746'|2='B'&3='1746'|2='X'&3='1746'|2='0'&3='0274'|2='B'&3='0274'|2='X'&3='0274'#""
+...END PATCH 1.1 REPLACED LOGIC
+..	sort	taskname
+...START PATCH 1.8 ADDED LOGIC
+...START PATCH 1.9 REPLACED LOGIC
+...	pack	taskname,"\\nins1\e\data\text\ninord.dat,c:\work\ninord2.dat;S=#"2='0'&3='1604'|2='B'&3='1604'|2='X'&3='1604'|2='0'&3='0055'|2='B'&3='0055'|2='X'&3='0055'#""
+..	pack	taskname,"\\nins1\e\data\text\ninord.dat,c:\work\ninord2.dat;S=#"2='0'&3='1604'|2='B'&3='1604'|2='X'&3='1604'|2='0'&3='0055'|2='B'&3='0055'|2='X'&3='0055'|2='0'&3='0400'|2='B'&3='0400'|2='X'&3='0400'#""
+...END PATCH 1.9 REPLACED LOGIC
+..	sort	taskname
+...END PATCH 1.8 ADDED LOGIC
+..
+...START PATCH 2.0 ADDED LOGIC
+...START PATCH 2.1 REPLACED LOGIC
+...	pack	taskname,"\\nins1\e\data\text\ninord.dat,c:\work\ninord3.dat;S=#"2='0'&3='3028'|2='B'&3='3028'|2='X'&3='3028'#""
+..	pack	taskname,"\\nins1\e\data\text\ninord.dat,c:\work\ninord3.dat;S=#"2='0'&3='3028'|2='B'&3='3028'|2='X'&3='3028'|2='0'&3='0188'|2='B'&3='0188'|2='X'&3='0188'#""
+...END PATCH 2.1 REPLACED LOGIC
+..	sort	taskname
+...END PATCH 2.0 ADDED LOGIC
+.........................................
+.	pack	taskname,"\\nins1\e\data\text\ninord.dat,c:\work\ninord.dat;S=#"2='0'&3='0173'|2='B'&3='0173'|2='X'&3='0173'|2='0'&3='0170'|2='B'&3='0170'|2='X'&3='0170'|2='0'&3='1604'|2='B'&3='1604'|2='X'&3='1604'#""
+.	sort	taskname
+.	pack	taskname,"\\nins1\e\data\text\ninord.dat,c:\work\ninord1.dat;S=#"2='0'&3='3028'|2='B'&3='3028'|2='X'&3='3028'|2='0'&3='0188'|2='B'&3='0188'|2='X'&3='0188'|2='0'&3='0620'|2='B'&3='0620'|2='X'&3='0620'#""
+.	sort	taskname
+.	pack	taskname,"\\nins1\e\data\text\ninord.dat,c:\work\ninord2.dat;S=#"2='0'&3='0601'|2='B'&3='0601'|2='X'&3='0601'|2='0'&3='0400'|2='B'&3='0400'|2='X'&3='0400'#""
+.	sort	taskname
+..END PATCH 2.3 REPLACED LOGIC
+.
+.	call	getwinver
+.	clear	taskname
+.	if (osflag = c1 | osflag = c5)
+.		append	"!c:\winnt\system32\cmd.exe",taskname
+.	elseif (osflag = c3 | osflag = c4)
+.		append	"!c:\command.com",taskname
+.	elseif (osflag = c6)
+.		append	"!c:\windows\system32\cmd.exe",taskname
+.	endif
+..START PATCH 1.8 REPLACED LOGIC
+..	append	" /c copy c:\work\ninord.dat+c:\work\ninord1.dat c:\work\ninord.new",taskname
+..	reset	taskname
+..	execute	taskname
+..START PATCH 2.0 REPLACED LOGIC
+..	append	" /c copy c:\work\ninord.dat+c:\work\ninord1.dat+c:\work\ninord2.dat c:\work\ninord.new",taskname
+..START PATCH 2.3 REPLACED LOGIC
+..	append	" /c copy c:\work\ninord.dat+c:\work\ninord1.dat+c:\work\ninord2.dat+c:\work\ninord3.dat c:\work\ninord.new",taskname
+.	append	" /c copy c:\work\ninord.dat+c:\work\ninord1.dat+c:\work\ninord2.dat c:\work\ninord.new",taskname
+..END PATCH 2.3 REPLACED LOGIC
+..END PATCH 2.0 REPLACED LOGIC
+.	reset	taskname
+.	execute	taskname
+..END PATCH 1.8 REPLACED LOGIC
+.;end patch 1.11  ooops
+..
+..	clock	timestamp,timestamp
+..	move	C0,LastUpdate
+..	move	C0,JULDAYS
+..	call	CVTJUL
+..	sub	"1826",JULDAYS,LastUpdate	.5 years ago + 1(possible leap year) from today
+..
+.	display	*P10:12,*EL,"Sorting Records, Sort Number 2"
+.	pack	taskname,"c:\work\ninord.new,c:\work\ninord.srt;S=#"202>='19981001'#",3-6,16-21"
+.	sort	taskname
+.................................................
+	display	*P10:12,*EL,"Sorting Records"
+.0173 = TNC   		000169
+.0170 = NWF			OUT
+.0179 = Nutrition Action1	OUT
+.1746 = Emilys List	1	OUT
+.0274 = Audubon Society	1	OUT
+.0193 = DCCC	1	OUT
+.1604 = Special Olympics	OUT
+.0055 =	Unicef	1	OUT
+.0400 =	PETA                	001082
+.0620 = NPCA         		001238
+.3028 = Farm Sanctuary    	002859
+.0188 = Defenders of Wildlife   	000929
+.0601 = CARE		OUT
+.0116 = African Wildlife Foundation 000869
+.0059 = Kennedy for Senate	000814
+.1443 = Committee for a Democratic Majority 009318
+	loop
+		move	"Sort-NINTSEQ",Location
+		pack	KeyLocation,"Key: SEQ"
+		call	NINTSEQ
+		until over
+		//This logic will apply until Order file has been converted!!
+		pack	COMPFLD,NINTCLIENT
+		move	"Sort-COMPKEY",Location
+		pack	KeyLocation,"Key: ",COMPFLD
+		call	COMPKEY
+		if not over
+		//An over should never occur!!
+			call	Trim using COMPOLDMLR
+			if (COMPOLDMLR <> "")
+			//Should never be blank
+				pack	taskname,"\\nins1\e\data\text\ninord.dat,c:\work\ninord.dat;S=#"2='0'&3='",COMPOLDMLR,"'|2='B'&3='",COMPOLDMLR,"'|2='X'&3='",COMPOLDMLR,"'#""
+				sort	taskname
+				open	tempfile,"c:\work\ninord.dat",exclusive
+				loop
+					read	tempfile,SEQ;hold
+					until over
+					insertitem PackData,0,hold
+				repeat
+				close	tempfile
+			endif
+		endif
+	repeat
+	erase	"c:\work\ninord.dat"
+	prep	tempfile,"c:\work\ninord.dat",exclusive
+	PackData.GetCount giving howmany
+	if (howmany > C0)
+		for result,"1",howmany
+			getitem	PackData,result,hold
+			unpack	hold,ORDVARS
+			write	tempfile,SEQ;ORDVARS
+		repeat
+.start PATCH 2.41
+		close	tempfile
+.end PATCH 2.41
+ 	endif
+	display	*P10:12,*EL,"Sorting Records, Sort Number 2"
+	pack	taskname,"c:\work\ninord.dat,c:\work\ninord.srt;S=#"202>='19981001'#",3-6,16-21"
+	sort	taskname
+.END PATCH 2.4 REPLACED LOGIC
+opensort
+	open	input,"c:\work\ninord.srt"
+	prepare	output,"c:\work\LRFile.dat"
+.START PATCH 1.6 ADDED LOGIC
+	prepare	output5,"c:\work\PrcFile.dat"
+.END PATCH 1.6 ADDED LOGIC
+.START PATCH 1.7 ADDED LOGIC
+	prepare	output4,"c:\work\PkgFile2.dat"
+.END PATCH 1.7 ADDED LOGIC
+	loop
+		read	input,SEQ;ORDVARS
+		until over
+		add	C1,howmany
+		display	*P10:12,*EL,"Processing Record:    ",howmany
+		if (mlrhold <> OMLRNUM)
+			clear	listhold
+			move	OMLRNUM,mlrhold
+			pack	MKEY,OMLRNUM,"000"
+			rep	zfill,MKEY
+.			if (MKEY <> "0000000")
+				move	"NMLRKEY",Location
+				pack	KeyLocation,"Key: ",MKEY
+				call	NMLRKEY
+				if over
+					clear	MCOMP
+				endif
+.			else
+.				clear	MCOMP
+.			endif
+		endif
+		call	Trim using OLON
+		if (OLON <> "")
+			pack	NOWNFLD,OLON
+			rep	zfill,NOWNFLD
+			move	"NOWNKEY",Location
+			pack	KeyLocation,"Key: ",NOWNFLD
+			call	NOWNKEY
+		else
+			clear	OWNOCPY
+		endif
+		bump	OODNUM,4
+		pack	NOFRFLD,OMLRNUM,OODNUM
+		rep	zfill in NOFRFLD
+		move	"NOFRKEY",Location
+		pack	KeyLocation,"Key: ",NOFRFLD
+		call	NOFRKEY
+		if over
+			clear	OFDESC
+		endif
+		pack	NBRKFLD,OBRKNUM,OBRKCNT
+		rep	zfill in NBRKFLD
+		if (NBRKFLD <> "0000000")
+			move	"NBRKKEY",Location
+			pack	KeyLocation,"Key: ",NBRKFLD
+			call	NBRKKEY
+			if over
+				clear	BRCOMP
+			endif
+		else
+			clear	BRCOMP
+		endif
+		call	CalcNet
+		clear	DupeRate
+		if (listhold <> OLNUM)
+			clear	DupeRate
+			call	GetNetLast using OMLRNUM,OLNUM,DupeRate
+			move	OLNUM,listhold
+		endif
+.Clean up old Offer Description fields
+		type	ONETQTY
+		if not equal
+			clear	ONETQTY
+		endif
+		type	OCAMP
+		if not equal
+			clear	OCAMP
+		endif
+		if (OCLRSTAT <> "1" & OCLRSTAT <> "2" & OCLRSTAT <> "3")
+			clear	OCLRSTAT
+		endif
+		if (OBRKRPT <> "1")
+			clear	OBRKRPT
+		endif
+		type	OCLRDTEC
+		if not equal
+			clear	OCLRDTEC
+		endif
+		type	OCLRDTEY
+		if not equal
+			clear	OCLRDTEY
+		endif
+		type	OCLRDTEM
+		if not equal
+			clear	OCLRDTEM
+		endif
+		type	OCLRDTED
+		if not equal
+			clear	OCLRDTED
+		endif
+		if (ORENT <> "1")
+			clear	ORENT
+		endif
+		reset	OHistBytes
+		scan	OHIST,OHistBytes
+		if not equal
+			clear	OHIST
+		endif
+		type	OXPPM
+		if not equal
+			clear	OXPPM
+		endif
+.START PATCH 1.1 ADDED LOGIC
+		clear	NPNDDESC	.Initialize value
+		if (OSTAT = "p" | OSTAT = "x")
+			move	OLRN,NORD4FLD
+			if (NORD4FLD <>	"")
+				rep	zfill in NORD4FLD
+				clear	NORD4STAT
+				move	"NORD4KEY",Location
+				pack	KeyLocation,"Key: ",NORD4FLD
+				call	NORD4KEY		.get Pending Order info
+				if not over
+					if (OSTAT = "p"	| OSTAT	= "x")
+						move	"p",str1
+					endif
+					pack	NPNDFLD	from str1,NORD4STAT
+					rep	zfill in NPNDFLD
+					move	"NPNDKEY",Location
+					pack	KeyLocation,"Key: ",NPNDFLD
+					call	NPNDKEY
+					if over
+						clear	NPNDDESC
+					endif
+				endif
+			endif
+		elseif (OSTAT = "l" | OSTAT = "z")
+			move	OLRN,NORD5FLD
+			if (NORD5FLD <>	"")
+				rep	zfill in NORD5FLD
+				clear	NORD5STAT
+				move	"NORD5KEY",Location
+				pack	KeyLocation,"Key: ",NORD5FLD
+				call	NORD5KEY		.get Pending Order info
+				if not over
+					move	"l",str1
+					pack	NPNDFLD	from str1,NORD5STAT
+					rep	zfill in NPNDFLD
+					move	"NPNDKEY",Location
+					pack	KeyLocation,"Key: ",NPNDFLD
+					call	NPNDKEY
+					if over
+						clear	NPNDDESC
+					endif
+				endif
+			endif
+		endif
+.END PATCH 1.1 ADDED LOGIC
+.
+.START PATCH 1.3 REPLACED LOGIC
+.		write	output,SEQ;ORDVARS:
+.				MCOMP:
+.				OWNOCPY:
+.				OFDESC:
+.				BRCOMP:
+.				str10:
+.				ExcRent:
+.				REVDATE:
+.				DupeRate:
+.				NPNDDESC
+		packkey	NINVFLD,OLRN
+		rep	zfill,NINVFLD
+		move	c1,NINVPATH
+		move	"NINVKEY",Location
+		pack	KeyLocation,"Key: ",NINVFLD
+		call	NINVKEY
+.START PATCH 1.6 ADDED LOGIC
+		packkey	NSEL2FLD,"1",OLRN
+		move	"NSEL2KEY",Location
+		pack	KeyLocation,"Key: ",NSEL2FLD
+		call	NSEL2KEY
+		if over
+			move	C0,NSEL2PRICE
+			move	C0,NSEL2SPRICE
+			move	OPPM,str3
+			bump	OPPM BY	3
+			move	OPPM,str2
+			if (str2 = " 0"	OR str2	= "  ")
+				pack	str2,"00"
+			endif
+			pack	str6,str3,PERIOD,str2
+			type	str6
+			if not equal
+				clear	str6
+			endif
+			move	str6,NSEL2PRICE
+			move	"/m",NMODDESC
+.START PATCH 1.7 ADDED LOGIC
+			move	"----",NSEL2NUM
+			move	O2DES,NSEL2NAME
+.END PATCH 1.7 ADDED LOGIC
+		else
+			pack	NMODFLD,NSEL2DESC
+			rep	zfill,NMODFLD
+			move	"NMODKEY",Location
+			pack	KeyLocation,"Key: ",NMODFLD
+			call	NMODKEY
+			if over
+				move	"/m",NMODDESC
+			endif
+		endif
+.END PATCH 1.6 ADDED LOGIC
+.
+.START PATCH 1.7 REPLACED LOGIC
+.		write	output,SEQ;ORDVARS:
+.				MCOMP:
+.				OWNOCPY:
+.				OFDESC:
+.				BRCOMP:
+.				str10:
+.				ExcRent:
+.				REVDATE:
+.				DupeRate:
+.				NPNDDESC:
+.				nmrgiqty:
+.				nmrgnet:
+.				AR:
+..START PATCH 1.6 ADDED LOGIC
+.				NSEL2PRICE:
+.				NSEL2SPRICE:
+.				NMODDESC
+..END PATCH 1.6 ADDED LOGIC
+.START PATCH 1.92 REPLACED LOGIC
+.		write	output,SEQ;OSTAT:
+.				OMLRNUM:
+.				OLRN:
+.				OLNUM:
+.				OLON:
+.				OMLRPON:
+.				OQTY:
+.				OMLRKY:
+.				ORTNDTEC:
+.				ORTNDTEY:
+.				ORTNDTEM:
+.				ORTNDTED:
+.				OMDTEC:
+.				OMDTEY:
+.				OMDTEM:
+.				OMDTED:
+.				OELCODE:
+.				ONETQTY:
+.				OCAMP:
+.				OXPPM:
+.				ORTNNUM:
+.				OCOCODE:
+.				OCO2CODE:
+.				OODTEC:
+.				OODTEY:
+.				OODTEM:
+.				OODTED:
+.				OEXQTY:
+.				OBRKNUM:
+.				OBRKCNT:
+.				onetper:
+.				MCOMP:
+.				OWNOCPY:
+.				BRCOMP:
+.				str10:
+.				DupeRate:
+.				NPNDDESC:
+.				nmrgiqty:
+.				nmrgnet:
+.				AR:
+.				NSEL2PRICE:
+.				NSEL2SPRICE:
+.				NMODDESC:
+.				NSEL2NUM:
+.				NSEL2NAME
+		write	output,SEQ;OSTAT:
+				OMLRNUM:
+				OLRN:
+				OLNUM:
+				OLON:
+				OMLRPON:
+				OQTY:
+				OMLRKY:
+				ORTNDTEC:
+				ORTNDTEY:
+				ORTNDTEM:
+				ORTNDTED:
+				OMDTEC:
+				OMDTEY:
+				OMDTEM:
+				OMDTED:
+				OELCODE:
+				ONETQTY:
+				OCAMP:
+				OXPPM:
+				ORTNNUM:
+				OCOCODE:
+				OCO2CODE:
+				OODTEC:
+				OODTEY:
+				OODTEM:
+				OODTED:
+				OEXQTY:
+				OBRKNUM:
+				OBRKCNT:
+				onetper:
+				onetrc:
+				MCOMP:
+				OWNOCPY:
+				BRCOMP:
+				str10:
+				DupeRate:
+				NPNDDESC:
+				nmrgiqty:
+				nmrgnet:
+				AR:
+				NSEL2PRICE:
+				NSEL2SPRICE:
+				NMODDESC:
+				NSEL2NUM:
+				NSEL2NAME:
+				OTOCODE
+.END PATCH 1.92 REPLACED LOGIC
+.END PATCH 1.7 REPLACED LOGIC
+.
+		pack	NSEL3FLD1,"01X1",OLRN
+		move	"NSEL3AIM",Location
+		pack	KeyLocation,"Key: ",NSEL3FLD1
+		call	NSEL3AIM
+		loop
+			until over
+			if (NSEL3CODE = "A")
+				pack	NADDFLD,OLNUM,NSEL3NUM
+				move	"NADDKEY",Location
+				pack	KeyLocation,"Key: ",NADDFLD
+				call	NADDKEY
+				if not over
+					pack	NREFFLD,"A",NADDNUM
+					pack	NMODFLD,NADDDESC
+				endif
+			elseif (NSEL3CODE = "L")
+				pack	NSLTFLD,OLNUM,NSEL3NUM
+				move	"NSLTKEY",Location
+				pack	KeyLocation,"Key: ",NSLTFLD
+				call	NSLTKEY
+				if not over
+					pack	NREFFLD,"L",NSLTNUM
+					pack	NMODFLD,NSLTDESC
+				endif
+			endif
+			move	"NREFKEY",Location
+			pack	KeyLocation,"Key: ",NREFFLD
+			call	NREFKEY
+.
+			rep	zfill,NMODFLD
+			move	"2-NMODKEY",Location
+			pack	KeyLocation,"Key: ",NMODFLD
+			call	NMODKEY
+			if over
+				move	"/m",NMODDESC
+			endif
+.
+.START PATCH 1.7 REPLACED LOGIC
+.			write	output5,SEQ;OLRN:
+.					NSEL3PRICE:
+.					NREFDESC:
+.					NMODDESC
+			write	output5,SEQ;OLRN:
+					NSEL3LRCODE:
+					NSEL3CODE:
+					NSEL3NUM:
+					NSEL3PRICE:
+					NREFDESC:
+					NMODDESC
+.END PATCH 1.7 REPLACED LOGIC
+.
+			move	"NSEL3KG",Location
+			call	NSEL3KG
+		repeat
+.START PATCH 1.7 ADDED LOGIC
+		move	C1,STATPATH
+		pack	STAT2FLD2,"01X",OLRN
+		pack	STAT2FLD3,"02X0"
+		move	"STAT2AIM",Location
+		pack	KeyLocation,"Key: ",STAT2FLD2,STAT2FLD3
+		call	STAT2AIM
+		loop
+			until over
+			write	output4,SEQ;OLRN:
+					"1":
+					STATPCKNUM:
+					STATPCKM
+			move	"STAT2KG",Location
+			call	STAT2KG
+		repeat
+.END PATCH 1.7 ADDED LOGIC
+.END PATCH 1.6 ADDED LOGIC
+.END PATCH 1.3 REPLACED LOGIC
+	repeat
+.	shutdown
+.
+	close	output
+.START PATCH 1.94 ADDED LOGIC
+	display	*P10:10,*EL,"Running INTEGRAL3.PLS - to clean up Select Names!"
+	call	Integral3Run
+.END PATCH 1.94 ADDED LOGIC
+.START PATCH 1.6 ADDED LOGIC
+	close	output5
+.END PATCH 1.6 ADDED LOGIC
+Datacards
+	clock	timestamp,timestamp
+	write	output3,SEQ;timestamp
+.
+.START PATCH 1.7 REPLACED LOGIC
+.	display	*P10:10,*EL,"Creating ListFile.dat & BaseFile.dat"
+	display	*P10:10,*EL,"Creating ListFile.dat"
+.END PATCH 1.7 REPLACED LOGIC
+	display	*P10:12,*EL,"Cleaning up Records"
+	erase	"c:\work\ListFile.dat"
+.START PATCH 1.7 REMOVED LOGIC
+.	erase	"c:\work\BaseFile.dat"
+.END PATCH 1.7 REMOVED LOGIC
+	prepare	output,"c:\work\ListFile.dat",exclusive
+.START PATCH 1.7 REMOVED LOGIC
+.	prepare	output2,"c:\work\BaseFile.dat",exclusive
+.END PATCH 1.7 REMOVED LOGIC
+.
+	move	C0,howmany
+	loop
+		pack	Location,"NDATSEQ"
+		call	NDATSEQ
+		until over
+		add	C1,howmany
+		display    *p10:12,"Datacard records ",howmany
+.
+.		move	MLSTNAME,str55
+.		rep	lowup,str55
+.		scan	"OFFICE USE",str55
+.		if not equal
+			scan	"|A",MLSTNAME
+			call	undofixita if equal
+			reset	MLSTNAME
+			scan	"|T",MLSTNAME
+			call	undofixitThe if equal
+			reset	MLSTNAME
+.Write to Datacard File
+			write	output,SEQ;LSTNUM:
+					MLSTNAME:
+					STATUS:
+					UNIVERSE:
+.START PATCH 1.91 ADDED LOGIC
+					SEX:
+.START PATCH 1.97 ADDED LOGIC
+					OWNNUM
+.END PATCH 1.97 ADDED LOGIC
+.END PATCH 1.91 ADDED LOGIC
+.Prep Base/Secondary Base information
+.START PATCH 1.2 REPLACED LOGIC
+.			move	C1,startfp
+.			move	C1,N2
+.			loop
+.				until (startfp > "2256")
+..
+..				clear	str46
+..				move	TEXTDATA,str46
+..				pack	str2,newline,B1
+..				rep	str2,str46
+.				clear	str46
+.				movefptr TEXTDATA,startfp
+.				parse	TEXTDATA into str46 using " ~09",noskip,blankfill,truncate
+.				movefptr TEXTDATA,endfp
+.				move	endfp,N5
+.				sub	startfp,N5
+.				compare	"2256",startfp
+.				if not equal
+.					if (N5 > 46)				.wordwrap, no new line char
+.						cmatch	B1,str46
+.						if eos
+.							move	B55,str46
+.						endif
+.						movelptr str46,N3
+.						if (N3 = 0)			.if empty blank fill
+.							move	B55,str46
+.						endif
+.					endif
+.				endif
+..
+.				call	Trim using str46
+.				until (str46 = "")
+.				if (startfp = 1)
+.					move	"BASE",str4
+.				else
+.					move	"SEC.",str4
+.				endif
+.				move	N2,str2
+.				rep	zfill,str2
+.				write	output2,SEQ;LSTNUM:
+.					str2:
+.					str4:
+.					str46
+.				add	"47",startfp
+.				reset	TEXTDATA,startfp
+.				add	C1,N2
+.			repeat
+...............................................................................
+.START PATCH 1.7 REMOVED LOGIC
+.			if (NDATCONV = "1")
+..Send NINSEL.DAT
+.			else
+.				packkey	hold,hold
+.				clear	hold
+.				call	Trim using LSTNUM
+.				if (LSTNUM = "")
+..Messed Up!!!!!
+.				else
+.					pack	NTXTFLD1,"01X",LSTNUM
+.					move	"NTXTAIM",Location
+.					pack	KeyLocation,"Key: ",NTXTFLD1
+.					call	NTXTAIM
+.					loop
+.						until over
+.						append	NTXTTEXT,hold
+.						move	"NTXTKG",Location
+.						pack	KeyLocation,"Key: ",NTXTFLD1
+.						call	NTXTKG
+.					repeat
+.					reset	hold
+.					call	Trim using hold
+.					if (hold <> "")
+.						setlptr	hold
+.						move	C1,startfp
+.						move	C1,N2
+.						loop
+.							until (startfp > "4500")
+.							clear	str46
+.							movefptr hold,startfp
+.							parse	hold into str46 using " ~09",noskip,blankfill,truncate
+.							movefptr hold,endfp
+.							move	endfp,N5
+.							sub	startfp,N5
+.							compare	"4500",startfp
+.							if not equal
+.								if (N5 > 46)				.wordwrap, no new line char
+.									cmatch	B1,str46
+.									if eos
+.										move	B55,str46
+.									endif
+.									movelptr str46,N3
+.									if (N3 = 0)			.if empty blank fill
+.										move	B55,str46
+.									endif
+.								endif
+.							endif
+..
+.							call	Trim using str46
+.							until (str46 = "")
+.							if (startfp = 1)
+.								move	"BASE",str4
+.							else
+.								move	"SEC.",str4
+.							endif
+.							move	N2,str2
+.							rep	zfill,str2
+.							write	output2,SEQ;LSTNUM:
+.								str2:
+.								str4:
+.								str46
+.							add	"47",startfp
+.							reset	hold,startfp
+.							add	C1,N2
+.						repeat
+.					endif
+.				endif
+.			endif
+.END PATCH 1.7 REMOVED LOGIC
+.END PATCH 1.2 REPLACED LOGIC
+.		endif
+	repeat
+	clock	timestamp,timestamp
+	write	output3,SEQ;timestamp
+ExchangeFile
+	close	output
+	erase	"c:\work\ExchFile.dat"
+	prepare	output,"c:\work\ExchFile.dat",exclusive
+	display	*P10:10,*EL,"Creating ExchFile.dat"
+	move	C0,howmany
+	loop
+		pack	Location,"NXNGSEQ"
+		call	NXNGSEQ
+		until over
+		add	C1,howmany
+		display	*p10:12,"Exchange records ",howmany
+		clear	NXCHFLD1
+		pack	NXCHFLD1,ACCKEY,ENTRY
+		rep	ZFILL,NXCHFLD1
+		move	"NO BALANCE ",ERROR
+		move	C1,NXCHPATH
+		pack	Location,"NXCHKEY"
+		call	NXCHKEY
+.		if not over
+			write	Output,SEQ;ACCKEY:
+				nxngdate:
+				ENTRY:
+				Flag:
+				Usage1:
+				Usage2
+.		endif
+	repeat
+	clock	timestamp,timestamp
+	write	output3,SEQ;timestamp
+FileCopies
+	erase	"c:\work\PkgFile.dat"
+	erase	"c:\work\PkgPFile.dat"
+	erase	"c:\work\XRefFile.dat"
+	erase	"c:\work\SelFile.dat"
+	erase	"c:\work\TxtFile.dat"
+.
+	display	*P10:10,*EL,"Copying other files"
+.
+.START PATCH 1.7 REPLACED LOGIC
+.	move	"\\nins1\e\data\text\ninpkg.dat",str35
+.	move	"c:\work\PkgFile.dat",str25
+.	copyfile str35,str25
+.	move	"\\nins1\e\data\text\ninprc.dat",str35
+.	move	"c:\work\PkgPFile.dat",str25
+.	copyfile str35,str25
+.	move	"\\nins1\e\data\text\listmlr.dat",str35
+.	move	"c:\work\XRefFile.dat",str25
+.	copyfile str35,str25
+.	erase	"c:\work\SelFile.dat"
+..START PATCH 1.2 ADDED LOGIC
+.	move	"\\nins1\e\data\text\ninsel.dat",str35
+.	move	"c:\work\SelFile.dat",str25
+.	copyfile str35,str25
+..END PATCH 1.2 ADDED LOGIC.
+..START PATCH 1.4 ADDED LOGIC
+.	erase	"c:\work\nintxt.dat"
+.	erase	"c:\work\nincnt.dat"
+.	erase	"c:\work\ShipFile.dat"
+.	erase	"c:\work\MedFile.dat"
+.	erase	"c:\work\SamFile.dat"
+.	erase	"c:\work\OffFile.dat"
+.
+.	move	"\\nins1\e\data\text\nintxt.dat",str35
+.	move	"c:\work\TxtFile.dat",str25
+.	copyfile str35,str25
+.....................................................
+	pack	taskname,"\\nts0\c\apps\plb\code\plbwin.exe \\nts0\c\apps\plb\code\reformat.plc \\nins1\e\data\text\ninpkg.dat c:\work\PkgFile.dat -L793"
+	execute	taskname
+	pack	taskname,"\\nts0\c\apps\plb\code\plbwin.exe \\nts0\c\apps\plb\code\reformat.plc \\nins1\e\data\text\ninprc.dat c:\work\PkgPFile.dat -L355"
+	execute	taskname
+.START PATCH 2.4 REPLACED LOGIC
+.	pack	taskname,"\\nts0\c\apps\plb\code\plbwin.exe \\nts0\c\apps\plb\code\reformat.plc \\nins1\e\data\text\listmlr.dat c:\work\XRefFile.dat -L10"
+	pack	taskname,"\\nts0\c\apps\plb\code\plbwin.exe \\nts0\c\apps\plb\code\reformat.plc \\nins1\e\data\text\listmlr.dat c:\work\XRefFile.dat -L12"
+.END PATCH 2.4 REPLACED LOGIC
+	execute	taskname
+	pack	taskname,"\\nts0\c\apps\plb\code\plbwin.exe \\nts0\c\apps\plb\code\reformat.plc \\nins1\e\data\text\ninsel.dat c:\work\SelFile.dat -L141"
+	execute	taskname
+	pack	taskname,"\\nts0\c\apps\plb\code\plbwin.exe \\nts0\c\apps\plb\code\reformat.plc \\nins1\e\data\text\nintxt.dat c:\work\TxtFile.dat -L507"
+	execute	taskname
+.END PATCH 1.7 REPLACED LOGIC
+.START PATCH 1.7 REMOVED LOGIC
+.START PATCH 1.8 READDED LOGIC
+.START PATCH 1.98 REPLACED LOGIC
+.	move	"\\nins1\e\data\text\nincnt.dat",str35
+.	move	"c:\work\ConFile.dat",str25
+.	copyfile str35,str25
+	pack	taskname,"\\nts0\c\apps\plb\code\plbwin.exe \\nts0\c\apps\plb\code\reformat.plc \\nins1\e\data\text\nincnt.dat c:\work\ConFile.dat -L135"
+	execute	taskname
+.END PATCH 1.98 REPLACED LOGIC
+.END PATCH 1.8 READDED LOGIC
+..
+.	move	"c:\work\ShipFile.dat",str25
+.	erase	str25
+.	prepare	output4,str25
+.	write	output4,SEQ;"00See Special Instructions           "
+.	write	output4,SEQ;"01Federal/Exp - 2 day                "
+.	write	output4,SEQ;"02U.P.S. Red Label                   "
+.	write	output4,SEQ;"03Federal Express Priority 1         "
+.	write	output4,SEQ;"04UPS Orange/3-day                   "
+.	write	output4,SEQ;"05U.P.S. Ground                      "
+.	write	output4,SEQ;"06U.P.S. Blue Label                  "
+.	write	output4,SEQ;"07Airborne - 2 day                   "
+.	write	output4,SEQ;"08Airborne Express                   "
+.	write	output4,SEQ;"09Federal Express - Standard         "
+.	write	output4,SEQ;"10In-House Transfer                  "
+.	close	output4
+..
+.	move	"c:\work\MedFile.dat",str25
+.	erase	str25
+.	prepare	output4,str25
+.	move	C1,N3
+.	move	"  ",MEDIA
+.	loop
+.		LOAD	MEDIA FROM N3 OF MED0,MED1,MED2,MED3,MED4,MED5:
+.			MED6,MED7,MED8,MED9,MED10,MED11,MED12,MED13,MED14:
+.			MED15,MED16,MED17,MED18,MED19,MED20,MED21,MED22:
+.			MED23,MED24,MED25,MED26,MED27,MED28,MED29
+.		sub	C1,N3,N2
+.		move	N2,str2
+.		rep	zfill,str2
+.		write	output4,SEQ;str2,MEDIA
+.		add	C1,N3
+.		until	(N3 > 29)	.Directly corresponds to number	of items in MEDIA.INC!!
+.	repeat
+.	close	output4
+..
+.	pack	taskname,"\\nins1\e\data\text\NINSAMPL.dat,c:\work\SamFile.dat;S=#"1='0274'|1='0170'|1='0193'|1='0173'|1='0179'|1='1746'#""
+.	sort	taskname
+.	pack	taskname,"\\nins1\e\data\text\NINOFR.dat,c:\work\OffFile.dat;S=#"2='0274'|2='0170'|2='0193'|2='0173'|2='0179'|2='1746'#""
+.	sort	taskname
+.END PATCH 1.7 REMOVED LOGIC
+.END PATCH 1.4 ADDED LOGIC.
+ZipCreate
+	display	*P10:10,*EL,"Creating Zip File"
+	erase	"c:\work\Integral.zip"
+	pack	taskname,"\\nts0\c\apps\tools\pkzip\pkzip.exe c:\work\integral.zip c:\work\LRfile.dat"
+	execute	taskname
+	pack	taskname,"\\nts0\c\apps\tools\pkzip\pkzip.exe c:\work\integral.zip c:\work\Listfile.dat"
+	execute	taskname
+.START PATCH 1.7 REMOVED LOGIC
+.	pack	taskname,"\\nts0\c\apps\tools\pkzip\pkzip.exe c:\work\integral.zip c:\work\Basefile.dat"
+.	execute	taskname
+.END PATCH 1.7 REMOVED LOGIC
+	pack	taskname,"\\nts0\c\apps\tools\pkzip\pkzip.exe c:\work\integral.zip c:\work\Pkgfile.dat"
+	execute	taskname
+	pack	taskname,"\\nts0\c\apps\tools\pkzip\pkzip.exe c:\work\integral.zip c:\work\PkgPfile.dat"
+	execute	taskname
+	pack	taskname,"\\nts0\c\apps\tools\pkzip\pkzip.exe c:\work\integral.zip c:\work\XReffile.dat"
+	execute	taskname
+	pack	taskname,"\\nts0\c\apps\tools\pkzip\pkzip.exe c:\work\integral.zip c:\work\Exchfile.dat"
+	execute	taskname
+.START PATCH 1.2 ADDED LOGIC
+	pack	taskname,"\\nts0\c\apps\tools\pkzip\pkzip.exe c:\work\integral.zip c:\work\SelFile.dat"
+	execute	taskname
+.END PATCH 1.2 ADDED LOGIC
+.START PATCH 1.4 ADDED LOGIC
+	pack	taskname,"\\nts0\c\apps\tools\pkzip\pkzip.exe c:\work\integral.zip c:\work\TxtFile.dat"
+	execute	taskname
+.START PATCH 1.7 REPLACED LOGIC
+.	pack	taskname,"\\nts0\c\apps\tools\pkzip\pkzip.exe c:\work\integral.zip c:\work\MedFile.dat"
+.	execute	taskname
+.START PATCH 1.8 READDED LOGIC
+	pack	taskname,"\\nts0\c\apps\tools\pkzip\pkzip.exe c:\work\integral.zip c:\work\ConFile.dat"
+	execute	taskname
+.END PATCH 1.8 READDED LOGIC
+.	pack	taskname,"\\nts0\c\apps\tools\pkzip\pkzip.exe c:\work\integral.zip c:\work\ShipFile.dat"
+.	execute	taskname
+.	pack	taskname,"\\nts0\c\apps\tools\pkzip\pkzip.exe c:\work\integral.zip c:\work\SamFile.dat"
+.	execute	taskname
+.	pack	taskname,"\\nts0\c\apps\tools\pkzip\pkzip.exe c:\work\integral.zip c:\work\OffFile.dat"
+.	execute	taskname
+	pack	taskname,"\\nts0\c\apps\tools\pkzip\pkzip.exe c:\work\integral.zip c:\work\PkgFile2.dat"
+	execute	taskname
+.END PATCH 1.7 REPLACED LOGIC
+.END PATCH 1.4 ADDED LOGIC
+.START PATCH 1.6 ADDED LOGIC
+	pack	taskname,"\\nts0\c\apps\tools\pkzip\pkzip.exe c:\work\integral.zip c:\work\PrcFile.dat"
+	execute	taskname
+.END PATCH 1.6 ADDED LOGIC
+	pack	taskname,"\\nts0\c\apps\tools\pkzip\pkzip.exe c:\work\integral.zip \\nts0\c\library\include\integral.inc"
+	execute	taskname
+.
+	clock	timestamp,timestamp
+	write	output3,SEQ;timestamp
+	write	output3,SEQ;"DONE"
+emailing
+.Email the ZIP file
+	move	"Files from NIN",SmtpSubject Subject
+	move	"0",SmtpTextIndexLast				    Index to last entry	in TextMessage array
+	move	"NTS4",SmtpEmailServer			 Address of email serverc
+	move	"InformationServices@nincal.com",SmtpEmailAddress
+.	move	"AndrewHarkins@nincal.com",SmtpEmailAddress
+.START PATCH 1.96 REPLACED LOGIC
+.	move	"Information Services",SmtpUserName				  User name
+.	move	"Information Services",SmtpUserFullName		    User Full Name
+.	move	"Jim@integral-dc.com",SmtpDestinations(1,1)
+.	move	"Casey@integral-dc.com",SmtpDestinations(2,1)
+.	move	"Chris@integral-dc.com",SmtpDestinations(3,1)
+..	move	"jduenas@nincal.com",SmtpDestinations(1,1)
+.	move	"AndrewHarkins@nincal.com",SmtpDestinations(4,1)
+..	move	"AndrewHarkins@nincal.com",SmtpDestinations(1,1)
+.	move	"4",SmtpDestIndexLast				    Index to last entry	in Dest	array
+..	move	"1",SmtpDestIndexLast				    Index to last entry	in Dest	array
+.....................................
+	move	"Information Services",SmtpUserName				  User name
+	move	"Information Services",SmtpUserFullName		    User Full Name
+	move	"DavidHerrick@nincal.com",SmtpDestinations(1,1)
+	move	"1",SmtpDestIndexLast				    Index to last entry	in Dest	array
+.END PATCH 1.96 REPLACED LOGIC
+.
+	pack	APIFileName,"c:\work\integral.zip",hexzero
+	call	FindFirstFile
+	if (APIResult <> 0 & APIResult <> hexeight)
+		move	"integral.zip",SmtpAttachments(1,1)				.Attached file name
+		move	"c:\work",SmtpAttachments(1,2)				.Path to attached file name
+		move	"1",SmtpAttIndexLast				    Index to last entry	- Only 1 entry
+		clear	SmtpLogFile					    'Clear' disables the LogFile
+		call	SmtpSend   ( 'Send' is in Smtp.Pri which is included in	TestSmtp.Dbs )
+	endif
+.START PATCH 1.96 ADDED LOGIC
+	move	"!\\nts0\c\apps\winbatch\IntegralFTP1",taskname
+	execute	taskname
+.END PATCH 1.96 ADDED LOGIC
+	shutdown "cls"
+
+CalcNet
+	clear	str10
+	move	C0,nordin
+	move	C0,nordout
+	move	C0,calcper
+	move	C0,percent
+	move	OLRN,NMRGFLD
+	move	"NMRGKEY",Location
+	pack	KeyLocation,"Key: ",NMRGFLD
+	call	NMRGKEY
+	if not over
+		add	NMRGIQTY,nordin
+		add	NMRGNET,nordout
+		compare	C0,nordout
+		if not equal
+			move	C0,CALCPER
+			move	nordout,CALCPER
+			divide	nordin,CALCPER
+			mult	"100",CALCPER
+			move	C0,PERCENT
+			add	CALCPER,PERCENT
+			move	PERCENT,str10
+		endif
+	endif
+	return
+
+UndoFixitA
+	clear	str55
+	bump	MLSTNAME,-1
+	lenset	MLSTNAME
+	reset	MLSTNAME
+	append	"A ",str55
+	append	MLSTNAME,str55
+	reset	str55
+	clear	MLSTNAME
+	move	str55,MLSTNAME
+	return
+
+UndoFixitThe
+	clear	str55
+	bump	MLSTNAME,-1
+	lenset	MLSTNAME
+	reset	MLSTNAME
+	append	"The ",str55
+	append	MLSTNAME,str55
+	reset	str55
+	clear	MLSTNAME
+	move	str55,MLSTNAME
+	return
+
+.START PATCH 1.9 ADDED LOGIC
+ShutDown
+	move	"Files from NINCA",SmtpSubject Subject
+	move	"0",SmtpTextIndexLast				    Index to last entry	in TextMessage array
+	move	"NTS4",SmtpEmailServer			 Address of email serverc
+	move	"InformationServices@nincal.com",SmtpEmailAddress
+	move	"Information Services",SmtpUserName				  User name
+	move	"Information Services",SmtpUserFullName		    User Full Name
+	move	"InformationServices@nincal.com",SmtpDestinations(1,1)
+	move	"1",SmtpDestIndexLast				    Index to last entry	in Dest	array
+	move	"Nordtest.plc not available!",SmtpTextMessage(1)   Array <Text message >
+	move	"Integral.plc did not run!!",SmtpTextMessage(2)   Array <Text message >
+	move	"2",SmtpTextIndexLast
+	clear	SmtpLogFile					    'Clear' disables the LogFile
+	call	SmtpSend   ( 'Send' is in Smtp.Pri which is included in	TestSmtp.Dbs )
+	shutdown "cls"
+.END PATCH 1.9 ADDED LOGIC
+
+	include	nordio.inc
+	include	ndatio.inc
+.START PATCH 1.5 REPLACED LOGIC
+.	include	nmlrio.inc
+.	include	nbrkio.inc
+	include	compIO.inc
+	include	cntIO.inc
+.END PATCH 1.5 REPLACED LOGIC
+	include	nownio.inc
+	include	nofrio.inc
+	include	nxngio.inc
+	include	nxchio.inc
+	include	nxrfio.inc
+	include	nmrgio.inc
+.START PATCH 1.1 ADDED LOGIC
+	include	nord4io.inc
+	include	nord5io.inc
+	include	npndio.inc
+.END PATCH 1.1 ADDED LOGIC
+.START PATCH 1.2 ADDED LOGIC
+	include	nselio.inc
+	include	ntxtio.inc
+.END PATCH 1.2 ADDED LOGIC
+.START PATCH 1.3 ADDED LOGIC
+	include	ninvio.inc
+.END PATCH 1.3 ADDED LOGIC
+.START PATCH 1.6 ADDED LOGIC
+	include	nsel2io.inc
+	include	nsel3io.inc
+	include	nmodio.inc
+	include	naddio.inc
+	include	nsltio.inc
+	include	nrefio.inc
+.END PATCH 1.6 ADDED LOGIC
+.START PATCH 1.7 ADDED LOGIC
+	include	statsio2.inc
+.END PATCH 1.7 ADDED LOGIC
+.START PATCH 2.4 ADDED LOGIC
+	include	nintio.inc
+.END PATCH 2.4 ADDED LOGIC
+	include	comlogic.inc

@@ -1,0 +1,38 @@
+<form name='LoginForm' method='post' action='/plb-bin/login.plc'>
+		<input type='hidden' name='function' value='1' />
+		<input type='hidden' name='SID' value='<%=SID%>' />
+		<input type='hidden' name='cgibroker' value='<%=cgibroker%>' />
+    <table border=0 cellpadding=2 cellspacing=0 align='center'>
+			<tr>
+				<td class='title' colspan='2' align=center >
+					NIN Extranet Login
+					<br><br><br>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<span class='errorMsg'><%=errorMsg%></span>
+				</td>
+			</tr>
+			<tr>
+				<td align=right>Username:</td>
+				<td><input type='text' name='cgiusername' value='<%=cgiusername%>' /></td>
+			</tr>
+			<tr>
+				<td align=right>Password:</td>
+				<td><input type='password' name='cgipassword' value='' /></td>
+			</tr>
+			<tr>
+				<td colspan=2 align=center><input type='submit' value='Submit' /></td>
+			</tr>
+    </table>
+</form>
+
+<center>
+	Forgot your password?  You can retrieve it <a href='passrequest.plc'>here</a>.
+	<br>
+	<br>
+	If you are a new user, you can register for access to our <%=cgititle%> Portal <a href='registration.plc?cgibroker=1'>here</a>.
+</center>
+
+<script language="JavaScript"> document.LoginForm.cgiusername.focus(); </script>

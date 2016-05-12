@@ -1,0 +1,153 @@
+               Include        Common.inc
+               INclude        Cons.inc
+               INClude        Ndatdd.inc
+               INCLUDE        NXRFDD.INC             
+               INclude        Nmlrdd.inc
+               INclude        Nowndd.inc
+               Include        Nbrkdd.inc
+Pc             Equ            0
+release        Init           "Not"
+Big            Dim            1
+MFirstName     Dim            45
+MLastName      Dim            45
+BrFirstName    Dim            45
+BrLastname     Dim            45
+
+INput          IFIle          KeyLen=6               
+Output         FIle
+               Prepare        Output,"c:\work\addrFile.dat"
+               open           INput,"c:\work\lists.isi"
+               MOve           c1 to ndatpath
+               move           c1 to nmlrpath
+               move           c1 to nbrkpath
+               Move           c1 to Nownpath
+Main
+               readks         INput;Ndatfld,big
+               goto           eoj if over
+               rep            zfill in ndatfld
+               CALL           NDATKEY
+               IF             OVER
+               MOVE           "No List Found!!!!!!!!" TO OLSTNAME
+               ENDIF
+               packkey        Nownfld,OWNNUM
+               call           Nownkey
+               CLEAR          NXRFMLR             *CLEAR VARIABLE IN CASE OVER.
+               MOVE           Ndatfld TO NXRFFLD
+               rep            zfill in nxrffld 
+               MOVE           C1 TO NXRFPATH
+               CALL           NXRFKEY
+               clear          mkey
+               pack           mkey from NXRFMLR,z3
+               clear          mbrknum
+               call           nmlrkey
+               If             (Mbrknum = "0000")
+               MOve           "                           " to brcntct
+               MOve           "                           " to brcomp
+               clear          brcntct
+               clear          brcomp
+               goto           writeit
+               endif
+               type           mbrknum
+               if             equal
+               pack           nbrkfld from mbrknum
+               call           nbrkkey
+                              If             Over
+                              MOve           "                           " to brcntct
+                              MOve           "                           " to brcomp
+                              clear          brcntct
+                              clear          brcomp
+                              endif
+               Else
+               MOve           "                           " to brcntct
+               MOve           "                           " to brcomp
+               clear          brcntct
+               clear          brcomp
+               endif
+Writeit        
+               RESET          Mname
+               Reset          BrCNTCT
+LOOP
+               CMATCH         B1 TO MName
+               GOTO           LASTNAME IF EQUAL
+               BUMP           Mname BY 1
+               GOTO           Loop2 IF EOS
+               GOTO           LOOP               
+.
+. LASTNAME - SHOULD HAVE FIRST BYTE OF LAST NAME
+LASTNAME
+               CLEAR     MLastName
+               BUMP      Mname BY 1
+               APPEND    Mname TO MLastName
+               MOVEFPTR  Mname to n2 
+               RESET     MLastName
+               RESET     Mname
+               sub       c1 from n2
+               SETLPTR   Mname to n2	
+               Clear          MFirstName
+               APPEND         Mname TO MFirstName
+               reset          MFirstName
+               SETLPTR        Mname
+               RESET          Mname
+LOOP2          call           debug
+               Move           "                                                " to brfirstname
+               Move           "                                                " to brlastname
+               CMATCH         B1 TO BRCNTCT
+               GOTO           LASTNAME1 IF EQUAL
+               BUMP           BRCNTCT BY 1
+               GOTO           Exchinfo IF EOS
+               GOTO           LOOP2               
+.
+. LASTNAME - SHOULD HAVE FIRST BYTE OF LAST NAME
+LASTNAME1
+               CLEAR     BRLastName
+               BUMP      BRCNTCT BY 1
+               APPEND    BRCNTCT TO BRLastName
+               MOVEFPTR  BRCNTCT to n2 
+               RESET     BRLastName
+               RESET     BRCNTCT
+               reset          BrCNTCT
+               sub            c1 from n2
+               setlptr        brCNTCT to n2
+               Clear          BRFirstName
+               APPEND         BRCNTCT TO BRFirstName
+               reset          BRFirstName
+               SETLPTR        BRCNTCT
+               RESET          BRCNTCT
+exchinfo
+               parse          textdata into text1 using " ~09",noskip,blankfill
+               SCAN          "EXCHANGE ONLY" IN TEXT1
+               if             equal
+               MOve           "EXCHANGE" to str9
+               else
+               clear          str9
+               endif
+
+EXIT
+               WRite          Output,seq;*CDFon,MFirstname,MLastname,Mname,Mcomp,Maddr,M2ADDR,Mcity,Mstate,Mzip:
+                              BRFirstname,BRLastname,BRCNTCT,BrCOMp:
+                              BRaddr,Br2addr,BrCity,BrState,BrZip,Olstname,OWNLONM,Big,str9
+               Clear          Mfirstname
+               Clear          MLastname
+               Clear          Brfirstname
+               Clear          Brlastname
+               Clear          BrCntCt
+               Clear          Brcomp
+               Clear          Braddr
+               Clear          Br2addr
+               Clear          Brcity
+               Clear          Brstate
+               Clear          Brzip
+               Clear          OWNLONM
+               Clear          Big
+               goto           main
+eoj            Weof           output,seq
+               stop
+
+debug          return               
+
+               INClude        Ndatio.inc
+               INCLUDE        NXRFio.INC             
+               INclude        Nmlrio.inc
+               Include        Nbrkio.inc
+               INclude        Nownio.inc
+               Include        Comlogic.inc

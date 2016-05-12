@@ -1,0 +1,185 @@
+..............................................................................
+.
+. NSEL3IO INCLUSION
+. NIN ORDER PRICING FILE I/O ROUTINES
+.
+. FILE NAME : NINSEL3
+. REC LENGTH: 45
+. INDEX KEY : 1-9 (6 BYTE LR NUMBER + 3 BYTE PRICING CODE)
+. AAMDEX KEY: 1- (6 BYTE LR NUMBER)
+.
+..............................................................................
+.
+. ENTRY POINT : NSEL3KEY
+. REQUIRED    : 'NSEL3FLD'
+. RETURNED    : ORDER PRICING RECORD
+. DESCRIPTION : EXACT ISAM KEY READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NSEL3KEY
+	BRANCH	NSEL3FLAG,NSEL31
+	CALL	NSEL3OPEN
+NSEL31
+	trap	IOMssg giving Error if IO
+.	FILEPI	1;NSEL3FILE
+	READ	NSEL3FILE,NSEL3FLD;NSEL3VARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSEL3TST
+. REQUIRED    : NSEL3FLD
+. RETURNED    :
+. DESCRIPTION : TEST KEY
+.
+NSEL3TST
+	BRANCH	NSEL3FLAG,NSEL32
+	CALL	NSEL3OPEN
+NSEL32
+	trap	IOMssg giving Error if IO
+.	FILEPI	1;NSEL3FILE
+	READ	NSEL3FILE,NSEL3FLD;;
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSEL3KS
+. REQUIRED    :
+. RETURNED    : ORDER PRICING RECORD
+. DESCRIPTION : KEY SEQUENTIAL DATACARD SELECTION FILE READ
+.
+NSEL3KS
+	BRANCH	NSEL3FLAG,NSEL33
+	CALL	NSEL3OPEN
+NSEL33
+	trap	IOMssg giving Error if IO
+.	FILEPI	1;NSEL3FILE
+	READKS	NSEL3FILE;NSEL3VARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSEL3SEQ
+. REQUIRED    :
+. RETURNED    : ORDER PRICING RECORD
+. DESCRIPTION : SEQUENTIAL ORDER PRICING FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NSEL3SEQ
+	BRANCH	NSEL3FLAG,NSEL34
+	CALL	NSEL3OPEN
+NSEL34
+	trap	IOMssg giving Error if IO
+.	FILEPI	1;NSEL3FILE
+	READ	NSEL3FILE,SEQ;NSEL3VARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSEL3WRT
+. REQUIRED    : 'NSEL3FLD'
+. RETURNED    :
+. DESCRIPTION : EXACT ISAM KEY TXT/ISI INSERT
+.
+NSEL3WRT
+	BRANCH	NSEL3FLAG,NSEL35
+	CALL	NSEL3OPEN
+NSEL35
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NSEL3FLIST
+	WRITE	NSEL3FLIST;NSEL3VARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSEL3UPD
+. REQUIRED    : A PREVIOUS KEY READ
+. RETURNED    :
+. DESCRIPTION : KEY UPDATE RECORD NUMBER FILE
+.
+NSEL3UPD
+	BRANCH	NSEL3FLAG,NSEL36
+	CALL	NSEL3OPEN
+NSEL36
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NSEL3FLIST
+	UPDATE	NSEL3FLIST;NSEL3VARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSEL3DEL
+. REQUIRED    : 'NSEL3FLD'
+. RETURNED    :
+. DESCRIPTION : EXACT ISAM KEY TXT/ISI DELETE
+.
+NSEL3DEL
+	BRANCH	NSEL3FLAG,NSEL37
+	CALL	NSEL3OPEN
+NSEL37
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NSEL3FLIST
+	DELETE	NSEL3FLIST
+	trapclr	IO
+	RETURN
+
+..............................................................................
+. ENTRY POINT : NSEL3AIM
+. REQUIRED    : NSEL3FLD1,NSEL3FLD2,NSEL3FLD3
+. RETURNED    : RECORD
+. DESCRIPTION : AIM FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NSEL3AIM
+	BRANCH	NSEL3FLAG,NSEL38
+	CALL	NSEL3OPEN
+NSEL38   
+	trap	IOMssg giving Error if IO
+	READ	NSEL3FLE2,NSEL3FLD1;NSEL3VARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSEL3KG
+. REQUIRED    : VALID PREVIOUS AIM READ
+. RETURNED    : RECORD
+. DESCRIPTION : AIM KEY GENEREIC FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NSEL3KG
+	BRANCH	NSEL3FLAG,NSEL310
+	CALL	NSEL3OPEN
+NSEL310
+	trap	IOMssg giving Error if IO
+	READKG	NSEL3FLE2;NSEL3VARS
+	trapclr	IO
+	RETURN
+
+...............................................................................
+.
+. ENTRY POINT : NSEL3OPEN
+. REQUIRED    : 'NSEL3FLAG'
+. RETURNED    : 'NSEL3FLAG' SET TO '1' IF OPENED
+. DESCRIPTION : OPEN NIN ORDER PRICING FILE
+.               DISPLAY ERROR AND ABORT IF NOT ON-LINE.
+.
+NSEL3OPEN
+	TRAP	NSEL3GONE giving Error if IO
+.	OPEN	NSEL3FLIST,EXCLUSIVE
+	OPEN	NSEL3FLIST
+	trapclr	IO
+	MOVE	C1,NSEL3FLAG
+	RETURN
+.
+NSEL3GONE
+	MOVE	NSEL3FNAME,FILENAME
+	CALL	FILEGONE
+.
+..............................................................................

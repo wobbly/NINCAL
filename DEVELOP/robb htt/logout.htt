@@ -1,0 +1,11 @@
+<html>
+	<body>
+		<form action='login.plc' name='logoutform' id='logoutform' method='POST'>
+			<input type=hidden name='logout' value='1' />
+		</form>
+
+		<script language="JavaScript">
+			document.logoutform.submit();
+		</script>
+	</body>
+</html>

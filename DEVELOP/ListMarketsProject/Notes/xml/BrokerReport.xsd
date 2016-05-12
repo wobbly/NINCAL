@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" />
+
+<xsd:element name="BrokerReport" type="BrokerReportType" />
+
+<xsd:complexType name="BrokerType">
+  <xsd:sequence>
+    <xsd:element name="BrokerNumber" type="xsd:unsignedInt" use="required" />
+    <xsd:element name="BrokerCntNumber" type="xsd:unsignedInt" />
+    <xsd:element name="BrokerContact" type="xsd:string" />
+    <xsd:element name="BrokerCompany" type="xsd:string" />
+    <xsd:element name="BrokerFax" type="xsd:string" />
+    <xsd:element name="BrokerEmail" type="xsd:string" />
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="OrderRecordType">
+  <xsd:sequence>
+    <xsd:element name="Account" type="AccountType" />
+    <xsd:element name="LRRecord" type="LRRecordType" />
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="ShippingRecordType">
+  <xsd:sequence>
+    <xsd:element name="Account" type="AccountType" />
+    <xsd:element name="LRRecord" type="LRRecordType" />
+    <xsd:element name="ShippingRecord" type="ShippingRecordType" />
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="NewLCRRecordType">
+  <xsd:sequence>
+    <xsd:element name="Account" type="AccountType" />
+    <xsd:element name="LRRecord" type="LRRecordType" />
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="RecordType">
+  <xsd:sequence>
+    <xsd:element name="OrderRecord" type="OrderRecordType" minOccurs="0" />
+    <xsd:element name="ShippingRecord" type="ShippingRecordType" minOccurs="0" />
+    <xsd:element name="NewLCRRecord" type="NewLCRRecordType" minOccurs="0" />
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="MailerType">
+  <xsd:sequence>
+    <xsd:element name="MailerName" type="xsd:string" use="required"/>
+    <xsd:element name="MailerStatus" type="xsd:string" />
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="AccountType">
+  <xsd:sequence>
+    <xsd:element name="List" type="xsd:string" use="required"/>
+    <xsd:element name="Mailer" type="MailerType" use="required"/>
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="LRRecordType">
+  <xsd:sequence>
+    <xsd:element name="LRNumber" type="xsd:unsignedInt" use="required"/>
+    <xsd:element name="PONumber" type="xsd:string" use="required"/>
+    <xsd:element name="Quantity" type="xsd:unsignedInt" />
+    <xsd:element name="ReturnDate" type="xsd:date" />
+    <xsd:element name="OrderDate" type="xsd:date" />
+    <xsd:element name="ClearStat" type="xsd:string" />
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="ShippingRecordType">
+  <xsd:sequence>
+    <xsd:element name="ShipQuantity" type="xsd:unsignedLong" />
+    <xsd:element name="ShipDate" type="xsd:date" />
+    <xsd:element name="ShipText" type="xsd:string" />
+    <xsd:element name="ShipTracking" type="xsd:string" />
+  </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="BrokerReportType">
+  <xsd:sequence>
+    <xsd:element name="Broker" type="BrokerType" use="required" />
+    <xsd:element name="Records" type="RecordType" />
+  </xsd:sequence>
+</xsd:complexType>

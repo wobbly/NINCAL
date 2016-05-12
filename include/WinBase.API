@@ -1,0 +1,1038 @@
+..............................................................................
+.1 WinBase.API - WinBase WINAPI Calls
+.2 
+.2 This include defines WinBase.H Functions and Struct calls.
+.2
+.2 One or multiple API can be compile into the program by defining a equated
+.2 variable above WinBase.API. 
+.2 The following will compile in the GetCommandLine API call:
+.2
+.2   cccGetCommandLine EQU 1,REDEFINE
+.2            INC       WinBase.API
+.2
+.2 The API calls were placed inside of an include insted of a load module 
+.2 because normally one API is used per program. The include allows for 
+.2 just the one to be compiled into the program. A load module will load all
+.2 the calls into memory.
+.2 
+.2 Window Constants were intialized using a DEFINE because it takes up no UDA.
+.2 This means all the constants can be initialized even though they might not 
+.2 be used in the program.
+.3
+.3 Files                                                 Read         Updated
+.4 
+.5 05/01/00 GW Wrote Program
+.5 04/20/01 GW Added Functions: MoveMemoryIntStr, GetSystemTime, GetLocalTime,
+.5       SystemTimeToFileTime, SystemTimeToFileTime FileTimeToSystemTime,
+.5       GlobalFree, GlobalAlloc
+.5       Added Structures: FileTime, SystemTime
+.5       Added Constants: Global Memory
+..............................................................................
+.
+#INCBEG  GOTO      #INCEND
+.                             PL/B 8.4 bug - MACRO verb does NOT work inside
+.                             of an INCLUDE.
+..         %IF       DEFINED(macUser32DefineEqu) <> 2
+..macUser32DefineEqu MACRO &EquLabel
+..         %IFNDEF   &EquLabel
+..&EquLabel EQU 0,REDEFINE
+..         %ENDIF
+..         MEND
+...
+..         macUser32DefineEqu cccShowWindowMaximizedWnd
+..         macUser32DefineEqu cccShowWindowMaximizedLng
+.
+cccDLLRtn EQU 0,REDEFINE
+.
+         %IFNDEF   cccMoveMemory
+cccMoveMemory EQU 0
+         %ENDIF
+         %IFNDEF   cccMoveMemoryIntStr
+cccMoveMemoryIntStr EQU 0
+         %ENDIF
+         %IFNDEF   cccLStrlen
+cccLStrlen EQU 0
+         %ENDIF
+         %IFNDEF   cccGetCommandLine
+cccGetCommandLine EQU 0
+         %ENDIF
+         %IFNDEF   cccGlobalLock
+cccGlobalLock EQU 0
+         %ENDIF
+         %IFNDEF   cccGlobalUnlock
+cccGlobalUnlock EQU 0
+         %ENDIF
+         %IFNDEF   cccGlobalFree
+cccGlobalFree EQU 0
+         %ENDIF
+         %IFNDEF   cccGlobalSize
+cccGlobalSize EQU 0
+         %ENDIF
+         %IFNDEF   cccGlobalAlloc
+cccGlobalAlloc EQU 0
+         %ENDIF
+         %IFNDEF   cccCopyFile
+cccCopyFile EQU 0
+         %ENDIF
+         %IFNDEF   cccFormatMessage
+cccFormatMessage EQU 0
+         %ENDIF
+         %IFNDEF   cccGetLastError
+cccGetLastError EQU 0
+         %ENDIF
+         %IFNDEF   cccNullTerminate
+cccNullTerminate EQU 0
+         %ENDIF
+         %IFNDEF   cccLpt2Str
+cccLpt2Str EQU 0
+         %ENDIF
+         %IFNDEF   cccWritePrivateProfileString
+cccWritePrivateProfileString EQU 0
+         %ENDIF
+         %IFNDEF   cccWriteProfileString
+cccWriteProfileString EQU 0
+         %ENDIF
+         %IFNDEF   cccGetSystemTime
+cccGetSystemTime EQU 0
+         %ENDIF
+         %IFNDEF   cccGetLocalTime
+cccGetLocalTime EQU 0
+         %ENDIF
+         %IFNDEF   cccSystemTimeToFileTime
+cccSystemTimeToFileTime EQU 0
+         %ENDIF
+         %IFNDEF   cccFileTimeToSystemTime
+cccFileTimeToSystemTime EQU 0
+         %ENDIF
+         %IFNDEF   cccSystemTimeToSystemTimeCur
+cccSystemTimeToSystemTimeCur EQU 0
+         %ENDIF
+         %IFNDEF   cccGetFileTime
+cccGetFileTime EQU 0
+         %ENDIF
+         %IFNDEF   cccFileTime
+cccFileTime EQU 0
+         %ENDIF
+         %IFNDEF   cccSystemTime
+cccSystemTime EQU 0
+         %ENDIF
+..         %IFNDEF   cccSystemTimeCur
+..cccSystemTimeCur EQU 0
+..         %ENDIF
+.
+...............................................................................
+. Call Routines that need other routines compile to work.
+.
+         %IF       cccGetCommandLine = 1
+cccLpt2Str EQU 1,REDEFINE
+         %ENDIF
+         %IF       cccLpt2Str = 1
+cccMoveMemory EQU 1,REDEFINE
+cccLStrlen EQU 1,REDEFINE
+         %ENDIF
+         %IF     cccCopyFile = 1
+cccNullTerminate EQU 1,REDEFINE
+         %ENDIF
+         %IF     cccWritePrivateProfileString = 1
+cccNullTerminate EQU 1,REDEFINE
+         %ENDIF
+         %IF     cccWriteProfileString = 1
+cccNullTerminate EQU 1,REDEFINE
+         %ENDIF
+         %IF     cccGetSystemTime = 1
+cccSystemTime EQU 1,REDEFINE
+         %ENDIF
+         %IF     cccGetLocalTime = 1
+cccSystemTime EQU 1,REDEFINE
+         %ENDIF
+         %IF     cccSystemTimeToFileTime = 1
+cccSystemTime EQU 1,REDEFINE
+cccFileTime EQU 1,REDEFINE
+         %ENDIF
+         %IF     cccFileTimeToSystemTime = 1
+cccSystemTime EQU 1,REDEFINE
+cccFileTime EQU 1,REDEFINE
+         %ENDIF
+         %IF     cccSystemTimeToSystemTimeCur = 1
+cccSystemTime EQU 1,REDEFINE
+         %ENDIF
+         %IF     cccGetFileTime = 1
+cccFileTime EQU 1,REDEFINE
+         %ENDIF
+.
+...............................................................................
+. Structures Defined inside of Other Inculdes
+.
+..         %IF       cccInvalidateRect = 1
+..cccWinDef EQU 1,REDEFINE
+..cccRect EQU 1,REDEFINE
+..         %ENDIF
+...
+..         %IFDEF    cccWinDef
+..           %IF       cccWinDef = 1
+..cccWinDef EQU 0,REDEFINE
+..         INC       WinDef.API
+..           %ENDIF
+..         %ENDIF
+...
+...............................................................................
+. Structure Definitions
+.
+.
+. File System time stamps are represented with the following structure:
+.
+         %IF       cccFileTime = 1
+cccFileTime EQU 0,REDEFINE
+           %IFNDEF   equFileTime
+equFileTime EQU 0
+dfnFileTimeLen DEFINE 8
+FileTime RECORD DEFINITION
+dwLowDateTime INTEGER 4
+dwHighDateTime INTEGER 4
+         RECORDEND
+.
+strFileTime DIM dfnFileTimeLen
+recFileTime RECORD LIKE FileTime
+. recFileTime.dwLowDateTime
+. recFileTime.dwHighDateTime
+           %ENDIF
+         %ENDIF
+.
+.
+. System Time is represented with the following structure:
+.
+         %IF       cccSystemTime = 1
+cccSystemTime EQU 0,REDEFINE
+           %IFNDEF   equSystemTime
+equSystemTime EQU 0
+dfnSystemTimeLen DEFINE 16
+SystemTime RECORD DEFINITION
+wYear INTEGER 2
+wMonth INTEGER 2
+wDayOfWeek INTEGER 2
+wDay INTEGER 2
+wHour INTEGER 2
+wMinute INTEGER 2
+wSecond INTEGER 2
+wMilliseconds INTEGER 2
+         RECORDEND
+.
+strSystemTime DIM dfnSystemTimeLen
+recSystemTime RECORD LIKE SystemTime
+. recSystemTime.wYear
+. recSystemTime.wMonth
+. recSystemTime.wDayOfWeek
+. recSystemTime.wDay
+. recSystemTime.wHour
+. recSystemTime.wMinute
+. recSystemTime.wSecond
+. recSystemTime.wMilliseconds
+..           %ENDIF
+..         %ENDIF
+...
+...
+... System Time Forms is represented with the following structure:
+...
+..         %IF       cccSystemTimeCur = 1
+..cccSystemTimeCur EQU 0,REDEFINE
+..           %IFNDEF   equSystemTimeCur
+..equSystemTimeCur EQU 0
+dfnSystemTimeCurLen DEFINE 19
+SystemTimeCur RECORD DEFINITION
+wYear FORM 4
+wMonth FORM 2
+wDayOfWeek FORM 2
+wDay FORM 2
+wHour FORM 2
+wMinute FORM 2
+wSecond FORM 2
+wMilliseconds FORM 3
+         RECORDEND
+.
+strSystemTimeCur DIM dfnSystemTimeCurLen
+recSystemTimeCur RECORD LIKE SystemTimeCur
+. recSystemTimeCur.wYear
+. recSystemTimeCur.wMonth
+. recSystemTimeCur.wDayOfWeek
+. recSystemTimeCur.wDay
+. recSystemTimeCur.wHour
+. recSystemTimeCur.wMinute
+. recSystemTimeCur.wSecond
+. recSystemTimeCur.wMilliseconds
+           %ENDIF
+         %ENDIF
+.
+...............................................................................
+. Window Constants
+.
+. These were intialized using a DEFINE because it takes up no UDA. This means
+. all the messages can be initialized even though they might not be used.
+.
+         %IFNDEF   equWinBaseDef
+equWinBaseDef EQU 0
+.                                  .FormatMessage Flags
+FORMAT_MESSAGE_ALLOCATE_BUFFER DEFINE 256
+FORMAT_MESSAGE_IGNORE_INSERTS DEFINE 512
+FORMAT_MESSAGE_FROM_STRING DEFINE 1024
+FORMAT_MESSAGE_FROM_HMODULE DEFINE 2048
+FORMAT_MESSAGE_FROM_SYSTEM DEFINE 4096
+FORMAT_MESSAGE_ARGUMENT_ARRAY DEFINE 8192
+FORMAT_MESSAGE_MAX_WIDTH_MASK DEFINE 255
+.
+. Global Memory Flags 
+GMEM_FIXED DEFINE 0
+GMEM_MOVEABLE DEFINE 2
+GMEM_NOCOMPACT DEFINE 16
+GMEM_NODISCARD DEFINE 32
+GMEM_ZEROINIT DEFINE 64
+GMEM_MODIFY DEFINE 128
+GMEM_DISCARDABLE DEFINE 256
+GMEM_NOT_BANKED DEFINE 4096
+GMEM_SHARE DEFINE 8192
+GMEM_DDESHARE DEFINE 8192
+GMEM_NOTIFY DEFINE 16384
+GMEM_LOWER DEFINE GMEM_NOT_BANKED
+GMEM_VALID_FLAGS DEFINE 32626
+GMEM_INVALID_HANDLE DEFINE 32768
+
+GHND DEFINE (GMEM_MOVEABLE+GMEM_ZEROINIT)
+GPTR DEFINE (GMEM_FIXED+GMEM_ZEROINIT)
+         %ENDIF
+.
+...............................................................................
+. Misc. Variables
+.
+#lngRetVal INTEGER 4      .DLL Return Value
+#rlngRetVal INTEGER ^     .DLL Return Value
+#lngPLen INTEGER 4        .Physical Lenght of String
+.
+...............................................................................
+         %IF       cccLStrlen = 1
+cccLStrlen EQU 0,REDEFINE
+           %IFNDEF   apiLStrlen
+.
+. The lstrlen function returns the length in bytes (ANSI version) or
+. characters (Unicode version) of the specified string (not including the 
+. terminating null character). 
+.
+. int lstrlen(
+.   LPCTSTR  lpString       // address of string to count
+.   );	
+.
+apiLStrlen PROFILE Kernel32,lstrlenA,Int4,Int4
+.
+#lngLStrlenLen INTEGER ^     .Return value - Lenght of string
+#lngLStrlenLpct INTEGER ^    .address of string to count
+.
+LStrlen LROUTINE #lngLStrlenLen,#lngLStrlenLpct
+         WINAPI    apiLStrlen GIVING #lngLStrlenLen USING #lngLStrlenLpct
+         RETURN
+           %ENDIF
+         %ENDIF
+.
+...............................................................................
+         %IF       cccMoveMemory = 1
+cccMoveMemory EQU 0,REDEFINE
+           %IFNDEF   apiMoveMemory
+.
+. MoveMemory - The MoveMemory function moves/copies a block of memory from one
+. location to another. 
+.
+. VOID MoveMemory (
+.   PVOID  Destination,       // address of move destination 
+.   CONST  VOID *  Source,    // address of block to move 
+.   DWORD  Length             // size, in bytes, of block to move  
+.   );	
+.
+apiMoveMemory PROFILE Kernel32,RtlMoveMemory,None,Dim,Int4,Int4
+.
+#strMoveMemoryDest DIM ^
+#lngMoveMemoryLpt INTEGER ^
+#lngMoveMemoryLen INTEGER 4
+.
+MoveMemory LROUTINE #strMoveMemoryDest,#lngMoveMemoryLpt:
+                     #lngMoveMemoryLen
+         MOVEPLEN  #strMoveMemoryDest,#lngPLen       .The memory string length
+         IF        (#lngMoveMemoryLen>#lngPLen)      .cannot be longer than
+           MOVE      #lngPLen,#lngMoveMemoryLen      .the DIM field
+         ENDIF
+.
+         WINAPI    apiMoveMemory USING #strMoveMemoryDest:
+                     #lngMoveMemoryLpt,#lngMoveMemoryLen
+         SETLPTR   #strMoveMemoryDest,#lngMoveMemoryLen
+         RETURN
+           %ENDIF
+         %ENDIF
+.
+...............................................................................
+         %IF       cccMoveMemoryIntStr = 1
+cccMoveMemoryIntStr EQU 0,REDEFINE
+           %IFNDEF   apiMoveMemoryIntStr
+.
+. MoveMemory - The MoveMemory function moves/copies a block of memory from one
+. location to another. 
+.
+. VOID MoveMemory (
+.   PVOID  Destination,       // address of move destination 
+.   CONST  VOID *  Source,    // address of block to move 
+.   DWORD  Length             // size, in bytes, of block to move  
+.   );	
+.
+apiMoveMemoryIntStr PROFILE Kernel32,RtlMoveMemory,None,Int4,Dim,Int4
+.
+#lngMoveMemoryIntStrLpt INTEGER ^
+#strMoveMemoryIntStrDest DIM ^
+#lngMoveMemoryIntStrLen INTEGER 4
+.
+MoveMemoryIntStr LROUTINE #lngMoveMemoryIntStrLpt,#strMoveMemoryIntStrDest:
+                     #lngMoveMemoryIntStrLen
+         MOVEPLEN  #strMoveMemoryIntStrDest,#lngPLen       .The memory string length
+         IF        (#lngMoveMemoryIntStrLen>#lngPLen)      .cannot be longer than
+           MOVE      #lngPLen,#lngMoveMemoryIntStrLen      .the DIM field
+         ENDIF
+.
+         WINAPI    apiMoveMemoryIntStr USING #lngMoveMemoryIntStrLpt:
+                     #strMoveMemoryIntStrDest,#lngMoveMemoryIntStrLen
+..         SETLPTR   #strMoveMemoryIntStrDest,#lngMoveMemoryIntStrLen
+         RETURN
+           %ENDIF
+         %ENDIF
+.
+...............................................................................
+         %IF       cccLpt2Str = 1
+cccLpt2Str EQU 0,REDEFINE
+           %IFNDEF   equLpt2Str
+equLpt2Str EQU 1
+.
+. Lpt2Str - Converts a LPTSTR pointer type to a DIM.
+. BeneSys create this call. It is not a Windows function.
+.
+#lngLpt2StrLpt INTEGER ^      .Memory Pointer
+#strLpt2StrStr DIM ^          .Return Value - Memory Pointer string
+.
+#lngLpt2StrLen INTEGER 4
+.
+Lpt2Str  LROUTINE  #lngLpt2StrLpt,#strLpt2StrStr
+.                                            .Get the String Lenght in memory
+         CALL      LStrlen USING #lngLpt2StrLen,#lngLpt2StrLpt
+.
+         CALL      MoveMemory USING #strLpt2StrStr,#lngLpt2StrLpt,#lngLpt2StrLen
+.
+         RETURN
+           %ENDIF
+         %ENDIF
+.
+...............................................................................
+         %IF       cccGetCommandLine = 1
+cccGetCommandLine EQU 0,REDEFINE
+           %IFNDEF   apiGetCommandLine
+.
+. GetCommandLine - The GetCommandLine function returns a pointer to the
+. command-line string for the current process. 
+. Note: BeneSys modified this funtion to return a String instead of a pointer.
+.
+. LPTSTR GetCommandLine(VOID)
+.
+apiGetCommandLine PROFILE Kernel32,GetCommandLineA,Int4
+.
+#strGetCommandLineStr DIM ^
+.
+#lngGetCommandLineLpt INTEGER 4
+.
+GetCommandLine LROUTINE #strGetCommandLineStr
+         WINAPI    apiGetCommandLine GIVING #lngGetCommandLineLpt
+         CALL      Lpt2Str USING #lngGetCommandLineLpt,#strGetCommandLineStr
+         RETURN
+.
+           %ENDIF
+         %ENDIF
+.
+...............................................................................
+         %IF       cccGlobalLock = 1
+cccGlobalLock EQU 0,REDEFINE
+           %IFNDEF   apiGlobalLock
+.
+. The GlobalLock function locks a global memory object and returns a pointer
+. to the first byte of the object's memory block. 
+.
+. Note:  The global functions are slower than other memory management functions
+. and do not provide as many features. Therefore, new applications should use 
+. the heap functions. However, the global functions are still used with DDE 
+. and the clipboard functions. 
+.
+. LPVOID GlobalLock(
+.   HGLOBAL hMem   // handle to global memory object
+.   );
+.
+. Declare Function GlobalLock Lib "kernel32" Alias "GlobalLock"
+.   (ByVal hMem As Long) As Long
+.
+apiGlobalLock PROFILE Kernel32,GlobalLock,Int4,Int4
+.
+. #rlngRetVal INTEGER ^         .DLL Return Value
+#lngGlobalLockhMem INTEGER 4
+.
+GlobalLock LROUTINE #rlngRetVal,#lngGlobalLockhMem
+         WINAPI    apiGlobalLock GIVING #rlngRetVal USING #lngGlobalLockhMem
+         RETURN
+.
+           %ENDIF
+         %ENDIF
+.
+...............................................................................
+         %IF       cccGlobalUnlock = 1
+cccGlobalUnlock EQU 0,REDEFINE
+           %IFNDEF   apiGlobalUnlock
+.
+. The GlobalUnlock function decrements the lock count associated with a memory
+. object that was allocated with GMEM_MOVEABLE. This function has no effect 
+. on memory objects allocated with GMEM_FIXED. 
+.
+. Note  The global functions are slower than other memory management functions
+. and do not provide as many features. Therefore, new applications should use 
+. the heap functions. However, the global functions are still used with DDE 
+. and the clipboard functions. 
+.
+. BOOL GlobalUnlock(
+.   HGLOBAL hMem   // handle to global memory object
+.   );
+.
+. Declare Function GlobalUnlock Lib "kernel32" Alias "GlobalUnlock"
+.   (ByVal hMem As Long) As Long
+.
+apiGlobalUnlock PROFILE Kernel32,GlobalUnlock,Int4,Int4
+.
+. #rlngRetVal INTEGER ^         .DLL Return Value
+#lngGlobalUnlockhMem INTEGER 4
+.
+GlobalUnlock LROUTINE #rlngRetVal,#lngGlobalUnlockhMem
+         WINAPI    apiGlobalUnlock GIVING #rlngRetVal USING #lngGlobalUnlockhMem
+         RETURN
+.
+           %ENDIF
+         %ENDIF
+.
+...............................................................................
+         %IF       cccGlobalFree = 1
+cccGlobalFree EQU 0,REDEFINE
+           %IFNDEF   apiGlobalFree
+.
+. The GlobalFree function frees the specified global memory object and 
+. invalidates its handle. 
+.
+. HGLOBAL GlobalFree(
+.   HGLOBAL hMem   // handle to the global memory object 
+.   );
+.
+. Declare Function GlobalFree Lib "kernel32" Alias "GlobalFree"
+.   (ByVal hMem As Long) As Long
+.
+apiGlobalFree PROFILE Kernel32,GlobalFree,Int4,Int4
+.
+. #rlngRetVal INTEGER ^         .DLL Return Value
+#lngGlobalFreehMem INTEGER 4
+.
+GlobalFree LROUTINE #rlngRetVal,#lngGlobalFreehMem
+         WINAPI    apiGlobalFree GIVING #rlngRetVal USING #lngGlobalFreehMem
+         RETURN
+.
+           %ENDIF
+         %ENDIF
+.
+...............................................................................
+         %IF       cccGlobalSize = 1
+cccGlobalSize EQU 0,REDEFINE
+           %IFNDEF   apiGlobalSize
+.
+. The GlobalSize function retrieves the current size, in bytes, of the 
+. specified global memory object. 
+.
+. Note: The global functions are slower than other memory management functions
+. and do not provide as many features. Therefore, new applications should use
+. the heap functions. However, the global functions are still used with DDE and
+. the clipboard functions. 
+.
+. DWORD GlobalSize(
+.   HGLOBAL hMem   // handle to global memory object
+.   );
+.
+. Declare Function GlobalSize Lib "kernel32" Alias "GlobalSize"
+.   (ByVal hMem As Long) As Long
+.
+apiGlobalSize PROFILE Kernel32,GlobalSize,Int4,Int4
+.
+. #rlngRetVal INTEGER ^         .DLL Return Value
+#lngGlobalSizehMem INTEGER 4
+.
+GlobalSize LROUTINE #rlngRetVal,#lngGlobalSizehMem
+         WINAPI    apiGlobalSize GIVING #rlngRetVal USING #lngGlobalSizehMem
+         RETURN
+.
+           %ENDIF
+         %ENDIF
+.
+...............................................................................
+         %IF       cccGlobalAlloc = 1
+cccGlobalAlloc EQU 0,REDEFINE
+           %IFNDEF   apiGlobalAlloc
+.
+. The GlobalAlloc function allocates the specified number of bytes from the 
+. heap. Win32 memory management does not provide a separate local heap and 
+. global heap. 
+.
+. Note:  The global functions are slower than other memory management functions
+. and do not provide as many features. Therefore, new applications should use 
+. the heap functions. However, the global functions are still used with DDE and
+. the clipboard functions. 
+.
+
+. HGLOBAL GlobalAlloc(
+.   UINT uFlags,     // allocation attributes
+.   SIZE_T dwBytes   // number of bytes to allocate
+. );
+. Declare Function GlobalAlloc Lib "kernel32" Alias "GlobalAlloc"
+.   (ByVal wFlags As Long, ByVal dwBytes As Long) As Long
+.
+.
+apiGlobalAlloc PROFILE Kernel32,GlobalAlloc,Int4,Int4,Int4
+.
+. #rlngRetVal INTEGER ^         .DLL Return Value
+#lngGlobalAllocUFlags INTEGER 4
+#lngGlobalAllocDWBytes INTEGER 4
+.
+GlobalAlloc LROUTINE #rlngRetVal,#lngGlobalAllocUFlags,#lngGlobalAllocDWBytes
+         WINAPI    apiGlobalAlloc GIVING #rlngRetVal USING #lngGlobalAllocUFlags:
+                     #lngGlobalAllocDWBytes
+         RETURN
+.
+           %ENDIF
+         %ENDIF
+.
+...............................................................................
+         %IF       cccWriteProfileString = 1
+cccWriteProfileString EQU 0,REDEFINE
+           %IFNDEF   apiWriteProfileString
+.
+. The WriteProfileString function copies a string into the specified section 
+. of the WIN.INI file. 
+.
+. This function is provided for compatibility with 16-bit Windows-based 
+. applications. Win32-based applications should store initialization information
+. in the registry. 
+.
+. BOOL WriteProfileString(
+.   LPCTSTR  lpszSection,     // address of section name 
+.   LPCTSTR  lpszKey,         // address of key name 
+.   LPCTSTR  lpszString       // address of string to write 
+.   );	
+.
+. Declare Function WriteProfileString Lib "kernel32" Alias "WriteProfileStringA"
+.   (ByVal lpszSection As String, ByVal lpszKeyName As String, 
+.    ByVal lpszString As String) As Long
+.
+apiWriteProfileString PROFILE Kernel32,WriteProfileStringA,Int4:
+                     Dim,Dim,Dim
+.
+#strWriteProfileStringSection DIM 100   // address of section name 
+#strWriteProfileStringKey DIM 50        // address of key name 
+#strWriteProfileStringString DIM 250    // address of string to add 
+.
+WriteProfileString LROUTINE #rlngRetVal:
+                     #strWriteProfileStringSection:
+                     #strWriteProfileStringKey:
+                     #strWriteProfileStringString
+.
+         CALL      NullTerminate USING #strWriteProfileStringSection
+         CALL      NullTerminate USING #strWriteProfileStringKey
+         CALL      NullTerminate USING #strWriteProfileStringString
+.
+         WINAPI    apiWriteProfileString GIVING #rlngRetVal USING #strWriteProfileStringSection:
+                     #strWriteProfileStringKey:
+                     #strWriteProfileStringString
+         RETURN
+.
+           %ENDIF
+         %ENDIF
+.
+...............................................................................
+         %IF       cccWritePrivateProfileString = 1
+cccWritePrivateProfileString EQU 0,REDEFINE
+           %IFNDEF   apiWritePrivateProfileString
+.
+. The WritePrivateProfileString function copies a string into the specified 
+. section of the specified initialization file. 
+.
+. This function is provided for compatibility with 16-bit Windows-based 
+. applications. WIn32-based applications should store initialization 
+. information in the registry. 
+.
+. BOOL WritePrivateProfileString(
+.   LPCTSTR  lpszSection,     // address of section name 
+.   LPCTSTR  lpszKey,         // address of key name 
+.   LPCTSTR  lpszString,      // address of string to add 
+.   LPCTSTR  lpszFile         // address of initialization filename 
+.   );	
+.
+. Declare Function WritePrivateProfileString Lib "kernel32" Alias "WritePrivateProfileStringA" 
+.   (ByVal lpApplicationName As String, ByVal lpKeyName As Any, 
+.    ByVal lpString As Any, ByVal lpFileName As String) As Long
+.
+apiWritePrivateProfileString PROFILE Kernel32,WritePrivateProfileStringA,Int4:
+                     Dim,Dim,Dim,Dim
+.
+#strWritePrivateProfileStringSection DIM 100   // address of section name 
+#strWritePrivateProfileStringKey DIM 50       // address of key name 
+#strWritePrivateProfileStringString DIM 250    // address of string to add 
+#strWritePrivateProfileStringFile DIM 250      // address of initialization filename 
+.
+WritePrivateProfileString LROUTINE #rlngRetVal:
+                     #strWritePrivateProfileStringSection:
+                     #strWritePrivateProfileStringKey:
+                     #strWritePrivateProfileStringString:
+                     #strWritePrivateProfileStringFile
+.
+         CALL      NullTerminate USING #strWritePrivateProfileStringSection
+         CALL      NullTerminate USING #strWritePrivateProfileStringKey
+         CALL      NullTerminate USING #strWritePrivateProfileStringString
+         CALL      NullTerminate USING #strWritePrivateProfileStringFile
+.
+         WINAPI    apiWritePrivateProfileString GIVING #rlngRetVal USING #strWritePrivateProfileStringSection:
+                     #strWritePrivateProfileStringKey:
+                     #strWritePrivateProfileStringString:
+                     #strWritePrivateProfileStringFile
+         RETURN
+.
+           %ENDIF
+         %ENDIF
+.
+...............................................................................
+         %IF       cccCopyFile = 1
+cccCopyFile EQU 0,REDEFINE
+           %IFNDEF   apiCopyFile
+.
+. The CopyFile function copies an existing file to a new file. 
+.
+. BOOL CopyFile(
+.   LPCTSTR  lpExistingFileName,   // address of name of an existing file 
+.   LPCTSTR  lpNewFileName,        // address of filename to copy to 
+.   BOOL     bFailIfExists         // flag for operation if file exists 
+.   );
+.
+. Declare Function CopyFile Lib "Kernel32" Alias "CopyFileA" 
+.   (ByVal lpExistingFileName As String, ByVal lpNewFileName As String, 
+.    ByVal bFailIfExists As Long) As Long
+.
+apiCopyFile PROFILE Kernel32,CopyFileA,Int4,Dim,Dim,Int4
+.
+. #rlngRetVal INTEGER ^         .DLL Return Value
+#strCopyFilelpExistingFileName DIM 250
+#strCopyFilelpNewFileName DIM 250
+#lngCopyFilebFailIfExists INTEGER 4
+.
+CopyFile LROUTINE #rlngRetVal,#strCopyFilelpExistingFileName:
+                     #strCopyFilelpNewFileName:
+                     #lngCopyFilebFailIfExists
+         CALL      NullTerminate USING #strCopyFilelpExistingFileName
+         CALL      NullTerminate USING #strCopyFilelpNewFileName
+         WINAPI    apiCopyFile GIVING #rlngRetVal USING #strCopyFilelpExistingFileName:
+                     #strCopyFilelpNewFileName:
+                     #lngCopyFilebFailIfExists
+         RETURN
+.
+           %ENDIF
+         %ENDIF
+.
+...............................................................................
+         %IF       cccGetSystemTime = 1
+cccGetSystemTime EQU 0,REDEFINE
+           %IFNDEF   apiGetSystemTime
+.
+. The GetSystemTime function retrieves the current system date and time. The 
+. system time is expressed in Coordinated Universal Time (UTC). 
+.
+. VOID GetSystemTime(
+.   LPSYSTEMTIME lpSystemTime   // system time
+.   );
+.
+. Declare Sub GetSystemTime Lib "kernel32" Alias "GetSystemTime"
+.   (lpSystemTime As SYSTEMTIME)
+.
+apiGetSystemTime PROFILE Kernel32,GetSystemTime,None,Dim
+.
+#strGetSystemTimelpSystemTime DIM ^   // system time
+.
+GetSystemTime LROUTINE #strGetSystemTimelpSystemTime
+         WINAPI    apiGetSystemTime USING #strGetSystemTimelpSystemTime
+         RETURN
+.
+           %ENDIF
+         %ENDIF
+.
+...............................................................................
+         %IF       cccGetLocalTime = 1
+cccGetLocalTime EQU 0,REDEFINE
+           %IFNDEF   apiGetLocalTime
+.
+. The GetLocalTime function retrieves the current system date and time. The 
+. system time is expressed in Coordinated Universal Time (UTC). 
+.
+. VOID GetLocalTime(
+.   LPSYSTEMTIME lpSystemTime   // system time
+.   );
+.
+. Declare Sub GetLocalTime Lib "kernel32" Alias "GetLocalTime"
+.   (lpSystemTime As SYSTEMTIME)
+.
+apiGetLocalTime PROFILE Kernel32,GetLocalTime,None,Dim
+.
+#strGetLocalTimelpSystemTime DIM ^   // system time
+.
+GetLocalTime LROUTINE #strGetLocalTimelpSystemTime
+         WINAPI    apiGetLocalTime USING #strGetLocalTimelpSystemTime
+         RETURN
+.
+           %ENDIF
+         %ENDIF
+.
+...............................................................................
+         %IF       cccSystemTimeToFileTime = 1
+cccSystemTimeToFileTime EQU 0,REDEFINE
+           %IFNDEF   apiSystemTimeToFileTime
+.
+. The SystemTimeToFileTime function converts a system time to a file time. 
+. 
+. BOOL SystemTimeToFileTime(
+.   CONST SYSTEMTIME *  lpst, // address of system time to convert 
+.   LPFILETIME  lpft   // address of buffer for converted file time 
+.   );	
+.
+. Declare Function SystemTimeToFileTime Lib "kernel32" Alias "SystemTimeToFileTime"
+.   (lpSystemTime As SYSTEMTIME, lpFileTime As FILETIME) As Long
+.
+apiSystemTimeToFileTime PROFILE Kernel32,SystemTimeToFileTime,Int4,Dim,Dim
+.
+. #rlngRetVal INTEGER ^         .DLL Return Value
+#strSystemTimeToFileTimelpSystemTime DIM ^   // system time
+#strSystemTimeToFileTimelpFileTime DIM ^     // file time
+.
+SystemTimeToFileTime LROUTINE #rlngRetVal,#strSystemTimeToFileTimelpSystemTime:
+                     #strSystemTimeToFileTimelpFileTime
+         WINAPI    apiSystemTimeToFileTime GIVING #rlngRetVal USING #strSystemTimeToFileTimelpSystemTime:
+                     #strSystemTimeToFileTimelpFileTime
+         RETURN
+.
+           %ENDIF
+         %ENDIF
+.
+...............................................................................
+         %IF       cccFileTimeToSystemTime = 1
+cccFileTimeToSystemTime EQU 0,REDEFINE
+           %IFNDEF   apiFileTimeToSystemTime
+.
+. The FileTimeToSystemTime function converts a 64-bit file time to system time format. 
+.
+. BOOL FileTimeToSystemTime(
+.   CONST FILETIME *  lpFileTime,  // pointer to file time to convert 
+.   LPSYSTEMTIME  lpSystemTime     // pointer to structure to receive system time  
+.   );
+.
+. Declare Function FileTimeToSystemTime Lib "kernel32" Alias "FileTimeToSystemTime"
+.   (lpFileTime As FILETIME, lpSystemTime As SYSTEMTIME) As Long
+.
+apiFileTimeToSystemTime PROFILE Kernel32,FileTimeToSystemTime,Int4,Dim,Dim
+.
+. #rlngRetVal INTEGER ^         .DLL Return Value
+#strFileTimeToSystemTimelpFileTime DIM ^     // file time
+#strFileTimeToSystemTimelpSystemTime DIM ^   // system time
+.
+FileTimeToSystemTime LROUTINE #rlngRetVal,#strFileTimeToSystemTimelpFileTime:
+                     #strFileTimeToSystemTimelpSystemTime
+         WINAPI    apiFileTimeToSystemTime GIVING #rlngRetVal USING #strFileTimeToSystemTimelpFileTime:
+                     #strFileTimeToSystemTimelpSystemTime
+         RETURN
+.
+           %ENDIF
+         %ENDIF
+.
+...............................................................................
+         %IF       cccSystemTimeToSystemTimeCur = 1
+cccSystemTimeToSystemTimeCur EQU 0,REDEFINE
+           %IFNDEF   apiSystemTimeToSystemTimeCur
+.
+. The SystemTimeToSystemTimeCur function converts a 64-bit file time to system time format. 
+.
+.
+. #rlngRetVal INTEGER ^         .DLL Return Value
+#strSystemTimeCurIn DIM ^
+#strSystemTimeCurOut DIM ^
+#recSystemTimeCurIn RECORD LIKE SystemTime
+#recSystemTimeCurOut RECORD LIKE SystemTimeCur
+.
+SystemTimeToSystemTimeCur LROUTINE #rlngRetVal,#strSystemTimeCurIn:
+                     #strSystemTimeCurOut
+.
+         UNPACK    #strSystemTimeCurIn INTO #recSystemTimeCurIn
+.
+         MOVE      #recSystemTimeCurIn.wYear,#recSystemTimeCurOut.wYear
+         MOVE      #recSystemTimeCurIn.wMonth,#recSystemTimeCurOut.wMonth
+         MOVE      #recSystemTimeCurIn.wDayOfWeek,#recSystemTimeCurOut.wDayOfWeek
+         MOVE      #recSystemTimeCurIn.wDay,#recSystemTimeCurOut.wDay
+         MOVE      #recSystemTimeCurIn.wHour,#recSystemTimeCurOut.wHour
+         MOVE      #recSystemTimeCurIn.wMinute,#recSystemTimeCurOut.wMinute
+         MOVE      #recSystemTimeCurIn.wSecond,#recSystemTimeCurOut.wSecond
+         MOVE      #recSystemTimeCurIn.wMilliseconds,#recSystemTimeCurOut.wMilliseconds
+.
+         PACK      #strSystemTimeCurOut INTO #recSystemTimeCurOut
+         REP       " 0",#strSystemTimeCurOut
+.
+         RETURN
+.
+           %ENDIF
+         %ENDIF
+.
+...............................................................................
+         %IF       cccGetFileTime = 1
+cccGetFileTime EQU 0,REDEFINE
+           %IFNDEF   apiGetFileTime
+.
+. The GetFileTime function retrieves the date and time that a file was created,
+. last accessed, and last modified. 
+.
+. BOOL GetFileTime(
+.   HANDLE  hFile,                 // identifies the file 
+.   LPFILETIME  lpCreationTime,    // address of creation time 
+.   LPFILETIME  lpLastAccessTime,  // address of last access time  
+.   LPFILETIME  lpLastWriteTime    // address of last write time 
+.   );
+.
+. Declare Function GetFileTime Lib "kernel32" Alias "GetFileTime"
+.   (ByVal hFile As Long, lpCreationTime As FILETIME,
+.   lpLastAccessTime As FILETIME, lpLastWriteTime As FILETIME) As Long
+.
+apiGetFileTime PROFILE Kernel32,GetFileTime,Int4,Int4,Dim,Dim,Dim
+.
+. #rlngRetVal INTEGER ^         .DLL Return Value
+#strGetFileTimehFile INTEGER 4
+#strGetFileTimelpCreationTime DIM ^
+#strGetFileTimelpLastAccessTime DIM ^
+#strGetFileTimelpLastWriteTime DIM ^
+.
+GetFileTime LROUTINE #rlngRetVal,#strGetFileTimehFile:
+                     #strGetFileTimelpCreationTime,#strGetFileTimelpLastAccessTime:
+                     #strGetFileTimelpLastWriteTime
+         WINAPI    apiGetFileTime GIVING #rlngRetVal USING #strGetFileTimehFile:
+                     #strGetFileTimelpCreationTime,#strGetFileTimelpLastAccessTime:
+                     #strGetFileTimelpLastWriteTime
+         RETURN
+.
+           %ENDIF
+         %ENDIF
+.
+...............................................................................
+         %IF       cccFormatMessage = 1
+cccFormatMessage EQU 0,REDEFINE
+           %IFNDEF   apiFormatMessage
+.
+. The FormatMessage function formats a message string. The function requires a
+. message definition as input. The message definition can come from a buffer
+. passed into the function. It can come from a message table resource in an
+. already-loaded module. Or the caller can ask the function to search the
+. system's message table resource(s) for the message definition. The function
+. finds the message definition in a message table resource based on a message
+. identifier and a language identifier. The function copies the formatted
+. message text to an output buffer, processing any embedded insert sequences
+. if requested. 
+.
+. DWORD FormatMessage(
+.   DWORD    dwFlags,         // source and processing options 
+.   LPCVOID  lpSource,        // address of  message source 
+.   DWORD    dwMessageId,     // requested message identifier 
+.   DWORD    dwLanguageId,    // language identifier for requested message 
+.   LPTSTR   lpBuffer,        // address of message buffer 
+.   DWORD    nSize,           // maximum size of message buffer 
+.   va_list *  Arguments      // address of array of message inserts 
+.   );
+.
+. Declare Function FormatMessage Lib "Kernel32" Alias "FormatMessageA"
+.   (ByVal dwFlags As Long, lpSource As Any, ByVal dwMessageId As Long,
+.    ByVal dwLanguageId As Long, ByVal lpBuffer As String, 
+.    ByVal nSize As Long, Arguments As Long) As Long
+.
+apiFormatMessage PROFILE Kernel32,FormatMessageA,Int4,Int4,Int4,Int4,Int4,Dim,Int4,Int4
+.
+. #rlngRetVal INTEGER ^         .DLL Return Value
+#lngFormatMessagedwFlags INTEGER 4
+#lngFormatMessagelpSource INTEGER 4
+#lngFormatMessagedwMessageId INTEGER 4
+#lngFormatMessagedwLanguageId INTEGER 4
+#strFormatMessagelpBuffer DIM ^
+#lngFormatMessagenSize INTEGER 4
+#lngFormatMessageArguments INTEGER 4
+.
+FormatMessage LROUTINE #rlngRetVal,#lngFormatMessagedwFlags:
+                     #lngFormatMessagelpSource:
+                     #lngFormatMessagedwMessageId:
+                     #lngFormatMessagedwLanguageId:
+                     #strFormatMessagelpBuffer:
+                     #lngFormatMessagenSize:
+                     #lngFormatMessageArguments
+         IF        (#lngFormatMessagenSize=0)     .If size is 
+           MOVEPLEN  #strFormatMessagelpBuffer,#lngFormatMessagenSize
+         ENDIF
+         WINAPI    apiFormatMessage GIVING #rlngRetVal USING #lngFormatMessagedwFlags:
+                     #lngFormatMessagelpSource:
+                     #lngFormatMessagedwMessageId:
+                     #lngFormatMessagedwLanguageId:
+                     #strFormatMessagelpBuffer:
+                     #lngFormatMessagenSize:
+                     #lngFormatMessageArguments
+         IF        (#rlngRetVal != 0)
+           RESET     #strFormatMessagelpBuffer,1
+           SETLPTR   #strFormatMessagelpBuffer,#rlngRetVal  . Set LP of the message
+         ENDIF
+         RETURN
+.
+           %ENDIF
+         %ENDIF
+.
+.
+...............................................................................
+         %IF       cccGetLastError = 1
+cccGetLastError EQU 0,REDEFINE
+           %IFNDEF   apiGetLastError
+.
+. The GetLastError function returns the calling thread's last-error code value. 
+.
+. Most Win32 functions set their calling thread's last-error value when they 
+. fail; a few functions set it when they succeed.
+.
+. DWORD GetLastError(VOID)
+.
+. Declare Function GetLastError Lib "Kernel32" Alias "GetLastError" () As Long
+.
+apiGetLastError PROFILE Kernel32,GetLastError,Int4
+.
+. #rlngRetVal INTEGER ^         .DLL Return Value
+.
+GetLastError LROUTINE #rlngRetVal
+         WINAPI    apiGetLastError GIVING #rlngRetVal
+         RETURN
+.
+           %ENDIF
+         %ENDIF
+.
+...............................................................................
+cccDLLRtn EQU 0,REDEFINE
+         %IF       cccNullTerminate = 1
+cccDLLRtn EQU 1,REDEFINE
+         %ENDIF
+.
+...............................................................................
+         %IF       cccDLLRtn = 1
+cccDLLRtn EQU 0,REDEFINE
+         INC       DLLRtn.API
+         %ENDIF
+.
+#INCEND
+. 
+.

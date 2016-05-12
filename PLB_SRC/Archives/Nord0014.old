@@ -1,0 +1,607 @@
+.
+. PURPOSE - PRINT REPORT FOR DAILY ORDERS SHOWING:
+.           1)TOTAL ORDERS PRINTED.
+.           2)NUMBER OF NEW ORDERS PER TYPIST.
+.           3)NUMBER OF REPRINTS PER TYPIST.
+.           4)PERCENTAGES OF ABOVE COMPARED TO TOTALS.
+. .............................................................................
+. FILES.
+. ......
+.INPUT   FILE      ORDER DAILY PRINT FILE 
+.
+PC       EQU       0
+         INCLUDE   COMMON.inc
+         INCLUDE   CONS.inc
+         INCLUDE   NTYPDD.inc
+         INCLUDE   NORDDD.inc
+         INCLUDE   NUSEDD.inc
+         INCLUDE   HP.inc
+.
+INPUT   FILE      FIXED=696,STATIC=12
+
+RElease       Init            "2.3"          Feb2006 DLH New file stucture new logic etc
+. .............................
+FILL3    DIM       3
+DATE     DIM       8
+.
+. ..............
+. OTHER VARIABLES.
+NOrdTypRec     REcord         (33)  
+TypeREc       Dim             3                 ;typist inits
+Nqtyrec       Form            9                 ;order qty
+Countrec      Form            4                 ;number of new orders            
+RepRec        Form            4                 ;number reprint orders
+RePQtyREc     Form            9                 ;reprint qty            
+PordRec       form            4                 ;pending order count
+LCRRec        Form            4                 ;new lcr count
+              RecordEnd
+
+NQTY          FORM      9            NEW ORDER QTY
+NCOUNT        FORM      4            NUMBER OF NEW ORDERS
+REPCNT        FORM      4            NUMBER OF REPRINT ORDERS
+Pcount        form            4            pending orders
+Lcount        form            4              lcr's
+SUBRTY        FORM      9                    order reprint qty 
+COUNT         FORM      5
+BRANCH        FORM      "00"
+;R             INIT      "R"
+QTY           FORM      9
+.END           FORM      2
+HUNDRED       FORM      "100"
+TOTREP        FORM      3
+Calc53        Form            5.3
+REPCALC       FORM      3.2        *percentage of reprint orders
+TOTCALC       FORM      3.2        *percentage of orders
+LTCALC        FORM      3.2        *PERCENTAGE OF NEW LCR'S.
+LRCALC        FORM      3.2        *PERCENTAGE OF REPRINT LCR'S.
+ATCALC        FORM      3.2        *PERCENTAGE OF NEW APPROVALS.
+ADCALC        FORM      3.2        *PERCENTAGE OF NEW adjustments.
+PCalc         Form      3.2        *percentage of Pending orders
+INVCALC       FORM      3.2
+INVRCALC      FORM      3.2
+LstCalc       Form            3.2
+LstUCalc      Form            3.2
+LINES         FORM      2
+ENDSW         DIM       1
+ANS           DIM       1
+PRTDATE       DIM       8          *DATE FORMAT MM/DD/YY
+IOERROR       FORM      1          *INDEX FOR IO ERROR BRANCH.
+PAGE          FORM      "  1"
+CANC          FORM      4
+LSTOTAL       FORM      5          *LCR TOTALS
+LRTOTAL       FORM      5          *LCR TOTALS
+OrdSum        Form            5                 ;holding place # of new orders
+OrdrSum       Form            5                 ;holding place # of reprint orders
+qtySum        Form            5                 ;holding place # of new order names
+LcrSum        Form            5                 ;holding place # of new lcrs
+LcrRSum       Form            5                 ;holding place # of reprint Lcrs
+POrdSum       Form            5                 ;holding place # of new Pending orders
+. PROGRAM MAIN.
+         MOVE      "NINCAL" TO COMPNME
+         MOVE      "ORDER TYPIST DATE PROGRAM" TO STITLE
+         MOVE      "EXIT" TO PF5
+         CALL       PAINT
+         CALL       FUNCDISP
+         TRAP      DOWN IF F5
+         CLOCK     DATE TO DATE
+         IFNZ      PC
+         UNPACK    DATE INTO MM,DD,YY
+         XIF
+         IFZ       PC 
+         UNPACK    DATE INTO MM,STR1,DD,STR1,YY
+         XIF
+         REP       ZFILL IN YY
+         REP       ZFILL IN MM
+         REP       ZFILL IN DD
+         PACK      PRTDATE FROM MM,SLASH,DD,SLASH,YY
+
+         clock     timestamp,str6
+         unpack    str6,str2,yy,mm
+              Move            str2 to cc         
+         pack      TypDate from str6
+         
+         rep       Zfill in typDate
+.         
+CHOOSE   move      "D" to ans
+         KEYIN     *P25:14,"(D)aily processing, (P)rint report, (K)ill file":
+                   " ",*T60,*RV,ANS;
+         CMATCH    "D" TO ANS
+         GOTO      DAILY IF EQUAL
+         CMATCH    "P" TO ANS
+         IF EQUAL
+              KEYIN           *P10:12,"Report DATE ",*p22:12,*el,*+,*dv,mm,"/",*dv,dd,"/",*dv,cc,*dv,yy:
+                              *p22:12,*t30,*ZF,*JR,*rv,MM,*DV,SLASH,*rv,DD:
+                              *DV,SLASH,*rv,cc,*rv,YY
+              PACK            PRTDATE FROM MM,SLASH,DD,SLASH,YY
+              PACK            DATE FROM MM,SLASH,DD,SLASH,YY
+              pack            TypDate from cc,yy,mm
+                   
+         PACK      STR35,NTWKPATH1,"ntypst.lst"
+         splopen   STR35
+         print     hpland,hp14ptch,hplin8,hptop
+         goto      totcalc
+         endif
+         CMATCH    "K" TO ANS
+         GOTO      CHOOSE IF NOT EQUAL
+         KEYIN     *P1:24,"THIS WILL DELETE ALL RECORDS IN THE FILE OK??",ANS;
+         CMATCH    "Y" TO ANS
+         GOTO      DOWN IF NOT EQUAL
+.
+              PACK            STR55,NTWKPATH1,"text\typout.dat"
+              Erase           str55
+         PACK      TASKNAME,"\\nts0\c\apps\plb\code\sunindex.exe ",NTWKPATH1,"text\typout.dat ",NTWKPATH1,"index\typout.isi,L83 -1-9,e,n"
+         execute   TASKNAME
+DOWN
+              Shutdown        "CLS"
+. ...................
+DAILY    DISPLAY    *P25:12,"NUMBER OF ORDERS READ ";
+.
+         TRAP      IO GIVING ERROR IF IO
+         MOVE      C1 TO IOERROR
+         IFNZ      PC
+         OPEN      INPUT,"NPRINT/TEMP",SHARE
+         XIF
+         IFZ      PC
+         OPEN      INPUT,"NPRINT.srt",SHARE
+         XIF
+         SUB       IOERROR FROM IOERROR
+         TRAPCLR    IO
+READ     READ      INPUT,SEQ;ORDVARS
+         GOTO      OUTPUT IF OVER
+         RESET     CANCODES
+         SCAN      OSTAT IN CANCODES
+.                                      0-Live order
+.                                      B-Billed order
+.                                      Q-Cancelled/Billed order
+.                                      X-Cancelled order
+.                                      e-Live Order with Estimated Invoice uses "X" if cancelled         
+.patch 5    New values for OSTAT  p Lower case = Pending order (awaiting LO/manager Approval)
+.                                 x Lower case = Cancellation of above (never approved)
+.                                 l Lower case = LCR
+.                                 z Lower case = Cancellation of LCR
+;add lcr stuff later
+         GOTO      READ IF EQUAL
+               if              (Func = "1")           .hourly run
+                              pack      str4 from "xlz"
+                              Scan             Ostat in str4
+                              goto            read if equal
+               ElseIf         (Func = "2")               
+                              pack      str4 from "xz"            .nightly run include LCr's
+                              Scan             Ostat in str4
+                              goto            read if equal
+              Else                                                   ;darn func check failed
+                              pack      str4 from "xlz"
+                              Scan             Ostat in str4
+                              goto            read if equal
+              endif              
+         MATCH     "      " TO OLRN
+         GOTO      READ IF EQUAL     *CHECK FOR NULL 1ST RECORD.
+         GOTO      READ IF EOS
+         ADD       C1 TO COUNT
+         DISPLAY   *P48:12,*EL,COUNT;
+         GOTO      BREAK
+.
+BREAK
+              MOVE      ODOWJ TO TYPe
+              GOTO      ADD
+.
+PASSONE
+.
+ADD
+              MOVE      OQTY TO QTY
+SUBTOT
+              FOR           Branch,"1","33"
+                                            
+                              If             (Type = NordTypRec(branch).TypeRec)                            
+                                             Move           NordTypREc(Branch).Nqtyrec,nqty                  ;# new Names
+                                             Move           NordTypREc(Branch).Repqtyrec,subrty
+                                             Move           NordTypREc(Branch).Countrec,Ncount
+                                             Move           NordTypREc(Branch).PordRec,Pcount
+                                             Move           NordTypREc(Branch).LcrRec,LCount
+                                             Move           NordTypREc(Branch).Reprec,RepCnt
+                                             if             (Ostat = "B" & (type = "ARB" or type = "AMB"))
+                                             add            qty to nqty                                  ;# new Names
+                                             add            c1 to Ncount
+                                             elseif         (ostat = "R")          .reprint
+                                             add            qty to subrty
+                                             add            c1 to repcnt
+                                             Elseif         (Ostat = "p")           .pending
+                                             Add            C1 to PCount
+                                             Elseif         (Ostat = "l")           .LCR
+                                             add            c1 to Lcount
+                                             Else                                   .must be regular live order
+                                             add            qty to nqty
+                                             add            c1 to Ncount
+                                             endif
+                                             Move           Nqty,NordTypREc(Branch).Nqtyrec              ;# new Names
+                                             Move           subrty,NordTypREc(Branch).Repqtyrec
+                                             Move           NCount,NordTypREc(Branch).Countrec
+                                             Move           PCount,NordTypREc(Branch).PordRec
+                                             Move           LCount,NordTypREc(Branch).LcrRec
+                                             Move           RepCnt,NordTypREc(Branch).Reprec
+                             Break                
+                             endif
+                             if              (Nordtyprec(Branch).Typerec = "")
+                                             if             (Ostat = "B" & (type = "ARB" or type = "AMB"))
+                                             add            qty to nqty                ;# new Names
+                                             add            c1 to Ncount
+                                             ElseIf        (ostat = "R")
+                                             add            qty to subrty
+                                             add            c1 to repcnt
+                                             Elseif         (Ostat = "p")           .pending
+                                             Add            C1 to PCount
+                                             Elseif         (Ostat = "l")           .LCR
+                                             add            c1 to LCount
+                                             Else                                   .must be regular live order
+                                             add            qty to nqty
+                                             add            c1 to Ncount
+                                             endif
+                                             Move           Nqty,NordTypREc(Branch).Nqtyrec              ;# new Names
+                                             Move           subrty,NordTypREc(Branch).Repqtyrec
+                                             Move           NCount,NordTypREc(Branch).Countrec
+                                             Move           RepCnt,NordTypREc(Branch).Reprec
+                                             Move           PCount,NordTypREc(Branch).PordRec
+                                             Move           LCount,NordTypREc(Branch).LcrRec
+                                             Move           Type,NordTypREc(Branch).Typerec
+                             break                
+                             endif                
+           repeat
+
+.
+         MOVE      C0 TO NCOUNT
+         MOVE      C0 TO LCOUNT
+         MOVE      C0 TO PCOUNT
+         MOVE      C0 TO SUBRTY
+         MOVE      C0 TO NQTY
+         MOVE      C0 TO REPCNT
+              goto            read
+         RETURN
+.
+OUTPUT
+         DISPLAY   *P1:24,"PREPARING FILE OUTPUT",*B;
+         SUB       TOTREP FROM COUNT   *SUBTRACT REPRINTS FROM TOTAL.
+OUTPUT1
+.      UNLOAD TABLES.
+              FOR           Branch,"1","33"
+                                            
+                                             Move           NordTypRec(branch).TypeRec,Type                              
+                                             Move           NordTypREc(Branch).Nqtyrec,nqty     ;# new Names
+                                             Move           NordTypREc(Branch).Repqtyrec,subrty
+                                             Move           NordTypREc(Branch).Countrec,Ncount
+                                             Move           NordTypREc(Branch).Reprec,RepCnt
+                                             Move           NordTypREc(Branch).PordRec,Pcount
+                                             Move           NordTypREc(Branch).LcrRec,LCount
+                             if              (Nordtyprec(Branch).Typerec = "")
+                             break  
+                             goto            outlast
+                             else
+         MATCH     "  " TO TYPe
+         CALL      NOTYP IF EQUAL
+         CALL      NOTYP IF EOS
+;         DISPLAY   *P1:24,*EL,"READ  KEY= ",NTYPFLD;
+              MOVE      TYPE TO ODOWJ
+              MOVE       C1 TO NTYPPATH                         ;detail record
+              Move            Str6 to TypDate
+              Packkey         Ntypfld from TypDate,type         
+              ADD       NQTY TO QtySum        ;totals         ;# new Names
+              ADD       NCOUNT TO OrdSum        ;totals
+              ADD       REPCNT TO OrdRSum        ;totals
+              add             Pcount to Pordsum        ;totals
+              add             LCount to LcrSum        ;totals
+              CALL      NTYPtst
+              GOTO      WRITE IF OVER
+              CALL      NTYPKEY
+               ADD            NQTY TO SUBQTY                      ;Detail         ;# new Names
+               ADD            NCOUNT TO SUBCOUNT                  ;Detail     
+               ADD            REPCNT TO REPCOUNT                  ;detail
+               add            Pcount to Pndcount            ;detail
+               add            LCount to LSUBCNT             ;detail
+;              DISPLAY   *P1:24,*EL,"UPDATE";
+              CALL       NTYPUPD
+              GOTO      OUTPUTX
+NOTYP    
+              Move            Str6 to TypDate
+              Packkey         Ntypfld from TypDate,"?? "
+              RETURN
+WRITE
+              MOVE      ODOWJ TO TYPe
+              Move            str6 to Typdate
+              Packkey         Ntypfld from Typdate,Type
+
+               ADD            NQTY TO SUBQTY                      ;Detail         ;# new Names
+               ADD            NCOUNT TO SUBCOUNT                  ;Detail     
+               ADD            REPCNT TO REPCOUNT                  ;detail
+               add            Pcount to Pndcount            ;detail
+               add            LCount to LSUBCNT             ;detail
+              DISPLAY   *P1:24,*EL,"WRITE  KEY=",NTYPFLD;
+              CALL      NTYPWRT
+.
+. OUTPUTX - OUTPUT SECTION EXIT.
+OUTPUTX
+                              endif                
+           repeat
+OUTLAST
+         DISPLAY   *P1:24,*EL,"FINAL READ";
+              Move            str6 to Typdate
+              Packkey         Ntypfld from Typdate,"99 "
+              move            NTypfld to Idnum
+              MOVE      C2 TO NTYPPATH
+              CALL      NTYPtst
+              GOTO      NONINE IF OVER
+              CALL      NTYPKEY
+              add             OrdSum to STotal
+              add             OrdRsum to RTotal
+              Add             QtySum to QtyTotal
+              add             LcrSum to LCSTot
+              add             LcrRsum to LCRTot
+              add             Pordsum to PndTot
+              DISPLAY   *P1:24,*EL,"FINAL WRITE";
+               CALL       NTYPUPD
+         GOTO      STOP
+NONINE   
+              Move            str6 to Typdate
+              Packkey         Ntypfld from Typdate,"99 "
+              move            nTypfld to Idnum
+              MOve            OrdSum to STotal
+              MOve            OrdRsum to RTotal
+              MOve            QtySum to QtyTotal
+              MOve            LcrSum to LCSTot
+              MOve            LcrRsum to LCRTot
+              Move            Pordsum to PndTot
+              CALL      NTYPWRT
+              GOTO      STOP
+.
+. TOTCALC - READ AND PRINT FROM FILE TYPOUT.
+TOTCALC
+              CALL      HEADER
+              Packkey         Ntypfld from Typdate,"99 "
+
+              MOVE      C2 TO NTYPPATH
+              CALL      NTYPKEY                                ;get totals
+              If              Not over
+              unpack          Idnum into str6
+               packkey        Ntypfld from "000000000"
+               MOVE           C1 TO NTYPPATH
+               call           Ntyptst
+               goto           readks
+              endif
+         KEYIN     *P1:24,*B,*EL,"NO TOTAL RECORD FOUND IN TYPOUT??":
+                   *B,"(A)bort, (C)ontinue",ANS;
+         CMATCH    "A" TO ANS
+         if   equal
+         shutdown   "CLS"
+         endif
+.
+READKS   MOVE      C1 TO NTYPPATH
+         MOVE      C0 TO COUNT
+         MOVE      C0 TO TOTREP
+         CALL      NTYPKS
+         GOTO      EOJ IF OVER
+              call            Trim using type
+              move            c0 to n3
+              Move            Type to n3     
+              if              (n3 = "99")
+              goto            readks
+              endif
+                              If             (str6 <> typDate)
+;                              goto           eoj
+                              goto           readks                   ;different month
+                              endif
+.
+CALCPER
+.      CALCULATE PERCENTAGE OF NEW ORDERS.
+         MOVE      C0 TO TOTCALC
+              MOve            c0 to Calc53         
+         COMPARE   C0 TO SUBCOUNT
+         GOTO      CALCREP IF EQUAL
+         MOVE      STotal TO COUNT
+         MOVE      SUBCOUNT TO CALC53
+         DIVIDE    COUNT INTO CALC53
+         MULT      HUNDRED BY CALC53
+              Move            calc53 to totcalc
+CALCREP
+.      CALCULATE PERCENTAGE OF REPRINTS.
+         MOVE      C0 TO REPCALC
+              MOve            c0 to Calc53         
+         COMPARE   C0 TO REPCOUNT
+         GOTO      CALCLCR IF EQUAL
+         MOVE      RTotal TO TOTREP
+         MOVE      REPCOUNT TO CALC53
+         DIVIDE    TOTREP INTO CALC53
+         MULT      HUNDRED BY CALC53
+              Move            calc53 to repcalc
+.
+.CALCLCR - CALC LIST CLEARANCE REQ'S.
+CALCLCR
+         MOVE      C0 TO LTCALC
+              MOve            c0 to Calc53         
+         COMPARE   C0 TO LSUBCNT
+         GOTO      CALCLCR1 IF EQUAL
+         MOVE      LCSTot TO COUNT
+         MOVE      LSUBCNT TO CALC53
+         DIVIDE    COUNT INTO CALC53
+         MULT      HUNDRED BY CALC53
+              MOve            calc53 to ltcalc
+.
+CALCLCR1
+         MOVE      C0 TO LRCALC
+              MOve            c0 to Calc53         
+         COMPARE   C0 TO LREPCNT
+         GOTO      CALCINV IF EQUAL
+         MOVE      LCRTot TO COUNT
+         MOVE      LREPCNT TO CALC53
+         DIVIDE    COUNT INTO CALC53
+         MULT      HUNDRED BY CALC53
+              Move            Calc53 to LRcalc         
+.
+.CALCINV - CALC INCVOICES.
+CALCINV
+         MOVE      C0 TO INVCALC
+              MOve            c0 to Calc53         
+         COMPARE   C0 TO INVCOUNT
+         GOTO      CALCINV1 IF EQUAL
+         MOVE      INVTOT TO COUNT
+         MOVE      INVCOUNT TO CALC53
+         DIVIDE    COUNT INTO CALC53
+         MULT      HUNDRED BY CALC53
+              Move            Calc53 to invcalc
+.
+CALCINV1
+         MOVE      C0 TO INVRCALC
+              MOve            c0 to Calc53         
+         COMPARE   C0 TO INVRCNT
+.         GOTO      TYPREAD IF EQUAL
+         GOTO      CALCAPP IF EQUAL
+         MOVE      INVRTOT TO COUNT
+         MOVE      INVRCNT TO CALC53
+         DIVIDE    COUNT INTO CALC53
+         MULT      HUNDRED BY CALC53
+              Move            Calc53 to invrcalc
+.
+CALCAPP  MOVE      C0 TO ATCALC
+              MOve            c0 to Calc53         
+         COMPARE   C0 TO APPCOUNT
+         GOTO      calcadj IF EQUAL
+         MOVE      APPTOT TO COUNT
+         MOVE      APPCOUNT TO CALC53
+         DIVIDE    COUNT INTO CALC53
+         MULT      HUNDRED BY CALC53
+              Move            calc53 to Atcalc
+.
+CALCAdj  MOVE      C0 TO AdCALC
+              MOve            c0 to Calc53         
+         COMPARE   C0 TO AdjCOUNT
+         GOTO      calcpnd IF EQUAL
+         MOVE      AdjTOT TO COUNT
+         MOVE      AdjCOUNT TO CALC53
+         DIVIDE    COUNT INTO CALC53
+         MULT      HUNDRED BY CALC53
+              Move            Calc53 to adcalc
+.
+CALCPnd  MOVE      C0 TO pCALC
+              MOve            c0 to Calc53         
+         COMPARE   C0 TO PndCOUNT
+         GOTO      calclst IF EQUAL
+         MOVE      PndTOT TO COUNT
+         MOVE      PndCOUNT TO CALC53
+         DIVIDE    COUNT INTO CALC53
+         MULT      HUNDRED BY CALC53
+         Move      calc53 to pcalc
+CALClst  MOVE      C0 TO lstCALC
+              MOve            c0 to Calc53         
+         COMPARE   C0 TO lstCOUNT
+         GOTO      CalcUlst IF EQUAL
+         MOVE      lstTOT TO COUNT
+         MOVE      lstCOUNT TO CALC53
+         DIVIDE    COUNT INTO CALC53
+         MULT      HUNDRED BY CALC53
+         Move      calc53 to lstcalc
+;         
+CALCUlst  MOVE      C0 TO lstuCALC
+              MOve            c0 to Calc53         
+         COMPARE   C0 TO lstuCOUNT
+         GOTO      TYPREAD IF EQUAL
+         MOVE      lstuTOT TO COUNT
+         MOVE      lstuCOUNT TO CALC53
+         DIVIDE    COUNT INTO CALC53
+         MULT      HUNDRED BY CALC53
+         Move      calc53 to lstucalc
+.
+TYPREAD
+.      READ TYPIST FILE TO GET TYPIST'S NAME.
+         CMATCH    " " TO TYPE
+         CALL      OOPS IF EQUAL
+         CALL      OOPS IF EOS
+         MOVE      C2 TO NUSEPATH
+.         MOVE      NTYPFLD TO NUSEFLD
+         CLEAR     NUSEFLD2
+         PACK      NUSEFLD2 FROM TYPE,B1
+         CALL      NUSEKEY
+         CALL      NOTYPIST IF OVER
+.
+         DISPLAY   *P1:23,*EL,"WORKING ON ",TYPE,B1,NUSEFLD,B1,NUSEUSER;
+         GOTO      DETAIL
+.
+OOPS     MOVE      "**" TO TYPE
+         RETURN
+.
+NOTYPIST
+         MOVE      "TYPIST UNKNOWN " TO NUSEUSER
+         RETURN
+DETAIL
+         MOVE      CANCOUNT,CANC
+         COMPARE   "45" TO LINES
+         CALL      HEADER IF NOT LESS
+         PRINT     *N,TYPE,B1,NUSEUSER;
+         PRINT     *N,*20,"NEW",*32,SUBCOUNT,*41,TOTCALC,*51,pndcount,*60,Pcalc;
+         PRINT     *70,LSUBCNT,*80,LTCALC,*89,INVCOUNT,*96,INVCALC:
+                   *108,AdjCOUNT,*114,AdCALC,*127,lstcount,*136,lstcalc:
+                   *N,*20,"REPRINT",*32,REPCOUNT,*41,REPCALC;
+         PRINT     *70,LREPCNT,*80,LRCALC,*89,INVRCNT,*96,INVRCALC,*127,lstucount,*136,lstuCalc
+         ADD       "3" TO LINES
+         GOTO      READKS
+HEADER
+         MOVE      "7" TO LINES
+         PRINT     *F,*l,*l,*41,"***   N A M E S   I N   T H E   ";
+         PRINT     *74,"N E W S   ***",*140,PRTDATE:
+                   *L,*140,"PAGE :",PAGE:
+                   *N,*54,HPBON," TYPIST ANALYSIS":
+                   *L,*L,*1,"TYPIST",*32,"ORDERS",*43,"% ",*51,"PENDNG",*62,"%";
+         PRINT     *70,"LCR'S",*81,"% ",*89,"INVOICE",*100,"%",*108,"ADJST",*119,"%":
+                   *127,"Lists",*138,"%":
+                   *L,*1,"------------------------";
+         PRINT     *32,"------",*40,"-------",*51,"------",*59,"------",*70,"------",*80,"------",*89;
+         PRINT     "--------",*97,"-------":
+                   *108,"------",*116,"-------",*127,"------"
+         ADD       C1 TO PAGE
+         RETURN
+.
+EOJ
+         COMPARE   "45" TO LINES
+         CALL      HEADER IF NOT LESS
+         PRINT     *L,*L;
+         PRINT     *L,*30,"TOTAL NUMBER OF NEW ORDERS     :",STotal:
+                   *80,"TOTAL NUMBER OF REPRINTS    :",RTotal:
+                   *L,*30,"TOTAL NUMBER OF PND ORDERS     :",PndTot;
+         PRINT     *L,*30,"TOTAL NUMBER OF NEW LCR'S      :",LCSTot;
+         PRINT     *80,"TOTAL NUMBER OF REPRINTS    :",LCRTot;
+         PRINT     *L,*30,"TOTAL NUMBER OF NEW INVOICES   :",INVTOT:
+                   *80,"TOTAL NUMBER OF REPRINTS    :",INVRTOT;
+;         PRINT     *L,*30,"TOTAL NUMBER OF NEW APPROVALS:",APPTOT
+         PRINT     *L,*30,"TOTAL NUMBER OF NEW ADJUSTMENTS:",ADJTOT
+.         PRINT     *L,*30,"TOTAL NUMBER OF CORRECTIONS FOR MONTH:",CORTOTAL;
+.        PRINT     *L,*30,"TOTAL NUMBER OF CANCELATIONS FOR MONTH:",CANTOTAL
+STOP     DISPLAY   *P1:24,*EL,*B,"JOB DONE, SHUTTING DOWN TO CONTINUE CHAIN":
+                   *W2,*B;
+         CMATCH    "D" TO ANS
+         IF         equal
+         Shutdown             "CLS"
+         endif
+;         STop       IF EQUAL
+         PRINT     HPPORT,HPRESET
+         SPLCLOSE
+         shutdown   "CLS"
+         STOP
+. IO - I/O ERROR TRAPS
+IO
+         TRAPCLR   IO
+         NORETURN
+IOBRANCH
+         DISPLAY   *P1:23,*EL,ERROR
+         BRANCH    IOERROR OF FILE1
+         DISPLAY   *P1:24,*EL,"UNKNOWN RUN TIME IO ERROR",*B;
+         GOTO      IOEXIT
+FILE1
+         DISPLAY   *P1:24,"ORDER PRINT FILE ERROR",*B,*W2;
+         GOTO      IOEXIT
+IOEXIT
+         KEYIN     *P50:24,ANS;
+         CMATCH    "Q" TO ANS
+         GOTO      IOBRANCH IF NOT EQUAL
+.         SHUTDOWN  "ALERT"
+         shutdown   "CLS"
+         STOP
+         INCLUDE   NUSEIO.inc
+         INCLUDE   NTYPIO.inc
+         INCLUDE   COMLOGIC.inc
+

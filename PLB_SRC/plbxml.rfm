@@ -1,0 +1,36 @@
+PL/B XMLDOM Sample Readme.txt
+=============================
+
+Purpose, to show how the XMLDOM interface can be used by PL/B programs.
+The sample program simply walks through the XML tree and extracts the text
+content of a tag and displays it along with the tag name.
+
+
+a) Files included:
+
+PLBXML.PLS      : source
+PLBXML.PLF      : form
+PLBXML.PLC      : compiled
+*.XML           : sample XML files
+
+
+b) Instructions:
+
+Run program as follows...
+
+PLBWIN -h PLBXML test1.xml
+
+Note: The filename is optional.
+
+
+c) Requirements
+
+XMLDOM must be installed on your PC. XMLDOM installs with IE 5.0 and above.
+
+Note : This sample program doesn't use the ParseError object. Therefore
+if an invalid XML file is opened the load method will fail giving an Alert.
+
+
+d) Disclaimer
+
+No responsibility etc etc...

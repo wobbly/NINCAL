@@ -1,0 +1,50 @@
+;NAMES IN THE NEWS CALIF. TRIPLEX TO NINCAL Notification program
+
+PC       EQU       0
+         INCLUDE   COMMON.inc
+         INCLUDE   CONS.inc
+         INCLUDE   hp.inc
+RELEASE  INIT      "1.0"      jd192003
+IN         FORM        5
+APPLIED    FORM        5
+first    init      "Y"
+eop      form      "58"
+lines    form      2
+page     form      2
+NUM      FORM      1
+TDMCLR   DIM       6
+tdmcdat  dim       10
+tdmctime dim       10
+INPUT    FILE      var=80
+output   IfiLE      var=80,keylen=6
+skipped  file      var=441
+skipcnt  form      5
+;begin patch 1.8
+DIFF     FORM      10
+fivePER  FORM      10
+last     form      3
+;end patch 1.8
+           MOVE      "Names In The News Ca." TO COMPNME
+           MOVE      "Ntdmc0001" TO PROGRAM
+           MOVE      "APPLY TDMC Notification INFO" TO STITLE
+           CLOCK    DATE TO TODAY
+           CALL      PAINT
+;START PATCH 1.93 REPLACED LOGIC
+           open      output,"tdmcnotify"
+           OPEN      INPUT,"TDMCnot",EXCLUSIVE
+LOOPer     READ          INPUT,SEQ;TDMCLR,str2,tdmcdat,b1,tdmctime
+           GOTO        EOJ IF OVER
+           ADD         C1 TO IN
+           DISPLAY   *P10:10,"RECORDS READ : ",IN
+           TYPE      tdmcLR
+           GOTO      LOOPer IF NOT EQUAL
+           read      output,tdmclr;str1
+           goto      looper if not over
+           write     output,tdmclr;TDMCLR,b1,tdmcdat,b1,tdmctime
+
+           DISPLAY   *P10:10,"records added : ",applied
+           goto      looper
+eoj
+           stop
+         INCLUDE   COMLOGIC.inc
+

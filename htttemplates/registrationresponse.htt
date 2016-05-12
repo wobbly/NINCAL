@@ -1,0 +1,31 @@
+<form action="" name="regform" method="POST" onSubmit="return checkFields(regform.firstname.value, regform.lastname.value, regform.email.value, regform.username.value, regform.email.value);">
+	<input type='hidden' name='function' value='1' />
+	<input type='hidden' name='SID' value='<%=SID%>' />
+	<input type='hidden' name='cgibroker' value='<%=cgibroker%>' />
+	<table align='center'>
+		<tr>
+			<td class='title' colspan='2' align=center >
+				New Member Registration
+				<br><br><br>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<span class='errorMsg'><%=errorMsg%></span>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				An email has been sent to <%=cgiemail%> confirming your registration.
+				<br>
+				<br>
+				Before you can log in, an administrator must approve your account.  Please be patient
+				during this process.  You will receive another email message notifying you when
+				the registration process is complete and your user account is ready.
+				<br>
+				<br>
+				Thank you from Names in the News!
+			</td>
+		</tr>
+	</table>
+</form>

@@ -1,0 +1,446 @@
+...............................................................................
+.1 WORD - WORD LOADMOD
+.2
+.2 Merge Routine
+.2   Used to print HIPAA letter supplying the merge data source.
+.2
+.2 Print Routine
+.2   Used to Print and PDF Month End Letters
+.2
+.2
+.5 04/26/03 BB #6448 Created from Brian Swing routine.
+.5 05/01/03 BB #6448 Dialog version
+.5 05/12/03 BB #6448 When machines are upgraded, will have to remove active
+.5                   document print after dialog display.
+.5 05/18/03 BB #6448 Revise to suppress dialog after initial setup.
+.5 11/14/03 GW Added saving Merge Doc to a file.
+.5 11/18/03 GW Rename Loadmod from WORDMERG to WORD.
+.5             Added Print Routine
+.5 12/02/03 GW Merge Routine - Replaced opening Word's printer dialog with 
+.5             using CCPRT. The user is able to change CCPRT in the calling 
+.5             program. Doing this makes the routine compatable with 8.4b.
+.5 01/18/04 GW Merge Routine - Dialog box - Displaying DocFileName, DataSrc, 
+.5             DocSaveAs, SQLString, CCPRT
+.5 03/09/06 GW Merge Routine - Added ERASE on the strDocSaveAs (Output Doc)
+.5       When under batch bypass stopping at the OBJECT error. This normally 
+.5       happened when there were no letters. It is a quick fix and a more
+.5       long term solution would be to print a letter stating there are no
+.5       letters.
+...............................................................................
+         %IFNDEF   $PLBCONST
+$PLBCONST EQU      1,REDEFINE      .1 ==> include KEYPRESS CONST      8.2
+         %ENDIF
+         %IFNDEF   $PLBALERT
+$PLBALERT EQU      1,REDEFINE      .1 ==> include ALERT TYPE INTEGERs 8.3f
+         %ENDIF
+.                                  .05/00 GW
+         INC       PlbEquD.INC          .Sunbelt Support change this to PLBEQU.INC
+.
+...............................................................................
+CCFUND   DIM    %%
+CCSPL    DIM    %%
+CCMENU   DIM    %%
+CCPRT    DIM    %%
+CCLOCSW  FORM   %% .1    .Locator/Batch switch  0- came from a menu
+.                        .                      1- came from empl/cont locator
+.                        .                      2- came from batch monitor
+.                        .                      3- came from command line SAV1P020
+.                                               9- Current program is the master.
+.                                                  reset to 0 inside of program
+.                                                  after reading/displaying SS.
+...............................................................................
+.
+curObjTop FORM 5              .Object Top, Left, Height and Width.
+curObjLeft FORM 5             .Using FORM on Top and Left to allow for negatives
+intObjHeight INTEGER 2
+intObjWidth INTEGER 2
+.
+.                                  .EQU the classes that should be included.
+WdWindowState EQU 1
+WdMailMergeState EQU 1
+WdOpenFormat EQU 1
+WdWordDialog EQU 1
+         INC       MsWord.API
+.
+         INC       ClockVer.INC
+.
+autWdApplication AUTOMATION Class="Word.Application"   .Word object
+autWdDocuments AUTOMATION                              .Word Document collection object
+autWdDocument AUTOMATION                               .Word document object
+autWdMailMerge AUTOMATION
+autWdMailMergeDataSource AUTOMATION
+autWdDialogs AUTOMATION
+autWdDialog AUTOMATION
+curState FORM 2
+NEG1       FORM      "-1"
+.
+strDefaultDocSaveAs DIM 1
+strDefaultSQLString DIM 1
+.------------------------------------------------------------------------------
+wndMessage WINDOW
+lblMessage STATTEXT
+.
+lblDocFileName STATTEXT                      .Label merge document name
+lblDataSrc STATTEXT                          .Label merge data source name
+lblDocSaveAs STATTEXT                        .Label Doc Save As Filename
+lblSQLString STATTEXT                        .Label Merge data SQL string
+lblCCPRT STATTEXT                            .Label Printer
+.
+.------------------------------------------------------------------------------
+.
+autWdActiveDocument AUTOMATION
+.
+.------------------------------------------------------------------------------
+strAlertMess DIM 255          .Alert Dialog Message
+strAlertCR INIT 0x7F          .Alert Dialog Carriage Return (Del Char)
+curAlertRetVal FORM 2         .Alert Dialog Return Value
+strAlertTitle DIM  40
+curRetVal  FORM    2
+..curRetDim  DIM     10
+..RUNSWT     FORM    1          .1=Do not display printer dialog, use current printer
+N0       FORM      "0"
+N1       FORM      "1"
+ANS      DIM       1
+.------------------------------------------------------------------------------
+rcurRetVal FORM       ^                      .Word.lm return, 1=successful
+rstrDocFileName DIM   ^                      .merge document name
+rstrDataSrc DIM       ^                      .merge data source name
+rstrDocSaveAs DIM     ^,strDefaultDocSaveAs  .Doc Save As Filename
+rstrSQLString DIM     ^,strDefaultSQLString  .Merge data SQL string
+.
+.------------------------------------------------------------------------------
+..PrintWordAutomation routine document name,data source,return code
+Merge    ROUTINE rcurRetVal,rstrDocFileName,rstrDataSrc,rstrDocSaveAs,rstrSQLString
+.
+         MOVE      N0,rcurRetVal
+..         CALL      ClockVer                               .work correctly.
+..         MATCH     "8.4B",strCVInterVer
+..         IF        EQUAL
+..           PACK      strAlertMess WITH "This program does not work under PL/B 8.4B",strAlertCR
+..           ALERT     STOP,strAlertMess,curAlertRetVal,"WordMerg: PL/B Version Error"
+..           CHAIN     CCMENU
+..         ENDIF
+.
+.                                       .make a little status window
+.
+         CREATE    wndMessage=1:200:1:500:
+                     Title="Word: Merge":
+                     Wintype=$MODELESS:
+                     Winpos=$DESKCENTER:
+                     Bgcolor=$BTNFACE:
+                     Fgcolor=$BTNTEXT
+         MOVE      "5",curObjTop
+         MOVE      "490",intObjWidth
+         CREATE    wndMessage;lblMessage=curObjTop:(curObjTop+22):2:intObjWidth," ":
+                   ">ARIAL",Border=$OFF,Bgcolor=$BTNFACE,Fgcolor=$BTNTEXT
+         ADD       "26",curObjTop
+         CREATE    wndMessage;lblDocFileName=curObjTop:(curObjTop+22):2:intObjWidth," ":
+                   ">ARIAL",Border=$OFF,Bgcolor=$BTNFACE,Fgcolor=$BTNTEXT
+         ADD       "26",curObjTop
+         CREATE    wndMessage;lblDataSrc=curObjTop:(curObjTop+22):2:intObjWidth," ":
+                   ">ARIAL",Border=$OFF,Bgcolor=$BTNFACE,Fgcolor=$BTNTEXT
+         ADD       "26",curObjTop
+         CREATE    wndMessage;lblDocSaveAs=curObjTop:(curObjTop+22):2:intObjWidth," ":
+                   ">ARIAL",Border=$OFF,Bgcolor=$BTNFACE,Fgcolor=$BTNTEXT
+         ADD       "26",curObjTop
+         CREATE    wndMessage;lblSQLString=curObjTop:(curObjTop+22):2:intObjWidth," ":
+                   ">ARIAL",Border=$OFF,Bgcolor=$BTNFACE,Fgcolor=$BTNTEXT
+         ADD       "26",curObjTop
+         CREATE    wndMessage;lblCCPRT=curObjTop:(curObjTop+22):2:intObjWidth," ":
+                   ">ARIAL",Border=$OFF,Bgcolor=$BTNFACE,Fgcolor=$BTNTEXT
+.
+         ACTIVATE  wndMessage
+         ACTIVATE  lblMessage
+         ACTIVATE  lblDocFileName
+         ACTIVATE  lblDataSrc
+         ACTIVATE  lblDocSaveAs
+         ACTIVATE  lblSQLString
+         ACTIVATE  lblCCPRT
+..TAB      INIT      011
+         PACK      strAlertMess WITH "Doc File Name: ",rstrDocFileName
+         SETITEM   lblDocFileName,0,strAlertMess
+         PACK      strAlertMess WITH "Data Src: ",rstrDataSrc
+         SETITEM   lblDataSrc,0,strAlertMess
+         PACK      strAlertMess WITH "Doc Save As: ",rstrDocSaveAs
+         SETITEM   lblDocSaveAs,0,strAlertMess
+         PACK      strAlertMess WITH "SQL String: ",rstrSQLString
+         SETITEM   lblSQLString,0,strAlertMess
+         PACK      strAlertMess WITH "Printer: ",CCPRT
+         SETITEM   lblCCPRT,0,strAlertMess
+.GW
+..         KEYIN     "Testing Tap ENTER ",ANS;
+.
+         IF        (rstrDocSaveAs="")
+           SETITEM   lblMessage,0,"Preparing to Print the documents...."
+         ELSE
+           SETITEM   lblMessage,0,"Preparing to Merge the documents...."
+           ERASE     rstrDocSaveAs
+         ENDIF
+.                                       This TRAP can be removed once upgrading
+.                                       off of 8.4B
+         TRAP      OBJERR IF OBJECT
+.
+.                                  .copy the Word document to a temporary file
+.
+..         MOVE      CCFUND,FILENO
+..         PACK      CFILEN with CCSPL,"WORDMG",FILENO,".DOC"          .destination   .12/22/2000
+..         COPYFILE  rstrDocFileName,CFILEN
+..         IF        NOT EQUAL
+..           PACK      strAlertMess WITH "Error copying report template to temporary file!",strAlertCR:         .8/23/2002
+..                     "In: ",rstrDocFileName,strAlertCR:
+..                     "Out: ",CFILEN,strAlertCR
+..           ALERT     STOP,strAlertMess,curAlertRetVal,"WordMerg.LM Error"
+..           CHAIN     CCMENU
+..         ENDIF
+.                                       .Start the Word Application object
+.
+         CREATE    autWdApplication
+.                                       .Hide window & focus passed to hidden window
+.
+..         SETPROP   autWdApplication,*LEFT=3000        .display it off the screen
+..         SETPROP   autWdApplication,*WindowState=wdWindowStateNormal
+         SETPROP   autWdApplication,*WindowState=wdWindowStateMinimize
+.
+.                                       .Now get the documents object and 
+.                                       .create a new object
+.
+         GETPROP   autWdApplication,*Documents=autWdDocuments
+.
+.                                       .Now get the actual word document
+.
+         autWdDocuments.Open GIVING autWdDocument USING *Filename=rstrDocFileName:
+                     *ReadOnly=$TRUE
+         DESTROY   autWdDocuments
+.
+         GETPROP   autWdDocument,*MailMerge=autWdMailMerge
+..         GETPROP   autWdDocument,*MailMergeDataSource=autWdMailMergeDataSource
+.
+         IF        (rstrSQLString="")        .SQL String to Execute ""=No
+           autWdMailMerge.OpenDataSource USING *Name=rstrDataSrc,*Format=wdOpenFormatEncodedText
+         ELSE
+.
+           autWdMailMerge.OpenDataSource USING *Name=rstrDataSrc:
+                   *SQLStatement=rstrSQLString
+         ENDIF
+.
+.                                       .find out the state (Read-only, 
+.                                       .Long integer) of the Mail Merge object
+.                                       .state 0 = wdNormalDocument
+.                                       .state 1 = wdMainDocumentOnly
+.                                       .state 2 = wdMainAndDataSource
+.                                       .state 3 = wdMainAndHeader
+.                                       .state 4 = wdMainAndSourceAndHeader
+.                                       .state 5 = wdDataSource
+         GETPROP   autWdMailMerge,*State=curState
+         IF        (curState != wdMainAndDataSource)  .must be: wdMainAndDataSource
+           PACK      strAlertMess with "Invalid mail-merge document OR ":
+                     "data source file not available (",curState,")"
+           ALERT     CAUTION,strAlertMess,curAlertRetVal,"WordMerg: Invalid Document or Source"
+         ELSE
+           IF        (rstrDocSaveAs="")
+             SETITEM   lblMessage,0,"Printing...."
+           ELSE
+             SETITEM   lblMessage,0,"Merging...."
+           ENDIF
+..           GETPROP   autWdMailMerge,*datasource=autWdDataSource
+..           SETPROP   autWdDataSource,*firstrecord=firstrec, *lastrecord=lastrec
+           SETPROP   autWdMailMerge,*Destination=$FALSE
+.
+           autWdMailMerge.Execute USING *Pause=$ON  .(TRUE ..... DISPLAY DIALOG)
+.
+           IF        (rstrDocSaveAs!="")
+.                                            Save As Routine.
+             GETPROP   autWdApplication,*ActiveDocument=autWdActiveDocument
+             autWdActiveDocument.SaveAs USING *FileName=rstrDocSaveAs
+             autWdActiveDocument.Close USING *SaveChanges=$FALSE
+             autWdDocument.Close USING *SaveChanges=$FALSE
+             DESTROY   autWdActiveDocument
+           ELSE               .IF   (RUNSWT=N1)
+..             SETPROP   autWdApplication,*ActivePrinter=strActivePrinter
+             SETPROP   autWdApplication,*ActivePrinter=CCPRT
+             GETPROP   autWdApplication,*ActiveDocument=autWdActiveDocument
+             autWdActiveDocument.Printout USING *Background=$FALSE
+             autWdActiveDocument.Close USING *SaveChanges=$FALSE
+             autWdDocument.Close USING *SaveChanges=$FALSE
+             DESTROY   autWdActiveDocument
+..           ELSE
+..             GETPROP   autWdApplication,*Dialogs=autWdDialogs
+...                                            Display the Open Printer Dialog.
+..             autWdDialogs._item_ GIVING autWdDialog USING wdDialogFilePrint
+..             autWdDialog.Show GIVING curRetVal
+..             GETPROP   autWdApplication,*ActivePrinter=strActivePrinter
+..             DESTROY   autWdDialog
+..             DESTROY   autWdDialogs
+..             MOVE      N1,RUNSWT
+..             IF        (curRetVal=NEG1)
+..               CALL      "Clockie" USING curRetVal,"CLIENTNAME",curRetDim
+..               IF        (curRetVal=0)                   .Running on Citrix
+..                 GETPROP   autWdApplication,*ActiveDocument=autWdActiveDocument
+..                 autWdActiveDocument.Printout USING *Background=$FALSE
+..                 autWdActiveDocument.Close USING *SaveChanges=$FALSE
+..                 autWdDocument.Close USING *SaveChanges=$FALSE
+..                 DESTROY   autWdActiveDocument
+..               ENDIF
+..             ENDIF
+           ENDIF
+           MOVE      N1,rcurRetVal
+         ENDIF
+.
+.                                       .close the documents object
+.
+         autWdApplication.Quit USING *SaveChanges=$False
+.
+         DESTROY   autWdApplication
+         DESTROY   autWdDocument
+         DESTROY   autWdMailMerge
+....         DESTROY autWdDataSource
+         DESTROY   lblMessage
+         DESTROY   wndMessage
+.
+         MOVEADDR  strDefaultDocSaveAs,rstrDocSaveAs   .Reattach to default
+         MOVEADDR  strDefaultSQLString,rstrSQLString   .Reattach to default
+         RETURN
+.
+...............................................................................
+.
+. Print - Print Word Document
+.
+. Print Word Doc to a printer (This could also be the PDF driver)
+.
+rstrActivePrinter DIM ^
+.
+Print    ROUTINE   rcurRetVal,rstrDocFileName,rstrActivePrinter
+.
+         MOVE      N0,rcurRetVal
+..         CALL      ClockVer                               .work correctly.
+..         MATCH     "8.4B",strCVInterVer
+..         IF        EQUAL
+..           PACK      strAlertMess WITH "This program does not work under PL/B 8.4B",strAlertCR
+..           ALERT     STOP,strAlertMess,curAlertRetVal,"WordMerg: PL/B Version Error"
+..           CHAIN     CCMENU
+..         ENDIF
+.
+.                                       .make a little status window
+.
+..         CREATE    wndMessage=1:50:1:204,Caption=$OFF,Wintype=$MODELESS:
+..                     Winpos=$DESKCENTER,Bgcolor=0x8000000F,Fgcolor=0x80000012
+         CREATE    wndMessage=1:100:1:300:
+                     Title="Word: Print":
+                     Wintype=$MODELESS:
+                     Winpos=$DESKCENTER:
+                     Bgcolor=$BTNFACE:
+                     Fgcolor=$BTNTEXT
+         CREATE    wndMessage;lblMessage=2:22:2:202," ":
+                     ">ARIAL",Border=$OFF,Bgcolor=0x8000000F,Fgcolor=0x80000012
+         ACTIVATE  wndMessage
+         ACTIVATE  lblMessage
+.
+         SETITEM   lblMessage,0,"Preparing to Print the documents...."
+.
+.                                       This TRAP can be removed once upgrading
+.                                       off of 8.4B
+         TRAP      OBJERR IF OBJECT
+.
+.                                  .copy the Word document to a temporary file
+.
+.                                       .Start the Word Application object
+         CREATE    autWdApplication
+.                                       .Hide window & focus passed to hidden window
+.
+..         SETPROP   autWdApplication,*LEFT=3000        .display it off the screen
+..         SETPROP   autWdApplication,*WindowState=wdWindowStateNormal
+         SETPROP   autWdApplication,*WindowState=wdWindowStateMinimize
+.
+.                                       .Now get the documents object and 
+.                                       .create a new object
+.
+         GETPROP   autWdApplication,*Documents=autWdDocuments
+.
+.                                       .Now get the actual word document
+.
+..         autWdDocuments.Open GIVING autWdDocument USING *Filename=rstrDocFileName:
+..                     *ReadOnly=$TRUE
+         autWdDocuments.Open USING *Filename=rstrDocFileName:
+                     *ReadOnly=$TRUE
+         DESTROY   autWdDocuments
+.
+         SETITEM   lblMessage,0,"Printing...."
+..         SETPROP   autWdMailMerge,*Destination=$FALSE
+...
+..         autWdMailMerge.Execute USING *Pause=$ON  .(TRUE ..... DISPLAY DIALOG)
+.
+         SETPROP   autWdApplication,*ActivePrinter=rstrActivePrinter
+         GETPROP   autWdApplication,*ActiveDocument=autWdActiveDocument
+         autWdActiveDocument.Printout USING *Background=$FALSE
+         autWdActiveDocument.Close USING *SaveChanges=$FALSE
+..         autWdDocument.Close USING *SaveChanges=$FALSE
+         DESTROY   autWdActiveDocument
+.
+         MOVE      N1,rcurRetVal
+.
+.                                       .close the documents object
+.
+         autWdApplication.Quit USING *SaveChanges=$False
+.
+         DESTROY   autWdApplication
+..         DESTROY   autWdDocument
+..         DESTROY   autWdMailMerge
+....         DESTROY autWdDataSource
+         DESTROY   lblMessage
+         DESTROY   wndMessage
+.
+         RETURN
+.
+.
+.                                  Displays OBJECT error information.
+.                                  Added to routine because of PL/B 8.4b
+.                                  limitation. This could 
+         INC       InfoExc.INC
+OTAB     INIT      " "
+D20      DIM       20
+SFRMT    DIM       127
+OBJERR   NORETURN
+         CALL      InfoExc
+.
+         DISPLAY   *P1:24,"-- Object Error --"
+         DISPLAY   "S$ERROR$=",S$ERROR$
+.
+         SFORMAT   SFRMT,127
+         SQUEEZE   curIEObjectID,D20
+         PACK      SFRMT WITH "Object ID: ",OTAB,D20
+         DISPLAY   SFRMT
+.
+         SQUEEZE   curIEErrorCd,D20
+         PACK      SFRMT WITH "Error Code: ",OTAB,D20
+         DISPLAY   SFRMT
+.
+         PACK      SFRMT WITH "Source Name: ",OTAB,strIESrcNm
+         DISPLAY   SFRMT
+.
+         DISPLAY   "Error Desc: "
+Hex0A    INIT      0x0A       .LF
+Hex0D    INIT      0x0D       .CR
+PARRNG1  INIT      0x00,0x09,0x0B,0xFF              Don't allow Equal sign
+..         CALL      "DispWrap" USING strIEErrDesc
+         LOOP
+           PARSE     strIEErrDesc INTO SFRMT USING PARRNG1,TRUNCATE
+           UNTIL     NOT EQUAL
+           DISPLAY   SFRMT
+           BUMP      strIEErrDesc,1
+         REPEAT    UNTIL EOS
+.
+         PACK      SFRMT WITH "Help File: ",OTAB,strIEHelpNm
+         DISPLAY   SFRMT
+.
+         SQUEEZE   curIEHelpID,D20
+         PACK      SFRMT WITH "Help Con ID: ",OTAB,D20
+         DISPLAY   SFRMT
+.
+         DESTROY   autWdApplication
+         IF        (CCLOCSW=2)     .Under Month End Batch
+           RETURN
+         ENDIF
+         KEYIN     "Tap ENTER ",ANS        
+         CHAIN     CCMENU
+.
+.

@@ -1,0 +1,242 @@
+.header {
+	font-family: arial;
+	font-weight: 900;
+	font-size: 12px;
+	text-decoration: none;
+	background-repeat: no-repeat;
+	background-position: right center;	
+}
+.footer {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+
+.arial10 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+}
+.cellDma {
+	border-top-width: 1px;
+	border-top-style: solid;
+	border-top-color: #FFFFFF;
+}
+.cellFooterAddress {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	padding-right: 20px;
+}
+.columnRight {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+}
+.cellBody {
+	font-family: "Times New Roman", Times, serif;
+	font-size: 14px;
+	padding: 20px 120px 20px 20px;
+	line-height: 16px;
+
+}
+.clients {
+	font-family: "Times New Roman", Times, serif;
+	font-size: 13px;
+	line-height: 16px;
+
+}
+.arialTitle {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #788146;
+
+}
+.invoiceTableTitle {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	line-height: 10px;
+}
+.cellBodyClients {
+
+	font-family: "Times New Roman", Times, serif;
+	font-size: 14px;
+	padding: 20px 100px 20px 20px;
+	line-height: 16px;
+	background-repeat: repeat-y;
+	background-position: right top;
+}
+.newsList {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	line-height: 16px;
+}
+.cellSubnav {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	padding-left: 37px;
+	padding-top: 7px;
+	padding-bottom: 8px;
+	background-repeat: repeat-y;
+	background-position: left center;
+	border-top: 1px solid #FFFFFF;
+}
+.cellNin {
+	border-top-width: 1px;
+	border-top-style: solid;
+	border-top-color: #FFFFFF;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #FFFFFF;
+
+
+}
+.errorMsg {
+	font-family: arial, sans-serif;
+	font-size: 10pt;
+	font-weight: 900;
+	color: red;
+}
+.topFrame {
+	font-family: arial;
+	font-weight: 900;
+	font-size: 12px;
+	color: #788146;
+	font-style: bold;
+	text-decoration: none;
+}
+.body {
+	background-color:#FFFFFF;
+	padding-right:10px;
+	padding-bottom:10px;
+	padding-top:10px;
+	background-repeat: repeat-y;
+	background-position: center top;	
+	font-family:times;
+	font-size:14px;
+}
+.title {
+	font-family: arial;
+	font-weight: 900;
+	font-size: 16px;
+	color: #000099;
+	font-style: bold;
+	text-decoration: none;
+}
+.menuText {
+	font-family: arial narrow;
+	font-weight: 900;
+	font-size: 13px;
+	color: #000099;
+	font-style: bold;
+	text-decoration: none;
+}
+.datarow {
+	background-color: #EAF5B9;
+	border: 1px;
+	border-style: groove;
+	font-family: Arial, sans-serif;
+	font-size: 8pt;
+	color: #000066;
+}
+
+.datarow1 {
+	background-color: #ffffff;
+	border: 1px;
+	border-style: groove;
+	font-family: Arial, sans-serif;
+	font-size: 8pt;
+	color: #000066;
+}
+
+.datacontainer {
+	border-top: 2px;
+	border-right: 2px;
+	border-bottom: 2px;
+	border-left: 2px;
+	border-color: #666666;
+	border-style: solid;
+	border-width: 1px;
+	padding: 0px;
+	margin: 0px;
+	border-spacing: 0px;
+}
+th {
+	background-color: #cccccc;
+	color: #000066;
+	font-family: Arial, sans-serif;
+	font-size: 10pt;
+	font-weight: bold;
+}
+.menuText {
+	font-family: arial narrow;
+	font-weight: 900;
+	font-size: 13px;
+	color: #000099;
+	font-style: bold;
+	text-decoration: none;
+}
+.title {
+	font-family: arial;
+	font-weight: 900;
+	font-size: 16px;
+	color: #000099;
+	font-style: bold;
+	text-decoration: none;
+}
+.errorMsg {
+	font-family: arial, sans-serif;
+	font-size: 10pt;
+	font-weight: 900;
+	color: red;
+}
+.smallformtext {
+	font-size:12px;
+	color: #666666;
+	margin-left:30px;
+}
+
+.smallformtext2 {
+	font-size:11px;
+	color: #666666;
+}
+
+a.errorMsg:link {
+	color: #ff0000;
+}
+
+a.errorMsg:visited {
+	color: #ff0000;
+}
+
+a.errorMsg:hover {
+	color: #D9EF86;
+}
+
+a.menuText:link {
+	color: #000099;
+}
+
+a.menuText:visited {
+	color: #000099;
+}
+
+a.menuText:hover {
+	color: #788146;
+}
+.small {
+	font-size: 10px;
+}
+
+.small1 {
+	font-size: 10pt;
+	color: red;
+} 
+
+.formLabel {
+	text-align: right;
+}
+.menuHdrText {
+	font-family: arial, helvetica, sans-serif;
+	font-size: 10pt;

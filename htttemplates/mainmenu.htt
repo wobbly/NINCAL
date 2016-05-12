@@ -1,0 +1,25 @@
+<form action="" name="regform" method="POST" onSubmit="return checkFields(regform.firstname.value, regform.lastname.value, regform.email.value, regform.username.value, regform.email.value);">
+	<input type='hidden' name='function' value='1' />
+	<input type='hidden' name='SID' value='<%=SID%>' />
+	<table align='center' width="100%" align=center border="0">
+		<tr>
+			<td class='title' colspan='2' align=center>
+				Welcome
+				<br><br><br>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<span class='errorMsg'><%=errorMsg%></span>
+			</td>
+		</tr>
+		<tr>
+			<td align=center>
+				You are successfully logged in to Names in the News online.
+				<br>
+				<br>
+				Please select an option from the menu on the left.
+			</td>
+		</tr>
+	</table>
+</form>

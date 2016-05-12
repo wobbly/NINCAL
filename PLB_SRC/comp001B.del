@@ -1,0 +1,55 @@
+.COMPANY FILE MAINTENANCE SUBSIDIARY ROUTINE PROGRAM
+........................................
+. Program:	COMP001B.PLS
+. Function:	Return New Broker Number
+. Author:	David Baca
+. Orig.	Date:	July 8th , 2003
+. Release:	1.0
+........................................
+ 
+PC	EQU	1
+
+	include	common.inc
+	include	cons.inc
+	include	gnxtdd.inc
+;patchconversion	
+	include	nbrkdd.inc
+;patch conversion
+
+Release             init                "1.0"                                   DMB 08JULY2003 Subsidiary ProgaCOMP0001
+
+DimPtr	dim	^
+DimPtr2	dim	^
+NEWBRK	form	4
+filler	init	"0000"
+mss1	plform	Error
+	formload mss1
+
+
+
+COMPOLDBRKGNXTKEY Routine DimPtr
+	move	"NBRKNXT",GNXTFLD
+	call	GNXTKEY 
+	return	if over
+	bump	GNXTNUM,2
+	move	GNXTNUM,NEWBRK
+	loop
+		add	C1,NEWBRK
+		move	NEWBRK,BRKNUM
+		rep	zfill,BRKNUM
+		pack	NBRKFLD,BRKNUM,filler
+		rep	zfill,NBRKFLD
+		call	NBRKTST
+	until over
+	repeat
+	move	NEWBRK to DIMPTR
+	clear	GNXTNUM	
+	move	NEWBRK,GNXTNUM
+	reset	GNXTNUM
+	rep	zfill,GNXTNUM
+	move	"Save-GNXTUPD",Location
+	call	GNXTUPD
+	return
+	include	gnxtio.inc
+	include	nbrkio.inc
+	include	comlogic.inc

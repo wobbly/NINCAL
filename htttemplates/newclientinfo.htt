@@ -1,0 +1,166 @@
+<!-- This is the Title -->
+   <font class="title"> NEW CLIENT INFORMATION</font><br><br>
+<!-- custom content goes here -->
+<p>Tell us a little about your mailing needs, and one of our representatives will contact you within the next business day.
+	<script language="javascript">
+		function checkFields (name, address, city, state, telephone, email)
+		{
+		    var error="";
+		    if (name == "")
+		    {
+			error = error + "Name\n";
+		    }
+		    if(address == "")
+		    {
+			error = error + "Address\n";
+		    }
+		    if (city == "")
+		    {
+			error = error + "City\n";
+		    }
+		    if(state == "")
+		    {
+			error = error + "State\n";
+		    }
+		    if (telephone == "")
+		    {
+			error = error + "Telephone\n";
+		    }
+		    if (email == "")
+		    {
+			error = error + "Email\n";
+		    }
+
+		    if(error != "")
+		    {
+			error = "The following fields are required:\n" + error;
+			alert(error);
+			return false;
+		    }
+		    else
+		    {
+			return true;
+		    }
+	}
+
+
+function clearForm(){
+	document.infoForm.cginame.value = "";
+	document.infoForm.cgiorganization.value = "";
+	document.infoForm.cgiaddress.value = "";
+	document.infoForm.cgicity.value = "";
+	document.infoForm.cgizip.value = "";
+	document.infoForm.cgiphone.value = "";
+	document.infoForm.cgifax.value = "";
+	document.infoForm.cgiemail.value = "";
+	document.infoForm.cgipreferredtime.value = "";
+	document.infoForm.cgisource.value = "";
+	document.infoForm.cgimailerarea.value = "";
+	document.infoForm.cgiquantity.value = "";
+	document.infoForm.cgitimeframe.value = "";
+	document.infoForm.cgiexchangeqty.value = "";
+	document.infoForm.cgiexchangetype.value = "";
+	document.infoForm.cgiexchangecont.value = "";
+	document.infoForm.cgiexchangeformat.value = "";
+	document.infoForm.cgiquestions.value = "";
+}
+
+	</script>
+	<form action='' name='infoForm' id='infoForm' method='POST'  onSubmit='return checkFields(infoForm.cginame.value, infoForm.cgiaddress.value, infoForm.cgicity.value, infoForm.cgistate.value, infoForm.cgiphone.value, infoForm.cgiemail.value);'>
+	<input type='hidden' name='function' value='1' />
+	<input type='hidden' name='SID' value='<%=SID%>' />
+	<p><span class='errorMsg'><%=errorMsg%></span>
+
+
+	<p>Name:<br>
+		<input type='text' name='cginame' value='<%=cginame%>' maxlength='32' size='32'>
+	<p>Organization:<br>
+		<input type='text' value='<%=cgiorganizaton%>' name='cgiorganization' size='32'>
+	<p>Address:<br>
+		<input type='text' name='cgiaddress' value='<%=cgiaddress%>' maxlength='80' size='32'>
+	<p>City:<br>
+		<input type='text' name='cgicity' value='<%=cgicity%>' maxlength='32' size='32'>
+	<p>State:<br>
+<%DOSTATECODES%>
+<%/DOSTATECODES%>
+	<p>Zip:<br>
+		<input type='text' name='cgizip' value='<%=cgizip%>' maxlength='10' size='10'>
+	<p>
+
+			Telephone:<br>
+		<input type='text' name='cgiphone' value='<%=cgiphone%>' maxlength='10' size='10'><br>
+		<font size=-1>No dashes or spaces: 5555555555</font>
+	<p>
+
+			Fax:<br>
+		<input type='text' name='cgifax' value='<%=cgifax%>' maxlength='10' size='10'><br>
+		<font size=-1>No dashes or spaces: 555555555</font>
+	<p>
+
+			Email:<br>
+		<input type='text' name='cgiemail' value='<%=cgiemail%>' maxlength='60' size='32'>
+	<p>
+
+			Is there a preferable time for us to contact you?:<br>
+		<input type='text' name='cgipreferredtime' value='<%=cgipreferredtime%>' maxlength='32' size='32'>
+	<p>
+
+			How did you find out about Names in the News?:<br>
+		<input type='text' name='cgisource' value='<%=cgisource%>' maxlength='32' size='32'>
+	<p>
+
+			What does your organization do?:<br>
+		<input type='text' name='cgicompfunction' value='<%=cgicompfunction%>' maxlength='32' size='32'>
+	<p>
+
+			Are you a regional mailer? <br>
+		<input type='radio' name='cgimailer' value='yes'>Yes
+		<input type='radio' name='cgimailer' value='no'>No
+
+
+	<p>If yes, in what area?:<br>
+		<input type='text' name='cgimailerarea' value='<%=cgimailerarea%>' maxlength='32' size='32'>
+
+
+	<p>How many names would you like to mail?:<br>
+		<input type='text' name='cgiquantity' value='<%=cgiquantity%>' maxlength='10'>
+	<p>
+
+			When would you like to mail them?:<br>
+		<input type='text' name='cgitimeframe' value='<%=cgitimeframe%>' maxlength='10'>
+	<p>
+
+			Does your organization have a mailing list available for exchange?<br>
+				<input type='radio' name='cgiexchange' value='yes'>Yes
+				<input type='radio' name='cgiexchange' value='no'>No
+	<p>
+
+			If yes: How many names are on it?:<br>
+		<input type='text' name='cgiexchangeqty' value='<%=cgiexchangeqty%>' maxlength='10'>
+	<p>
+
+			What types of names are included (e.g. donors, petition signers, event attendees):<br>
+			<input type='text' name='cgiexchangetype' value='<%=cgiexchangetype%>' maxlength='80' size='32'>
+	<p>
+
+			If the list is not just donors or members, what percentage of the file has contributed at least $5?:<br>
+		<input type='text' name='cgiexchangecont' value='<%=cgiexchangecont%>' maxlength='4' size='4'>
+	<p>
+
+			In what format can you provide the names? (eg: CD, FTP, email):<br>
+		<input type='text' name='cgiexchangeformat' value='<%=cgiexchangeformat%>' maxlength='10' size='10'>
+
+		<p>
+
+				Additional questions about our services?:<br>
+			<textarea name='cgiquestions' value='<%=cgiquestions%>' rows=4 cols=40></textarea>
+		<p>
+
+			<input type='hidden' value='' name='datetime'>
+			<input type='Submit' value='Submit'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <input type='button' value='Clear' onClick='clearForm();'>
+
+
+</form>
+<script language="JavaScript"> document.infoForm.cginame.focus(); </script>
+<!-- end custom content -->

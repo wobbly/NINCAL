@@ -1,0 +1,26 @@
+[Main]
+Type=2
+Src=neom0001.pls
+Targ=\\nts0\c\LIBRARY\PLB_SRC\neom0001.exe
+Icon=\\nts0\c\apps\WINBATCH\Icons\ARTOWL7.ICO
+CmpVersion=3
+[Options]
+TechWebPage=
+RunHidden=0
+LargeExtractDest=0
+PreventAutoExtract=0
+[Version Info]
+Comments=
+CompanyName=
+FileDescription=neom0001
+FileVersion=1.0
+InternalName=neom0001.exe
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=neom0001.exe
+ProductName=neom0001
+ProductVersion=1.0
+[Other Files]
+Count=0
+[Extenders]
+Count=0

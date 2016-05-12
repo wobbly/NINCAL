@@ -1,0 +1,40 @@
+<!-- custom content goes here -->
+
+
+
+
+<form action='invoicesignup.plc' name='invoicesignupForm' id='invoicesignupForm' method='POST'>
+	<input type='hidden' name='function' value='1' />
+	<input type='hidden' name='SID' value='<%=SID%>' />
+	<table border='0' cellpadding='2' cellspacing='2' align='center'>
+		<tr>
+			<td class='title' colspan='2' align=center>
+				Invoice Sign Up
+				<br><br><br>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<span class='errorMsg'><%=errorMsg%></span>
+			</td>
+		</tr>
+		<tr>
+				<td><center>
+					<textarea cols=80 rows=4>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Integer ut mauris. Fusce lacinia bibendum pede. Curabitur hendrerit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec lacus neque, ullamcorper sit amet, eleifend sed, varius vel, tortor. In pharetra tempus metus. Aenean tempus fermentum metus. Donec mauris. Integer et pede. Phasellus quis lacus. Suspendisse potenti. Praesent orci leo, nonummy id, aliquam ut, lobortis vel, nibh. Donec lacus ante, molestie eu, sollicitudin quis, egestas nec, ligula. Fusce ut magna vel dui interdum lacinia. Cras iaculis. Maecenas bibendum, purus vitae tempor imperdiet, neque erat hendrerit diam, rutrum consequat ligula arcu a mauris. Praesent tellus. Morbi arcu augue, egestas vel, sollicitudin et, cursus ac, dolor.
+
+Nullam posuere volutpat est. Phasellus velit elit, dignissim eu, congue at, pretium ac, risus. Nulla semper sollicitudin ipsum. Praesent pharetra, massa quis sodales varius, pede nunc accumsan velit, a vehicula nisl ligula in augue. Ut lobortis, enim vitae commodo semper, tellus urna ullamcorper risus, at ultricies risus elit in eros. Aenean ultricies tellus id est. Aliquam sed nunc at nunc condimentum tristique. Curabitur nec lectus ac ipsum luctus pulvinar. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras ac neque. Sed dolor nibh, feugiat nec, lobortis ac, egestas sed, sapien. Donec pulvinar eros eget tellus. Fusce tristique consectetuer massa. Morbi in felis. Sed egestas neque in diam. Nulla non mi. Proin nibh mi, facilisis ut, volutpat non, egestas eget, felis.
+
+Curabitur dolor nunc, posuere et, sodales quis, faucibus et, justo. Mauris purus. Nunc vel turpis nec enim rutrum varius. Nam nibh justo, mollis non, pellentesque vel, fringilla ut, mi. Nunc nonummy mauris at dui. Cras tincidunt, quam in feugiat rutrum, lectus ipsum pretium justo, vitae consequat pede urna non nunc. Cras imperdiet nulla ut est. Quisque velit. Donec ullamcorper interdum wisi. Sed lorem. Cras consectetuer ornare nisl. Cras fermentum, nisl vitae viverra hendrerit, purus erat imperdiet quam, sed suscipit eros ligula sit amet ante. Nullam ornare imperdiet nibh. Donec id est eu metus lobortis porta.
+
+Suspendisse potenti. Nullam lorem elit, egestas nec, adipiscing in, dignissim ut, ante. Fusce et dolor ac urna vehicula condimentum. Suspendisse odio nibh, convallis at, sollicitudin non, convallis eu, nisl. Maecenas cursus risus a nibh. Aliquam est nunc, vestibulum at, euismod sed, auctor id, est. Mauris eget pede. Mauris non orci. Curabitur suscipit. Duis dignissim, lorem non volutpat rhoncus, mauris wisi condimentum nibh, id iaculis arcu erat sed lectus. Pellentesque non nibh. Vivamus augue pede, consectetuer porttitor, adipiscing sed, auctor vitae, turpis. Nulla nec mauris. Proin ligula risus, rhoncus ut, dictum non, scelerisque non, quam. Curabitur vitae diam id orci pulvinar consectetuer. Pellentesque molestie, magna sit amet rhoncus facilisis, magna massa tincidunt leo, eu interdum metus odio eu quam.
+
+Nullam posuere urna ut magna. Ut enim risus, pretium in, dapibus eget, gravida quis, elit. Nulla iaculis vestibulum metus. Nulla justo lacus, consectetuer ut, dapibus et, rutrum a, tellus. Cras condimentum leo at neque. Nunc mauris dui, hendrerit id, interdum eu, nonummy gravida, ante. Maecenas quis dolor. Vestibulum et ante vitae eros congue nonummy. Nam convallis. Nam sit amet libero vulputate nibh iaculis facilisis. Donec fermentum tortor quis sem. Etiam dictum felis ac eros. Maecenas in arcu id nulla mollis porta.
+
+</textarea><br><br>
+<input type=checkbox name="cgiagree">I agree to these terms.<br><br>
+<input type=submit value="Submit">
+		</tr>
+	</table>
+</form>
+<script language="JavaScript"> document.invoiceForm.cgisendby.focus(); </script>
+<!-- end custom content -->

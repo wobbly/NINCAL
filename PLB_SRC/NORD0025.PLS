@@ -1,0 +1,79 @@
+.DELETEDETSLS - 10JAN89
+.
+.CAN BE USED TO ZERO OUT DELETE SALESMAN RECORDS BY CHANGING VARIABLES USED
+.BETWEEN READTAB & WRITTAB, ALSO NEED TO CHECK BEGINNING AND ENDING RN'S.
+.
+PC       EQU       0
+         INCLUDE   COMMON.inc
+         INCLUDE   CONS.inc
+         INCLUDE    OSLSPERN.inc
+.
+RELEASE  INIT      "1.3"       JD  04FEB93        cleanup old sales recs.
+.                                                 #'s 7,11,15,17 year 91,92.   
+.RELEASE  INIT      "1.2"      DLH 18MAR92    
+.
+. .FILES DECLARATIONS
+OUTPUT   FILE      FIXED=984    PHYSICAL OUTPUT FILE 'SALESMSTDET'
+.984 IS ROOM FOR 24 SALES PERSON'S.
+.
+RN       FORM      "013"      RECORD NUMBER
+.
+. .WORK SPACE
+.
+TOTORD   FORM      5         TOTAL ORDERS
+TOTQTY   FORM      9         TOTAL NAMES
+.
+HOLDYR   FORM      2
+ZERO     FORM      "0"       ZERO FILLS MONTH FIELDS
+TAB      FORM      "001"      TAB POSITIONS
+SLSNUM   FORM      2
+EIGHTEEN FORM      "18"
+MNTH    FORM      "01"
+DATEBRK  DIM       1
+STMM     FORM      2
+STYY     FORM      2
+.
+.
+. RECORD NUMBER FOR DELETION OF 1990  "65"
+. RECORD NUMBER FOR DELETION OF 1991  "78"
+. RECORD NUMBER FOR DELETION OF 1992  "91"
+.
+         MOVE      "NORD0025" TO PROGRAM
+         MOVE      "NINCAL" TO COMPNME
+         MOVE      "DELETE SALES DETAIL" TO STITLE
+         CALL      PAINT
+         OPEN      OUTPUT,"SALESDET",EXCLUSIVE
+         MOVE      "078" TO RN
+         MOVE      "01" TO TAB
+         KEYIN     *P12:10,"ENTER SALES NUMBER TO BE CLEANED ",*JR,*ZF,SLSNUM
+         COMPARE   "99" IN SLSNUM
+         STOP      IF EQUAL
+         KEYIN     *P12:12,"DATE BREAK ? ",DATEBRK
+         CMATCH    "Y" TO DATEBRK
+         GOTO      CALCTAB IF NOT EQUAL
+         KEYIN     *P12:14,"MONTH / YY TO STOP AT ",*+,STMM,"/",STYY
+CALCTAB  MOVE      SLSNUM TO TAB
+         MULT      EIGHTEEN BY TAB
+         ADD       C1 TO TAB
+.
+READTAB  READTAB   OUTPUT,RN;*TAB,MNTH,HOLDYR,TOTORD,TOTQTY
+         STOP      IF OVER
+         MOVE      ZERO TO TOTORD
+         MOVE      ZERO TO TOTQTY
+.
+         CMATCH    "Y" TO DATEBRK
+         CALL      DATEBRK IF EQUAL
+         WRITAB    OUTPUT,RN;*TAB,MNTH,HOLDYR,TOTORD,TOTQTY
+         ADD       "1",RN
+.         COMPARE   "34" TO RN
+         COMPARE   "104" TO RN
+         STOP       IF EQUAL
+         GOTO      READTAB
+DATEBRK
+         COMPARE     STYY TO HOLDYR
+         RETURN    IF NOT EQUAL
+         COMPARE     STMM TO MNTH
+         STOP      IF EQUAL
+         RETURN
+.
+         INCLUDE   COMLOGIC.inc

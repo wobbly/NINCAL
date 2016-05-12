@@ -1,0 +1,303 @@
+pc         equ        0
+        include common.inc
+        include cons.inc
+           INCLUDE    COMPDD.inc
+           INCLUDE    CNTDD.inc
+           include    norddd.inc
+           include    oslspern.inc
+
+release init    "1.0"
+#VERSION  DIM 10
+#VER_F    FORM 4.2
+#VER      FORM 1 1=EXCEL 2007 OR LATER
+
+hold       dim        500
+SReturn        init   0x0a                     ;soft return/line feed
+.In order to use any of the properties/methods associated with all parent objects
+.of the Worksheet, I need to create automation objects for each of them.
+.
+.Look at Excel Object Model to understand heirarchy.  This can be found in hard
+.documentation:  Microsoft Office 2000 Object Model Guide (found in MS Office 2000 Developers Edition).
+.Software available via PL/B Designer - create a Container object on a form, create an Excel
+.Spreadsheet, right click on Container object and Browse object.  This will invoke the PL/B Object
+.Browser, which will give you SOME of the components of the Object Model.  To browse the Object
+.Model in its entirety, open Excel.  Under Tools menu select Macro, select Visual Basic Editor.
+.In the Visual Basic Editor screen, under the View menu, select Object Browser.  There you can 
+.view all of the objects/methods/properties in Excel.  Right clicking on an item will give you
+.option to locate Help topics to see specifics.
+.
+.General heirarchy:
+. Excel Application
+.       Workbooks Collection (all open Workbooks)
+.               Single Workbook
+.                       Worksheets Collection (all Worksheets in this Workbook)
+.                               Single Worksheet
+.                                       SortColumn (a Single Column in that Worksheet used for sorting)
+.
+books   automation
+book    automation
+.......................
+.bars      automation
+.bar       automation
+.menubar INTEGER 2,"0x00000006"
+.......................
+sheets  automation
+sheet   automation
+sheet2  automation
+sortcol automation
+sortcol1 automation
+ex      automation      class="Excel.Application"
+.Variant objects used to talk to outside applications
+.See PL/B help in order to understand use of Variant objects.
+.
+.Booleans
+.PL/B does not have a Boolean datatype, so we have to create our own.
+VT_BOOL EQU 11
+OTRUE   variant
+OFALSE  variant
+VT_I4   EQU 3           .4 byte integer
+Zoom85  variant
+xlRowHeight           variant
+VT_R8      EQU 5           .Double - 8 byte Real
+TopMargin  variant
+BottomMargin          variant
+.Formatting vars needed
+.This constant was found in the Object Browser in Excel under the Help topic for the
+.HorizontalAlignment property of the Range object.
+AlignLeft integer 4,"0xffffefdd"
+AlignRight integer 4,"0xffffefc8"
+AlignCenter integer 4,"0xffffeff4"
+SheetsDefault   integer 4,"0x00000000"
+xlLandscape integer 4,"0x2"                     .2
+xlMinimized integer 4,"0xFFFFEFD4"
+xlUnderlineStyleSingle integer 4,"0x2"
+
+
+.Initialize variables
+        create  Zoom85,VarType=VT_I4,VarValue=85
+           create     OTRUE,VarType=VT_BOOL,VarValue=1
+           create     OFALSE,VarType=VT_BOOL,VarValue=0
+           create     xlRowHeight,VarType=VT_R8,VarValue="75.0"
+."1" increment in Excel interface equals "1.3888" in OLE logic
+           create     TopMargin,VarType=VT_R8,VarValue="18"                  Roughly equals .25 inches:  18 * 1.388 = 25
+           create     BottomMargin,VarType=VT_R8,VarValue="36"    Roughly equals .50 inches:  36 * 1.388 = 50
+.Open Excel application
+        create  ex
+        setprop ex,*WindowState=xlMinimized
+        setprop ex,*Visible="False"
+           setprop ex.CommandBars("Standard"),*Visible="True"
+           setprop ex.CommandBars("Formatting"),*Visible="True"
+           setprop ex.CommandBars("Worksheet Menu Bar"),*Enabled="True"
+          GETPROP   ex,*VERSION=#VERSION
+          MOVE      #VERSION,#VER_F
+          IF        (#VER_F >= 12)
+          MOVE      c1,#VER
+          ELSE
+          MOVE      "0",#VER
+          ENDIF
+                              if        (#ver = c1)
+                             Pack      taskname,"c:\work\income.xlsx"
+                              else
+                             Pack      taskname,"c:\work\income.xls"
+                              endif
+                             erase          taskname
+
+./.Reset Default of Worksheets found in a Workbook
+                              getprop ex,*SheetsInNewWorkbook=SheetsDefault
+                              setprop ex,*SheetsInNewWorkbook=C2
+./.Create Workbooks collection
+                              getprop ex,*Workbooks=books
+./.Create/Add a single Workbook
+                              books.add
+                              books.item giving book using 1
+./.Create Worksheets collection
+                              getprop book,*Sheets=sheets
+./.Create a single Worksheet - we did not need to add it as we set the default above to
+./.add one new Worksheet each time a Workbook is created.
+                              sheets.item giving sheet using 1
+                              sheets.item giving sheet2 using 2
+           sheet2.activate
+           sheet.activate
+.        setprop sheet.PageSetup,*Orientation=xlLandscape
+.        setprop sheet.PageSetup,*CenterFooter=" Page &P of &N"
+.        setprop sheet.PageSetup,*Zoom=Zoom85
+.        setprop sheet.PageSetup,*TopMargin=TopMargin
+.        setprop sheet.PageSetup,*BottomMargin=BottomMargin
+.        setprop sheet.PageSetup,*FooterMargin=TopMargin
+..Clear any garbage that might be present - this is redundant since we have created a new Worksheet
+.        sheet.range("A1","W40").Clear
+.
+           move       C2,howmany
+           loop
+                      move       howmany,str9
+                      call       Trim using str9
+                      pack       str10,"A",str9
+                      getprop    sheet.range(str10),*Value=COMPFLD3
+                      call       Trim using COMPFLD3
+                      until (COMPFLD3 = "")
+                      move       C0,N4
+                      move       COMPFLD3,N4
+                      move       N4,COMPFLD3
+                      rep        zfill,COMPFLD3
+                      move       "COMPKEY3",Location
+                      pack       KeyLocation,"Key: ",COMPFLD3
+                      call       COMPKEY3
+                      if not over
+.Look for Orders placed in 20xx
+                                 pack       NORDFLD1,"01X",COMPFLD3
+                                 move       "NORDKG",Location
+                                 pack       KeyLocation,"Key: ",NORDFLD1
+                                 call       NORDAIM
+                                 loop
+                                            until over
+                                            if (OODTEC = "20" & OODTEY = "15")
+                                                       if (OSTAT = "B")
+                                                                  pack       MSLSPER,OSALES10,OSALES
+.
+                                                                  pack       NBRKFLD,OBRKNUM,OBRKCNT
+                                                                  rep        zfill,NBRKFLD
+                                                                  if (NBRKFLD = "")
+                                                                             pack       NBRKFLD,"(((((((("
+                                                                  endif
+                                                                  move       "NBRKKEY",Location
+                                                                  pack       KeyLocation,"Key: ",NBRKFLD
+                                                                  call       NBRKKEY
+                                                                  if over
+                                                                             clear      BRCOMP
+                                                                             clear      BRCITY
+                                                                             clear      BRSTATE
+                                                                             clear      BRZIP
+                                                                  endif
+                                                                  break
+                                                       endif
+                                            endif
+                                            move       "NORDKG",Location
+                                            pack       KeyLocation,"Key: ",NORDFLD1
+                                            call       NORDKG
+                                 repeat
+.
+                                 pack       str10,"B",str9
+                                 getprop    sheet.range(str10),*Value=taskname
+                                 call       Trim using taskname
+                                 call       Trim using MCITY
+                                 call       Trim using MSTATE
+                                 call       Trim using MZIP
+                                 clear      hold
+                                 append     taskname,hold
+                                 if (MCITY <> "" | MSTATE <> "" | MZIP <> "")
+                                            append     SReturn,hold
+                                            if (MCITY <> "")
+                                                       append     MCITY,hold
+                                                       if (MSTATE <> "")
+                                                                  append     ", ",hold
+                                                                  append     MSTATE,hold
+                                                                  if (MZIP <> "")
+                                                                             append     " ",hold
+                                                                             append     MZIP,hold
+                                                                  endif
+                                                       else
+                                                                  append     " ",hold
+                                                                  append     MZIP,hold
+                                                       endif
+                                            else
+                                                       if (MSTATE <> "")
+                                                                  append     MSTATE,hold
+                                                                  if (MZIP <> "")
+                                                                             append     " ",hold
+                                                                             append     MZIP,hold
+                                                                  endif
+                                                       elseif (MZIP <> "")
+                                                                  append     MZIP,hold
+                                                       endif
+                                            endif
+                                 else
+.Write to special report
+                                            add        C1,N5
+                                            move       N5,str5
+                                            call       Trim using str5
+                                            pack       str6,"A",str5
+                                            setprop    sheet2.range(str6),*Value=COMPFLD3
+                                            pack       str6,"B",str5
+                                            setprop    sheet2.range(str6),*Value=taskname
+.Use Broker info, if available
+                                            call       Trim using BRCOMP
+                                            call       Trim using BRCITY
+                                            call       Trim using BRSTATE
+                                            call       Trim using BRZIP
+                                            if (BRCOMP <> "")
+                                                       append     SReturn,hold
+                                                       append     "c/o ",hold
+                                                       append     BRCOMP,hold
+                                                       if (BRCITY <> "" | BRSTATE <> "" | BRZIP <> "")
+                                                                  append     SReturn,hold
+                                                                  if (BRCITY <> "")
+                                                                             append     BRCITY,hold
+                                                                             if (BRSTATE <> "")
+                                                                                        append     ", ",hold
+                                                                                        append     BRSTATE,hold
+                                                                                        if (BRZIP <> "")
+                                                                                                   append     " ",hold
+                                                                                                   append     BRZIP,hold
+                                                                                        endif
+                                                                             else
+                                                                                        append     " ",hold
+                                                                                        append     BRZIP,hold
+                                                                             endif
+                                                                  else
+                                                                             if (BRSTATE <> "")
+                                                                                        append     BRSTATE,hold
+                                                                                        if (BRZIP <> "")
+                                                                                                   append     " ",hold
+                                                                                                   append     BRZIP,hold
+                                                                                        endif
+                                                                             elseif (BRZIP <> "")
+                                                                                        append     BRZIP,hold
+                                                                             endif
+                                                                  endif
+                                                       endif
+                                            endif
+                                 endif
+                                 reset      hold
+                                 setprop    sheet.range(str10),*Value=hold,*WrapText="True"
+.
+                                 move       C0,result
+                                 move       MSLSPER,result
+                                 load       str45 from result of osls1,osls2,osls3,osls4,osls5,osls6,osls7:
+                                            osls8,osls9,osls10,osls11,osls12,osls13,osls14,osls15,osls16:
+                                            osls17,osls18,osls19,osls20,osls21,osls22
+                                 pack       str10,"C",str9
+                                 setprop    sheet.range(str10),*Value=str45
+                      endif
+                      add        C1,howmany
+           repeat
+
+           setprop ex,*Visible="True"
+           setprop ex,*IgnoreRemoteRequests="False",*Interactive="True"
+        book.saveas giving N9 using *Filename=taskname
+
+CampaignCleanUp
+.Clean up after myself
+.All created automation objects MUST be destroyed.  If not ex.quit will fail and
+.Excel.exe will still be running.
+           destroy Zoom85
+        destroy sortcol
+        destroy sortcol1
+        destroy sheet
+        destroy sheet2
+        destroy sheets
+        destroy book
+        destroy books
+.Suppress any alert boxes produced by Excel.  We want to close down this instance of Excel now!!
+.If User has quit out of the SaveAs routine we do not want any prompts informing them their
+.Worksheet has not been saved.  If we did not suppress these message, instances of Excel might
+.be left open.
+        setprop ex,*DisplayAlerts=OFALSE
+        setprop ex,*SheetsInNewWorkbook=SheetsDefault
+.        ex.quit
+        destroy ex
+        shutdown
+
+           INCLUDE    COMPIO.inc
+           INCLUDE    CNTIO.inc
+           include    nordio.inc
+        include comlogic.inc

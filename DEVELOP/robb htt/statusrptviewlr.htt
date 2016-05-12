@@ -1,0 +1,24 @@
+<!-- custom content goes here -->
+<form action='' name='statusrpt1Form' id='statusrpt1Form' method='POST'>
+	<input type='hidden' name='cgifunction' value='0' />
+	<input type='hidden' name='cgiordernum' value='<%=cgiordernum%>' />
+	<input type='hidden' name='SID' value='<%=SID%>' />
+	<table border='0' cellpadding='2' cellspacing='2' align='center' width="100%">
+		<tr>
+			<td class='title' align=center>
+				View Order
+				<br>
+				<%=cgiordernum%>
+				<br>
+				<br>
+			</td>
+		</tr>
+		<tr>
+			<td>
+<%DISPLAYORDER%>
+<%/DISPLAYORDER%>
+			</td>
+		</tr>
+	</table>
+</form>
+<!-- end custom content -->

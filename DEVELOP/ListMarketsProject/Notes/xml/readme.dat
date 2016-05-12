@@ -1,0 +1,23 @@
+Readme for f:\library\develop\xml\
+
+*******************************************
+	Andrew Harkins May 31, 2006
+*******************************************
+This directory contains examples on using XML.
+
+XML_Training_Doc.pdf contains notes from the course "XML Development",
+taught at UCB Extension.
+
+Other useful resources include:
+
+http://www.topxml.com
+http://www.w3schools.com
+http://msdn.microsoft.com/xml/default.aspx
+http://www.apache.org (Java & XSLT information)
+http://www.w3c.org
+
+Example using a Java transformation utility to convert an XML file into an HTML
+file using an XSL file:
+
+F:\LIBRARY\DEVELOP\xml>java org.apache.xalan.xslt.Process -in BrokerReport.xml
+-xsl BrokerReport.xsl -out BrokerReport.html

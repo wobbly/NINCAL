@@ -1,0 +1,322 @@
+..............................................................................
+.
+. NORDIO INCLUSION
+. NIN ORDER FILE I/O ROUTINES
+.
+. FILE NAME : NINORD
+. REC LENGTH: 262 FIXED
+. INDEX KEY : (1)  7-12       (LR#)
+.AIMDEX KEYS: (1)  3-6   (MAILER#)
+.             (2)  16-21 (LIST#)
+.             (3)  26-32 (PO#)
+.             (4) 269-272(broker#) 
+..............................................................................
+.
+. ENTRY POINT : NORDKEY
+. REQUIRED    : 'NORDPATH', 'NORDFLD', or 'nordfld4
+. RETURNED    : ORDER RENORD
+. DESCRIPTION : EXACT ISAM KEY READ
+.
+.NORDKEY  COMPARE   NORDPATH TO NORDFLAG
+NORDKEY  branch    nordpath to nord1a,norderr
+.NORDKEY  branch    nordpath to nord1a,norderr,nord1c
+nord1a   compare   nordpath to nordflag
+         GOTO      NORD1b IF EQUAL
+         CALL      NORDOPEN
+NORD1B    FILEPI    1;NORDFILE
+         READ      NORDFILE,NORDFLD;ORDVARS
+.
+              RETURN
+.
+.nord1c   branch    nordflg3 to nord1d
+.         CALL      NORDOPN3
+NORD1d   
+.          FILEPI    1;NORDFLE3
+.         READ      NORDFLE3,NORDFLD4;ORDVARS
+.
+              RETURN
+..............................................................................
+.
+. ENTRY POINT : NORDTST
+. REQUIRED    : NORDFLD
+. RETURNED    :
+. DESCRIPTION : TEST KEY
+.
+.NORDTST  COMPARE   NORDPATH TO NORDFLAG
+NORDTST  branch    nordpath to nord2a,norderr,nord2c
+nord2a   COMPARE   NORDPATH TO NORDFLAG
+         GOTO      NORD2b IF EQUAL
+         CALL      NORDOPEN
+NORD2b    FILEPI    1;NORDFILE
+         READ      NORDFILE,NORDFLD;STR1
+         RETURN
+.
+.nord2c  branch    NORDFLG3 to nord2d
+.         CALL      NORDOPN3
+.NORD2d   FILEPI    1;NORDFLE3
+.         READ      NORDFLE3,NORDFLD4;;
+.         RETURN
+.nord2e   BRANCH           NORDFLG2 TO NORD2f
+nord2c   BRANCH    NORDFLG2 TO NORD2d
+         CALL      NORDOPN2
+.NORD2f   FILEPI    1;NORDFLE2
+NORD2d   FILEPI    1;NORDFLE2
+         READ      NORDFLE2,NORDFLD1,NORDFLD2,NORDFLD3,NORDFLD4;str1
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NORDKS
+. REQUIRED    : 'NORDPATH'
+. RETURNED    : ORDER RENORD
+. DESCRIPTION : KEY SEQUENTIAL ORDER FILE READ
+.
+nordks
+.NORDKS   COMPARE   NORDPATH TO NORDFLAG
+.NORDKS   branch    nordpath to nord3a,norderr,nord3c
+nord3a   COMPARE   NORDPATH TO NORDFLAG
+         GOTO      NORD3b IF EQUAL
+         CALL      NORDOPEN
+NORD3b    FILEPI    1;NORDFILE
+         READKS    NORDFILE;ORDVARS
+.
+         RETURN
+.
+.nord3c          branch    NORDFLG3 to nord3d
+.         CALL      NORDOPN3
+.NORD3d    FILEPI    1;NORDFLE3
+.         READKS    NORDFLE3;ORDVARS
+.
+.         RETURN
+..............................................................................
+.
+. ENTRY POINT : NORDSEQ
+. REQUIRED    :
+. RETURNED    : ORDER RENORD
+. DESCRIPTION : SEQUENTIAL ORDER FILE READ
+.
+NORDSEQ  BRANCH    NORDFLAG TO NORD4
+         CALL      NORDOPEN
+NORD4    FILEPI    1;NORDFILE
+         READ      NORDFILE,SEQ;ORDVARS
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NORDWRT
+. REQUIRED    : 'NORDFLD', 'NORDPATH=1'
+. RETURNED    :
+. DESCRIPTION : EXACT ISAM KEY TXT/ISI INSERT., ISI 2/3 INSERTS.
+.
+NORDWRT  MOVE      C1 TO NORDPATH
+NORDWRT1 COMPARE   NORDPATH TO NORDFLAG
+         GOTO      NORD5 IF EQUAL
+         CALL      NORDOPEN
+NORD5    FILEPI    1;NORDFILE
+         WRITE     NORDFILE,NORDFLD;ORDVARS
+.
+         CALL      NORDWRT2
+.        CALL      NORDWRT3
+         RETURN
+.
+NORDWRT2 BRANCH    NORDFLG2 TO NORD5B
+         CALL      NORDOPN2
+NORD5B   FILEPI    1;NORDFLE2
+         INSERT    NORDFLE2
+         RETURN
+.        
+.NORDWRT3 BRANCH    NORDFLG3 TO NORD5C
+.         CALL      NORDOPN3
+NORD5c
+.   FILEPI    1;NORDFLE3
+.         INSERT    NORDFLE3,NORDFLD4
+         RETURN
+.
+..............................................................................
+.
+. ENTRY POINT : NORDUPD
+. REQUIRED    : A PREVIOUS KEY READ, 'NORDPATH'
+. RETURNED    :
+. DESCRIPTION : KEY UPDATE ORDER FILE
+.
+NORDUPD  COMPARE   NORDPATH TO NORDFLAG
+         GOTO      NORD6 IF EQUAL
+         CALL      NORDOPEN
+NORD6    FILEPI    1;NORDFILE
+         UPDATE    NORDFILE;ORDVARS
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NORDDEL                                             
+. REQUIRED    : 'NORDPATH', 'NORDFLD'
+. RETURNED    :
+. DESCRIPTION : PATH=1 DELETES TXT & ALL KEYS. PATH=2/3/4 DELETES KEY ONLY.
+.
+NORDDEL  BRANCH    NORDPATH TO NORDDEL1,NORDDEL2
+.
+NORDDEL1 COMPARE   NORDPATH TO NORDFLAG
+         GOTO      NORD7 IF EQUAL
+         CALL      NORDOPEN
+NORD7    CALL      NORDKEY
+         RETURN    IF OVER
+         MOVE      OLRN TO NORDFLD
+         FILEPI    1;NORDFILE
+         DELETE    NORDFILE,NORDFLD
+         RETURN
+.
+NORDDEL2 BRANCH    NORDFLG2 TO NORD7B
+         CALL      NORDOPN2
+NORD7B   FILEPI    1;NORDFLE2
+         DELETE    NORDFLE2
+         RETURN
+.
+..............................................................................
+.
+. ENTRY POINT : NORDKP
+. REQUIRED    : 'NORDPATH'
+. RETURNED    : ORDER RENORD
+. DESCRIPTION : KEY SEQUENTIAL ORDER FILE READ
+.
+NORDKP   COMPARE   NORDPATH TO NORDFLAG
+         GOTO      NORD8 IF EQUAL
+         CALL      NORDOPEN
+NORD8    FILEPI    1;NORDFILE
+         READKP    NORDFILE;ORDVARS
+.
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NORDAIM
+. REQUIRED    : NORDFLD1,NORDFLD2,NORDFLD3,nordfld4
+. RETURNED    : ORDER RECORD
+. DESCRIPTION : AIM ORDER FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NORDAIM  BRANCH    NORDFLG2 TO NORD9
+.        GOTO      NORD9 IF EQUAL
+         CALL      NORDOPN2
+NORD9    FILEPI    1;NORDFLE2
+         READ      NORDFLE2,NORDFLD1,NORDFLD2,NORDFLD3,NORDFLD4;ORDVARS
+         RETURN
+..............................................................................
+..............................................................................
+.
+. ENTRY POINT : NORDAIMt
+. REQUIRED    : NORDFLD1,NORDFLD2,NORDFLD3,nordfld4
+. RETURNED    : OVER/OR NOT
+. DESCRIPTION : AIM ORDER FILE TEST READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NORDAIMT  BRANCH   NORDFLG2 TO NORD12
+.        GOTO      NORD9 IF EQUAL
+         CALL      NORDOPN2
+NORD12   FILEPI    1;NORDFLE2
+         READ      NORDFLE2,NORDFLD1,NORDFLD2,NORDFLD3,NORDFLD4;;
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NORDKG
+. REQUIRED    : VALID PREVIOUS AIM READ
+. RETURNED    : ORDER RECORD
+. DESCRIPTION : AIM KEY GENEREIC ORDERFILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NORDKG   BRANCH    NORDFLG2 TO NORD10
+         CALL      NORDOPN2
+NORD10   FILEPI    1;NORDFLE2
+         READKG    NORDFLE2;ORDVARS
+         SCAN      "F *" IN ERROR
+         if         equal
+         display   *p1:20,olrn,*w2
+         endif
+         RETURN
+..............................................................................
+.
+         IFZ      PC
+. ENTRY POINT : NORDKGP
+. REQUIRED    : PREVIOUS VALID AIM READ
+. RETURNED    : ORDER RECORD
+. DESCRIPTION : Aim KEY GENERIC PRIOR ORDER FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NORDKGP  BRANCH    NORDFLG2 TO NORD11
+         CALL      NORDOPN2
+NORD11   FILEPI    1;NORDFLE2
+         READKGP   NORDFLE2;ORDVARS
+         RETURN
+         XIF
+..............................................................................
+.
+. ENTRY POINT : NORDlast
+. REQUIRED    : NORDFLD1,NORDFLD2,NORDFLD3,nordfld4
+. RETURNED    : ORDER RECORD
+. DESCRIPTION : AIM ORDER FILE READ last matching record
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NORDlast BRANCH    NORDFLG2 TO NORD13
+.        GOTO      NORD13 IF EQUAL
+         CALL      NORDOPN2
+NORD13   FILEPI    1;NORDFLE2
+         READLast  NORDFLE2,NORDFLD1,NORDFLD2,NORDFLD3,NORDFLD4;ORDVARS
+
+         RETURN
+..............................................................................
+...............................................................................
+.
+. ENTRY POINT : NORDOPEN
+. REQUIRED    : 'NORDPATH'
+. RETURNED    : 'NORDFLAG' SET TO THE PATH NUMBER: 'NORDPATH', IF OPENNED.
+. DESCRIPTION : OPEN NIN ORDER FILE, DEPENDENT ON PATH NUMBER.
+.               DISPLAY ERROR AND ABORT IF NOT ON-LINE.
+.
+NORDOPEN LOAD      NORDNAME USING NORDPATH FROM NORDNME1,NORDNME2,NORDNME3
+         TRAP      NORDGONE IF IO
+         OPEN      NORDFILE,NORDNAME
+         TRAPCLR   IO
+         MOVE      NORDPATH TO NORDFLAG
+         RETURN
+NORDGONE MOVE      NORDNAME TO FILENAME
+         CALL      FILEGONE
+.
+...............................................................................
+.
+. ENTRY POINT : NORDOPN2
+. REQUIRED    :
+. RETURNED    : 'NORDFLG2' SET TO '1', IF OPENNED.
+. DESCRIPTION : OPEN NIN ORDER FILE, AIMDEXED
+.               DISPLAY ERROR AND ABORT IF NOT ON-LINE.
+.
+NORDOPN2 TRAP      NORDGNE2 IF IO
+         OPEN      NORDFLE2,NORDNME2
+         TRAPCLR   IO
+         MOVE      C1 TO NORDFLG2
+         RETURN
+NORDGNE2 MOVE      NORDNME2 TO FILENAME
+         CALL      FILEGONE
+.
+         TRAPCLR   IO
+         RETURN
+...............................................................................
+.
+. ENTRY POINT : NORDOPN3
+. REQUIRED    :
+. RETURNED    : 'NORDFLG3' SET TO '1', IF OPENNED.
+. DESCRIPTION : OPEN NIN ORDER FILE, 
+.               DISPLAY ERROR AND ABORT IF NOT ON-LINE.
+.
+NORDOPN3 
+         goto      nordgne3
+         TRAP      NORDGNE3 IF IO
+.         OPEN      NORDFLE3,NORDNME3
+         TRAPCLR   IO
+.         MOVE      C1 TO NORDFLG3
+         RETURN
+NORDGNE3 MOVE      NORDNME3 TO FILENAME
+         CALL      FILEGONE
+.
+         TRAPCLR   IO
+         RETURN
+norderr  move     "invalid path" to filename
+         call     filegone
+         trapclr  io
+         return
+..............................................................................
+

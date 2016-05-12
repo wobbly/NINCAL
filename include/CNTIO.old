@@ -1,0 +1,113 @@
+..............................................................................
+.
+. CNTIO INCLUSION
+. NIN PROSPECT CONTACT FILE I/O ROUTINES
+.
+.
+.  FILE NAME : CNT
+. REC LENGTH: 199 FIXED
+. INDEX KEY : 1-5
+..............................................................................
+.
+. ENTRY POINT : CNTKEY
+. REQUIRED    : 'CNTFLD'
+. RETURNED    : COMPANY CONTACT RECORD
+. DESCRIPTION : EXACT ISAM KEY READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+CNTKEY  BRANCH    CNTFLAG TO CNT1
+         CALL      CNTOPEN
+CNT1    FILEPI    1;CNTFILE
+         READ      CNTFILE,CNTFLD;CNTVARS
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : CNTTST
+. REQUIRED    : CNTFLD
+. RETURNED    :
+. DESCRIPTION : TEST KEY
+.
+CNTTST  BRANCH    CNTFLAG TO CNT2
+         CALL      CNTOPEN
+CNT2    FILEPI    1;CNTFILE
+         READ      CNTFILE,CNTFLD;STR1
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : CNTKS
+. REQUIRED    :
+. RETURNED    : PROSPECT RECORD
+. DESCRIPTION : KEY SEQUENTIAL PROSPECT FILE READ
+.
+CNTKS   BRANCH    CNTFLAG TO CNT3
+         CALL      CNTOPEN
+CNT3    FILEPI    1;CNTFILE
+         READKS    CNTFILE;CNTVARS
+         RETURN
+..............................................................................
+. ENTRY POINT : CNTSEQ
+. REQUIRED    :
+. RETURNED    : PROSPECT RECORD
+. DESCRIPTION : SEQUENTIAL PROSPECT FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLGS
+.
+CNTSEQ	 BRANCH    CNTFLAG TO CNT4B
+         CALL      CNTOPEN
+CNT4B   FILEPI    1;CNTFILE
+        READ      CNTFILE,SEQ;CNTVARS
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : CNTWRT
+. REQUIRED    : 'CNTFLD'
+. RETURNED    :
+. DESCRIPTION : EXACT ISAM KEY TXT/ISI INSERT
+.
+CNTWRT  BRANCH    CNTFLAG TO CNT5
+         CALL      CNTOPEN
+CNT5    FILEPI    1;CNTFILE
+         WRITE     CNTFILE,CNTFLD;CNTVARS
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : CNTUPD
+. REQUIRED    : A PREVIOUS KEY READ
+. RETURNED    :
+. DESCRIPTION : KEY UPDATE PROSPECT FILE
+.
+CNTUPD  BRANCH    CNTFLAG TO CNT6
+         CALL      CNTOPEN
+CNT6    FILEPI    1;CNTFILE
+         UPDATE    CNTFILE;CNTVARS
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : CNTDEL
+. REQUIRED    : 'CNTFLD'
+. RETURNED    :
+. DESCRIPTION : EXACT ISAM KEY TXT/ISI DELETE
+.
+CNTDEL  BRANCH    CNTFLAG TO CNT7
+         CALL      CNTOPEN
+CNT7    FILEPI    1;CNTFILE
+         DELETE    CNTFILE,CNTFLD
+         RETURN
+..............................................................................
+. 
+. ENTRY POINT : CNTOPEN
+. REQUIRED    : 'CNTFLAG' 'CNTPATH'
+. RETURNED    : 'CNTFLAG' SET TO '1' IF OPENNED
+. DESCRIPTION : OPEN NIN PROSPECT FILE
+.               DISPLAY ERROR AND ABORT IF NOT ON-LINE.
+.
+CNTOPEN  TRAP      CNTGONE IF IO
+         OPEN      CNTFILE,CNTNAME
+         TRAPCLR   IO
+         MOVE      C1 TO CNTFLAG
+         RETURN
+..............................................................................
+CNTGONE MOVE      CNTNAME TO FILENAME
+         CALL      FILEGONE
+.
+..............................................................................
+

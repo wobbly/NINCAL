@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<nin xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="NIN_Order_REVISED_2.xsd">
+<lforder>
+<lrnum>624955</lrnum>
+<orderdate>06-23-2006</orderdate>
+<mailername>Humane Society of the U.S.                                                                          </mailername>
+<listnum>010286</listnum>
+<listname>People for the Ethical Treatment                                                                    </listname>
+<selection>Donors (6 Mos)                                                                                      </selection>
+<qty>000010000</qty>
+<keycode>                                                                                                    </keycode>
+<ponum>126468                                                                                              </ponum>
+<media>Email                                                                                               </media>
+<shipcontact>Humane Society of the U.S.                                                                          </shipcontact>
+<shipcompany>                                                                                                    </shipcompany>
+<shipaddr>                                                                                                    </shipaddr>
+<shipcity>               </shipcity>
+<shipstate>  </shipstate>
+<shipzip>          </shipzip>
+<shipemail>                                                                                                    </shipemail>
+<maildate>09-19-2006</maildate>
+<shipdate>06-26-2006</shipdate>
+<shipvia>See Special Instructions  </shipvia>
+<oppm>     .00</oppm>
+<selprice>     .00</selprice>
+<specialselections>
+</specialselections>
+<specialinstructions>
+Please supply starting and ending location of  fields                                               
+as well as translation tables for anycode in file data.                                             
+                                                                                                    
+Mark e-mail: HPPLTW                                                                                 
+                                                                                                    
+Note: Pls e-mail file by 06/26. Thanks!                                                             
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+</specialinstructions>
+<opu>
+<opulr>622860</opulr>
+<opudate>06-12-20060612</opudate>
+<opuqty>000057000</opuqty>
+</opu>
+<contact>Joey Gamache                       </contact>
+<orderterms>Exchange</orderterms>
+<requesttype>New</requesttype>
+</lforder>
+<lforder>
+<lrnum>624946</lrnum>
+<orderdate>06-21-2006</orderdate>
+<mailername>Animal Protection Institute                                                                         </mailername>
+<listnum>010286</listnum>
+<listname>People for the Ethical Treatment                                                                    </listname>
+<selection>Donors (24 Mos)                                                                                     </selection>
+<qty>000005000</qty>
+<keycode>                                                                                                    </keycode>
+<ponum>D03063111                                                                                           </ponum>
+<media>Email                                                                                               </media>
+<shipcontact>Animal Protection Institute                                                                         </shipcontact>
+<shipcompany>                                                                                                    </shipcompany>
+<shipaddr>                                                                                                    </shipaddr>
+<shipcity>               </shipcity>
+<shipstate>  </shipstate>
+<shipzip>          </shipzip>
+<shipemail>                                                                                                    </shipemail>
+<maildate>07-10-2006</maildate>
+<shipdate>06-21-2006</shipdate>
+<shipvia>See Special Instructions  </shipvia>
+<oppm>     .00</oppm>
+<selprice>     .00</selprice>
+<specialselections>
+</specialselections>
+<specialinstructions>
+Ship To: DATA@PIDIMP.COM                                                                            
+                                                                                                    
+RUSH!! Pls ship today.                                                                              
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+                                                                                                    
+</specialinstructions>
+<contact>Joey Gamache                       </contact>
+<orderterms>Exchange</orderterms>
+<requesttype>New</requesttype>
+</lforder>
+</nin>

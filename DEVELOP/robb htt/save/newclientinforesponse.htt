@@ -1,0 +1,26 @@
+<form action="" name="regform" method="POST" onSubmit="return checkFields(regform.firstname.value, regform.lastname.value, regform.email.value, regform.username.value, regform.email.value);">
+	<input type='hidden' name='function' value='1' />
+	<input type='hidden' name='SID' value='<%=SID%>' />
+	<table align='center'>
+		<tr>
+			<td class='title' colspan='2' align=center >
+				New Client Information
+				<br><br><br>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<span class='errorMsg'><%=errorMsg%></span>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				An email has been sent to the administrator containing the details of your questionairre.
+				<br>
+				<br>
+				A Names in the News representative will be contacting you shortly.  Thank you for your
+				inquiry!
+			</td>
+		</tr>
+	</table>
+</form>

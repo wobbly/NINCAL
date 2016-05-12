@@ -1,0 +1,39 @@
+******************************************************
+*  NWEBDD2 INCLUSION
+*  WEBSITE PROCESS DEFINITION FILE.
+. ....................................................
+* ****************************************************
+* NAMES IN THE NEWS WEBSITE PROCESS DEFINITION FILE.
+* ****************************************************
+.
+.      FILE:      NINWEB2
+.    LENGTH:      160
+.      TYPE:      ISAM,MANAGED
+. INDEX KEY:      1-4	NWEB2CODE
+.AIMDEX KEY:	  5-79  NWEB2NAME
+.                80-154 NWEB2LOCATION
+......................................................
+NWEB2NAME	INIT	"NINWEB2"
+XSEQ      FORM      "-4"
+FPEOF      FORM      "-3"
+.
+NWEB2FLIST	FILELIST
+NWEB2FILE	IFILE	KEYLEN=4,FIXED=160,Name="NINWEB2.isi|NINS1:502"
+NWEB2FLE2	AFILE	FIXED=160,Name="NINWEB2.aam|NINS1:502"
+.NWEB2FILE	IFILE	KEYLEN=4,FIXED=160,Name="NINWEB2.isi"
+.NWEB2FLE2	AFILE	FIXED=160,Name="NINWEB2.aam"
+		FILELISTEND
+.
+NWEB2LOCK	FORM	1	0 OR 1=filepi,2=recordlock, 3=no lock
+NWEB2FLD	DIM	4	.NWEB2CODE
+NWEB2FLD1	DIM	78	.NWEB2NAME
+NWEB2FLD2	DIM	78	.NWEB2LOCATION
+.
+NWEB2FLAG	FORM	1
+.
+NWEB2RECORD	record
+NWEB2CODE	DIM	4	  1-4	PROCESS ID
+NWEB2NAME	DIM	75	  5-79	PROCESS NAME
+NWEB2LOCATION	DIM	75	 80-154	PROCESS LOCATION
+NWEB2FILLER	DIM	6	155-160	FILLER
+		recordend

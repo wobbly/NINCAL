@@ -1,0 +1,45 @@
+<!-- custom content goes here -->
+<form action='' name='owneractivityrptresponse' id='owneractivityrptresponse' method='POST'>
+	<input type='hidden' name='function' value='0' />
+	<input type='hidden' name='SID' value='<%=SID%>' />
+	<input type='hidden' name='cgilistnum' value="<%=cgilistnum%>" />
+<center> <!-- 09/29/2010 BJACKSON -->
+	<table border='0' cellpadding='2' cellspacing='2' align='center'>
+		<tr>
+			<td class='title' colspan='2' align=center>
+				Owner Activity Report for List <%=cgilistnum%>
+				<br><%=cginame%>
+				<br><br><br>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<span class='errorMsg'><%=errorMsg%></span>
+			</td>
+		</tr>
+		<tr>
+			<td align=center>
+				<table class="datacontainer" cellpadding="2" cellspacing="0" align=center>
+					<tr>
+						<th>Company</th>
+						<th>Statement Date</th>
+						<th nowrap>Download</th>
+					</tr>
+<%DISPLAYRESULTS%>
+					<tr class="datarow<%=cgicolor%>">
+						<td valign="top"><%=cgicompany%></td>
+						<td valign="top"><%=cgidate%></td>
+						<td valign="top" align="center"><%=cgilink%></td>
+					</tr>
+<%/DISPLAYRESULTS%>
+					<tr>
+						<td colspan="4" align="center">
+							<input type="submit" value="Search Again">
+						</td>
+				</table>
+			</td>
+		</tr>
+	</table>
+</center> <!-- 09/29/2010 BJACKSON -->
+</form>
+<!-- end custom content -->

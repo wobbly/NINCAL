@@ -1,0 +1,37 @@
+******************************************************
+*  NTXTDD INCLUSION
+*  SUBSIDIARY FILE FOR DATACARD
+*  DATACARD TEXT FILE
+* ****************************************************
+* NAMES IN THE NEWS MASTER MEDIA CODE FILE.
+* ****************************************************
+.
+.      FILE:      NINTXT
+.    LENGTH:      507
+.      TYPE:      AIM,ISAM,MANAGED
+. INDEX KEY:      1-9	NTXTLIST + NTXTNUM
+.AIMDEX KEY:      1-6	NTXTLIST
+.		  8-507 NTXTTXT
+......................................................
+NTXTNAME	INIT	"NINTXT"
+.
+NTXTFLIST	Filelist
+.NTXTFILE	IFILE	KEYLEN=9,FIXED=507,Name="NINTXT.isi"
+.NTXTFLE2	AFILE	FIXED=507,Name="NINTXT.aam"
+NTXTFILE	IFILE	KEYLEN=9,FIXED=507,Name="NINTXT.isi|10.10.30.103:502"
+NTXTFLE2	AFILE	FIXED=507,Name="NINTXT.aam|10.10.30.103:502"
+		filelistend
+.
+NTXTLOCK	FORM	1	0 OR 1=filepi,2=recordlock, 3=no lock
+NTXTFLD	DIM	7
+NTXTFLD1	DIM	9
+NTXTFLD2	DIM	503
+NTXTFLAG	FORM	1
+NTXTPATH	FORM	1
+.
+.
+NTXTVARS	LIST
+NTXTLIST	DIM	6	1-6	LIST NUMBER
+NTXTNUM	DIM	1	7-7	TEXT NUMBER
+NTXTTEXT	DIM	500     8-507   TEXT
+		LISTEND

@@ -1,0 +1,553 @@
+.........................................................
+.
+. NCMPIO INCLUSION
+. NIN CAMPAIGN FILE I/O ROUTINES
+.
+. FILE NAME :   NINCMP
+. REC LENGTH:   535 FIXED
+. INDEX KEY :   (1)     001-006 (Campaign Number)
+.
+. AAM KEYS  :   (1)     007-051 (Campaign Name)
+.               (2)     052-057 (Mailer Number)
+.               (3)     058-066 (Broker Number/Cnt)
+.               (4)     067-078 (P.O. Number)
+.
+. Patch 1.1 - ASH 11/29/2004  Rewrote to include Filelist
+.			      Inserts and multiple Opens no longer necessary
+.
+.........................................................
+. ENTRY POINT : NCMPKEY
+. REQUIRED    : 'NCMPPATH', 'NCMPFLD', ?
+. RETURNED    : CAMPAIGN VARS
+. DESCRIPTION : EXACT ISAM KEY READ
+.
+.START PATCH 1.1 REPLACED LOGIC
+.NCMPKEY  branch    NCMPpath to NCMP1a,NCMPerr
+.NCMP1a   compare   NCMPpath to NCMPflag
+.         GOTO      NCMP1b IF EQUAL
+NCMPKEY  branch    NCMPpath,NCMP1a,NCMPerr
+NCMP1a   branch    NCMPflag,NCMP1B
+.END PATCH 1.1 REPLACED LOGIC
+         CALL      NCMPOPEN
+NCMP1B   TRAP      IOMssg Giving Error if IO
+         branch    NCMPlock to NCMP1bL,NCMP1bR,NCMP1bN
+NCMP1bL  FILEPI    1;NCMPFILE
+         READ      NCMPFILE,NCMPFLD;NCMPVARS
+         TRAPCLR   IO
+         RETURN
+NCMP1bR  
+         READLK    NCMPFILE,NCMPFLD;NCMPVARS
+         TRAPCLR   IO
+         RETURN
+NCMP1bN
+         READ      NCMPFILE,NCMPFLD;NCMPVARS
+         TRAPCLR   IO
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NCMPTST
+. REQUIRED    : NCMPFLD
+. RETURNED    :
+. DESCRIPTION : TEST KEY
+.
+.START PATCH 1.1 REPLACED LOGIC
+.NCMPTST  branch    NCMPpath to NCMP2a,NCMPerr,NCMP2c
+.NCMP2a   COMPARE   NCMPPATH TO NCMPFLAG
+.         GOTO      NCMP2b IF EQUAL
+NCMPTST  branch    NCMPpath to NCMP2a,NCMPerr,NCMP2c
+NCMP2a   branch    NCMPFLAG,NCMP2b
+.END PATCH 1.1 REPLACED LOGIC
+         CALL      NCMPOPEN
+NCMP2b   TRAP      IOMssg Giving Error if IO
+         FILEPI    1;NCMPFILE
+         READ      NCMPFILE,NCMPFLD;;
+         TRAPCLR   IO
+         RETURN
+.START PATCH 1.1 REPLACED LOGIC
+.NCMP2c   BRANCH    NCMPFLG2 TO NCMP2d
+.         CALL      NCMPOPN2
+NCMP2c   BRANCH    NCMPFLAG TO NCMP2d
+         CALL      NCMPOPEN
+.END PATCH 1.1 REPLACED LOGIC
+NCMP2d   TRAP      IOMssg Giving Error if IO
+         FILEPI    1;NCMPFLE2
+         READ      NCMPFLE2,NCMPFLD1,NCMPFLD2,NCMPFLD3,NCMPFLD4,NCMPFLD5;;
+         TRAPCLR   IO
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NCMPKS
+. REQUIRED    : 'NCMPPATH'
+. RETURNED    : CAMPAIGN VARS
+. DESCRIPTION : KEY SEQUENTIAL CAMPAIGN FILE READ
+.
+NCMPks
+.START PATCH 1.1 REPLACED LOGIC
+.NCMP3a   COMPARE   NCMPPATH TO NCMPFLAG
+.         GOTO      NCMP3b IF EQUAL
+NCMP3a   BRANCH    NCMPFLAG,NCMP3b
+.END PATCH 1.1 REPLACED LOGIC
+         CALL      NCMPOPEN
+NCMP3b   TRAP      IOMssg Giving Error if IO
+         branch    NCMPlock to NCMP3bL,NCMP3bR,NCMP3bN
+
+NCMP3bL  FILEPI    1;NCMPFILE
+         READKS    NCMPFILE;NCMPVARS
+         TRAPCLR   IO
+         RETURN
+NCMP3bR
+         READKSLK  NCMPFILE;NCMPVARS
+         TRAPCLR   IO
+         RETURN
+NCMP3bN
+         READKS    NCMPFILE;NCMPVARS
+         TRAPCLR   IO
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NCMPSEQ
+. REQUIRED    :
+. RETURNED    : CAMPAIGN VARS
+. DESCRIPTION : SEQUENTIAL CAMPAIGN FILE READ
+.
+NCMPSEQ  BRANCH    NCMPFLAG TO NCMP4
+         CALL      NCMPOPEN
+NCMP4    TRAP      IOMssg Giving Error if IO
+         branch    NCMPlock to NCMP4L,NCMP4R,NCMP4N
+NCMP4L   FILEPI    1;NCMPFILE
+         READ      NCMPFILE,SEQ;NCMPVARS
+         TRAPCLR   IO
+         RETURN
+NCMP4R
+         READLK      NCMPFILE,SEQ;NCMPVARS
+         TRAPCLR     IO
+         RETURN
+NCMP4N
+         READ      NCMPFILE,SEQ;NCMPVARS
+         TRAPCLR   IO
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NCMPWRT
+. REQUIRED    : 'NCMPFLD', 'NCMPPATH=1'
+. RETURNED    :
+. DESCRIPTION : EXACT ISAM KEY TXT/ISI INSERT., ISI 2/3 INSERTS.
+.
+.START PATCH 1.1 REPLACED LOGIC
+.NCMPWRT  MOVE      C1 TO NCMPPATH
+.NCMPWRT1 COMPARE   NCMPPATH TO NCMPFLAG
+.         GOTO      NCMP5 IF EQUAL
+.         CALL      NCMPOPEN
+.NCMP5    TRAP      IOMssg Giving Error if IO
+.         FILEPI    1;NCMPFILE
+.         WRITE     NCMPFILE,NCMPFLD;NCMPVARS
+..
+.         CALL      NCMPWRT2
+.         TRAPCLR   IO
+.         RETURN
+..
+.NCMPWRT2 BRANCH    NCMPFLG2 TO NCMP5B
+.         CALL      NCMPOPN2
+.NCMP5B   FILEPI    1;NCMPFLE2
+.         INSERT    NCMPFLE2
+............................................
+NCMPWRT  BRANCH    NCMPFLAG,NCMP5
+         CALL      NCMPOPEN
+NCMP5    TRAP      IOMssg Giving Error if IO
+         FILEPI    1;NCMPFLIST
+         WRITE     NCMPFLIST;NCMPVARS
+         TRAPCLR   IO
+.END PATCH 1.1 REPLACED LOGIC
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NCMPUPD
+. REQUIRED    : A PREVIOUS KEY READ, 'NCMPPATH'
+. RETURNED    :
+. DESCRIPTION : KEY UPDATE CAMPAIGN FILE
+.
+.START PATCH 1.1 REPLACED LOGIC
+.NCMPUPD  COMPARE   NCMPPATH TO NCMPFLAG
+.         GOTO      NCMP6 IF EQUAL
+.         CALL      NCMPOPEN
+.NCMP6    TRAP      IOMssg Giving Error if IO
+.         FILEPI    1;NCMPFILE
+.         UPDATE    NCMPFILE;NCMPVARS
+.         TRAPCLR   IO
+NCMPUPD  BRANCH    NCMPFLAG,NCMP6
+         CALL      NCMPOPEN
+NCMP6    TRAP      IOMssg Giving Error if IO
+         FILEPI    1;NCMPFLIST
+         UPDATE    NCMPFLIST;NCMPVARS
+         TRAPCLR   IO
+.END PATCH 1.1 REPLACED LOGIC
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NCMPDEL                                             
+. REQUIRED    : 'NCMPPATH', 'NCMPFLD'
+. RETURNED    :
+. DESCRIPTION : PATH=1 DELETES TXT & ALL KEYS. PATH=2/3/4 DELETES KEY ONLY.
+.
+.START PATCH 1.1 REPLACED LOGIC
+.NCMPDEL  BRANCH    NCMPPATH TO NCMPDEL1,NCMPDEL2
+..
+.NCMPDEL1 COMPARE   NCMPPATH TO NCMPFLAG
+.         GOTO      NCMP7 IF EQUAL
+.         CALL      NCMPOPEN
+.NCMP7    CALL      NCMPTST
+.         RETURN    IF OVER
+.         MOVE      OLRN TO NCMPFLD
+.         TRAP      IOMssg Giving Error if IO
+.         FILEPI    1;NCMPFILE
+.         DELETE    NCMPFILE,NCMPFLD
+.         TRAPCLR   IO
+.         RETURN
+..
+.NCMPDEL2 BRANCH    NCMPFLG2 TO NCMP7B
+.         CALL      NCMPOPN2
+.NCMP7B   TRAP      IOMssg Giving Error if IO
+.         FILEPI    1;NCMPFLE2
+.         DELETE    NCMPFLE2
+.         TRAPCLR   IO
+.         RETURN
+......................................
+NCMPDEL  BRANCH    NCMPFLAG TO NCMP7
+         CALL      NCMPOPEN
+NCMP7    TRAP      IOMssg Giving Error if IO
+         FILEPI    1;NCMPFLIST
+         DELETE    NCMPFLIST
+         TRAPCLR   IO
+         RETURN
+.END PATCH 1.1 REPLACED LOGIC
+.
+..............................................................................
+.
+. ENTRY POINT : NCMPKP
+. REQUIRED    : 'NCMPPATH'
+. RETURNED    : CAMPAIGN RENCMP
+. DESCRIPTION : KEY SEQUENTIAL CAMPAIGN FILE READ
+.
+.START PATCH 1.1 REPLACED LOGIC
+.NCMPKP   COMPARE   NCMPPATH TO NCMPFLAG
+.         GOTO      NCMP8 IF EQUAL
+NCMPKP   BRANCH    NCMPFLAG,NCMP8
+.END PATCH 1.1 REPLACED LOGIC
+         CALL      NCMPOPEN
+NCMP8    TRAP      IOMssg Giving Error if IO
+         Branch    NCMPlock to NCMP8L,NCMP8R,NCMP8N
+NCMP8L   FILEPI    1;NCMPFILE
+         READKP    NCMPFILE;NCMPVARS
+         TRAPCLR   IO
+         RETURN
+NCMP8R
+         READKPLK    NCMPFILE;NCMPVARS
+         TRAPCLR     IO
+         RETURN
+NCMP8N
+         READKP    NCMPFILE;NCMPVARS
+         TRAPCLR   IO
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NCMPAIM
+. REQUIRED    : NCMPFLD1,NCMPFLD2,NCMPFLD3,NCMPfld4,NCMPFLD5
+. RETURNED    : CAMPAIGN RECORD
+. DESCRIPTION : AIM CAMPAIGN FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+.START PATCH 1.1 REPLACED LOGIC
+.NCMPAIM  BRANCH    NCMPFLG2 TO NCMP9
+.         CALL      NCMPOPN2
+NCMPAIM  BRANCH    NCMPFLAG,NCMP9
+         CALL      NCMPOPEN
+.END PATCH 1.1 REPLACED LOGIC
+NCMP9    TRAP      IOMssg Giving Error if IO
+         Branch    NCMPlock to NCMP9L,NCMP9R,NCMP9N
+NCMP9L   FILEPI    1;NCMPFLE2
+         READ      NCMPFLE2,NCMPFLD1,NCMPFLD2,NCMPFLD3,NCMPFLD4,NCMPFLD5;NCMPVARS
+         TRAPCLR   IO
+         RETURN
+NCMP9R
+         READLK    NCMPFLE2,NCMPFLD1,NCMPFLD2,NCMPFLD3,NCMPFLD4,NCMPFLD5;NCMPVARS
+         TRAPCLR   IO
+         RETURN
+NCMP9N
+         READ      NCMPFLE2,NCMPFLD1,NCMPFLD2,NCMPFLD3,NCMPFLD4,NCMPFLD5;NCMPVARS
+         TRAPCLR   IO
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NCMPAIMA
+. REQUIRED    : NCMPFLD1,NCMPFLD2,NCMPFLD3,NCMPfld4,NCMPFLD5
+. RETURNED    : Str6 = CAMPAIGN NUMBER
+. DESCRIPTION : AIM CAMPAIGN FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+.START PATCH 1.1 REPLACED LOGIC
+.NCMPAIMA BRANCH    NCMPFLG2 TO NCMP9A
+..        GOTO      NCMP9A IF EQUAL
+.         CALL      NCMPOPN2
+NCMPAIMA BRANCH    NCMPFLAG,NCMP9A
+         CALL      NCMPOPEN
+.END PATCH 1.1 REPLACED LOGIC
+NCMP9A   TRAP      IOMssg Giving Error if IO
+         Branch    NCMPlock to NCMP9LA,NCMP9RA,NCMP9NA
+NCMP9LA  FILEPI    1;NCMPFLE2
+         READ      NCMPFLE2,NCMPFLD1,NCMPFLD2,NCMPFLD3,NCMPFLD4,NCMPFLD5;str6
+         TRAPCLR   IO
+         RETURN
+NCMP9RA
+         READLK    NCMPFLE2,NCMPFLD1,NCMPFLD2,NCMPFLD3,NCMPFLD4,NCMPFLD5;str6
+         TRAPCLR   IO
+         RETURN
+NCMP9NA
+         READ      NCMPFLE2,NCMPFLD1,NCMPFLD2,NCMPFLD3,NCMPFLD4,NCMPFLD5;str6
+         TRAPCLR   IO
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NCMPKG
+. REQUIRED    : VALID PREVIOUS AIM READ
+. RETURNED    : CAMPAIGN RECORD
+. DESCRIPTION : AIM KEY GENERIC CAMPAIGN FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+.START PATCH 1.1 REPLACED LOGIC
+.NCMPKG   BRANCH    NCMPFLG2 TO NCMP10
+.         CALL      NCMPOPN2
+NCMPKG   BRANCH    NCMPFLAG,NCMP10
+         CALL      NCMPOPEN
+.END PATCH 1.1 REPLACED LOGIC
+NCMP10   TRAP      IOMssg Giving Error if IO
+         Branch    NCMPlock to NCMP10L,NCMP10R,NCMP10N
+NCMP10L  FILEPI    1;NCMPFLE2
+         READKG    NCMPFLE2;NCMPVARS
+         TRAPCLR   IO
+         RETURN
+NCMP10R
+         READKGLK    NCMPFLE2;NCMPVARS
+         TRAPCLR   IO
+         RETURN
+NCMP10N
+         READKG    NCMPFLE2;NCMPVARS
+         TRAPCLR   IO
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NCMPKGA
+. REQUIRED    : VALID PREVIOUS AIM READ
+. RETURNED    : str6 = CAMPAIGN NUMBER
+. DESCRIPTION : AIM KEY GENEREIC CAMPAIGNFILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+.START PATCH 1.1 REPLACED LOGIC
+.NCMPKGA  BRANCH    NCMPFLG2 TO NCMP10A
+.         CALL      NCMPOPN2
+NCMPKGA  BRANCH    NCMPFLAG,NCMP10A
+         CALL      NCMPOPEN
+.END PATCH 1.1 REPLACED LOGIC
+NCMP10A  TRAP      IOMssg Giving Error if IO
+         Branch    NCMPlock to NCMP10LA,NCMP10RA,NCMP10NA
+NCMP10LA FILEPI    1;NCMPFLE2
+         READKG    NCMPFLE2;str6
+         TRAPCLR   IO
+         RETURN
+NCMP10RA
+         READKGLK    NCMPFLE2;str6
+         TRAPCLR   IO
+         RETURN
+NCMP10NA
+         READKG    NCMPFLE2;str6
+         TRAPCLR   IO
+         RETURN
+..............................................................................
+.
+.         IFZ      PC
+. ENTRY POINT : NCMPKGP
+. REQUIRED    : PREVIOUS VALID AIM READ
+. RETURNED    : CAMPAIGN RECORD
+. DESCRIPTION : Aim KEY GENERIC PRIOR CAMPAIGN FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+.START PATCH 1.1 REPLACED LOGIC
+.NCMPKGP  BRANCH    NCMPFLG2 TO NCMP11
+.         CALL      NCMPOPN2
+NCMPKGP  BRANCH    NCMPFLAG,NCMP11
+         CALL      NCMPOPEN
+.END PATCH 1.1 REPLACED LOGIC
+NCMP11   TRAP      IOMssg Giving Error if IO
+         branch    NCMPlock to NCMP11L,NCMP11R,NCMP11N
+NCMP11L  FILEPI    1;NCMPFLE2
+         READKGP   NCMPFLE2;NCMPVARS
+         TRAPCLR   IO
+         RETURN
+NCMP11R
+         READKGPLK   NCMPFLE2;NCMPVARS
+         TRAPCLR     IO
+         RETURN
+NCMP11N
+         READKGP   NCMPFLE2;NCMPVARS
+         TRAPCLR   IO
+         RETURN
+.         XIF
+..............................................................................
+.
+. ENTRY POINT : NCMPlast
+. REQUIRED    : NCMPFLD1,NCMPFLD2,NCMPFLD3,NCMPfld4,NCMPFLD5
+. RETURNED    : CAMPAIGN RECORD
+. DESCRIPTION : AIM CAMPAIGN FILE READ last matching record
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+.START PATCH 1.1 REPLACED LOGIC
+.NCMPlast BRANCH    NCMPFLG2 TO NCMP13
+.         CALL      NCMPOPN2
+NCMPlast BRANCH    NCMPFLAG,NCMP13
+         CALL      NCMPOPEN
+.END PATCH 1.1 REPLACED LOGIC
+NCMP13   TRAP      IOMssg Giving Error if IO
+         Branch    NCMPlock to NCMP13L,NCMP13R,NCMP13N
+NCMP13L  FILEPI    1;NCMPFLE2
+         READLast  NCMPFLE2,NCMPFLD1,NCMPFLD2,NCMPFLD3,NCMPFLD4,NCMPFLD5;NCMPVARS
+         TRAPCLR   IO
+         RETURN
+NCMP13R
+         READLastLK NCMPFLE2,NCMPFLD1,NCMPFLD2,NCMPFLD3,NCMPFLD4,NCMPFLD5;NCMPVARS
+         TRAPCLR    IO
+         RETURN
+NCMP13N
+         READLast  NCMPFLE2,NCMPFLD1,NCMPFLD2,NCMPFLD3,NCMPFLD4,NCMPFLD5;NCMPVARS
+         TRAPCLR   IO
+         RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NCMPBUSY
+. REQUIRED    : NCMPFLD
+. RETURNED    : CMP RECORD WITH BUSY BYTE SET TO "*"
+. DESCRIPTION : CALLS NCMPTST THEN UPDATES BUSY BYTE
+.
+.START PATCH 1.1 REPLACED LOGIC
+.NCMPBUSY MOVE      C1,NCMPPATH
+.         BRANCH    NCMPFLAG TO NCMP14
+NCMPBUSY BRANCH    NCMPFLAG,NCMP14
+.END PATCH 1.1 REPLACED LOGIC
+         CALL      NCMPOPEN
+.START PATCH 1.1 REPLACED LOGIC
+.NCMP14   READTAB   NCMPFILE,NCMPFLD;*487,NCMPCODE;
+NCMP14   call	NCMPKEY
+.END PATCH 1.1 REPLACED LOGIC
+         if over
+                   move   "NCMPBUSY",Location
+                   clear  Error
+                   append NCMPFLD,Error
+                   append " - Not Found in File!",Error
+                   reset  Error
+                   goto   IOMssg
+         endif
+         MOVE      STAR,NCMPCODE
+.START PATCH 1.1 REPLACED LOGIC
+.         TRAP      IOMssg Giving Error if IO
+.         FILEPI    1;NCMPFILE
+.         UPDATAB   NCMPFILE;*487,NCMPCODE
+.         TRAPCLR   IO
+         call	NCMPUPD
+.END PATCH 1.1 REPLACED LOGIC
+         RETURN
+.
+..............................................................................
+.
+. ENTRY POINT : NCMPRELEASE
+. REQUIRED    : NCMPFLD
+. RETURNED    : CMP RECORD WITH BUSY BYTE SET TO " "
+. DESCRIPTION : CALLS NCMPTST THEN RELEASES BUSY BYTE
+.
+.START PATCH 1.1 REPLACED LOGIC
+.NCMPRELEASE
+.         MOVE      C1,NCMPPATH
+.         BRANCH    NCMPFLAG TO NCMP15
+NCMPRELEASE
+         BRANCH    NCMPFLAG,NCMP15
+.END PATCH 1.1 REPLACED LOGIC
+         CALL      NCMPOPEN
+.START PATCH 1.1 REPLACED LOGIC
+.NCMP15   READTAB   NCMPFILE,NCMPFLD;*487,NCMPCODE;
+NCMP15   call	NCMPKEY
+.END PATCH 1.1 REPLACED LOGIC
+         IF NOT OVER
+                   MOVE      " ",NCMPCODE
+.START PATCH 1.1 REPLACED LOGIC
+.                   TRAP      IOMssg Giving Error if IO
+.                   FILEPI    1;NCMPFILE
+.                   UPDATAB   NCMPFILE;*487,NCMPCODE
+.                   TRAPCLR   IO
+                   call	NCMPUPD
+.END PATCH 1.1 REPLACED LOGIC
+         ENDIF
+         RETURN
+
+...............................................................................
+.
+. ENTRY POINT : NCMPOPEN
+. REQUIRED    : 'NCMPPATH'
+. RETURNED    : 'NCMPFLAG' SET TO THE PATH NUMBER: 'NCMPPATH', IF OPENNED.
+. DESCRIPTION : OPEN NIN CAMPAIGN FILE, DEPENDENT ON PATH NUMBER.
+.               DISPLAY ERROR AND ABORT IF NOT ON-LINE.
+.
+.START PATCH 1.1 REPLACED LOGIC
+.NCMPOPEN LOAD      NCMPNAME USING NCMPPATH FROM NCMPNME1,NCMPNME2
+.         TRAP      NCMPGONE IF IO
+.         branch    NCMPlock to NCMPop1,NCMPop1R,NCMPop1
+.NCMPop1  OPEN      NCMPFILE,NCMPNAME
+.         TRAPCLR   IO
+.         MOVE      NCMPPATH TO NCMPFLAG
+.         RETURN
+.NCMPop1R OPEN      NCMPFILE,NCMPNAME,LOCKMANUAL,SINGLE
+.         TRAPCLR   IO
+.         MOVE      NCMPPATH TO NCMPFLAG
+.         RETURN
+.NCMPGONE MOVE      NCMPNAME TO FILENAME
+.         CALL      FILEGONE
+................................
+NCMPOPEN TRAP      NCMPGONE Giving Error if IO
+         OPEN      NCMPFLIST
+         TRAPCLR   IO
+         MOVE      C1,NCMPFLAG
+         RETURN
+.
+NCMPGONE MOVE      NCMPNAME TO FILENAME
+         CALL      FILEGONE
+.END PATCH 1.1 REPLACED LOGIC
+.
+.START PATCH 1.1 REMOVED LOGIC
+................................................................................
+..
+.. ENTRY POINT : NCMPOPN2
+.. REQUIRED    :
+.. RETURNED    : 'NCMPFLG2' SET TO '1', IF OPENNED.
+.. DESCRIPTION : OPEN NIN CAMPAIGN FILE, AIMDEXED
+..               DISPLAY ERROR AND ABORT IF NOT ON-LINE.
+..
+.NCMPOPN2 TRAP      NCMPGNE2 IF IO
+.         branch    NCMPlock to NCMPop2,NCMPop2r,NCMPop2
+.NCMPop2  OPEN      NCMPFLE2,NCMPNME2
+.         TRAPCLR   IO
+.         MOVE      C1 TO NCMPFLG2
+.         RETURN
+.NCMPop2R OPEN      NCMPFLE2,NCMPNME2,LOCKMANUAL,SINGLE
+.         TRAPCLR   IO
+.         MOVE      C1 TO NCMPFLG2
+.         RETURN
+.NCMPGNE2 MOVE      NCMPNME2 TO FILENAME
+.         CALL      FILEGONE
+..
+.         TRAPCLR   IO
+.         RETURN
+.END PATCH 1.1 REMOVED LOGIC
+...............................................................................
+NCMPerr  move     "invalid path" to filename
+         call     filegone
+         trapclr  io
+         return
+..............................................................................
+

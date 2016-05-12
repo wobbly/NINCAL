@@ -1,0 +1,40 @@
+
+function clearForm(){
+	document.templateform.cginumber.value = "";
+}
+
+<form action='mailtemplate.plc' name='templateform' id='templateform' method='POST'>
+		<input type='hidden' name='SID' value='<%=SID%>' />
+		<input type='hidden' name='function' value='1' />
+    <table border='0' cellpadding='2' cellspacing='2' align='center'>
+
+        <tr>
+            <td class='title' colspan='2' align=center>
+                Exchange Report
+                <br><br><br>
+            </td>
+        </tr>
+				<tr>
+						<td colspan="2">
+								<span class='errorMsg'><%=errorMsg%></span>
+						</td>
+				</tr>
+        <tr>
+            <td align='right' valign='top'>Enter Number:</td>
+            <td align='left' valign='top'>
+            	<input type='text' name='cginumber' size='10' maxsize='10' value='<%=cginumber%>' />
+            </td>
+        </tr>
+        <tr>
+            <td align='center' valign='top' colspan='2'>
+                <br>
+                <br>
+                <input type=submit value='Search'>
+								<img src='/images/transparent.png' width='50' height='0' />
+                <input type=reset value='Reset'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type='button' value='Clear' onClick='clearForm();'>
+            </td>
+        </tr>
+    </table>
+</form>
+<script language="JavaScript"> document.templateform.number.focus(); </script>

@@ -1,0 +1,184 @@
+..............................................................................
+.
+. NARRIO INCLUSION
+. NIN DATACARD ARRANGEMENT FILE I/O ROUTINES
+.
+. FILE NAME : NINARR
+. REC LENGTH: 9 VAR
+. INDEX KEY : 1-9 (6 BYTE LIST NUMBER + 3 BYTE RECORD #)
+.
+..............................................................................
+.
+. ENTRY POINT : NARRKEY
+. REQUIRED    : 'NARRFLD'
+. RETURNED    : DATACARD ARRANGEMENT RECORD
+. DESCRIPTION : EXACT ISAM KEY READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NARRKEY
+	BRANCH	NARRFLAG,NARR1
+	CALL	NARROPEN
+NARR1
+	trap	IOMssg giving Error if IO
+.	FILEPI	1;NARRFILE
+	READ	NARRFILE,NARRFLD;NARRVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NARRTST
+. REQUIRED    : NARRFLD
+. RETURNED    :
+. DESCRIPTION : TEST KEY
+.
+NARRTST
+	BRANCH	NARRFLAG,NARR2
+	CALL	NARROPEN
+NARR2
+	trap	IOMssg giving Error if IO
+.	FILEPI	1;NARRFILE
+	READ	NARRFILE,NARRFLD;;
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NARRKS
+. REQUIRED    :
+. RETURNED    : DATACARD ARRANGEMENT RECORD
+. DESCRIPTION : KEY SEQUENTIAL DATACARD ARRANGEMENT FILE READ
+.
+NARRKS
+	BRANCH	NARRFLAG,NARR3
+	CALL	NARROPEN
+NARR3
+	trap	IOMssg giving Error if IO
+.	FILEPI	1;NARRFILE
+	READKS	NARRFILE;NARRVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NARRSEQ
+. REQUIRED    :
+. RETURNED    : DATACARD ARRANGEMENT RECORD
+. DESCRIPTION : SEQUENTIAL DATACARD ARRANGEMENT FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NARRSEQ
+	BRANCH	NARRFLAG,NARR4
+	CALL	NARROPEN
+NARR4
+	trap	IOMssg giving Error if IO
+.	FILEPI	1;NARRFILE
+	READ	NARRFILE,SEQ;NARRVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NARRWRT
+. REQUIRED    : 'NARRFLD'
+. RETURNED    :
+. DESCRIPTION : EXACT ISAM KEY TXT/ISI INSERT
+.
+NARRWRT
+	BRANCH	NARRFLAG,NARR5
+	CALL	NARROPEN
+NARR5
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NARRFLIST
+	WRITE	NARRFLIST;NARRVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NARRUPD
+. REQUIRED    : A PREVIOUS KEY READ
+. RETURNED    :
+. DESCRIPTION : KEY UPDATE RECORD NUMBER FILE
+.
+NARRUPD
+	BRANCH	NARRFLAG,NARR6
+	CALL	NARROPEN
+NARR6
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NARRFLIST
+	UPDATE	NARRFLIST;NARRVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NARRDEL
+. REQUIRED    : 'NARRFLD'
+. RETURNED    :
+. DESCRIPTION : EXACT ISAM KEY TXT/ISI DELETE
+.
+NARRDEL
+	BRANCH	NARRFLAG,NARR7
+	CALL	NARROPEN
+NARR7
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NARRFLIST
+	DELETE	NARRFLIST
+	trapclr	IO
+	RETURN
+
+..............................................................................
+. ENTRY POINT : NARRAIM
+. REQUIRED    : NARRFLD1
+. RETURNED    : RECORD
+. DESCRIPTION : AIM FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NARRAIM
+	BRANCH	NARRFLAG,NARR8
+	CALL	NARROPEN
+NARR8   
+	trap	IOMssg giving Error if IO
+	READ	NARRFLE2,NARRFLD1;NARRVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NARRKG
+. REQUIRED    : VALID PREVIOUS AIM READ
+. RETURNED    : RECORD
+. DESCRIPTION : AIM KEY GENEREIC FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NARRKG
+	BRANCH	NARRFLAG,NARR10
+	CALL	NARROPEN
+NARR10
+	trap	IOMssg giving Error if IO
+	READKG	NARRFLE2;NARRVARS
+	trapclr	IO
+	RETURN
+
+...............................................................................
+.
+. ENTRY POINT : NARROPEN
+. REQUIRED    : 'NARRFLAG'
+. RETURNED    : 'NARRFLAG' SET TO '1' IF OPENNED
+. DESCRIPTION : OPEN NIN DATACARD ARRANGEMENT FILE
+.               DISPLAY ERROR AND ABORT IF NOT ON-LINE.
+.
+NARROPEN
+	TRAP	NARRGONE giving Error if IO
+	OPEN	NARRFLIST	.,EXCLUSIVE
+.	OPEN	NARRFLIST
+	trapclr	IO
+	MOVE	C1,NARRFLAG
+	RETURN
+.
+NARRGONE
+	MOVE	NARRNAME,FILENAME
+	CALL	FILEGONE
+.
+..............................................................................

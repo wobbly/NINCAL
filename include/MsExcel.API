@@ -1,0 +1,1751 @@
+...............................................................................
+.1 MsExcel.API - Microsoft Excel 9 (2000) definitions
+.2
+.2 This include defines Excel9.olb const.
+.2
+.2 Use T:\USR\GWEISS\CALCINT.PLC to calculate Expressions to Integer.
+.2 i.e. xlPasteFormats DEFINE from (0-4122) to 4294963174
+.2
+.5 07/13/01 GW Wrote Program
+.5 04/24/14 GW Added xlWorkbookDefault DEFINE 51. This could save as .XLSX
+.5 04/24/14 GW Changed the following because Compiler gave an error even though
+.5       it should have done the math.
+.5       xlHAlignCenter DEFINE (0-4108) to 4294963188
+.5       xlHAlignLeft   DEFINE (0-4131) to 4294963165
+.5       xlHAlignRight  DEFINE (0-4152) to 4294963144
+.5 04/28/14 GW Renamed Excel.API to MsExcel.API. This cleared up a naming 
+.5       conflict between Excel.LM.
+.5 04/28/14 GW Changed xlCalculationManual DEFINE from (0-4135) to 4294963161
+.5 05/16/14 GW Changed xlPasteFormats DEFINE from (0-4122) to 4294963174
+...............................................................................
+         %IFNDEF   MsExcel
+         LISTOFF
+MsExcel  EQU       1
+.
+.
+. Class Constants
+xlAll DEFINE (0-4104)
+xlAutomatic DEFINE (0-4105)
+xlBoth DEFINE 1
+xlCenter DEFINE (0-4108)
+xlChecker DEFINE 9
+xlCircle DEFINE 8
+xlCorner DEFINE 2
+xlCrissCross DEFINE 16
+xlCross DEFINE 4
+xlDiamond DEFINE 2
+xlDistributed DEFINE (0-4117)
+xlDoubleAccounting DEFINE 5
+xlFixedValue DEFINE 1
+xlFormats DEFINE (0-4122)
+xlGray16 DEFINE 17
+xlGray8 DEFINE 18
+xlGrid DEFINE 15
+xlHigh DEFINE (0-4127)
+xlInside DEFINE 2
+xlJustify DEFINE (0-4130)
+xlLightDown DEFINE 13
+xlLightHorizontal DEFINE 11
+xlLightUp DEFINE 14
+xlLightVertical DEFINE 12
+xlLow DEFINE (0-4134)
+xlManual DEFINE (0-4135)
+xlMinusValues DEFINE 3
+xlModule DEFINE (0-4141)
+xlNextToAxis DEFINE 4
+xlNone DEFINE (0-4142)
+xlNotes DEFINE (0-4144)
+xlOff DEFINE (0-4146)
+xlOn DEFINE 1
+xlPercent DEFINE 2
+xlPlus DEFINE 9
+xlPlusValues DEFINE 2
+xlSemiGray75 DEFINE 10
+xlShowLabel DEFINE 4
+xlShowLabelAndPercent DEFINE 5
+xlShowPercent DEFINE 3
+xlShowValue DEFINE 2
+xlSimple DEFINE (0-4154)
+xlSingle DEFINE 2
+xlSingleAccounting DEFINE 4
+xlSolid DEFINE 1
+xlSquare DEFINE 1
+xlStar DEFINE 5
+xlStError DEFINE 4
+xlToolbarButton DEFINE 2
+xlTriangle DEFINE 3
+xlGray25 DEFINE (0-4124)
+xlGray50 DEFINE (0-4125)
+xlGray75 DEFINE (0-4126)
+xlBottom DEFINE (0-4107)
+xlLeft DEFINE (0-4131)
+xlRight DEFINE (0-4152)
+xlTop DEFINE (0-4160)
+xl3DBar DEFINE (0-4099)
+xl3DSurface DEFINE (0-4103)
+xlBar DEFINE 2
+xlColumn DEFINE 3
+xlCombination DEFINE (0-4111)
+xlCustom DEFINE (0-4114)
+xlDefaultAutoFormat DEFINE (0-1)
+xlMaximum DEFINE 2
+xlMinimum DEFINE 4
+xlOpaque DEFINE 3
+xlTransparent DEFINE 2
+xlBidi DEFINE (0-5000)
+xlLatin DEFINE (0-5001)
+xlContext DEFINE (0-5002)
+xlLTR DEFINE (0-5003)
+xlRTL DEFINE (0-5004)
+xlFullScript DEFINE 1
+xlPartialScript DEFINE 2
+xlMixedScript DEFINE 3
+xlMixedAuthorizedScript DEFINE 4
+xlVisualCursor DEFINE 2
+xlLogicalCursor DEFINE 1
+xlSystem DEFINE 1
+xlPartial DEFINE 3
+xlHindiNumerals DEFINE 3
+xlBidiCalendar DEFINE 3
+xlGregorian DEFINE 2
+xlComplete DEFINE 4
+xlScale DEFINE 3
+xlClosed DEFINE 3
+xlColor1 DEFINE 7
+xlColor2 DEFINE 8
+xlColor3 DEFINE 9
+xlConstants DEFINE 2
+xlContents DEFINE 2
+xlBelow DEFINE 1
+xlCascade DEFINE 7
+xlCenterAcrossSelection DEFINE 7
+xlChart4 DEFINE 2
+xlChartSeries DEFINE 17
+xlChartShort DEFINE 6
+xlChartTitles DEFINE 18
+xlClassic1 DEFINE 1
+xlClassic2 DEFINE 2
+xlClassic3 DEFINE 3
+xl3DEffects1 DEFINE 13
+xl3DEffects2 DEFINE 14
+xlAbove DEFINE 0
+xlAccounting1 DEFINE 4
+xlAccounting2 DEFINE 5
+xlAccounting3 DEFINE 6
+xlAccounting4 DEFINE 17
+xlAdd DEFINE 2
+xlDebugCodePane DEFINE 13
+xlDesktop DEFINE 9
+xlDirect DEFINE 1
+xlDivide DEFINE 5
+xlDoubleClosed DEFINE 5
+xlDoubleOpen DEFINE 4
+xlDoubleQuote DEFINE 1
+xlEntireChart DEFINE 20
+xlExcelMenus DEFINE 1
+xlExtended DEFINE 3
+xlFill DEFINE 5
+xlFirst DEFINE 0
+xlFloating DEFINE 5
+xlFormula DEFINE 5
+xlGeneral DEFINE 1
+xlGridline DEFINE 22
+xlIcons DEFINE 1
+xlImmediatePane DEFINE 12
+xlInteger DEFINE 2
+xlLast DEFINE 1
+xlLastCell DEFINE 11
+xlList1 DEFINE 10
+xlList2 DEFINE 11
+xlList3 DEFINE 12
+xlLocalFormat1 DEFINE 15
+xlLocalFormat2 DEFINE 16
+xlLong DEFINE 3
+xlLotusHelp DEFINE 2
+xlMacrosheetCell DEFINE 7
+xlMixed DEFINE 2
+xlMultiply DEFINE 4
+xlNarrow DEFINE 1
+xlNoDocuments DEFINE 3
+xlOpen DEFINE 2
+xlOutside DEFINE 3
+xlReference DEFINE 4
+xlSemiautomatic DEFINE 2
+xlShort DEFINE 1
+xlSingleQuote DEFINE 2
+xlStrict DEFINE 2
+xlSubtract DEFINE 3
+xlTextBox DEFINE 16
+xlTiled DEFINE 1
+xlTitleBar DEFINE 8
+xlToolbar DEFINE 1
+xlVisible DEFINE 12
+xlWatchPane DEFINE 11
+xlWide DEFINE 3
+xlWorkbookTab DEFINE 6
+xlWorksheet4 DEFINE 1
+xlWorksheetCell DEFINE 3
+xlWorksheetShort DEFINE 5
+xlAllExceptBorders DEFINE 6
+xlLeftToRight DEFINE 2
+xlTopToBottom DEFINE 1
+xlVeryHidden DEFINE 2
+xlDrawingObject DEFINE 14
+.
+. Class XlCreator
+xlCreatorCode DEFINE 1480803660
+.
+. Class XlChartGallery
+xlBuiltIn DEFINE 21
+xlUserDefined DEFINE 22
+xlAnyGallery DEFINE 23
+.
+. Class XlColorIndex
+xlColorIndexAutomatic DEFINE (0-4105)
+xlColorIndexNone DEFINE (0-4142)
+.
+. Class XlEndStyleCap
+xlCap DEFINE 1
+xlNoCap DEFINE 2
+.
+. Class XlRowCol
+xlColumns DEFINE 2
+xlRows DEFINE 1
+.
+. Class XlScaleType
+xlScaleLinear DEFINE (0-4132)
+xlScaleLogarithmic DEFINE (0-4133)
+.
+. Class XlDataSeriesType
+xlAutoFill DEFINE 4
+xlChronological DEFINE 3
+xlGrowth DEFINE 2
+xlDataSeriesLinear DEFINE (0-4132)
+.
+. Class XlAxisCrosses
+xlAxisCrossesAutomatic DEFINE (0-4105)
+xlAxisCrossesCustom DEFINE (0-4114)
+xlAxisCrossesMaximum DEFINE 2
+xlAxisCrossesMinimum DEFINE 4
+.
+. Class XlAxisGroup
+xlPrimary DEFINE 1
+xlSecondary DEFINE 2
+.
+. Class XlBackground
+xlBackgroundAutomatic DEFINE (0-4105)
+xlBackgroundOpaque DEFINE 3
+xlBackgroundTransparent DEFINE 2
+.
+. Class XlWindowState
+xlMaximized DEFINE (0-4137)
+xlMinimized DEFINE (0-4140)
+xlNormal DEFINE (0-4143)
+.
+. Class XlAxisType
+xlCategory DEFINE 1
+xlSeriesAxis DEFINE 3
+xlValue DEFINE 2
+.
+. Class XlArrowHeadLength
+xlArrowHeadLengthLong DEFINE 3
+xlArrowHeadLengthMedium DEFINE (0-4138)
+xlArrowHeadLengthShort DEFINE 1
+.
+. Class XlVAlign
+xlVAlignBottom DEFINE (0-4107)
+xlVAlignCenter DEFINE (0-4108)
+xlVAlignDistributed DEFINE (0-4117)
+xlVAlignJustify DEFINE (0-4130)
+xlVAlignTop DEFINE (0-4160)
+.
+. Class XlTickMark
+xlTickMarkCross DEFINE 4
+xlTickMarkInside DEFINE 2
+xlTickMarkNone DEFINE (0-4142)
+xlTickMarkOutside DEFINE 3
+.
+. Class XlErrorBarDirection
+xlX DEFINE (0-4168)
+xlY DEFINE 1
+.
+. Class XlErrorBarInclude
+xlErrorBarIncludeBoth DEFINE 1
+xlErrorBarIncludeMinusValues DEFINE 3
+xlErrorBarIncludeNone DEFINE (0-4142)
+xlErrorBarIncludePlusValues DEFINE 2
+.
+. Class XlDisplayBlanksAs
+xlInterpolated DEFINE 3
+xlNotPlotted DEFINE 1
+xlZero DEFINE 2
+.
+. Class XlArrowHeadStyle
+xlArrowHeadStyleClosed DEFINE 3
+xlArrowHeadStyleDoubleClosed DEFINE 5
+xlArrowHeadStyleDoubleOpen DEFINE 4
+xlArrowHeadStyleNone DEFINE (0-4142)
+xlArrowHeadStyleOpen DEFINE 2
+.
+. Class XlArrowHeadWidth
+xlArrowHeadWidthMedium DEFINE (0-4138)
+xlArrowHeadWidthNarrow DEFINE 1
+xlArrowHeadWidthWide DEFINE 3
+.
+. Class XlHAlign
+..xlHAlignCenter DEFINE (0-4108)
+xlHAlignCenter DEFINE 4294963188
+xlHAlignCenterAcrossSelection DEFINE 7
+xlHAlignDistributed DEFINE (0-4117)
+xlHAlignFill DEFINE 5
+xlHAlignGeneral DEFINE 1
+xlHAlignJustify DEFINE (0-4130)
+..xlHAlignLeft DEFINE (0-4131)
+xlHAlignLeft DEFINE 4294963165
+..xlHAlignRight DEFINE (0-4152)
+xlHAlignRight DEFINE 4294963144
+.
+. Class XlTickLabelPosition
+xlTickLabelPositionHigh DEFINE (0-4127)
+xlTickLabelPositionLow DEFINE (0-4134)
+xlTickLabelPositionNextToAxis DEFINE 4
+xlTickLabelPositionNone DEFINE (0-4142)
+.
+. Class XlLegendPosition
+xlLegendPositionBottom DEFINE (0-4107)
+xlLegendPositionCorner DEFINE 2
+xlLegendPositionLeft DEFINE (0-4131)
+xlLegendPositionRight DEFINE (0-4152)
+xlLegendPositionTop DEFINE (0-4160)
+.
+. Class XlChartPictureType
+xlStackScale DEFINE 3
+xlStack DEFINE 2
+xlStretch DEFINE 1
+.
+. Class XlChartPicturePlacement
+xlSides DEFINE 1
+xlEnd DEFINE 2
+xlEndSides DEFINE 3
+xlFront DEFINE 4
+xlFrontSides DEFINE 5
+xlFrontEnd DEFINE 6
+xlAllFaces DEFINE 7
+.
+. Class XlOrientation
+xlDownward DEFINE (0-4170)
+xlHorizontal DEFINE (0-4128)
+xlUpward DEFINE (0-4171)
+xlVertical DEFINE (0-4166)
+.
+. Class XlTickLabelOrientation
+xlTickLabelOrientationAutomatic DEFINE (0-4105)
+xlTickLabelOrientationDownward DEFINE (0-4170)
+xlTickLabelOrientationHorizontal DEFINE (0-4128)
+xlTickLabelOrientationUpward DEFINE (0-4171)
+xlTickLabelOrientationVertical DEFINE (0-4166)
+.
+. Class XlBorderWeight
+xlHairline DEFINE 1
+xlMedium DEFINE (0-4138)
+xlThick DEFINE 4
+xlThin DEFINE 2
+.
+. Class XlDataSeriesDate
+xlDay DEFINE 1
+xlMonth DEFINE 3
+xlWeekday DEFINE 2
+xlYear DEFINE 4
+.
+. Class XlUnderlineStyle
+xlUnderlineStyleDouble DEFINE (0-4119)
+xlUnderlineStyleDoubleAccounting DEFINE 5
+xlUnderlineStyleNone DEFINE (0-4142)
+xlUnderlineStyleSingle DEFINE 2
+xlUnderlineStyleSingleAccounting DEFINE 4
+.
+. Class XlErrorBarType
+xlErrorBarTypeCustom DEFINE (0-4114)
+xlErrorBarTypeFixedValue DEFINE 1
+xlErrorBarTypePercent DEFINE 2
+xlErrorBarTypeStDev DEFINE (0-4155)
+xlErrorBarTypeStError DEFINE 4
+.
+. Class XlTrendlineType
+xlExponential DEFINE 5
+xlLinear DEFINE (0-4132)
+xlLogarithmic DEFINE (0-4133)
+xlMovingAvg DEFINE 6
+xlPolynomial DEFINE 3
+xlPower DEFINE 4
+.
+. Class XlLineStyle
+xlContinuous DEFINE 1
+xlDash DEFINE (0-4115)
+xlDashDot DEFINE 4
+xlDashDotDot DEFINE 5
+xlDot DEFINE (0-4118)
+xlDouble DEFINE (0-4119)
+xlSlantDashDot DEFINE 13
+xlLineStyleNone DEFINE (0-4142)
+.
+. Class XlDataLabelsType
+xlDataLabelsShowNone DEFINE (0-4142)
+xlDataLabelsShowValue DEFINE 2
+xlDataLabelsShowPercent DEFINE 3
+xlDataLabelsShowLabel DEFINE 4
+xlDataLabelsShowLabelAndPercent DEFINE 5
+xlDataLabelsShowBubbleSizes DEFINE 6
+.
+. Class XlMarkerStyle
+xlMarkerStyleAutomatic DEFINE (0-4105)
+xlMarkerStyleCircle DEFINE 8
+xlMarkerStyleDash DEFINE (0-4115)
+xlMarkerStyleDiamond DEFINE 2
+xlMarkerStyleDot DEFINE (0-4118)
+xlMarkerStyleNone DEFINE (0-4142)
+xlMarkerStylePicture DEFINE (0-4147)
+xlMarkerStylePlus DEFINE 9
+xlMarkerStyleSquare DEFINE 1
+xlMarkerStyleStar DEFINE 5
+xlMarkerStyleTriangle DEFINE 3
+xlMarkerStyleX DEFINE (0-4168)
+.
+. Class XlPictureConvertorType
+xlBMP DEFINE 1
+xlCGM DEFINE 7
+xlDRW DEFINE 4
+xlDXF DEFINE 5
+xlEPS DEFINE 8
+xlHGL DEFINE 6
+xlPCT DEFINE 13
+xlPCX DEFINE 10
+xlPIC DEFINE 11
+xlPLT DEFINE 12
+xlTIF DEFINE 9
+xlWMF DEFINE 2
+xlWPG DEFINE 3
+.
+. Class XlPattern
+xlPatternAutomatic DEFINE (0-4105)
+xlPatternChecker DEFINE 9
+xlPatternCrissCross DEFINE 16
+xlPatternDown DEFINE (0-4121)
+xlPatternGray16 DEFINE 17
+xlPatternGray25 DEFINE (0-4124)
+xlPatternGray50 DEFINE (0-4125)
+xlPatternGray75 DEFINE (0-4126)
+xlPatternGray8 DEFINE 18
+xlPatternGrid DEFINE 15
+xlPatternHorizontal DEFINE (0-4128)
+xlPatternLightDown DEFINE 13
+xlPatternLightHorizontal DEFINE 11
+xlPatternLightUp DEFINE 14
+xlPatternLightVertical DEFINE 12
+xlPatternNone DEFINE (0-4142)
+xlPatternSemiGray75 DEFINE 10
+xlPatternSolid DEFINE 1
+xlPatternUp DEFINE (0-4162)
+xlPatternVertical DEFINE (0-4166)
+.
+. Class XlChartSplitType
+xlSplitByPosition DEFINE 1
+xlSplitByPercentValue DEFINE 3
+xlSplitByCustomSplit DEFINE 4
+xlSplitByValue DEFINE 2
+.
+. Class XlDisplayUnit
+xlHundreds DEFINE (0-2)
+xlThousands DEFINE (0-3)
+xlTenThousands DEFINE (0-4)
+xlHundredThousands DEFINE (0-5)
+xlMillions DEFINE (0-6)
+xlTenMillions DEFINE (0-7)
+xlHundredMillions DEFINE (0-8)
+xlThousandMillions DEFINE (0-9)
+xlMillionMillions DEFINE (0-10)
+.
+. Class XlDataLabelPosition
+xlLabelPositionCenter DEFINE (0-4108)
+xlLabelPositionAbove DEFINE 0
+xlLabelPositionBelow DEFINE 1
+xlLabelPositionLeft DEFINE (0-4131)
+xlLabelPositionRight DEFINE (0-4152)
+xlLabelPositionOutsideEnd DEFINE 2
+xlLabelPositionInsideEnd DEFINE 3
+xlLabelPositionInsideBase DEFINE 4
+xlLabelPositionBestFit DEFINE 5
+xlLabelPositionMixed DEFINE 6
+xlLabelPositionCustom DEFINE 7
+.
+. Class XlTimeUnit
+xlDays DEFINE 0
+xlMonths DEFINE 1
+xlYears DEFINE 2
+.
+. Class XlCategoryType
+xlCategoryScale DEFINE 2
+xlTimeScale DEFINE 3
+xlAutomaticScale DEFINE (0-4105)
+.
+. Class XlBarShape
+xlBox DEFINE 0
+xlPyramidToPoint DEFINE 1
+xlPyramidToMax DEFINE 2
+xlCylinder DEFINE 3
+xlConeToPoint DEFINE 4
+xlConeToMax DEFINE 5
+.
+. Class XlChartType
+xlColumnClustered DEFINE 51
+xlColumnStacked DEFINE 52
+xlColumnStacked100 DEFINE 53
+xl3DColumnClustered DEFINE 54
+xl3DColumnStacked DEFINE 55
+xl3DColumnStacked100 DEFINE 56
+xlBarClustered DEFINE 57
+xlBarStacked DEFINE 58
+xlBarStacked100 DEFINE 59
+xl3DBarClustered DEFINE 60
+xl3DBarStacked DEFINE 61
+xl3DBarStacked100 DEFINE 62
+xlLineStacked DEFINE 63
+xlLineStacked100 DEFINE 64
+xlLineMarkers DEFINE 65
+xlLineMarkersStacked DEFINE 66
+xlLineMarkersStacked100 DEFINE 67
+xlPieOfPie DEFINE 68
+xlPieExploded DEFINE 69
+xl3DPieExploded DEFINE 70
+xlBarOfPie DEFINE 71
+xlXYScatterSmooth DEFINE 72
+xlXYScatterSmoothNoMarkers DEFINE 73
+xlXYScatterLines DEFINE 74
+xlXYScatterLinesNoMarkers DEFINE 75
+xlAreaStacked DEFINE 76
+xlAreaStacked100 DEFINE 77
+xl3DAreaStacked DEFINE 78
+xl3DAreaStacked100 DEFINE 79
+xlDoughnutExploded DEFINE 80
+xlRadarMarkers DEFINE 81
+xlRadarFilled DEFINE 82
+xlSurface DEFINE 83
+xlSurfaceWireframe DEFINE 84
+xlSurfaceTopView DEFINE 85
+xlSurfaceTopViewWireframe DEFINE 86
+xlBubble DEFINE 15
+xlBubble3DEffect DEFINE 87
+xlStockHLC DEFINE 88
+xlStockOHLC DEFINE 89
+xlStockVHLC DEFINE 90
+xlStockVOHLC DEFINE 91
+xlCylinderColClustered DEFINE 92
+xlCylinderColStacked DEFINE 93
+xlCylinderColStacked100 DEFINE 94
+xlCylinderBarClustered DEFINE 95
+xlCylinderBarStacked DEFINE 96
+xlCylinderBarStacked100 DEFINE 97
+xlCylinderCol DEFINE 98
+xlConeColClustered DEFINE 99
+xlConeColStacked DEFINE 100
+xlConeColStacked100 DEFINE 101
+xlConeBarClustered DEFINE 102
+xlConeBarStacked DEFINE 103
+xlConeBarStacked100 DEFINE 104
+xlConeCol DEFINE 105
+xlPyramidColClustered DEFINE 106
+xlPyramidColStacked DEFINE 107
+xlPyramidColStacked100 DEFINE 108
+xlPyramidBarClustered DEFINE 109
+xlPyramidBarStacked DEFINE 110
+xlPyramidBarStacked100 DEFINE 111
+xlPyramidCol DEFINE 112
+xl3DColumn DEFINE (0-4100)
+xlLine DEFINE 4
+xl3DLine DEFINE (0-4101)
+xl3DPie DEFINE (0-4102)
+xlPie DEFINE 5
+xlXYScatter DEFINE (0-4169)
+xl3DArea DEFINE (0-4098)
+xlArea DEFINE 1
+xlDoughnut DEFINE (0-4120)
+xlRadar DEFINE (0-4151)
+.
+. Class XlChartItem
+xlDataLabel DEFINE 0
+xlChartArea DEFINE 2
+xlSeries DEFINE 3
+xlChartTitle DEFINE 4
+xlWalls DEFINE 5
+xlCorners DEFINE 6
+xlDataTable DEFINE 7
+xlTrendline DEFINE 8
+xlErrorBars DEFINE 9
+xlXErrorBars DEFINE 10
+xlYErrorBars DEFINE 11
+xlLegendEntry DEFINE 12
+xlLegendKey DEFINE 13
+xlShape DEFINE 14
+xlMajorGridlines DEFINE 15
+xlMinorGridlines DEFINE 16
+xlAxisTitle DEFINE 17
+xlUpBars DEFINE 18
+xlPlotArea DEFINE 19
+xlDownBars DEFINE 20
+xlAxis DEFINE 21
+xlSeriesLines DEFINE 22
+xlFloor DEFINE 23
+xlLegend DEFINE 24
+xlHiLoLines DEFINE 25
+xlDropLines DEFINE 26
+xlRadarAxisLabels DEFINE 27
+xlNothing DEFINE 28
+xlLeaderLines DEFINE 29
+xlDisplayUnitLabel DEFINE 30
+xlPivotChartFieldButton DEFINE 31
+xlPivotChartDropZone DEFINE 32
+.
+. Class XlSizeRepresents
+xlSizeIsWidth DEFINE 2
+xlSizeIsArea DEFINE 1
+.
+. Class XlInsertShiftDirection
+xlShiftDown DEFINE (0-4121)
+xlShiftToRight DEFINE (0-4161)
+.
+. Class XlDeleteShiftDirection
+xlShiftToLeft DEFINE (0-4159)
+xlShiftUp DEFINE (0-4162)
+.
+. Class XlDirection
+xlDown DEFINE (0-4121)
+xlToLeft DEFINE (0-4159)
+xlToRight DEFINE (0-4161)
+xlUp DEFINE (0-4162)
+.
+. Class XlConsolidationFunction
+xlAverage DEFINE (0-4106)
+xlCount DEFINE (0-4112)
+xlCountNums DEFINE (0-4113)
+xlMax DEFINE (0-4136)
+xlMin DEFINE (0-4139)
+xlProduct DEFINE (0-4149)
+xlStDev DEFINE (0-4155)
+xlStDevP DEFINE (0-4156)
+xlSum DEFINE (0-4157)
+xlVar DEFINE (0-4164)
+xlVarP DEFINE (0-4165)
+xlUnknown DEFINE 1000
+.
+. Class XlSheetType
+xlChart DEFINE (0-4109)
+xlDialogSheet DEFINE (0-4116)
+xlExcel4IntlMacroSheet DEFINE 4
+xlExcel4MacroSheet DEFINE 3
+xlWorksheet DEFINE (0-4167)
+.
+. Class XlLocationInTable
+xlColumnHeader DEFINE (0-4110)
+xlColumnItem DEFINE 5
+xlDataHeader DEFINE 3
+xlDataItem DEFINE 7
+xlPageHeader DEFINE 2
+xlPageItem DEFINE 6
+xlRowHeader DEFINE (0-4153)
+xlRowItem DEFINE 4
+xlTableBody DEFINE 8
+.
+. Class XlFindLookIn
+xlFormulas DEFINE (0-4123)
+xlComments DEFINE (0-4144)
+xlValues DEFINE (0-4163)
+.
+. Class XlWindowType
+xlChartAsWindow DEFINE 5
+xlChartInPlace DEFINE 4
+xlClipboard DEFINE 3
+xlInfo DEFINE (0-4129)
+xlWorkbook DEFINE 1
+.
+. Class XlPivotFieldDataType
+xlDate DEFINE 2
+xlNumber DEFINE (0-4145)
+xlText DEFINE (0-4158)
+.
+. Class XlCopyPictureFormat
+xlBitmap DEFINE 2
+xlPicture DEFINE (0-4147)
+.
+. Class XlPivotTableSourceType
+xlConsolidation DEFINE 3
+xlDatabase DEFINE 1
+xlExternal DEFINE 2
+xlPivotTable DEFINE (0-4148)
+.
+. Class XlReferenceStyle
+xlA1 DEFINE 1
+xlR1C1 DEFINE (0-4150)
+.
+. Class XlMSApplication
+xlMicrosoftAccess DEFINE 4
+xlMicrosoftFoxPro DEFINE 5
+xlMicrosoftMail DEFINE 3
+xlMicrosoftPowerPoint DEFINE 2
+xlMicrosoftProject DEFINE 6
+xlMicrosoftSchedulePlus DEFINE 7
+xlMicrosoftWord DEFINE 1
+.
+. Class XlMouseButton
+xlNoButton DEFINE 0
+xlPrimaryButton DEFINE 1
+xlSecondaryButton DEFINE 2
+.
+. Class XlCutCopyMode
+xlCopy DEFINE 1
+xlCut DEFINE 2
+.
+. Class XlFillWith
+xlFillWithAll DEFINE (0-4104)
+xlFillWithContents DEFINE 2
+xlFillWithFormats DEFINE (0-4122)
+.
+. Class XlFilterAction
+xlFilterCopy DEFINE 2
+xlFilterInPlace DEFINE 1
+.
+. Class XlOrder
+xlDownThenOver DEFINE 1
+xlOverThenDown DEFINE 2
+.
+. Class XlLinkType
+xlLinkTypeExcelLinks DEFINE 1
+xlLinkTypeOLELinks DEFINE 2
+.
+. Class XlApplyNamesOrder
+xlColumnThenRow DEFINE 2
+xlRowThenColumn DEFINE 1
+.
+. Class XlEnableCancelKey
+xlDisabled DEFINE 0
+xlErrorHandler DEFINE 2
+xlInterrupt DEFINE 1
+.
+. Class XlPageBreak
+xlPageBreakAutomatic DEFINE (0-4105)
+xlPageBreakManual DEFINE (0-4135)
+xlPageBreakNone DEFINE (0-4142)
+.
+. Class XlOLEType
+xlOLEControl DEFINE 2
+xlOLEEmbed DEFINE 1
+xlOLELink DEFINE 0
+.
+. Class XlPageOrientation
+xlLandscape DEFINE 2
+xlPortrait DEFINE 1
+.
+. Class XlLinkInfo
+xlEditionDate DEFINE 2
+xlUpdateState DEFINE 1
+.
+. Class XlCommandUnderlines
+xlCommandUnderlinesAutomatic DEFINE (0-4105)
+xlCommandUnderlinesOff DEFINE (0-4146)
+xlCommandUnderlinesOn DEFINE 1
+.
+. Class XlOLEVerb
+xlVerbOpen DEFINE 2
+xlVerbPrimary DEFINE 1
+.
+. Class XlCalculation
+..xlCalculationAutomatic DEFINE (0-4105)
+xlCalculationAutomatic DEFINE 4294963191
+..xlCalculationManual DEFINE (0-4135)
+..xlCalculationManual DEFINE -4135
+xlCalculationManual DEFINE 4294963161
+xlCalculationSemiautomatic DEFINE 2
+.
+. Class XlFileAccess
+xlReadOnly DEFINE 3
+xlReadWrite DEFINE 2
+.
+. Class XlEditionType
+xlPublisher DEFINE 1
+xlSubscriber DEFINE 2
+.
+. Class XlObjectSize
+xlFitToPage DEFINE 2
+xlFullPage DEFINE 3
+xlScreenSize DEFINE 1
+.
+. Class XlLookAt
+xlPart DEFINE 2
+xlWhole DEFINE 1
+.
+. Class XlMailSystem
+xlMAPI DEFINE 1
+xlNoMailSystem DEFINE 0
+xlPowerTalk DEFINE 2
+.
+. Class XlLinkInfoType
+xlLinkInfoOLELinks DEFINE 2
+xlLinkInfoPublishers DEFINE 5
+xlLinkInfoSubscribers DEFINE 6
+.
+. Class XlCVError
+xlErrDiv0 DEFINE 2007
+xlErrNA DEFINE 2042
+xlErrName DEFINE 2029
+xlErrNull DEFINE 2000
+xlErrNum DEFINE 2036
+xlErrRef DEFINE 2023
+xlErrValue DEFINE 2015
+.
+. Class XlEditionFormat
+xlBIFF DEFINE 2
+xlPICT DEFINE 1
+xlRTF DEFINE 4
+xlVALU DEFINE 8
+.
+. Class XlLink
+xlExcelLinks DEFINE 1
+xlOLELinks DEFINE 2
+xlPublishers DEFINE 5
+xlSubscribers DEFINE 6
+.
+. Class XlCellType
+xlCellTypeBlanks DEFINE 4
+xlCellTypeConstants DEFINE 2
+xlCellTypeFormulas DEFINE (0-4123)
+xlCellTypeLastCell DEFINE 11
+xlCellTypeComments DEFINE (0-4144)
+xlCellTypeVisible DEFINE 12
+xlCellTypeAllFormatConditions DEFINE (0-4172)
+xlCellTypeSameFormatConditions DEFINE (0-4173)
+xlCellTypeAllValidation DEFINE (0-4174)
+xlCellTypeSameValidation DEFINE (0-4175)
+.
+. Class XlArrangeStyle
+xlArrangeStyleCascade DEFINE 7
+xlArrangeStyleHorizontal DEFINE (0-4128)
+xlArrangeStyleTiled DEFINE 1
+xlArrangeStyleVertical DEFINE (0-4166)
+.
+. Class XlMousePointer
+xlIBeam DEFINE 3
+xlDefault DEFINE (0-4143)
+xlNorthwestArrow DEFINE 1
+xlWait DEFINE 2
+.
+. Class XlEditionOptionsOption
+xlAutomaticUpdate DEFINE 4
+xlCancel DEFINE 1
+xlChangeAttributes DEFINE 6
+xlManualUpdate DEFINE 5
+xlOpenSource DEFINE 3
+xlSelect DEFINE 3
+xlSendPublisher DEFINE 2
+xlUpdateSubscriber DEFINE 2
+.
+. Class XlAutoFillType
+xlFillCopy DEFINE 1
+xlFillDays DEFINE 5
+xlFillDefault DEFINE 0
+xlFillFormats DEFINE 3
+xlFillMonths DEFINE 7
+xlFillSeries DEFINE 2
+xlFillValues DEFINE 4
+xlFillWeekdays DEFINE 6
+xlFillYears DEFINE 8
+xlGrowthTrend DEFINE 10
+xlLinearTrend DEFINE 9
+.
+. Class XlAutoFilterOperator
+xlAnd DEFINE 1
+xlBottom10Items DEFINE 4
+xlBottom10Percent DEFINE 6
+xlOr DEFINE 2
+xlTop10Items DEFINE 3
+xlTop10Percent DEFINE 5
+.
+. Class XlClipboardFormat
+xlClipboardFormatBIFF DEFINE 8
+xlClipboardFormatBIFF2 DEFINE 18
+xlClipboardFormatBIFF3 DEFINE 20
+xlClipboardFormatBIFF4 DEFINE 30
+xlClipboardFormatBinary DEFINE 15
+xlClipboardFormatBitmap DEFINE 9
+xlClipboardFormatCGM DEFINE 13
+xlClipboardFormatCSV DEFINE 5
+xlClipboardFormatDIF DEFINE 4
+xlClipboardFormatDspText DEFINE 12
+xlClipboardFormatEmbeddedObject DEFINE 21
+xlClipboardFormatEmbedSource DEFINE 22
+xlClipboardFormatLink DEFINE 11
+xlClipboardFormatLinkSource DEFINE 23
+xlClipboardFormatLinkSourceDesc DEFINE 32
+xlClipboardFormatMovie DEFINE 24
+xlClipboardFormatNative DEFINE 14
+xlClipboardFormatObjectDesc DEFINE 31
+xlClipboardFormatObjectLink DEFINE 19
+xlClipboardFormatOwnerLink DEFINE 17
+xlClipboardFormatPICT DEFINE 2
+xlClipboardFormatPrintPICT DEFINE 3
+xlClipboardFormatRTF DEFINE 7
+xlClipboardFormatScreenPICT DEFINE 29
+xlClipboardFormatStandardFont DEFINE 28
+xlClipboardFormatStandardScale DEFINE 27
+xlClipboardFormatSYLK DEFINE 6
+xlClipboardFormatTable DEFINE 16
+xlClipboardFormatText DEFINE 0
+xlClipboardFormatToolFace DEFINE 25
+xlClipboardFormatToolFacePICT DEFINE 26
+xlClipboardFormatVALU DEFINE 1
+xlClipboardFormatWK1 DEFINE 10
+.
+. Class XlFileFormat
+xlAddIn DEFINE 18
+xlCSV DEFINE 6
+xlCSVMac DEFINE 22
+xlCSVMSDOS DEFINE 24
+xlCSVWindows DEFINE 23
+xlDBF2 DEFINE 7
+xlDBF3 DEFINE 8
+xlDBF4 DEFINE 11
+xlDIF DEFINE 9
+xlExcel2 DEFINE 16
+xlExcel2FarEast DEFINE 27
+xlExcel3 DEFINE 29
+xlExcel4 DEFINE 33
+xlExcel5 DEFINE 39
+xlExcel7 DEFINE 39
+xlExcel9795 DEFINE 43
+xlWorkbookDefault DEFINE 51
+xlExcel4Workbook DEFINE 35
+xlIntlAddIn DEFINE 26
+xlIntlMacro DEFINE 25
+xlWorkbookNormal DEFINE (0-4143)
+xlSYLK DEFINE 2
+xlTemplate DEFINE 17
+xlCurrentPlatformText DEFINE (0-4158)
+xlTextMac DEFINE 19
+xlTextMSDOS DEFINE 21
+xlTextPrinter DEFINE 36
+xlTextWindows DEFINE 20
+xlWJ2WD1 DEFINE 14
+xlWK1 DEFINE 5
+xlWK1ALL DEFINE 31
+xlWK1FMT DEFINE 30
+xlWK3 DEFINE 15
+xlWK4 DEFINE 38
+xlWK3FM3 DEFINE 32
+xlWKS DEFINE 4
+xlWorks2FarEast DEFINE 28
+xlWQ1 DEFINE 34
+xlWJ3 DEFINE 40
+xlWJ3FJ3 DEFINE 41
+xlUnicodeText DEFINE 42
+xlHtml DEFINE 44
+.
+. Class XlApplicationInternational
+xl24HourClock DEFINE 33
+xl4DigitYears DEFINE 43
+xlAlternateArraySeparator DEFINE 16
+xlColumnSeparator DEFINE 14
+xlCountryCode DEFINE 1
+xlCountrySetting DEFINE 2
+xlCurrencyBefore DEFINE 37
+xlCurrencyCode DEFINE 25
+xlCurrencyDigits DEFINE 27
+xlCurrencyLeadingZeros DEFINE 40
+xlCurrencyMinusSign DEFINE 38
+xlCurrencyNegative DEFINE 28
+xlCurrencySpaceBefore DEFINE 36
+xlCurrencyTrailingZeros DEFINE 39
+xlDateOrder DEFINE 32
+xlDateSeparator DEFINE 17
+xlDayCode DEFINE 21
+xlDayLeadingZero DEFINE 42
+xlDecimalSeparator DEFINE 3
+xlGeneralFormatName DEFINE 26
+xlHourCode DEFINE 22
+xlLeftBrace DEFINE 12
+xlLeftBracket DEFINE 10
+xlListSeparator DEFINE 5
+xlLowerCaseColumnLetter DEFINE 9
+xlLowerCaseRowLetter DEFINE 8
+xlMDY DEFINE 44
+xlMetric DEFINE 35
+xlMinuteCode DEFINE 23
+xlMonthCode DEFINE 20
+xlMonthLeadingZero DEFINE 41
+xlMonthNameChars DEFINE 30
+xlNoncurrencyDigits DEFINE 29
+xlNonEnglishFunctions DEFINE 34
+xlRightBrace DEFINE 13
+xlRightBracket DEFINE 11
+xlRowSeparator DEFINE 15
+xlSecondCode DEFINE 24
+xlThousandsSeparator DEFINE 4
+xlTimeLeadingZero DEFINE 45
+xlTimeSeparator DEFINE 18
+xlUpperCaseColumnLetter DEFINE 7
+xlUpperCaseRowLetter DEFINE 6
+xlWeekdayNameChars DEFINE 31
+xlYearCode DEFINE 19
+.
+. Class XlPageBreakExtent
+xlPageBreakFull DEFINE 1
+xlPageBreakPartial DEFINE 2
+.
+. Class XlCellInsertionMode
+xlOverwriteCells DEFINE 0
+xlInsertDeleteCells DEFINE 1
+xlInsertEntireRows DEFINE 2
+.
+. Class XlFormulaLabel
+xlNoLabels DEFINE (0-4142)
+xlRowLabels DEFINE 1
+xlColumnLabels DEFINE 2
+xlMixedLabels DEFINE 3
+.
+. Class XlHighlightChangesTime
+xlSinceMyLastSave DEFINE 1
+xlAllChanges DEFINE 2
+xlNotYetReviewed DEFINE 3
+.
+. Class XlCommentDisplayMode
+xlNoIndicator DEFINE 0
+xlCommentIndicatorOnly DEFINE (0-1)
+xlCommentAndIndicator DEFINE 1
+.
+. Class XlFormatConditionType
+xlCellValue DEFINE 1
+xlExpression DEFINE 2
+.
+. Class XlFormatConditionOperator
+xlBetween DEFINE 1
+xlNotBetween DEFINE 2
+xlEqual DEFINE 3
+xlNotEqual DEFINE 4
+xlGreater DEFINE 5
+xlLess DEFINE 6
+xlGreaterEqual DEFINE 7
+xlLessEqual DEFINE 8
+.
+. Class XlEnableSelection
+xlNoRestrictions DEFINE 0
+xlUnlockedCells DEFINE 1
+xlNoSelection DEFINE (0-4142)
+.
+. Class XlDVType
+xlValidateInputOnly DEFINE 0
+xlValidateWholeNumber DEFINE 1
+xlValidateDecimal DEFINE 2
+xlValidateList DEFINE 3
+xlValidateDate DEFINE 4
+xlValidateTime DEFINE 5
+xlValidateTextLength DEFINE 6
+xlValidateCustom DEFINE 7
+.
+. Class XlIMEMode
+xlIMEModeNoControl DEFINE 0
+xlIMEModeOn DEFINE 1
+xlIMEModeOff DEFINE 2
+xlIMEModeDisable DEFINE 3
+xlIMEModeHiragana DEFINE 4
+xlIMEModeKatakana DEFINE 5
+xlIMEModeKatakanaHalf DEFINE 6
+xlIMEModeAlphaFull DEFINE 7
+xlIMEModeAlpha DEFINE 8
+xlIMEModeHangulFull DEFINE 9
+xlIMEModeHangul DEFINE 10
+.
+. Class XlDVAlertStyle
+xlValidAlertStop DEFINE 1
+xlValidAlertWarning DEFINE 2
+xlValidAlertInformation DEFINE 3
+.
+. Class XlChartLocation
+xlLocationAsNewSheet DEFINE 1
+xlLocationAsObject DEFINE 2
+xlLocationAutomatic DEFINE 3
+.
+. Class XlPaperSize
+xlPaper10x14 DEFINE 16
+xlPaper11x17 DEFINE 17
+xlPaperA3 DEFINE 8
+xlPaperA4 DEFINE 9
+xlPaperA4Small DEFINE 10
+xlPaperA5 DEFINE 11
+xlPaperB4 DEFINE 12
+xlPaperB5 DEFINE 13
+xlPaperCsheet DEFINE 24
+xlPaperDsheet DEFINE 25
+xlPaperEnvelope10 DEFINE 20
+xlPaperEnvelope11 DEFINE 21
+xlPaperEnvelope12 DEFINE 22
+xlPaperEnvelope14 DEFINE 23
+xlPaperEnvelope9 DEFINE 19
+xlPaperEnvelopeB4 DEFINE 33
+xlPaperEnvelopeB5 DEFINE 34
+xlPaperEnvelopeB6 DEFINE 35
+xlPaperEnvelopeC3 DEFINE 29
+xlPaperEnvelopeC4 DEFINE 30
+xlPaperEnvelopeC5 DEFINE 28
+xlPaperEnvelopeC6 DEFINE 31
+xlPaperEnvelopeC65 DEFINE 32
+xlPaperEnvelopeDL DEFINE 27
+xlPaperEnvelopeItaly DEFINE 36
+xlPaperEnvelopeMonarch DEFINE 37
+xlPaperEnvelopePersonal DEFINE 38
+xlPaperEsheet DEFINE 26
+xlPaperExecutive DEFINE 7
+xlPaperFanfoldLegalGerman DEFINE 41
+xlPaperFanfoldStdGerman DEFINE 40
+xlPaperFanfoldUS DEFINE 39
+xlPaperFolio DEFINE 14
+xlPaperLedger DEFINE 4
+xlPaperLegal DEFINE 5
+xlPaperLetter DEFINE 1
+xlPaperLetterSmall DEFINE 2
+xlPaperNote DEFINE 18
+xlPaperQuarto DEFINE 15
+xlPaperStatement DEFINE 6
+xlPaperTabloid DEFINE 3
+xlPaperUser DEFINE 256
+.
+. Class XlPasteSpecialOperation
+xlPasteSpecialOperationAdd DEFINE 2
+xlPasteSpecialOperationDivide DEFINE 5
+xlPasteSpecialOperationMultiply DEFINE 4
+xlPasteSpecialOperationNone DEFINE (0-4142)
+xlPasteSpecialOperationSubtract DEFINE 3
+.
+. Class XlPasteType
+xlPasteAll DEFINE (0-4104)
+xlPasteAllExceptBorders DEFINE 7
+..xlPasteFormats DEFINE (0-4122)
+xlPasteFormats DEFINE 4294963174
+xlPasteFormulas DEFINE (0-4123)
+xlPasteComments DEFINE (0-4144)
+xlPasteValues DEFINE (0-4163)
+.
+. Class XlPhoneticCharacterType
+xlKatakanaHalf DEFINE 0
+xlKatakana DEFINE 1
+xlHiragana DEFINE 2
+xlNoConversion DEFINE 3
+.
+. Class XlPhoneticAlignment
+xlPhoneticAlignNoControl DEFINE 0
+xlPhoneticAlignLeft DEFINE 1
+xlPhoneticAlignCenter DEFINE 2
+xlPhoneticAlignDistributed DEFINE 3
+.
+. Class XlPictureAppearance
+xlPrinter DEFINE 2
+xlScreen DEFINE 1
+.
+. Class XlPivotFieldOrientation
+xlColumnField DEFINE 2
+xlDataField DEFINE 4
+xlHidden DEFINE 0
+xlPageField DEFINE 3
+xlRowField DEFINE 1
+.
+. Class XlPivotFieldCalculation
+xlDifferenceFrom DEFINE 2
+xlIndex DEFINE 9
+xlNoAdditionalCalculation DEFINE (0-4143)
+xlPercentDifferenceFrom DEFINE 4
+xlPercentOf DEFINE 3
+xlPercentOfColumn DEFINE 7
+xlPercentOfRow DEFINE 6
+xlPercentOfTotal DEFINE 8
+xlRunningTotal DEFINE 5
+.
+. Class XlPlacement
+xlFreeFloating DEFINE 3
+xlMove DEFINE 2
+xlMoveAndSize DEFINE 1
+.
+. Class XlPlatform
+xlMacintosh DEFINE 1
+xlMSDOS DEFINE 3
+xlWindows DEFINE 2
+.
+. Class XlPrintLocation
+xlPrintSheetEnd DEFINE 1
+xlPrintInPlace DEFINE 16
+xlPrintNoComments DEFINE (0-4142)
+.
+. Class XlPriority
+xlPriorityHigh DEFINE (0-4127)
+xlPriorityLow DEFINE (0-4134)
+xlPriorityNormal DEFINE (0-4143)
+.
+. Class XlPTSelectionMode
+xlLabelOnly DEFINE 1
+xlDataAndLabel DEFINE 0
+xlDataOnly DEFINE 2
+xlOrigin DEFINE 3
+xlButton DEFINE 15
+xlBlanks DEFINE 4
+xlFirstRow DEFINE 256
+.
+. Class XlRangeAutoFormat
+xlRangeAutoFormat3DEffects1 DEFINE 13
+xlRangeAutoFormat3DEffects2 DEFINE 14
+xlRangeAutoFormatAccounting1 DEFINE 4
+xlRangeAutoFormatAccounting2 DEFINE 5
+xlRangeAutoFormatAccounting3 DEFINE 6
+xlRangeAutoFormatAccounting4 DEFINE 17
+xlRangeAutoFormatClassic1 DEFINE 1
+xlRangeAutoFormatClassic2 DEFINE 2
+xlRangeAutoFormatClassic3 DEFINE 3
+xlRangeAutoFormatColor1 DEFINE 7
+xlRangeAutoFormatColor2 DEFINE 8
+xlRangeAutoFormatColor3 DEFINE 9
+xlRangeAutoFormatList1 DEFINE 10
+xlRangeAutoFormatList2 DEFINE 11
+xlRangeAutoFormatList3 DEFINE 12
+xlRangeAutoFormatLocalFormat1 DEFINE 15
+xlRangeAutoFormatLocalFormat2 DEFINE 16
+xlRangeAutoFormatLocalFormat3 DEFINE 19
+xlRangeAutoFormatLocalFormat4 DEFINE 20
+xlRangeAutoFormatReport1 DEFINE 21
+xlRangeAutoFormatReport2 DEFINE 22
+xlRangeAutoFormatReport3 DEFINE 23
+xlRangeAutoFormatReport4 DEFINE 24
+xlRangeAutoFormatReport5 DEFINE 25
+xlRangeAutoFormatReport6 DEFINE 26
+xlRangeAutoFormatReport7 DEFINE 27
+xlRangeAutoFormatReport8 DEFINE 28
+xlRangeAutoFormatReport9 DEFINE 29
+xlRangeAutoFormatReport10 DEFINE 30
+xlRangeAutoFormatClassicPivotTable DEFINE 31
+xlRangeAutoFormatTable1 DEFINE 32
+xlRangeAutoFormatTable2 DEFINE 33
+xlRangeAutoFormatTable3 DEFINE 34
+xlRangeAutoFormatTable4 DEFINE 35
+xlRangeAutoFormatTable5 DEFINE 36
+xlRangeAutoFormatTable6 DEFINE 37
+xlRangeAutoFormatTable7 DEFINE 38
+xlRangeAutoFormatTable8 DEFINE 39
+xlRangeAutoFormatTable9 DEFINE 40
+xlRangeAutoFormatTable10 DEFINE 41
+xlRangeAutoFormatPTNone DEFINE 42
+xlRangeAutoFormatNone DEFINE (0-4142)
+xlRangeAutoFormatSimple DEFINE (0-4154)
+.
+. Class XlReferenceType
+xlAbsolute DEFINE 1
+xlAbsRowRelColumn DEFINE 2
+xlRelative DEFINE 4
+xlRelRowAbsColumn DEFINE 3
+.
+. Class XlLayoutFormType
+xlTabular DEFINE 0
+xlOutline DEFINE 1
+.
+. Class XlRoutingSlipDelivery
+xlAllAtOnce DEFINE 2
+xlOneAfterAnother DEFINE 1
+.
+. Class XlRoutingSlipStatus
+xlNotYetRouted DEFINE 0
+xlRoutingComplete DEFINE 2
+xlRoutingInProgress DEFINE 1
+.
+. Class XlRunAutoMacro
+xlAutoActivate DEFINE 3
+xlAutoClose DEFINE 2
+xlAutoDeactivate DEFINE 4
+xlAutoOpen DEFINE 1
+.
+. Class XlSaveAction
+xlDoNotSaveChanges DEFINE 2
+xlSaveChanges DEFINE 1
+.
+. Class XlSaveAsAccessMode
+xlExclusive DEFINE 3
+xlNoChange DEFINE 1
+xlShared DEFINE 2
+.
+. Class XlSaveConflictResolution
+xlLocalSessionChanges DEFINE 2
+xlOtherSessionChanges DEFINE 3
+xlUserResolution DEFINE 1
+.
+. Class XlSearchDirection
+xlNext DEFINE 1
+xlPrevious DEFINE 2
+.
+. Class XlSearchOrder
+xlByColumns DEFINE 2
+xlByRows DEFINE 1
+.
+. Class XlSheetVisibility
+xlSheetVisible DEFINE (0-1)
+xlSheetHidden DEFINE 0
+xlSheetVeryHidden DEFINE 2
+.
+. Class XlSortMethod
+xlPinYin DEFINE 1
+xlStroke DEFINE 2
+.
+. Class XlSortMethodOld
+xlCodePage DEFINE 2
+xlSyllabary DEFINE 1
+.
+. Class XlSortOrder
+xlAscending DEFINE 1
+xlDescending DEFINE 2
+.
+. Class XlSortOrientation
+xlSortRows DEFINE 2
+xlSortColumns DEFINE 1
+.
+. Class XlSortType
+xlSortLabels DEFINE 2
+xlSortValues DEFINE 1
+.
+. Class XlSpecialCellsValue
+xlErrors DEFINE 16
+xlLogical DEFINE 4
+xlNumbers DEFINE 1
+xlTextValues DEFINE 2
+.
+. Class XlSubscribeToFormat
+xlSubscribeToPicture DEFINE (0-4147)
+xlSubscribeToText DEFINE (0-4158)
+.
+. Class XlSummaryRow
+xlSummaryAbove DEFINE 0
+xlSummaryBelow DEFINE 1
+.
+. Class XlSummaryColumn
+xlSummaryOnLeft DEFINE (0-4131)
+xlSummaryOnRight DEFINE (0-4152)
+.
+. Class XlSummaryReportType
+xlSummaryPivotTable DEFINE (0-4148)
+xlStandardSummary DEFINE 1
+.
+. Class XlTabPosition
+xlTabPositionFirst DEFINE 0
+xlTabPositionLast DEFINE 1
+.
+. Class XlTextParsingType
+xlDelimited DEFINE 1
+xlFixedWidth DEFINE 2
+.
+. Class XlTextQualifier
+xlTextQualifierDoubleQuote DEFINE 1
+xlTextQualifierNone DEFINE (0-4142)
+xlTextQualifierSingleQuote DEFINE 2
+.
+. Class XlWBATemplate
+xlWBATChart DEFINE (0-4109)
+xlWBATExcel4IntlMacroSheet DEFINE 4
+xlWBATExcel4MacroSheet DEFINE 3
+xlWBATWorksheet DEFINE (0-4167)
+.
+. Class XlWindowView
+xlNormalView DEFINE 1
+xlPageBreakPreview DEFINE 2
+.
+. Class XlXLMMacroType
+xlCommand DEFINE 2
+xlFunction DEFINE 1
+xlNotXLM DEFINE 3
+.
+. Class XlYesNoGuess
+xlGuess DEFINE 0
+xlNo DEFINE 2
+xlYes DEFINE 1
+.
+. Class XlBordersIndex
+xlInsideHorizontal DEFINE 12
+xlInsideVertical DEFINE 11
+xlDiagonalDown DEFINE 5
+xlDiagonalUp DEFINE 6
+xlEdgeBottom DEFINE 9
+xlEdgeLeft DEFINE 7
+xlEdgeRight DEFINE 10
+xlEdgeTop DEFINE 8
+.
+. Class XlToolbarProtection
+xlNoButtonChanges DEFINE 1
+xlNoChanges DEFINE 4
+xlNoDockingChanges DEFINE 3
+xlToolbarProtectionNone DEFINE (0-4143)
+xlNoShapeChanges DEFINE 2
+.
+. Class XlBuiltInDialog
+xlDialogOpen DEFINE 1
+xlDialogOpenLinks DEFINE 2
+xlDialogSaveAs DEFINE 5
+xlDialogFileDelete DEFINE 6
+xlDialogPageSetup DEFINE 7
+xlDialogPrint DEFINE 8
+xlDialogPrinterSetup DEFINE 9
+xlDialogArrangeAll DEFINE 12
+xlDialogWindowSize DEFINE 13
+xlDialogWindowMove DEFINE 14
+xlDialogRun DEFINE 17
+xlDialogSetPrintTitles DEFINE 23
+xlDialogFont DEFINE 26
+xlDialogDisplay DEFINE 27
+xlDialogProtectDocument DEFINE 28
+xlDialogCalculation DEFINE 32
+xlDialogExtract DEFINE 35
+xlDialogDataDelete DEFINE 36
+xlDialogSort DEFINE 39
+xlDialogDataSeries DEFINE 40
+xlDialogTable DEFINE 41
+xlDialogFormatNumber DEFINE 42
+xlDialogAlignment DEFINE 43
+xlDialogStyle DEFINE 44
+xlDialogBorder DEFINE 45
+xlDialogCellProtection DEFINE 46
+xlDialogColumnWidth DEFINE 47
+xlDialogClear DEFINE 52
+xlDialogPasteSpecial DEFINE 53
+xlDialogEditDelete DEFINE 54
+xlDialogInsert DEFINE 55
+xlDialogPasteNames DEFINE 58
+xlDialogDefineName DEFINE 61
+xlDialogCreateNames DEFINE 62
+xlDialogFormulaGoto DEFINE 63
+xlDialogFormulaFind DEFINE 64
+xlDialogGalleryArea DEFINE 67
+xlDialogGalleryBar DEFINE 68
+xlDialogGalleryColumn DEFINE 69
+xlDialogGalleryLine DEFINE 70
+xlDialogGalleryPie DEFINE 71
+xlDialogGalleryScatter DEFINE 72
+xlDialogCombination DEFINE 73
+xlDialogGridlines DEFINE 76
+xlDialogAxes DEFINE 78
+xlDialogAttachText DEFINE 80
+xlDialogPatterns DEFINE 84
+xlDialogMainChart DEFINE 85
+xlDialogOverlay DEFINE 86
+xlDialogScale DEFINE 87
+xlDialogFormatLegend DEFINE 88
+xlDialogFormatText DEFINE 89
+xlDialogParse DEFINE 91
+xlDialogUnhide DEFINE 94
+xlDialogWorkspace DEFINE 95
+xlDialogActivate DEFINE 103
+xlDialogCopyPicture DEFINE 108
+xlDialogDeleteName DEFINE 110
+xlDialogDeleteFormat DEFINE 111
+xlDialogNew DEFINE 119
+xlDialogRowHeight DEFINE 127
+xlDialogFormatMove DEFINE 128
+xlDialogFormatSize DEFINE 129
+xlDialogFormulaReplace DEFINE 130
+xlDialogSelectSpecial DEFINE 132
+xlDialogApplyNames DEFINE 133
+xlDialogReplaceFont DEFINE 134
+xlDialogSplit DEFINE 137
+xlDialogOutline DEFINE 142
+xlDialogSaveWorkbook DEFINE 145
+xlDialogCopyChart DEFINE 147
+xlDialogFormatFont DEFINE 150
+xlDialogNote DEFINE 154
+xlDialogSetUpdateStatus DEFINE 159
+xlDialogColorPalette DEFINE 161
+xlDialogChangeLink DEFINE 166
+xlDialogAppMove DEFINE 170
+xlDialogAppSize DEFINE 171
+xlDialogMainChartType DEFINE 185
+xlDialogOverlayChartType DEFINE 186
+xlDialogOpenMail DEFINE 188
+xlDialogSendMail DEFINE 189
+xlDialogStandardFont DEFINE 190
+xlDialogConsolidate DEFINE 191
+xlDialogSortSpecial DEFINE 192
+xlDialogGallery3dArea DEFINE 193
+xlDialogGallery3dColumn DEFINE 194
+xlDialogGallery3dLine DEFINE 195
+xlDialogGallery3dPie DEFINE 196
+xlDialogView3d DEFINE 197
+xlDialogGoalSeek DEFINE 198
+xlDialogWorkgroup DEFINE 199
+xlDialogFillGroup DEFINE 200
+xlDialogUpdateLink DEFINE 201
+xlDialogPromote DEFINE 202
+xlDialogDemote DEFINE 203
+xlDialogShowDetail DEFINE 204
+xlDialogObjectProperties DEFINE 207
+xlDialogSaveNewObject DEFINE 208
+xlDialogApplyStyle DEFINE 212
+xlDialogAssignToObject DEFINE 213
+xlDialogObjectProtection DEFINE 214
+xlDialogCreatePublisher DEFINE 217
+xlDialogSubscribeTo DEFINE 218
+xlDialogShowToolbar DEFINE 220
+xlDialogPrintPreview DEFINE 222
+xlDialogEditColor DEFINE 223
+xlDialogFormatMain DEFINE 225
+xlDialogFormatOverlay DEFINE 226
+xlDialogEditSeries DEFINE 228
+xlDialogDefineStyle DEFINE 229
+xlDialogGalleryRadar DEFINE 249
+xlDialogEditionOptions DEFINE 251
+xlDialogZoom DEFINE 256
+xlDialogInsertObject DEFINE 259
+xlDialogSize DEFINE 261
+xlDialogMove DEFINE 262
+xlDialogFormatAuto DEFINE 269
+xlDialogGallery3dBar DEFINE 272
+xlDialogGallery3dSurface DEFINE 273
+xlDialogCustomizeToolbar DEFINE 276
+xlDialogWorkbookAdd DEFINE 281
+xlDialogWorkbookMove DEFINE 282
+xlDialogWorkbookCopy DEFINE 283
+xlDialogWorkbookOptions DEFINE 284
+xlDialogSaveWorkspace DEFINE 285
+xlDialogChartWizard DEFINE 288
+xlDialogAssignToTool DEFINE 293
+xlDialogPlacement DEFINE 300
+xlDialogFillWorkgroup DEFINE 301
+xlDialogWorkbookNew DEFINE 302
+xlDialogScenarioCells DEFINE 305
+xlDialogScenarioAdd DEFINE 307
+xlDialogScenarioEdit DEFINE 308
+xlDialogScenarioSummary DEFINE 311
+xlDialogPivotTableWizard DEFINE 312
+xlDialogPivotFieldProperties DEFINE 313
+xlDialogOptionsCalculation DEFINE 318
+xlDialogOptionsEdit DEFINE 319
+xlDialogOptionsView DEFINE 320
+xlDialogAddinManager DEFINE 321
+xlDialogMenuEditor DEFINE 322
+xlDialogAttachToolbars DEFINE 323
+xlDialogOptionsChart DEFINE 325
+xlDialogVbaInsertFile DEFINE 328
+xlDialogVbaProcedureDefinition DEFINE 330
+xlDialogRoutingSlip DEFINE 336
+xlDialogMailLogon DEFINE 339
+xlDialogInsertPicture DEFINE 342
+xlDialogGalleryDoughnut DEFINE 344
+xlDialogChartTrend DEFINE 350
+xlDialogWorkbookInsert DEFINE 354
+xlDialogOptionsTransition DEFINE 355
+xlDialogOptionsGeneral DEFINE 356
+xlDialogFilterAdvanced DEFINE 370
+xlDialogMailNextLetter DEFINE 378
+xlDialogDataLabel DEFINE 379
+xlDialogInsertTitle DEFINE 380
+xlDialogFontProperties DEFINE 381
+xlDialogMacroOptions DEFINE 382
+xlDialogWorkbookUnhide DEFINE 384
+xlDialogWorkbookName DEFINE 386
+xlDialogGalleryCustom DEFINE 388
+xlDialogAddChartAutoformat DEFINE 390
+xlDialogChartAddData DEFINE 392
+xlDialogTabOrder DEFINE 394
+xlDialogSubtotalCreate DEFINE 398
+xlDialogWorkbookTabSplit DEFINE 415
+xlDialogWorkbookProtect DEFINE 417
+xlDialogScrollbarProperties DEFINE 420
+xlDialogPivotShowPages DEFINE 421
+xlDialogTextToColumns DEFINE 422
+xlDialogFormatCharttype DEFINE 423
+xlDialogPivotFieldGroup DEFINE 433
+xlDialogPivotFieldUngroup DEFINE 434
+xlDialogCheckboxProperties DEFINE 435
+xlDialogLabelProperties DEFINE 436
+xlDialogListboxProperties DEFINE 437
+xlDialogEditboxProperties DEFINE 438
+xlDialogOpenText DEFINE 441
+xlDialogPushbuttonProperties DEFINE 445
+xlDialogFilter DEFINE 447
+xlDialogFunctionWizard DEFINE 450
+xlDialogSaveCopyAs DEFINE 456
+xlDialogOptionsListsAdd DEFINE 458
+xlDialogSeriesAxes DEFINE 460
+xlDialogSeriesX DEFINE 461
+xlDialogSeriesY DEFINE 462
+xlDialogErrorbarX DEFINE 463
+xlDialogErrorbarY DEFINE 464
+xlDialogFormatChart DEFINE 465
+xlDialogSeriesOrder DEFINE 466
+xlDialogMailEditMailer DEFINE 470
+xlDialogStandardWidth DEFINE 472
+xlDialogScenarioMerge DEFINE 473
+xlDialogProperties DEFINE 474
+xlDialogSummaryInfo DEFINE 474
+xlDialogFindFile DEFINE 475
+xlDialogActiveCellFont DEFINE 476
+xlDialogVbaMakeAddin DEFINE 478
+xlDialogFileSharing DEFINE 481
+xlDialogAutoCorrect DEFINE 485
+xlDialogCustomViews DEFINE 493
+xlDialogInsertNameLabel DEFINE 496
+xlDialogSeriesShape DEFINE 504
+xlDialogChartOptionsDataLabels DEFINE 505
+xlDialogChartOptionsDataTable DEFINE 506
+xlDialogSetBackgroundPicture DEFINE 509
+xlDialogDataValidation DEFINE 525
+xlDialogChartType DEFINE 526
+xlDialogChartLocation DEFINE 527
+_xlDialogPhonetic DEFINE 538
+xlDialogChartSourceData DEFINE 540
+_xlDialogChartSourceData DEFINE 541
+xlDialogSeriesOptions DEFINE 557
+xlDialogPivotTableOptions DEFINE 567
+xlDialogPivotSolveOrder DEFINE 568
+xlDialogPivotCalculatedField DEFINE 570
+xlDialogPivotCalculatedItem DEFINE 572
+xlDialogConditionalFormatting DEFINE 583
+xlDialogInsertHyperlink DEFINE 596
+xlDialogProtectSharing DEFINE 620
+xlDialogOptionsME DEFINE 647
+xlDialogPublishAsWebPage DEFINE 653
+xlDialogPhonetic DEFINE 656
+xlDialogNewWebQuery DEFINE 667
+xlDialogImportTextFile DEFINE 666
+xlDialogExternalDataProperties DEFINE 530
+xlDialogWebOptionsGeneral DEFINE 683
+xlDialogWebOptionsFiles DEFINE 684
+xlDialogWebOptionsPictures DEFINE 685
+xlDialogWebOptionsEncoding DEFINE 686
+xlDialogWebOptionsFonts DEFINE 687
+xlDialogPivotClientServerSet DEFINE 689
+.
+. Class XlParameterType
+xlPrompt DEFINE 0
+xlConstant DEFINE 1
+xlRange DEFINE 2
+.
+. Class XlParameterDataType
+xlParamTypeUnknown DEFINE 0
+xlParamTypeChar DEFINE 1
+xlParamTypeNumeric DEFINE 2
+xlParamTypeDecimal DEFINE 3
+xlParamTypeInteger DEFINE 4
+xlParamTypeSmallInt DEFINE 5
+xlParamTypeFloat DEFINE 6
+xlParamTypeReal DEFINE 7
+xlParamTypeDouble DEFINE 8
+xlParamTypeVarChar DEFINE 12
+xlParamTypeDate DEFINE 9
+xlParamTypeTime DEFINE 10
+xlParamTypeTimestamp DEFINE 11
+xlParamTypeLongVarChar DEFINE (0-1)
+xlParamTypeBinary DEFINE (0-2)
+xlParamTypeVarBinary DEFINE (0-3)
+xlParamTypeLongVarBinary DEFINE (0-4)
+xlParamTypeBigInt DEFINE (0-5)
+xlParamTypeTinyInt DEFINE (0-6)
+xlParamTypeBit DEFINE (0-7)
+xlParamTypeWChar DEFINE (0-8)
+.
+. Class XlFormControl
+xlButtonControl DEFINE 0
+xlCheckBox DEFINE 1
+xlDropDown DEFINE 2
+xlEditBox DEFINE 3
+xlGroupBox DEFINE 4
+xlLabel DEFINE 5
+xlListBox DEFINE 6
+xlOptionButton DEFINE 7
+xlScrollBar DEFINE 8
+xlSpinner DEFINE 9
+.
+. Class XlSourceType
+xlSourceSheet DEFINE 1
+xlSourcePrintArea DEFINE 2
+xlSourceAutoFilter DEFINE 3
+xlSourceRange DEFINE 4
+xlSourceChart DEFINE 5
+xlSourcePivotTable DEFINE 6
+xlSourceQuery DEFINE 7
+.
+. Class XlHtmlType
+xlHtmlStatic DEFINE 0
+xlHtmlCalc DEFINE 1
+xlHtmlList DEFINE 2
+xlHtmlChart DEFINE 3
+.
+. Class xlPivotFormatType
+xlReport1 DEFINE 0
+xlReport2 DEFINE 1
+xlReport3 DEFINE 2
+xlReport4 DEFINE 3
+xlReport5 DEFINE 4
+xlReport6 DEFINE 5
+xlReport7 DEFINE 6
+xlReport8 DEFINE 7
+xlReport9 DEFINE 8
+xlReport10 DEFINE 9
+xlTable1 DEFINE 10
+xlTable2 DEFINE 11
+xlTable3 DEFINE 12
+xlTable4 DEFINE 13
+xlTable5 DEFINE 14
+xlTable6 DEFINE 15
+xlTable7 DEFINE 16
+xlTable8 DEFINE 17
+xlTable9 DEFINE 18
+xlTable10 DEFINE 19
+xlPTClassic DEFINE 20
+xlPTNone DEFINE 21
+.
+. Class XlCmdType
+xlCmdCube DEFINE 1
+xlCmdSql DEFINE 2
+xlCmdTable DEFINE 3
+xlCmdDefault DEFINE 4
+.
+. Class xlColumnDataType
+xlGeneralFormat DEFINE 1
+xlTextFormat DEFINE 2
+xlMDYFormat DEFINE 3
+xlDMYFormat DEFINE 4
+xlYMDFormat DEFINE 5
+xlMYDFormat DEFINE 6
+xlDYMFormat DEFINE 7
+xlYDMFormat DEFINE 8
+xlSkipColumn DEFINE 9
+xlEMDFormat DEFINE 10
+.
+. Class xlQueryType
+xlODBCQuery DEFINE 1
+xlDAORecordSet DEFINE 2
+xlWebQuery DEFINE 4
+xlOLEDBQuery DEFINE 5
+xlTextImport DEFINE 6
+xlADORecordset DEFINE 7
+.
+. Class xlWebSelectionType
+xlEntirePage DEFINE 1
+xlAllTables DEFINE 2
+xlSpecifiedTables DEFINE 3
+.
+. Class XlCubeFieldType
+xlHierarchy DEFINE 1
+xlMeasure DEFINE 2
+.
+. Class xlWebFormatting
+xlWebFormattingAll DEFINE 1
+xlWebFormattingRTF DEFINE 2
+xlWebFormattingNone DEFINE 3
+.
+. Class xlDisplayDrawingObjects
+xlDisplayShapes DEFINE (0-4104)
+xlHide DEFINE 3
+xlPlaceholders DEFINE 2
+.
+. Class xLSubtototalLocationType
+xlAtTop DEFINE 1
+xlAtBottom DEFINE 2
+.
+         LISTON
+         %ENDIF

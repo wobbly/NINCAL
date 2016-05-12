@@ -1,0 +1,40 @@
+<!-- custom content goes here -->
+<form action='comments.plc' name='commentsForm' id='commentsForm' method='POST'>
+		<input type='hidden' name='function' value='1' />
+		<input type='hidden' name='SID' value='<%=SID%>' />
+    <table border='0' cellpadding='2' cellspacing='2' align='center'>
+        <tr>
+            <td class='title' colspan='2' align=center>
+							Did you have an idea about our web page?
+							<br>
+							<br>
+							<br>
+							<br>
+            </td>
+        </tr>
+				<tr>
+						<td colspan="2">
+							<span class='errorMsg'><%=errorMsg%></span>
+						</td>
+				</tr>
+				<tr>
+						<td align='right' valign='top'>Questions/Comments:</td>
+						<td align='left' valign='top'><textarea rows="10" cols="50" name='cgitext' maxsize='500' value ='<%=cgiemail%>'></textarea></td>
+        </tr>
+				<tr>
+					<td colspan="2" class="text" align="center">
+						(submit your thoughts and they will be sent to Names in the News!)
+					</td>
+				</tr>
+        <tr>
+            <td align='center' valign='top' colspan='2'>
+                <br>
+                <br>
+                <input type=submit value='Submit'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type=reset value= ' Reset'><br><br><br><br><br>
+            </td>
+        </tr>
+    </table>
+</form>
+<script language="JavaScript"> document.commentsForm.cgiemail.focus(); </script>
+<!-- end custom content -->

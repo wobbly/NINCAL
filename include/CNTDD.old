@@ -1,0 +1,24 @@
+;----------------------------------------------------------------
+;
+;   CNTDD.INC - 
+;
+;   Copyright(c) Names in the News Ca., Inc. 2000
+;
+;   Author: David L Herrick
+;   Created: 2/14/2002 8:24:48 AM
+;   Last change: DLH 2/14/2002 8:24:48 AM
+;----------------------------------------------------------------
+
+cntfile     ifile     keylen=7,fix=219
+CNTNAME     INIT      "CNT"
+cntflag     form      1
+CNTFLD      DIM       7
+cntvars     list
+cntnum	    dim	      5       .=cmpnum \  key
+cntid       dim       2                /
+cntnam      dim       33
+cntlname    dim       20
+cnttitl     dim       33
+cntsal      dim       29
+	        listend
+

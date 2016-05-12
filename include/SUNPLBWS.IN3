@@ -1,0 +1,148 @@
+*==============================================================================
+. Process MENU 3 for MANUAL
+.
+MNU3	 MENU
+MNU3DATA INIT	   ")Run;":	       ;Command	menu list
+		   ")Chain PL//B;":    ;Chain to a program
+		   ")Debug PL//B;":    ;Execute	PLBWIN w/debug
+		   ")Execute PL//B;":  ;Execute	a PL/B program
+		   "E)xecute"	       ;Execute	a program
+#MNU3RES FORM	   3
+.
+#CMD	 DIM	   60
+#NAM	 DIM	   10
+#UTIL	 INIT	   " ":
+		   " BUILD ":
+		   " BLOKEDIT ":
+		   " CHAIN ":
+		   " DUMP ":
+		   " DATALEN ":
+		   " GETKEY ":
+		   " LIST ":
+		   " REFORMAT ":
+		   " TESTDEF ":
+		   " TXTMATCH ":
+		   " SCAN "
+*==============================================================================
+. Put MENU 3 ( Manual )	into the MAIN MENU BAR
+.
+MAK3
+	 CREATE	   MNU3,MNU3DATA
+	 ACTIVATE  MNU3,MNU3EXEC,#MNU3RES
+	 RETURN
+*-----------------------------------------------------------------------------
+ENAMNU3				       ;
+	 ENABLEITEM MNU3	       ;
+	 RETURN			       ;
+.
+DISMNU3				       ;
+	 DISABLEITEM MNU3	       ;
+	 RETURN			       ;
+*==============================================================================
+.
+MNU3EXEC
+	 SETWTITLE "Sunbelt Workshop:MANUAL"
+.
+	 MOVE	   "3",MENUSEL
+	 CALL	   MENUSOFF
+.
+	 CLEAR	   TEMP:	       ;Clear Temporary	work variable
+		   INPUT:	       ;Clear the INPUT	variable
+		   OUTPUT:
+		   STFLD:
+		   LENFLD:
+		   OPTIONS:
+		   ABORT:		;Clear the ABORT flag
+		   FLAGS
+.
+	 CALL	   SETOK	       Create OK Button
+.
+	 CALL	   SETCAN	       Create CANCEL Button
+.
+	 GETITEM   MNU3,#MNU3RES,UNAME	;Retrieve the menu entry name
+	 PACK	   DIM40,"Sunbelt Workshop: ",UNAME
+	 SETWTITLE DIM40
+	 CLEAR	   DIM40
+.
+	 IF	   (#MNU3RES = 1)
+	   MOVE	     "Chain to:	",INPUTQ
+	 ELSE IF (#MNU3RES = 2)
+	   MOVE	     "Debug: ",INPUTQ
+	 ELSE IF ( #MNU3RES >= 3 )
+	   MOVE	     "Execute: ",INPUTQ
+	 ENDIF
+	 CALL	   SETBG
+	 CALL	   GETCLIP
+	 CALL	   SETINP
+	 CALL	   RESETBG						  8.1
+	 CALL	   ACTALL
+	 SETFOCUS  INPUTF
+	 RETURN
+MNU3OK
+	 PERFORM   #MNU3RES:
+		   CHAIN:	       ; Result	= 1
+		   EXEDEBUG:	       ; Result	= 2
+		   EXEPLB:	       ; Result	= 3
+		   EXECUTE	       ; Result	= 4
+	 RETURN
+*------------------------------------------------------------------------------
+. CHAIN	to a program
+.
+CHAIN
+	 CALL	   CLEANUP
+	 TYPE INPUT
+	 IF EOS
+	   CALL	     CHAIN1		 ;
+	 ELSE
+	   PARSE     INPUT,#NAM,"!~",UPPERCASE
+	   RESET     INPUT
+	   RESET     #UTIL
+	   PACK	     DIM60," ",#NAM," "
+	   SCAN	     DIM60,#UTIL
+	   IF EQUAL
+	     DISPLAY   *BGCOLOR=*BLUE,*FGCOLOR=*WHITE:
+		       *ES;
+	   ENDIF
+	   TRAP	     CHAIN1 IF CFAIL
+	   DISPLAY   *ES;
+	   CHAIN     INPUT
+	 ENDIF
+.
+	 CALL	   CLEANUP2
+	 RETURN			       ;We only	get here if error
+.
+. CFAIL	error has occurred.
+.
+CHAIN1				       ;
+	 PACK	   DIM60,"NO PROGRAM: ",INPUT,S$ERROR$
+	 ALERT	   CAUTION,DIM60,F3
+	 RETURN
+*-----------------------------------------------------------------------------
+. EXECUTE a program
+.
+EXECUTE
+	 CALL	   CLEANUP
+	 EXECUTE   INPUT
+	 CALL	   CLEANUP2
+	 RETURN
+*-----------------------------------------------------------------------------
+. EXECUTE a PL/B program
+.
+EXEPLB
+	 CLEAR	   S$ERROR$,S$RETVAL
+	 CALL	   CLEANUP
+	 PACK	   #CMD,"PLBWIN	",INPUT
+	 EXECUTE   #CMD
+	 CALL	   CLEANUP2
+	 RETURN
+*-----------------------------------------------------------------------------
+. EXECUTE a PL/B program w/sundbug
+.
+EXEDEBUG
+	 CLEAR	   S$ERROR$,S$RETVAL
+	 CALL	   CLEANUP
+	 PACK	   #CMD,"PLBWIN	-d ",INPUT
+	 EXECUTE   #CMD
+	 CALL	   CLEANUP2
+	 RETURN
+*==============================================================================

@@ -1,0 +1,172 @@
+<script language="Javascript">
+</script>
+<form action='ordercorrection.plc' name='OrdercorrectionForm' id='OrdercorrectionForm' method='POST'>
+	<input type='hidden' name='cgifunction' value='1' />
+	<input type='hidden' name='SID' value='<%=SID%>' />
+	<table border='0' cellpadding='2' cellspacing='2' align='center' width="333">
+		<tr>
+			<td class='title' colspan='2' align=center>
+				Order Correction<br><br><br>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<span class='errorMsg'><font color="#FF0000"><%=errorMsg%></font></span>
+			</td>
+		</tr>
+		<tr>
+			<td align='right' valign='top' width="153">LR<font color="#FF0000">*</font>:
+			</td>
+			<td align='left' valign='top' width="166"><input type='text' name='cgiordernum' size='10' maxsize='10'value ='<%=cgiordernum%>'></td>
+		</tr>
+		<tr>
+			<td align='right' valign='top' width="153">Type</td>
+			<td align='left' valign='top' width="166">
+			<select size="1" name="cgitype">
+			<option value='No Action'>No Action</option>
+			<option value='Reprint'>Reprint</option>
+			<option value='System'>System</option>
+			</select></td>
+		</tr>
+    	<tr>
+			<td align='right' valign='top'>Billed Order<font color="#FF0000">*</font></td>
+			<td align='left' valign='top'>
+			<input type="radio" value="YES" name="cgibilledorder">Yes<input type="radio" name="cgibilledorder" value="NO">No
+			*If Yes, Accounting will also be notified</td>
+		</tr>
+		<tr>
+			<td align='right' valign='top'>
+				Status</td>
+			<td align='left' valign='top'>
+				<select size="1" name="cgistatus">
+				<option value="Rent">Rent</option>
+				<option value="Exchange">Exchange</option>
+				<option value="Both">Both</option>
+				</select></td>
+		</tr>
+		<tr>
+			<td align='right' valign='top' width="153">Mailer<font color="#FF0000">*</font>:
+			</td>
+			<td align='left' valign='top' width="166">
+<!---			<input type='text' name='cgimailernum' size='10' maxsize='10'value ='<%=cgimailernum%>'></td>
+-->
+			<input type='text' name='cgimailernum' size='50' maxsize='50'value ='<%=cgimailernum%>'></td>
+		</tr>
+		<tr>
+			<td align='right' valign='top' width="153">List<font color="#FF0000">*</font>:
+			</td>
+			<td align='left' valign='top' width="166">
+<!---			<input type='text' name='cgilistnum' size='10' maxsize='10'value ='<%=cgilistnum%>'></td>
+-->
+			<input type='text' name='cgilistnum' size='50' maxsize='50'value ='<%=cgilistnum%>'></td>
+		</tr>
+		<tr>
+			<td align='right' valign='top' width="153">Quantity:
+			</td>
+			<td align='left' valign='top' width="166">
+			<input type='text' name='cgiquantity' size='10' maxsize='10'value ='<%=cgiquantity%>'></td>
+		</tr>
+		<tr>
+			<td align='right' valign='top' width="153">Selections:</td>
+			<td align='left' valign='top' width="166">
+			<input type="text" name="cgiselections" size="20" value="<%=cgiselections%>">
+			</td>
+		</tr>
+		<tr><td align="right">Mail Date:</td><td>
+			<input type="text" name="cgimaildate" size="20" value="<%=cgimaildate%>"></td></tr>
+		<tr>
+			<td align='right' valign='bottom' width="153">Net %:</td>
+			<td align='left' valign='bottom' width="166">
+			<input type='text' name='cginet' size='5' maxsize='10'value ='<%=cginet%>'>
+			(%)</td>
+		</tr>
+<!---		<tr>
+<!---			<td align='right' valign='bottom' width="153">Format/Pricing</td>
+<!---			<td align='left' valign='bottom' width="166">
+<!---			<input type='text' name='cgiformat' size='10' maxsize='10'value ='<%=cgiformat%>'>
+<!---			</td>
+<!---		</tr>    -->
+		<tr>
+			<td align='right' valign='top' width="153">Discussed w/ List Owner<font color="#FF0000">*</font></td>
+			<td align='left' valign='top' width="166">
+			<input type="text" name="cgilistownerdisc" size="50" value="<%=cgilistownerdisc%>"></td>
+		</tr>
+		<tr>
+			<td align='right' valign='top' width="153">Mailer<font color="#FF0000">*</font> Contact</td>
+			<td align='left' valign='top' width="166">
+			<input type="text" name="cgimailercontact" size="30" value="<%=cgimailercontact%>"></td>
+		</tr>
+		<tr>
+			<td align='right' valign='top' width="153">Service Bureau</td>
+			<td align='left' valign='top' width="166">
+			<input type="text" name="cgiservicebureau" size="30" value="<%=cgiservicebureau%>"></td>
+		</tr>
+		<tr>
+			<td align='right' valign='top' width="153">Base Price</td>
+			<td align='left' valign='top' width="166">
+			<input type="text" name="cgibase" size="30" value="<%=cgibase%>"></td>
+		</tr>
+		<tr>
+			<td align='right' valign='top' width="153">Select Price</td>
+			<td align='left' valign='top' width="166">
+			<input type="text" name="cgiselect" size="50" value="<%=cgiselect%>"></td>
+		</tr>
+		<tr>
+			<td align='right' valign='top' width="153">Return Date</td>
+			<td align='left' valign='top' width="166">
+			<input type="text" name="cgireturndate" size="20" value="<%=cgireturndate%>"></td>
+		</tr>
+		<tr>
+			<td align='right' valign='top' width="153">Running Charges</td>
+			<td align='left' valign='top' width="166">
+			<input type="text" name="cgirunningcharge" size="20" value="<%=cgirunningcharge%>"></td>
+		</tr>
+		<tr>
+			<td align='right' valign='top' width="153">Adjust Extstat</td>
+			<td align='left' valign='top' width="166">
+			<input type="text" name="cgiexstatadj" size="20" value="<%=cgiexstatadj%>"></td>
+		</tr>
+		<tr>
+			<td align='right' valign='top' width="153">List Owner</td>
+			<td align='left' valign='top' width="166">
+			<input type="text" name="cgilistowner" size="20" value="<%=cgilistowner%>"></td>
+		</tr>
+		<tr>
+			<td align='right' valign='top'>
+				P.O. #</td>
+			<td align='left' valign='top'>
+				<input type="text" name="cgipo" size="20" value="<%=cgipo%>"></td>
+		</tr>
+		<tr>
+			<td align='right' valign='top'>
+				Ship to</td>
+			<td align='left' valign='top'>
+				<input type="text" name="cgishipto" size="20" value="<%=cgishipto%>"></td>
+		</tr>
+		<tr>
+			<td align='right' valign='top'>
+				Special Instructions</td>
+			<td align='left' valign='top'>
+				<input type="text" name="cgispecial" size="20" value="<%=cgispecial%>"></td>
+		</tr>
+		<tr>
+			<td align='right' valign='top'>
+				Notes to Order Correction</td>
+			<td align='left' valign='top'>
+				<textarea rows="2" name="cginotes" cols="42"><%=cginotes%></textarea></td>
+		</tr>
+		<tr>
+			<td align='center' valign='top' colspan='2'>
+				<p align="left"><font color="#FF0000">*Indicates Required Fields</font></td>
+		</tr>
+		<tr>
+			<td align='center' valign='top' colspan='2'>
+				<br>
+				<br>
+				<input type=submit value='Send'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type=reset value='Reset'></td>
+		</tr>
+	</table>
+</form>
+<!-- end custom content -->

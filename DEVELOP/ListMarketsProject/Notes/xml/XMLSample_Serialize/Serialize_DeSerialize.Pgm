@@ -1,0 +1,65 @@
+
+
+Employee                     RECORD
+Id                            Dim               10
+FirstName                     Dim               20
+LastName                      Dim               30
+Ssn                           Form              9
+DateOfBirth                   Form              8
+Employment                    RECORD            (10)
+Division                       Dim              10
+Branch                         Dim              20
+Department                     Dim              30
+                              RECORDEND
+Address                       RECORD
+Street                         Dim              30(2)
+City                           Dim              20
+State                          Dim              2
+                              RECORDEND
+Salary                        RECORD            (20)
+Date                           Form             8
+Comment                        Dim              50(5)
+Amount                         Form             6.2
+                              RECORDEND
+                             RECORDEND
+
+RecordData                   Dim                4096
+XmlData                      Dim                4096
+F5                           Form               5
+
+         // Serialize the RECORD structure into an Xml Data string
+
+	move	"111111",Employee.Id
+	move	"Andrew",Employee.FirstName
+	move	"Harkins",Employee.LastName
+	move	"228989392",Employee.Ssn
+	move	"19660621",Employee.DateOfBirth
+	move	"First",Employee.Employment(1).Division
+	move	"Tree",Employee.Employment(1).Branch
+	move	"IS",Employee.Employment(1).Department
+	move	"Second",Employee.Employment(2).Division
+	move	"Bush",Employee.Employment(2).Branch
+	move	"Sales",Employee.Employment(2).Department
+	move	"1556 8th Avenue",Employee.Address.Street(1)
+	move	"upstairs",Employee.Address.Street(2)
+	move	"SF",Employee.Address.City
+	move	"CA",Employee.Address.State
+	move	"20060101",Employee.Salary(1).Date
+	move	"farkle",Employee.Salary(1).Comment
+	move	"300.01",Employee.Salary(1).Amount
+
+         PackKEY             RecordData,Employee
+one     
+         Call                Serialize Giving XmlData Using RecordData
+test
+         // Just to make sure we have a consistent test
+         Fill                " ",RecordData
+
+         // DeSerialize the XML data string into a RECORD structure
+         Call                DeSerialize Giving RecordData Using XmlData
+         UnPack              RecordData,Employee
+three
+         // Done
+         STOP
+
+         Include             Serialize_DeSerialize.Fnc

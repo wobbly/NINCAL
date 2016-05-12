@@ -1,0 +1,41 @@
+<!-- custom content goes here -->
+<form action='counts.plc' name='countsForm' id='countsForm' method='POST'>
+	<input type='hidden' name='function' value='0' />
+	<input type='hidden' name='SID' value='<%=SID%>' />
+	<input type='hidden' name='cgilist' value='<%=cgilist%>' />
+	<table border='0' cellpadding='2' cellspacing='2' align='center'>
+		<tr>
+			<td class='title' align=center>
+				Mailer Counts
+				<br>
+				<%=cgicompanyname%>
+				<br><br>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<table class="datacontainer" cellpadding="2" cellspacing="0">
+					<tr>
+						<th>List Name</th>
+						<th>State/SCF</th>
+						<th>Segment</th>
+					</tr>
+<%DISPLAYRESULTS%>
+					<tr>
+						<td><%=cgilist%></td>
+						<td><%=cgistate%></td>
+						<td><%=cgisegment%></td>
+					</tr>
+<%/DISPLAYRESULTS%>
+				<tr>
+					<td colspan=3 align='center'>
+						<input type='submit' value='Search Again'>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+
+</form>
+<!-- end custom content -->

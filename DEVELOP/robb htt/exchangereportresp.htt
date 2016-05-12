@@ -1,0 +1,151 @@
+<!-- custom content goes here -->
+<script language="javascript">
+function changepg(newpos)
+{
+	document.exchangerpt1form.cgireadpos.value = newpos;
+	document.exchangerpt1form.cgifunction.value = 1;
+	document.exchangerpt1form.submit();
+}
+</script>
+
+<script language="javascript">
+function detailSub(key,mailer,comp)
+{
+    document.exchangerpt1form.cginxchkey.value = key;
+    document.exchangerpt1form.cgimailer.value = mailer;
+    document.exchangerpt1form.cgiexchangename.value = comp;
+    document.exchangerpt1form.cgifunction.value = 2;
+    document.exchangerpt1form.submit();
+}
+</script>
+
+<!-- START PATCH 12/23/2005 ADDED LOGIC -->
+<script language="javascript">
+function getLists(mailer)
+{
+    document.exchangerpt1form.cgimailer.value = mailer;
+    document.exchangerpt1form.cgifunction.value = 3;
+    document.exchangerpt1form.submit();
+}
+</script>
+<!-- END PATCH 12/23/2005 ADDED LOGIC -->
+
+<!-- START PATCH 12/23/2005 ADDED LOGIC -->
+<script language="javascript">
+function rptView()
+{
+    document.exchangerpt1form.cgifunction.value = 4;
+    document.exchangerpt1form.submit();
+}
+</script>
+<!-- END PATCH 12/23/2005 ADDED LOGIC -->
+
+<form action="exchangereport.plc" name="exchangerpt1form" id="exchangerpt1form" method="POST">
+	<input type="hidden" name="cgifunction" value="0" />
+	<input type="hidden" name="SID" value="<%=SID%>" />
+	<input type="hidden" name="cgimailernum" value="<%=cgimailernum%>" />
+	<input type="hidden" name="cginxchkey" value="<%=cginxchkey%>" />
+	<input type="hidden" name="cgimailer" value="<%=cgimailer%>" />
+	<input type="hidden" name="cgiexchangename" value="<%=cgiexchangename%>" />
+	<input type="hidden" name="cginame" value="<%=cginame%>" />
+<!-- START PATCH 10/19/2005 ADDED LOGIC -->
+	<input type='hidden' name='cgiPageNum' value='<%=cgiPageNum%>' />
+	<input type='hidden' name='cgiTotPage' value='<%=cgiTotPage%>' />
+<!-- END PATCH 10/19/2005 ADDED LOGIC -->
+<!-- START PATCH 11/22/2005 ADDED LOGIC -->
+	<input type='hidden' name='cgiRecNum' value='<%=cgiRecNum%>' />
+<!-- END PATCH 11/22/2005 ADDED LOGIC -->
+<!-- START PATCH 12/23/2005 ADDED LOGIC -->
+	<input type='hidden' name='cgimailername' value='<%=cgimailername%>' />
+	<input type="hidden" name="cgidatasource" value="<%=cgidatasource%>" />
+<!-- END PATCH 12/23/2005 ADDED LOGIC -->
+<center>  <!-- BJACKSON 09/29/2010 -->
+    <table border="0" cellpadding="2" cellspacing="2" align="center">
+        <tr>
+            <td class="title" align=center>
+<!--START PATCH 10/04/2005 REPLACED LOGIC
+				Exchange Report for Mailer <%=cgimailernum%>
+-->
+				Exchange Report for Client (#<%=cgimailernum%>)
+<!--END PATCH 10/04/2005 REPLACED LOGIC-->
+				<br><%=cgimailername%>
+            </td>
+        </tr>
+				<tr>
+						<td>
+								<span class="errorMsg"><%=errorMsg%></span>
+						</td>
+				<tr>
+					<td>
+						<table class="datacontainer" cellpadding="5" cellspacing="0">
+<!--START PATCH 10/04/2005 REPLACED LOGIC
+							<tr>
+								<th align="left">Mailer</th>
+								<th align="left">Given<br>To</th>
+								<th align="left">Received<br> From</th>
+								<th align="left">Balance Due<br>From Mlr/<font color=red>(To Mlr)</font></th>
+							</tr>
+-->
+<!--<%DISPLAYRESULTS%>-->
+<!--						<tr class="datarow<%=cgidatarow%>">
+								<td><%=cgitradeco%></td>
+								<td align=right><%=cgiexchangeto%></td>
+								<td align=right><%=cgiexchangefrom%></td>
+								<td align=right><%=cgibalancedue%></td>
+							</tr>
+-->
+<!--<%/DISPLAYRESULTS%>-->
+							<tr>
+								<th colspan="6" align="right"><%=cgimailername%></th>
+							</tr>
+							<tr>
+								<th></th>
+								<th align="left"><font color=red>Owes</font></th>
+								<th align="left">Is Owed</th>
+								<th align="left">Is Even</th>
+							</tr>
+<%DISPLAYRESULTS%>
+							<tr class="datarow<%=cgidatarow%>">
+								<td align=left><%=cgitradeco%></td>
+								<td align=right><font color=red><%=cgiexchangeowes%></font></td>
+								<td align=right><%=cgiexchangeisowed%></td>
+								<td align=right><%=cgiexchangeiseven%></td>
+							</tr>
+<%/DISPLAYRESULTS%>
+<!--END PATCH 10/04/2005 REPLACED LOGIC-->
+							<tr>
+								<td colspan="6" align=center>
+									<%=cgilinks%>
+								</td>
+							</tr>
+<!-- START PATCH 10/19/2005 ADDED LOGIC -->
+							<tr>
+								<td colspan="6" align=center>Page <%=cgiPageNum%> of <%=cgiTotPage%></td>
+							</tr>
+<!-- END PATCH 10/19/2005 ADDED LOGIC -->
+<!-- START PATCH 11/22/2005 ADDED LOGIC -->
+							<tr>
+								<td colspan="6" align=center><%=cgiRecNum%> Records Found</td>
+							</tr>
+<!-- END PATCH 11/22/2005 ADDED LOGIC -->
+							<tr>
+<!-- START PATCH 12/23/2005 REPLACED LOGIC -->
+<!--
+								<td colspan="6" align=center>
+									<input type="submit" value="Search Again" />
+								</td>
+-->
+								<td colspan="6" align=center>
+									<input type="submit" value="Search Again" />
+									<input type=button value="Printable View" onclick='rptView()' />
+								</td>
+<!-- END PATCH 12/23/2005 REPLACED LOGIC -->
+							</tr>
+						</table>
+					</td>
+        </tr>
+    </table>
+</center>  <!-- BJACKSON 09/29/2010 -->
+	<input type="hidden" name="cgireadpos" value="<%=cgireadpos%>" />
+</form>
+<!-- end custom content -->

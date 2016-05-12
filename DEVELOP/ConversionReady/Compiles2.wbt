@@ -1,0 +1,68 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+; VERSION: 1.0  mls  COMPILES MULTIPLE PROGRAMS - need a file called COMPILE.DAT
+;                    in g:\data to contain only the 8 byte PRG name, no exts.                                                                     
+;                                                                                   
+;                                                                                   
+; NOTE:PROGRAMS USING THE HELP FUNCTION WILL POINT TO "HELP.HTM" IN F:\APPS\WINBATCH
+;                                                                                   
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+:BEGIN
+;====================================PARAMETERS======================================
+do="c:\command.com"
+Dsinit="f:\apps\plb\code\dsinit"
+interp="f:\apps\plb\code\plbwin.exe"
+Yr=StrSub(TimeYmdHms(),1,2)
+Day=StrSub(TimeYmdHms(),7,2)
+Mo=StrSub(TimeYmdHms(),4,2)
+Date="%mo%/%day%/%yr%"
+index="f:\netutils\sunidxnt.exe"
+aamdex="F:\netutils\sunaDxnt.exe"
+reformat="f:\apps\plb\code\reformat"
+sort="f:\netutils\sort.exe"
+who=Environment("user")
+n=0
+BoxColor(1,"128,0,0",1)
+BoxDrawRect(1,"0,0,1000,1000",2)
+BoxCaption(1,"Testing Job")
+;====================================================================================
+debug(@off)
+errormode(@NOTIFY)
+                    T=" "
+;                    fn1="f:\users\dherric\dave.bAT"
+                    fn1="c:\work\recomp.dat"
+                    Q=FileExist("%fn1%")      
+                    If Q == @FALSE Then goto cverror
+                    handle = FileOpen("c:\work\recomp.dat", "READ")
+;                    handle = FileOpen("f:\users\dherric\dave.bAT", "READ")
+                    line=""
+                    DirChange("c:\work")
+;                    DirChange("f:\users\dherric")
+                    ; This section returns the number of entries in the "DAT" file
+                    fs1 = FileSize( "%fn1%" )
+                    binbuf1 = binaryalloc( fs1 )
+                    BinaryRead( binbuf1, "c:\work\recomp.dat" )
+;                    BinaryRead( binbuf1, "f:\users\dherric\dave.bat" )
+                    Prgs = BinaryStrCnt( binbuf1, 0, fs1 - 1, @CR)
+                    BinaryFree( binbuf1 )
+                    GOTO COMPILE
+
+:COMPILE
+      For a=n to prgs
+      n=n + 1
+      line = FileRead(handle)
+      If Line == "*EOF*" then goto EOJ
+      PR=StrSub(Line,1,8)
+BoxCaption(1,"Compiling %line%")
+;      runwait ("f:\apps\plb\code\plbwin.exe","F:\apps\plb\code\plbCMP.plc F:\LIBRARY\develop\conversionready\\%line%.pls f:\library\develop\conversionready\%line%.plc")
+      FileCopy("F:\apps\plb\code\%line%.PLc", "F:\apps\plb\code\%line%.630", @true)
+      runwait ("f:\apps\plb\code\plbwin.exe","F:\apps\plb\code\plbCMP.plc F:\library\plb_src\%line%.pls f:\apps\plb\code\%line%.plc")
+;      runwait ("f:\apps\plb\code\plbwin.exe","F:\apps\plb\code\plbCMP.plc F:\LIBRARY\plb_src\\%line%.pls f:\apps\plb\code\%line%.plc")    
+:EXIT
+;FileDelete("g:\data\compile.dat")
+goto compile
+
+:CVERROR
+Display("3", "Error","recomp.dat is not in c:\work.")
+
+:EOJ

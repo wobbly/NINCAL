@@ -1,0 +1,18 @@
+Readme for f:\library\develop\xml\xmlsample
+
+*******************************************
+	Andrew Harkins May 31, 2006
+*******************************************
+This directory contains source code and a ZIP file pulled from
+Sunbelts' webboard.
+
+The examples use the Document Object Model (DOM) to traverse
+through the inherent tree of an XML file.
+
+Variations of these files exist in f:\library\develop\xml.  These
+are named and commented more descriptively, using "DOM" as part
+of their file names.
+
+This directory is, therefore, strictly referential
+
+!!!Please refer to plbxml.rfm for specifics on how to run these files!!!

@@ -1,0 +1,196 @@
+                      <script language="javascript">
+
+                                 function formSub() {
+
+                                            if (document.regform.cgifirstname.value == '')
+                                            {
+                                                       alert("First Name is a required field.");
+                                                       document.regform.cgifirstname.focus();
+                                                       return;
+                                            }
+
+                                            if (document.regform.cgilastname.value == '')
+                                            {
+                                                       alert("Last Name is a required field.");
+                                                       document.regform.cgilastname.focus();
+                                                       return;
+                                            }
+
+                                            if (document.regform.cgiorganization.value == '')
+                                            {
+                                                       alert("Organization is a required field.");
+                                                       document.regform.cgiorganization.focus();
+                                                       return;
+                                            }
+
+                                            if (document.regform.cgiaddress.value == '')
+                                            {
+                                                       alert("Address is a required field.");
+                                                       document.regform.cgiaddress.focus();
+                                                       return;
+                                            }
+
+                                            if (document.regform.cgicity.value == '')
+                                            {
+                                                       alert("City is a required field.");
+                                                       document.regform.cgicity.focus();
+                                                       return;
+                                            }
+
+                                            if (document.regform.cgistate.value == '')
+                                            {
+                                                       alert("State is a required field.");
+                                                       document.regform.cgistate.focus();
+                                                       return;
+                                            }
+
+                                            if (document.regform.cgizip.value == '')
+                                            {
+                                                       alert("Zip is a required field.");
+                                                       document.regform.cgizip.focus();
+                                                       return;
+                                            }
+
+                                            if (document.regform.cgiphone.value == '')
+                                            {
+                                                       alert("Telephone is a required field.");
+                                                       document.regform.cgiphone.focus();
+                                                       return;
+                                            }
+
+                                            if (document.regform.cgiemail.value == '')
+                                            {
+                                                       alert("Email Address is a required field.");
+                                                       document.regform.cgiemail.focus();
+                                                       return;
+                                            }
+
+                                            if (document.regform.cgiusername.value == '')
+                                            {
+                                                       alert("Username is a required field.");
+                                                       document.regform.cgiusername.focus();
+                                                       return;
+                                            }
+
+                                            if (document.regform.cgipassword.value == '')
+                                            {
+                                                       alert("Password is a required field.");
+                                                       document.regform.cgipassword.focus();
+                                                       return;
+                                            }
+
+                                            if (document.regform.cgipassword.value != document.regform.cgipassword2.value)
+                                            {
+                                                       alert("Passwords do not match.");
+                                                       document.regform.cgipassword.value = "";
+                                                       document.regform.cgipassword2.value = "";
+                                                       document.regform.cgipassword.focus();
+                                                       return;
+                                            }
+
+                                            document.regform.submit();
+                                 }
+
+                                 function clearForm(){
+                                            document.regform.cgifirstname.value = "";
+                                            document.regform.cgilastname.value = "";
+                                            document.regform.cgiorganization.value = "";
+                                            document.regform.cgiaddress.value = "";
+                                            document.regform.cgicity.value = "";
+                                            document.regform.cgizip.value = "";
+                                            document.regform.cgiphone.value = "";
+                                            document.regform.cgifax.value = "";
+                                            document.regform.cgiemail.value = "";
+                                            document.regform.cgicompfunction.value = "";
+                                            document.regform.cgiarea.value = "";
+                                            document.regform.cgiusername.value = "";
+                                            document.regform.cgipassword.value = "";
+                                 }
+
+                      </script>
+
+    <form action="registration.plc" name="regform" method="POST">
+                      <input type='hidden' name='function' value='1' />
+                      <input type='hidden' name='SID' value='<%=SID%>' />
+                      <input type='hidden' name='cgibroker' value='<%=cgibroker%>' />
+    <table align='center'>
+                                 <tr>
+                                            <td class='title' colspan='2' align=center >
+<!-- START PATCH 1/25/2006 ASH REPLACED LOGIC -->
+<!--
+                                                                  New Member Registration
+                                                                  <br><br><br>
+-->
+                                                                  Client Registration
+                                                                  <br><br>
+<!-- END PATCH 1/25/2006 ASH REPLACED LOGIC -->
+                                            </td>
+                                 </tr>
+<!-- START PATCH 1/25/2006 ASH ADDED LOGIC -->
+                                 <tr>
+                                            <td colspan='2' align=center>
+                                                       We offer our clients a secure area in which to view and reprint orders, invoices and reports.
+                                                       <br>
+                                                       If you're a current NIN client, please fill out the form below.
+                                                       <br>
+                                                       <br>
+                                                       If you are not currently working with Names in the News but wish to be contacted about
+                                                       <br>
+                                                       your mailing needs, please fill out the form <a href="/index.php/contact-us/new-clients/" target="_top">here</a>.
+                                                       <br>
+                                                       <br>
+                                                       If you are a broker, please visit our <a href="/index.php" target="_top">List Management site</a> for data cards and recommendations.
+                                                       <br>
+                                                       <br>
+                                            </td>
+                                 </tr>
+<!-- END PATCH 1/25/2006 ASH ADDED LOGIC -->
+                                 <tr>
+                                            <td colspan="2">
+                                                                  <span class='errorMsg'><%=errorMsg%></span>
+                                            </td>
+                                 </tr>
+                                 <tr><td class="formlabel"><span class=small1>* </span>First Name:</td><td class="forminput"> <input type="text" name="cgifirstname" maxsize="32" value='<%=cgifirstname%>' /></td></tr>
+                                 <tr><td class="formlabel"><span class=small1>* </span>Last Name:</td><td class="forminput"> <input type="text" name="cgilastname" maxsize="32" value='<%=cgilastname%>' /></td></tr>
+                                 <tr><td class="formlabel"><span class=small1>* </span>Organization:</td><td class="forminput"> <input type="text" name="cgiorganization" maxsize="32" value='<%=cgiorganization%>' /></td></tr>
+                                 <tr><td class="formlabel"><span class=small1>* </span>Address:</td><td class="forminput"> <input type="text" name="cgiaddress" maxsize="80" value='<%=cgiaddress%>' /></td></tr>
+                                 <tr><td class="formlabel"><span class=small1>* </span>City:</td><td class="forminput"> <input type="text" name="cgicity" maxsize="32" value='<%=cgicity%>' /></td></tr>
+                                 <tr><td class="formlabel"><span class=small1>* </span>State:</td><td class="forminput">
+<%DOSTATECODES%>
+<%/DOSTATECODES%>
+                                                       </td></tr>
+                                 <tr><td class="formlabel"><span class=small1>* </span>Zip:</td><td class="forminput"> <input type="text" name="cgizip" maxsize="10" value='<%=cgizip%>' /></td></tr>
+                                 <tr><td class="formlabel"><span class=small1>* </span>Telephone:</td><td class="forminput"> <input type="text" name="cgiphone" maxsize="10" value='<%=cgiphone%>' /><br>
+                                 <font size = -1>No spaces or dashes: 5555555555</font></td></tr>
+<!-- START PATCH 10/19/2005 REMOVED LOGIC -->
+<!--
+                                 <tr><td class="formlabel">Fax:</td><td class="forminput"> <input type="text" name="cgifax" maxsize="10" value='<%=cgifax%>' /><br>
+                                 <font size = -1>No spaces or dashes: 5555555555</font></td></tr>
+-->
+<!-- END PATCH 10/19/2005 REMOVED LOGIC -->
+                                 <tr><td class="formlabel"><span class=small1>* </span>Email:</td><td class="forminput"> <input type="text" name="cgiemail" maxsize="80" value='<%=cgiemail%>' /></td></tr>
+                                 <tr><td class="formlabel">Company Function:</td><td class="forminput"> <input type="text" name="cgicompfunction" maxsize="32" value='<%=cgicompfunction%>' /></td></tr>
+                                 <tr><td class="formlabel">Area:</td><td class="forminput"> <input type="text" name="cgiarea" maxsize="32" value='<%=cgiarea%>' /></td></tr>
+                                 <tr><td class="formlabel"><span class=small1>* </span>Username:</td><td class="forminput"> <input type="text" name="cgiusername" maxsize="12" value='<%=cgiusername%>' /><br>
+                                 <font size = -1>Username must be between 5 and 12 characters in length.</font></td></tr>
+                                 <tr><td class="formlabel"><span class=small1>* </span>Password:</td><td class="forminput"> <input type="password" name="cgipassword" maxsize="12" value='<%=cgipassword%>' /><br>
+                                 <font size = -1>Password must be between 6 and 12 characters in length.</font></td></tr>
+                                 <tr><td class="formlabel"><span class=small1>* </span>Confirm Password:</td><td class="forminput"> <input type="password" name="cgipassword2" maxsize="12" value='<%=cgipassword%>' /><br></td></tr>
+                                 <tr>
+                                            <td>&nbsp;</td>
+                                            <td>
+                                                       <input type=checkbox name="cgitos" value="1">I have read and agree to the <a target='_top' href="/index.php/terms-of-service">terms of service.</a>
+                                            </td>
+                                 </tr>
+                                 <tr>
+                                            <td colspan= '2' align='center' span class='small1'>* Required Fields</td>
+                                 </tr>
+                                 <tr><td colspan=2 align='center'><center><br>
+        <input type="hidden" value="" name="cgiapproved">
+        <input type="hidden" value="" name="cgidatetime">
+        <input type="button" value="Submit" onClick='formSub();'>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type='button' value='Clear' onClick='clearForm();'>
+        </td></tr></table>
+        </form>
+<script language="JavaScript"> document.regform.cgifirstname.focus(); </script>

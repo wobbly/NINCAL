@@ -1,0 +1,191 @@
+PC       EQU       0
+         INCLUDE   COMMON.inc
+         INCLUDE   CONS.inc
+         INCLUDE   NTYPDD.inc
+         INCLUDE   NJSTDD.inc    ADJUSTMENT DETAIL
+RELEASE        INIT           "1.0"         DLH  16Feb2006  NININV conversion
+.PURPOSE -  GATHER DAILY adj TYPIST INFORMATION.
+.           FOR REPORT GENERATED AT EOM AND ON REQUEST BY ORDTYPST/DBC.
+. .............................................................................
+. FILES.
+. ......
+. OTHER VARIABLES.
+NCOUNT   FORM      4        CALC NEW adjustments
+REPCNT   FORM      4        CALC REPRINT adjustments
+COUNT    FORM      5         TOTAL adjustments
+INVRGRD  FORM      5
+BRANCH   FORM      "00"
+R        INIT      "R"
+QTY      FORM      9
+END      FORM      2
+HUNDRED  FORM      "100"
+ANS      DIM       1
+TOTREP   FORM      3
+REPCALC  FORM      5.3
+TOTCALC  FORM      5.3
+LINES    FORM      2
+ENDSW    DIM       1
+INVREPR  FORM      4
+LCRRCNT  FORM      4
+LRCOUNT  FORM      4         *LCR COUNT.
+LSCOUNT  FORM      4         *LCR COUNT.
+IOERROR  FORM      1          *INDEX FOR IO ERROR BRANCH.
+TYPST    DIM       3
+LRHOLD   DIM       6         *LIST RENTAL NUMBER HOLD.
+TYPiST    DIM       3
+Input         File
+adjsum        form            5
+NOrdTypRec     REcord         (33)  
+TypeREc       Dim             3
+Countrec      Form            4
+RepRec        Form            4
+              RecordEnd
+adjustments   form            4
+.
+. PROGRAM MAIN.
+         MOVE      "Daily Adjustment Typist" TO STITLE
+         MATCH     "Nadj0009" TO PROGRAM        *CHAINED FROM DSINIT?
+         IF        NOT EQUAL                    *NO
+         MOVE      "Nadj0009 " TO PROGRAM
+         MOVE      "ninpadj2" TO INPNAME
+         MOVE      "Names in the News" TO COMPNME
+         ENDIF
+         CALL      PAINT
+.
+         clock     timestamp,str6
+         unpack    str6,str2,yy,mm
+         pack      TypDate from str6
+         rep       Zfill in typDate
+
+         TRAP      IO IF IO
+         MOVE      C1 TO IOERROR
+.
+INPGET   TRAP      FILENG IF IO
+         OPEN      TESTFILE,INPNAME
+         TRAPCLR   IO
+         DISPLAY   *P15:06,INPNAME
+         GOTO      Start
+FILENG   NORETURN
+         KEYIN     *P01:24,*EL,"The Input file is not on-line. ":
+                   *P15:06,INPNAME
+         GOTO      INPGET
+.
+.
+START    
+              OPen            Input,Inpname
+Read
+              READ      Input,SEQ;jstvars,typist
+
+         GOTO      OUTPUT IF OVER
+         match     Jstlr to lrhold
+         GOTO      READ IF EQUAL        *YES
+         move      JstLr to lrhold
+         ADD       C1 TO COUNT
+         DISPLAY   *P48:12,*EL,COUNT;
+         MOVE      TYPiST TO TYPe
+.
+              FOR           Branch,"1","33"
+                                            
+                              If             (Type = NordTypRec(branch).TypeRec)                            
+                                             Move           NordTypREc(Branch).Countrec,adjcount
+                                             add            c1 to adjcount
+                                             Move           adjcount,NordTypREc(Branch).Countrec
+                             Break                
+                             endif
+                             if              (Nordtyprec(Branch).Typerec = "")
+                                             add            c1 to adjcount
+                                             Move           adjcount,NordTypREc(Branch).Countrec
+                                             Move           Type,NordTypREc(Branch).Typerec
+                             break                
+                             endif                
+           repeat
+         ADD       C0 TO adjcount   
+         GOTO      READ
+.
+OUTPUT
+         clock     timestamp,str8
+         unpack    str8,str2,yy,mm,dd
+         pack      TypDate from str8
+         rep       Zfill in typDate
+.      UNLOAD TABLES.
+              FOR           Branch,"1","33"
+                                            
+                                             Move           NordTypRec(branch).TypeRec,Type                              
+                                             Move           NordTypREc(Branch).Countrec,Adjustments
+                             if              (Nordtyprec(Branch).Typerec = "")
+                             break  
+                             goto            outlast
+                             else
+        MATCH     "  " TO TYPe
+        CALL      NOTYP IF EQUAL
+        CALL      NOTYP IF EOS
+              add             adjustments to adjsum
+              MOVE            C1 TO NTYPPATH
+              Move            Str8 to TypDate
+              Packkey         Ntypfld from TypDate,type         
+         CALL      NTYPtst
+         GOTO      WRITE IF OVER
+         call      Ntypkey
+              add             adjustments to adjcount
+         CALL      NTYPUPD
+         GOTO      OUTPUTX
+WRITE
+              Move            Str8 to TypDate
+              packkey              Ntypfld from Typdate,Type
+              add             adjustments to adjcount
+         CALL       NTYPWRT
+.
+              endif
+              repeat
+. OUTPUTX - OUTPUT SECTION EXIT.
+OUTPUTX
+OUTLAST       MOVE      C2 TO NTYPPATH
+              pack            TypDate from str8
+              packkey              Ntypfld from Typdate,"99 "
+              Move            Ntypfld to Idnum
+              CALL      NTYPtst
+              GOTO      NONINE IF OVER
+              pack            TypDate from str8
+              packkey              Ntypfld from Typdate,"99 "
+              Move            Ntypfld to Idnum
+              add             Adjsum to adjtot
+              CALL      NTYPUPD
+              GOTO      STOP
+NONINE 
+              pack            TypDate from str8
+              packkey              Ntypfld from Typdate,"99 "
+              Move            Ntypfld to Idnum
+              Move             Adjsum to adjtot
+              CALL      NTYPWRT
+              GOTO      STOP
+NOTYP         MOVE      "??" TO NTYPFLD
+              MOve            Ntypfld to Type
+              RETURN
+.
+.
+STOP     DISPLAY   *P1:24,*EL,*B,"JOB DONE, SHUTTING DOWN TO CONTINUE JOB":
+                   *W2,*B;
+         STOP
+. IO - I/O ERROR TRAPS
+IO
+         TRAPCLR   IO
+         NORETURN
+IOBRANCH
+         BRANCH    IOERROR OF FILE1,FILE2
+         DISPLAY   *P1:24,*EL,"UNKNOWN RUN TIME IO ERROR",*B;
+         GOTO      IOEXIT
+FILE1
+         DISPLAY   *P1:24,"Adjustment PRINT FILE ERROR",*B,*W2;
+         GOTO      IOEXIT
+FILE2
+         DISPLAY   *P1:24,"TYPOUT FILE ERROR",*B,*W2;
+         GOTO      IOEXIT
+IOEXIT
+         KEYIN     *P50:24,ANS;
+         CMATCH    "Q" TO ANS
+         GOTO      IOBRANCH IF NOT EQUAL
+         STOP
+
+         INCLUDE    NTYPIO.inc
+         INCLUDE   COMLOGIC.inc
+

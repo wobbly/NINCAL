@@ -1,0 +1,58 @@
+<!-- custom content goes here -->
+
+<!-- START PATCH 10/14/2005 REPLACED LOGIC -->
+<!--
+<script>
+function clearForm(){
+	document.exchangerptform.cginumber.value = "";
+}
+</script>
+-->
+<!-- END PATCH 10/14/2005 REPLACED LOGIC -->
+<form action='exchangereport.plc' name='exchangerptform' id='exchangerptform' method='POST'>
+	<input type='hidden' name='cgifunction' value='1' />
+	<input type='hidden' name='SID' value='<%=SID%>' />
+	<input type='hidden' name='dataSource' value='<%=dataSource%>' />
+	<input type='hidden' name='readPos' value='<%=readPos%>' />
+<!-- START PATCH 10/19/2005 ADDED LOGIC -->
+		<input type='hidden' name='cgiPageNum' value='<%=cgiPageNum%>' />
+		<input type='hidden' name='cgiTotPage' value='<%=cgiTotPage%>' />
+<!-- END PATCH 10/19/2005 ADDED LOGIC -->
+<!-- <center>  <!-- BJACKSON 09/29/2010 -->
+    <table border='0' cellpadding='2' cellspacing='2' align='center'>
+        <tr>
+            <td class='title' colspan='2' align=center>
+                Exchange Report
+                <br><br><br>
+            </td>
+        </tr>
+        <tr>
+			<td colspan="2">
+				<span class='errorMsg'><%=errorMsg%></span>
+			</td>
+		</tr>
+        <tr>
+			<td align='right' valign='top' width='277'>Mailer/Client Number:</td>
+            <td align='left' valign='top'>
+			<input type='text' name='cgilistnum' size=10 maxlength=6 /></td>
+        </tr>
+        <tr>
+            <td align='center' valign='top' colspan='2'>
+                <br>
+                <br>
+<!-- START PATCH 10/14/2005 REPLACED LOGIC -->
+<!--
+                <input type=submit value='Search'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type=reset value='Reset'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type='button' value='Clear' onClick='clearForm();'>
+-->
+                <input type=submit value='Search'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type=reset value='Clear'>
+<!-- END PATCH 10/14/2005 REPLACED LOGIC -->
+            </td>
+        </tr>
+    </table>
+<!--</center>  <!-- BJACKSON 09/29/2010 -->
+</form>
+<script language="JavaScript">document.exchangerptform.cgilistnum.focus(); </script>
+<!-- end custom content -->

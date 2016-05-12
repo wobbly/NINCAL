@@ -1,0 +1,119 @@
+<!-- custom content goes here -->
+<script>
+function changepg(newpos)
+{
+	document.listsearchForm.cgireadpos.value = newpos;
+  	document.listsearchForm.cgifunction.value = 1;
+	document.listsearchForm.submit();
+}
+function searchAgain()
+{
+	document.listsearchForm.cgifunction.value = 0;
+	document.listsearchForm.cgikeyword.value = "";
+	document.listsearchForm.cgilistname.value = "";
+	document.listsearchForm.submit();  
+}
+function detailSub(mailer,mlrname)
+{
+  document.listsearchForm.cgimailer.value = mailer;
+  document.listsearchForm.cgimlrname.value = mlrname;
+  document.listsearchForm.cgifunction.value = '2';
+  document.listsearchForm.submit();
+}
+</script>
+<form action='listsearch.plc' name='listsearchForm' id='listsearchForm' method='POST'>
+	<input type='hidden' name='SID' value='<%=SID%>' />
+	<input type='hidden' name='cgifunction' value='0' />
+	<input type='hidden' name='cgimlrname' value='0' />
+	<input type='hidden' name='cgimailer' value='0' />
+	<input type='hidden' name='cgikeyword' size='10' maxsize='10' value='<%=cgikeyword%>' />
+	<input type='hidden' name='cgilisttype' size='20' maxsize='32' value='<%=cgilisttype%>' />
+	<input type='hidden' name='cgiminquanity' size='15' maxsize='32' value='<%=cgiminquanity%>' />
+	<input type='hidden' name='cgilistname' size='15' maxsize='32'value='<%=cgilistname%>' />
+<center> <!-- 09/29/2010 BJACKSON -->
+    <table border='0' cellpadding='2' cellspacing='2' align='center'>
+			<tr>
+					<td class='title' colspan='4' align=center>
+							List Inquiry
+							<br>
+							Search Results
+							<br>
+					</td>
+			</tr>
+<!-- START PATCH 28DEC2005 ASH REPLACED LOGIC -->
+<!--
+	        <tr>
+	            <td colspan='4' align=center>
+	            	A link to "Samples" will be displayed in list search results
+				</td>
+	        </tr>
+			<tr>
+				<td colspan='4' align=center>
+	            	for all organizations with acquisition packages on file.
+	            </td>
+	        </tr>
+-->
+	        <tr>
+	            <td colspan='4' align=center>
+	            	A link to "Samples" will be displayed in list search results
+	            	<br>
+	            	for all organizations with acquisition packages on file.
+				</td>
+	        </tr>
+			<tr>
+				<td colspan='4' align=center>
+	            	Datacards & Samples are provided in a printable format.
+	            </td>
+	        </tr>
+<!-- END PATCH 28DEC2005 ASH REPLACED LOGIC -->
+			<tr>
+					<td colspan="2">
+						<span class='errorMsg'><%=errorMsg%></span>
+					</td>
+			</tr>
+			<tr>
+				<td>
+					<table class="datacontainer" cellpadding="2" cellspacing="0" width=500>
+						<tr>
+							<th>Name</th>
+							<th>Quantity</th>
+							<th>List Type</th>
+							<th>Description</th>
+							<th>          </th>
+						</tr>
+<%DISPLAYRESULTS%>
+						<tr class="datarow<%=cgidatarow%>">
+							 <td valign=top><a href="/datacards/data<%=cgilistnumber%>.htm" target="_blank"><%=cgilistname%></a></td>
+							 <td valign=top align=right><%=cgiquantity%></td>
+							 <td valign=top align=center><%=cgilisttypedesc%></td>
+							 <td valign=top><%=cgilistdescription%></td>
+							 <td><%=cgilistsample%></td>
+						</tr>
+<%/DISPLAYRESULTS%>
+						<tr>
+							<td colspan="6" align=center>
+								<%=cgilinks%>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6" align=center>Page <%=cgiPageNum2%> of <%=cgiTotPage2%></td>
+						</tr>
+						<tr>
+							<td colspan="6" align=center><%=cgiRecNum2%> Records Found</td>
+						</tr>
+						<tr>
+							<td colspan="6" align=center>
+								<input type=button value='Back' onclick='javascript:history.back()'>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+</center> <!-- 09/29/2010 BJACKSON -->
+	<input type='hidden' name='cgidatasource2' value='<%=cgidatasource2%>' />
+	<input type='hidden' name='cgireadpos2' value='<%=cgireadpos2%>' />
+	<input type='hidden' name='cgiTotPage2' value='<%=cgiTotPage2%>' />
+	<input type='hidden' name='cgiRecNum2' value='<%=cgiRecNum2%>' />
+</form>
+<!-- end custom content -->

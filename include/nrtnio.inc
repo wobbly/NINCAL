@@ -1,0 +1,347 @@
+;    Last change:  AH   19 Aug 1998    1:49 pm
+..............................................................................
+.
+. NRTNIO INCLUSION
+. NIN RETUNR-TO FILE I/O ROUTINES
+.
+. CREATED 05FEB92
+.
+. FILE NAME : NINRTN
+. REC LENGTH: 187 FIXED
+. INDEX KEY : 1-4 (4 POSITION RTN#)
+. AIM KEY   : 50-94   (COMPANY NAME)
+.
+. 19AUG98 ASH Y2K CONVERSION
+..............................................................................
+.
+. ENTRY POINT : NRTNKEY
+. REQUIRED    : 'NRTNFLD'
+. RETURNED    : RETURN-TO RECORD
+. DESCRIPTION : EXACT ISAM KEY READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NRTNKEY  BRANCH    NRTNFLAG TO NRTN1
+         CALL      NRTNOPEN
+NRTN1    trap      IOMSSG GIVING ERROR if IO
+         BRANCH    NRTNLOCK TO NRTN1L,NRTN1R,NRTN1N
+.NRTN1L - file locks
+NRTN1L
+         FILEPI    1;NRTNFILE
+         READ      NRTNFILE,NRTNFLD;RTNVARS
+         TRAPCLR   IO
+         RETURN
+
+.NRTN1R - record locks
+NRTN1R
+         READLK    NRTNFILE,NRTNFLD;RTNVARS
+         TRAPCLR   IO
+         RETURN
+
+.NRTN1N - no locks
+NRTN1N
+         READ      NRTNFILE,NRTNFLD;RTNVARS
+         TRAPCLR   IO
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NRTNTST
+. REQUIRED    : NRTNFLD
+. RETURNED    :
+. DESCRIPTION : TEST KEY
+.
+NRTNTST  BRANCH    NRTNFLAG TO NRTN2
+         CALL      NRTNOPEN
+NRTN2    trap      IOMSSG GIVING ERROR if IO
+         FILEPI    1;NRTNFILE
+         READ      NRTNFILE,NRTNFLD;STR1
+         TRAPCLR   IO
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NRTNKS
+. REQUIRED    :
+. RETURNED    : RETURN-TO RECORD
+. DESCRIPTION : KEY SEQUENTIAL RETURN-TO FILE READ
+.
+NRTNKS   BRANCH    NRTNFLAG TO NRTN3
+         CALL      NRTNOPEN
+NRTN3    trap      IOMSSG GIVING ERROR if IO
+         BRANCH    NRTNLOCK TO NRTN3L,NRTN3R,NRTN3N
+
+.NRTN3L - file locks
+NRTN3L
+         FILEPI    1;NRTNFILE
+         READKS    NRTNFILE;RTNVARS
+         TRAPCLR   IO
+         RETURN
+
+.NRTN3R - record locks
+NRTN3R
+         READKSLK  NRTNFILE;RTNVARS
+         TRAPCLR   IO
+         RETURN
+
+.NRTN3N - no locks
+NRTN3N
+         READKS    NRTNFILE;RTNVARS
+         TRAPCLR   IO
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NRTNSEQ
+. REQUIRED    :
+. RETURNED    : RETURN-TO RECORD
+. DESCRIPTION : SEQUENTIAL RETURN-TO FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NRTNSEQ  BRANCH    NRTNPATH TO NRTN4A,NRTNGONE,NRTN4C
+NRTN4A   BRANCH    NRTNFLAG TO NRTN4B
+         CALL      NRTNOPEN
+
+NRTN4B   trap      IOMSSG GIVING ERROR if IO
+         BRANCH    NRTNLOCK TO NRTN4BL,NRTN4BR,NRTN4BN
+
+.NRTN4BL - file locks
+NRTN4BL
+         FILEPI    1;NRTNFILE
+         READ      NRTNFILE,SEQ;RTNVARS
+         TRAPCLR   IO
+         RETURN
+
+.NRTN4BR - record locks
+NRTN4BR
+         READLK    NRTNFILE,SEQ;RTNVARS
+         TRAPCLR   IO
+         RETURN
+
+.NRTN4BN - no locks
+NRTN4BN
+         READ      NRTNFILE,SEQ;RTNVARS
+         TRAPCLR   IO
+         RETURN
+
+NRTN4C   BRANCH    NRTNFLG3 TO NRTN4D
+         CALL      NRTNOPEN
+NRTN4D   trap      IOMSSG GIVING ERROR if IO
+         BRANCH    NRTNLOCK TO NRTN4DL,NRTN4DR,NRTN4DN
+
+.NRTN4DL - file locks
+NRTN4DL
+         FILEPI    1;NRTNFLE3
+         READ      NRTNFLE3,SEQ;RTNVARS
+         TRAPCLR   IO
+         RETURN
+
+.NRTN4DR - record locks
+NRTN4DR
+         READLK    NRTNFLE3,SEQ;RTNVARS
+         TRAPCLR   IO
+         RETURN
+
+.NRTN4DN - no locks
+NRTN4DN
+         READ      NRTNFLE3,SEQ;RTNVARS
+         TRAPCLR   IO
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NRTNWRT
+. REQUIRED    : 'NRTNFLD'
+. RETURNED    :
+. DESCRIPTION : EXACT ISAM KEY TXT/ISI INSERT
+.
+NRTNWRT  MOVE      C1 TO NRTNPATH
+NRTNWRT1 COMPARE   NRTNPATH TO NRTNFLAG
+         GOTO      NRTN5 IF EQUAL
+         CALL      NRTNOPEN
+NRTN5    TRAP      IOMSSG GIVING ERROR IF IO
+         FILEPI    1;NRTNFILE
+         WRITE     NRTNFILE,NRTNFLD;RTNVARS
+         TRAPCLR   IO
+         call      nrtnwrt2
+         RETURN
+.......................
+NRTNWRT2 BRANCH    NRTNFLG2 TO NRTN5B
+         CALL      NRTNOPN2
+NRTN5B   TRAP      IOMSSG GIVING ERROR IF IO
+         FILEPI    1;NRTNFLE2
+         INSERT    NRTNFLE2
+         TRAPCLR   IO
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NRTNUPD
+. REQUIRED    : A PREVIOUS KEY READ
+. RETURNED    :
+. DESCRIPTION : KEY UPDATE RETURN-TO FILE
+.
+NRTNUPD  BRANCH    NRTNFLAG TO NRTN6
+         CALL      NRTNOPEN
+NRTN6    TRAP      IOMSSG GIVING ERROR IF IO
+         FILEPI    1;NRTNFILE
+         UPDATE    NRTNFILE;RTNVARS
+         TRAPCLR   IO
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NRTNDEL
+. REQUIRED    : 'NRTNFLD'
+. RETURNED    :
+. DESCRIPTION : EXACT ISAM KEY TXT/ISI DELETE
+.
+NRTNDEL  BRANCH    NRTNFLAG TO NRTN7
+         CALL      NRTNOPEN
+NRTN7    TRAP      IOMSSG GIVING ERROR IF IO
+         FILEPI    1;NRTNFILE
+         DELETE    NRTNFILE,NRTNFLD
+         TRAPCLR   IO
+         RETURN
+...............................................................................
+.
+. ENTRY POINT : NRTNAIM
+. REQUIRED    : NRTNFLD2
+. RETURNED    : RETURN-TO RECORD
+. DESCRIPTION : AIM RETURN-TO FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NRTNAIM  BRANCH    NRTNFLG2 TO NRTN9
+         CALL      NRTNOPN2
+NRTN9    trap      IOMSSG GIVING ERROR if IO
+         BRANCH    NRTNLOCK TO NRTN9L,NRTN9R,NRTN9N
+
+.NRTN9L - file locks
+NRTN9L
+         FILEPI    1;NRTNFLE2
+         READ      NRTNFLE2,NRTNFLD2;RTNVARS
+         TRAPCLR   IO
+         RETURN
+
+.NRTN9R - record locks
+NRTN9R
+         READLK    NRTNFLE2,NRTNFLD2;RTNVARS
+         TRAPCLR   IO
+         RETURN
+
+.NRTN9N - no locks
+NRTN9N
+         READ      NRTNFLE2,NRTNFLD2;RTNVARS
+         TRAPCLR   IO
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NRTNKG
+. REQUIRED    : VALID PREVIOUS AIM READ
+. RETURNED    : RETURN-TO RECORD
+. DESCRIPTION : AIM KEY GENEREIC RETURN-TO FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NRTNKG   BRANCH    NRTNFLG2 TO NRTN10
+         CALL      NRTNOPN2
+NRTN10    trap      IOMSSG GIVING ERROR if IO
+         BRANCH    NRTNLOCK TO NRTN10L,NRTN10R,NRTN10N
+
+.NRTN10L - file locks
+NRTN10L
+         FILEPI    1;NRTNFLE2
+         READKG    NRTNFLE2;RTNVARS
+         TRAPCLR   IO
+         RETURN
+
+.NRTN10R - record locks
+NRTN10R
+         READKGLK  NRTNFLE2;RTNVARS
+         TRAPCLR   IO
+         RETURN
+
+.NRTN10N - no locks
+NRTN10N
+         READKG    NRTNFLE2;RTNVARS
+         TRAPCLR   IO
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NRTNKGP
+. REQUIRED    : PREVIOUS VALID AIM READ
+. RETURNED    : RETURN-TO RECORD
+. DESCRIPTION : KEY GENERIC PRIOR RETURN-TO FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NRTNKGP  BRANCH    NRTNFLG2 TO NRTN11
+         CALL      NRTNOPN2
+NRTN11    trap      IOMSSG GIVING ERROR if IO
+         BRANCH    NRTNLOCK TO NRTN11L,NRTN11R,NRTN11N
+
+.NRTN11L - file locks
+NRTN11L
+         FILEPI    1;NRTNFLE2
+         READKGP   NRTNFLE2;RTNVARS
+         TRAPCLR   IO
+         RETURN
+
+.NRTN11R - record locks
+NRTN11R
+         READKGPLK NRTNFLE2;RTNVARS
+         TRAPCLR   IO
+         RETURN
+
+.NRTN11N - no locks
+NRTN11N
+         READKGP   NRTNFLE2;RTNVARS
+         TRAPCLR   IO
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NRTNOPEN
+. REQUIRED    : 'NRTNFLAG'
+. RETURNED    : 'NRTNFLAG' SET TO '1' IF OPENNED
+. DESCRIPTION : OPEN NIN RETURN-TO FILE
+.               DISPLAY ERROR AND ABORT IF NOT ON-LINE.
+.
+NRTNOPEN BRANCH    NRTNPATH OF NRTNOPN1,NRTNOPN2,NRTNOPN3
+NRTNOPN1 TRAP      NRTNGONE IF IO
+         BRANCH    NRTNLOCK TO NRTNOP,NRTNOPR,NRTNOP
+.
+NRTNOP
+         OPEN      NRTNFILE,NRTNNAME
+         TRAPCLR   IO
+         MOVE      C1 TO NRTNFLAG
+         RETURN
+NRTNOPR
+         OPEN      NRTNFILE,NRTNNAME,LOCKMANUAL,SINGLE
+         TRAPCLR   IO
+         MOVE      C1 TO NRTNFLAG
+         RETURN
+.
+NRTNOPN2 TRAP      NRTNGONE IF IO
+         BRANCH    NRTNLOCK TO NRTNOP2,NRTNOPR2,NRTNOP2
+.
+NRTNOP2
+         OPEN      NRTNFLE2,NRTNNAME
+         TRAPCLR   IO
+         MOVE      C1 TO NRTNFLG2
+         RETURN
+NRTNOPR2
+         OPEN      NRTNFLE2,NRTNNAME,LOCKMANUAL,SINGLE
+         TRAPCLR   IO
+         MOVE      C1 TO NRTNFLG2
+         RETURN
+.
+NRTNOPN3 TRAP      NRTNGONE IF IO
+         BRANCH    NRTNLOCK TO NRTNOP3,NRTNOPR3,NRTNOP3
+.
+NRTNOP3
+         OPEN      NRTNFLE3,NRTNNAME
+         TRAPCLR   IO
+         MOVE      C1 TO NRTNFLG3
+         RETURN
+NRTNOPR3
+         OPEN      NRTNFLE3,NRTNNAME,LOCKMANUAL,SINGLE
+         TRAPCLR   IO
+         MOVE      C1 TO NRTNFLG3
+         RETURN
+.
+NRTNGONE MOVE      NRTNNAME TO FILENAME
+         CALL      FILEGONE
+.
+..............................................................................
+

@@ -1,0 +1,184 @@
+..............................................................................
+.
+. NCATIO INCLUSION
+. NIN DATACARD CATEGORY FILE I/O ROUTINES
+.
+. FILE NAME : NINCAT
+. REC LENGTH: 9 VAR
+. INDEX KEY : 1-9 (6 BYTE LIST NUMBER + 1 BYTE CATCODE + 2 BYTE CAT#)
+.
+..............................................................................
+.
+. ENTRY POINT : NCATKEY
+. REQUIRED    : 'NCATFLD'
+. RETURNED    : DATACARD CATEGORY RECORD
+. DESCRIPTION : EXACT ISAM KEY READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NCATKEY
+	BRANCH	NCATFLAG,NCAT1
+	CALL	NCATOPEN
+NCAT1
+	trap	IOMssg giving Error if IO
+.	FILEPI	1;NCATFILE
+	READ	NCATFILE,NCATFLD;NCATVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NCATTST
+. REQUIRED    : NCATFLD
+. RETURNED    :
+. DESCRIPTION : TEST KEY
+.
+NCATTST
+	BRANCH	NCATFLAG,NCAT2
+	CALL	NCATOPEN
+NCAT2
+	trap	IOMssg giving Error if IO
+.	FILEPI	1;NCATFILE
+	READ	NCATFILE,NCATFLD;;
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NCATKS
+. REQUIRED    :
+. RETURNED    : DATACARD CATEGORY RECORD
+. DESCRIPTION : KEY SEQUENTIAL DATACARD CATEGORY FILE READ
+.
+NCATKS
+	BRANCH	NCATFLAG,NCAT3
+	CALL	NCATOPEN
+NCAT3
+	trap	IOMssg giving Error if IO
+.	FILEPI	1;NCATFILE
+	READKS	NCATFILE;NCATVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NCATSEQ
+. REQUIRED    :
+. RETURNED    : DATACARD CATEGORY RECORD
+. DESCRIPTION : SEQUENTIAL DATACARD CATEGORY FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NCATSEQ
+	BRANCH	NCATFLAG,NCAT4
+	CALL	NCATOPEN
+NCAT4
+	trap	IOMssg giving Error if IO
+.	FILEPI	1;NCATFILE
+	READ	NCATFILE,SEQ;NCATVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NCATWRT
+. REQUIRED    : 'NCATFLD'
+. RETURNED    :
+. DESCRIPTION : EXACT ISAM KEY TXT/ISI INSERT
+.
+NCATWRT
+	BRANCH	NCATFLAG,NCAT5
+	CALL	NCATOPEN
+NCAT5
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NCATFLIST
+	WRITE	NCATFLIST;NCATVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NCATUPD
+. REQUIRED    : A PREVIOUS KEY READ
+. RETURNED    :
+. DESCRIPTION : KEY UPDATE RECORD NUMBER FILE
+.
+NCATUPD
+	BRANCH	NCATFLAG,NCAT6
+	CALL	NCATOPEN
+NCAT6
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NCATFLIST
+	UPDATE	NCATFLIST;NCATVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NCATDEL
+. REQUIRED    : 'NCATFLD'
+. RETURNED    :
+. DESCRIPTION : EXACT ISAM KEY TXT/ISI DELETE
+.
+NCATDEL
+	BRANCH	NCATFLAG,NCAT7
+	CALL	NCATOPEN
+NCAT7
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NCATFLIST
+	DELETE	NCATFLIST
+	trapclr	IO
+	RETURN
+
+..............................................................................
+. ENTRY POINT : NCATAIM
+. REQUIRED    : NCATFLD2
+. RETURNED    : RECORD
+. DESCRIPTION : AIM FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NCATAIM
+	BRANCH	NCATFLAG,NCAT8
+	CALL	NCATOPEN
+NCAT8   
+	trap	IOMssg giving Error if IO
+	READ	NCATFLE2,NCATFLD1,NCATFLD2;NCATVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NCATKG
+. REQUIRED    : VALID PREVIOUS AIM READ
+. RETURNED    : RECORD
+. DESCRIPTION : AIM KEY GENEREIC FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NCATKG
+	BRANCH	NCATFLAG,NCAT10
+	CALL	NCATOPEN
+NCAT10
+	trap	IOMssg giving Error if IO
+	READKG	NCATFLE2;NCATVARS
+	trapclr	IO
+	RETURN
+
+...............................................................................
+.
+. ENTRY POINT : NCATOPEN
+. REQUIRED    : 'NCATFLAG'
+. RETURNED    : 'NCATFLAG' SET TO '1' IF OPENNED
+. DESCRIPTION : OPEN NIN DATACARD CATEGORY FILE
+.               DISPLAY ERROR AND ABORT IF NOT ON-LINE.
+.
+NCATOPEN
+	TRAP	NCATGONE giving Error if IO
+	OPEN	NCATFLIST	.,EXCLUSIVE
+.	OPEN	NCATFLIST
+	trapclr	IO
+	MOVE	C1,NCATFLAG
+	RETURN
+.
+NCATGONE
+	MOVE	NCATNAME,FILENAME
+	CALL	FILEGONE
+.
+..............................................................................

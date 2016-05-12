@@ -1,0 +1,194 @@
+..............................................................................
+.
+. NCLTIO INCLUSION
+. NIN CONSULTANT/CLIENT CROSS REFERENCE FILE I/O ROUTINES
+.
+. FILE NAME : NINCLT
+. REC LENGTH: 50
+. INDEX KEY : 1-14 (6 BYTE CONSULTANT NUMBER + 6 BYTE CLIENT NUMBER + 2 BYTE UNIQUE IDENTIFIER)
+.
+..............................................................................
+.
+. ENTRY POINT : NCLTKEY
+. REQUIRED    : 'NCLTFLD'
+. RETURNED    : CONSULTANT/CLIENT CROSS REFERENCE RECORD
+. DESCRIPTION : EXACT ISAM KEY READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NCLTKEY
+	BRANCH	NCLTFLAG,NCLT1
+	CALL	NCLTOPEN
+NCLT1
+	trap	IOMssg giving Error if IO
+	READ	NCLTFILE,NCLTFLD;NCLTVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NCLTTST
+. REQUIRED    : NCLTFLD
+. RETURNED    :
+. DESCRIPTION : TEST KEY
+.
+NCLTTST
+	BRANCH	NCLTFLAG,NCLT2
+	CALL	NCLTOPEN
+NCLT2
+	trap	IOMssg giving Error if IO
+	READ	NCLTFILE,NCLTFLD;;
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NCLTKS
+. REQUIRED    :
+. RETURNED    : CONSULTANT/CLIENT CROSS REFERENCE
+. DESCRIPTION : KEY SEQUENTIAL CONSULTANT/CLIENT CROSS REFERENCE FILE READ
+.
+NCLTKS
+	BRANCH	NCLTFLAG,NCLT3
+	CALL	NCLTOPEN
+NCLT3
+	trap	IOMssg giving Error if IO
+	READKS	NCLTFILE;NCLTVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NCLTSEQ
+. REQUIRED    :
+. RETURNED    : CONSULTANT/CLIENT CROSS REFERENCE
+. DESCRIPTION : SEQUENTIAL CONSULTANT/CLIENT CROSS REFERENCE FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NCLTSEQ
+	BRANCH	NCLTFLAG,NCLT4
+	CALL	NCLTOPEN
+NCLT4
+	trap	IOMssg giving Error if IO
+	READ	NCLTFILE,SEQ;NCLTVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NCLTWRT
+. REQUIRED    : 'NCLTFLD'
+. RETURNED    :
+. DESCRIPTION : EXACT ISAM KEY TXT/ISI INSERT
+.
+NCLTWRT
+	BRANCH	NCLTFLAG,NCLT5
+	CALL	NCLTOPEN
+NCLT5
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NCLTFLIST
+	WRITE	NCLTFLIST;NCLTVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NCLTUPD
+. REQUIRED    : A PREVIOUS KEY READ
+. RETURNED    :
+. DESCRIPTION : KEY UPDATE RECORD NUMBER FILE
+.
+NCLTUPD
+	BRANCH	NCLTFLAG,NCLT6
+	CALL	NCLTOPEN
+NCLT6
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NCLTFLIST
+	UPDATE	NCLTFLIST;NCLTVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NCLTDEL
+. REQUIRED    : 'NCLTFLD'
+. RETURNED    :
+. DESCRIPTION : EXACT ISAM KEY TXT/ISI DELETE
+.
+NCLTDEL
+	BRANCH	NCLTFLAG,NCLT7
+	CALL	NCLTOPEN
+NCLT7
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NCLTFLIST
+	DELETE	NCLTFLIST
+	trapclr	IO
+	RETURN
+
+..............................................................................
+. ENTRY POINT : NCLTAIM
+. REQUIRED    : NCLTFLD2
+. RETURNED    : RECORD
+. DESCRIPTION : AIM FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NCLTAIM
+	BRANCH	NCLTFLAG,NCLT8
+	CALL	NCLTOPEN
+NCLT8
+	trap	IOMssg giving Error if IO
+	READ	NCLTFLE2,NCLTFLD1,NCLTFLD2;NCLTVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NCLTKG
+. REQUIRED    : VALID PREVIOUS AIM READ
+. RETURNED    : RECORD
+. DESCRIPTION : AIM KEY GENEREIC FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NCLTKG
+	BRANCH	NCLTFLAG,NCLT10
+	CALL	NCLTOPEN
+NCLT10
+	trap	IOMssg giving Error if IO
+	READKG	NCLTFLE2;NCLTVARS
+	trapclr	IO
+	RETURN
+
+...............................................................................
+.
+. ENTRY POINT : NCLTOPEN
+. REQUIRED    : 'NCLTFLAG'
+. RETURNED    : 'NCLTFLAG' SET TO '1' IF OPENNED
+. DESCRIPTION : OPEN NIN CONSULTANT/CLIENT CROSS REFERENCE FILE
+.               DISPLAY ERROR AND ABORT IF NOT ON-LINE.
+.
+NCLTOPEN
+	TRAP	NCLTGONE giving Error if IO
+	OPEN	NCLTFLIST	.,EXCLUSIVE
+.	OPEN	NCLTFLIST
+	trapclr	IO
+	MOVE	C1,NCLTFLAG
+	RETURN
+.
+NCLTGONE
+	MOVE	NCLTNAME,FILENAME
+	CALL	FILEGONE
+.
+...............................................................................
+.
+. ENTRY POINT : NCLTCLOSE
+. REQUIRED    : 'NCLTFLAG'
+. RETURNED    : 'NCLTFLAG' SET TO '0' IF CLOSED
+. DESCRIPTION : OPEN NIN CONSULTANT/CLIENT CROSS REFERENCE FILE
+.               DISPLAY ERROR AND ABORT IF NOT ON-LINE.
+.
+NCLTCLOSE
+	TRAP	NCLTGONE giving Error if IO
+	CLOSE	NCLTFLIST
+	trapclr	IO
+	MOVE	C0,NCLTFLAG
+	RETURN
+..............................................................................

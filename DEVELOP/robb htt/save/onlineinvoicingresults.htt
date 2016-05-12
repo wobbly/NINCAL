@@ -1,0 +1,99 @@
+<!-- custom content goes here -->
+<script language="javascript">
+function changepg(newpos)
+{
+	document.optionlineinvForm.cgireadpos.value = newpos;
+  document.optionlineinvForm.cgifunction.value = 2;
+	document.optionlineinvForm.submit();
+}
+
+function viewinvoice(lrn)
+{
+	document.optionlineinvForm.cgilrn.value = lrn;
+	document.optionlineinvForm.cgifunction.value = 3;
+	document.optionlineinvForm.submit();
+}
+</script>
+<!-- START PATCH 10/04/2005 ADDED LOGIC -->
+<script language="javascript">
+function srchpg()
+{
+	document.optionlineinvForm.cgifunction.value = 0;
+	document.optionlineinvForm.submit();
+}
+</script>
+<!-- END PATCH 10/04/2005 ADDED LOGIC -->
+
+<form action='' name='optionlineinvForm' id='optionlineinvForm' method='POST'>
+	<input type='hidden' name='cgifunction' value='0' />
+	<input type='hidden' name='cgilrn' value='' />
+	<input type='hidden' name='SID' value='<%=SID%>' />
+<center> <!-- 09/29/2010 BJACKSON -->
+	<table border='0' cellpadding='2' cellspacing='2' align='center'>
+		<tr>
+			<td colspan="4" class='title' align=center>
+				Online Invoicing
+				<br>
+				<%=cgicompanyname%>
+				<br>
+				<br>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<table class="datacontainer" cellpadding="2" cellspacing="0">
+					<tr>
+						<th>Mail Date</th>
+						<th>Order Number</th>
+						<th>P.O. Number</th>
+<!-- START PATCH 1/5/2006 ASH REPLACED LOGIC -->
+<!--						<th>Campaign Number</th>  -->
+						<th>Mailer Key</th>
+<!-- END PATCH 1/5/2006 ASH REPLACED LOGIC -->
+					</tr>
+<%DISPLAYSEARCHRESULTS%>
+					<tr class="datarow<%=cgidatarow%>">
+						<td><%=cgimailerdate%></td>
+						<td><%=cgiorderfield%></td>
+						<td><%=cgiponumber%></td>
+<!-- START PATCH 1/5/2006 ASH REPLACED LOGIC -->
+<!--						<td><%=cgicampaignnumber%></td>  -->
+						<td><%=cgimailerkey%></td>
+<!-- END PATCH 1/5/2006 ASH REPLACED LOGIC -->
+					</tr>
+<%/DISPLAYSEARCHRESULTS%>
+					<tr>
+						<td colspan="4" align=center>
+							<%=cgilinks%>
+						</td>
+					</tr>
+<!-- START PATCH 01DEC2005 ADDED LOGIC -->
+					<tr>
+						<td colspan="6" align=center>Page <%=cgiPageNum%> of <%=cgiTotPage%></td>
+					</tr>
+					<tr>
+						<td colspan="6" align=center><%=cgiRecNum%> Records Found</td>
+					</tr>
+<!-- END PATCH 01DEC2005 ADDED LOGIC -->
+					<tr>
+						<td colspan="4" align=center>
+<!-- START PATCH 10/04/2005 REPLACED LOGIC
+							<input type="submit" value="Search Again" />
+-->
+							<input type="button" value="Search Again" onClick='srchpg();'/>
+<!-- END PATCH 10/04/2005 REPLACED LOGIC-->
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+</center> <!-- 09/29/2010 BJACKSON -->
+	<input type="hidden" name="cgidatasource" value="<%=cgidatasource%>" />
+	<input type="hidden" name="cgireadpos" value="<%=cgireadpos%>" />
+<!-- START PATCH 01DEC2005 ADDED LOGIC -->
+	<input type='hidden' name='cgiTotPage' value='<%=cgiTotPage%>' />
+	<input type='hidden' name='cgiRecNum' value='<%=cgiRecNum%>' />
+<!-- END PATCH 01DEC2005 ADDED LOGIC -->
+</form>
+<!-- end custom content -->

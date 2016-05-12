@@ -1,0 +1,20 @@
+<!-- custom content goes here -->
+<form action='counts.plc' name='countsForm' id='countsForm' method='POST'>
+	<input type='hidden' name='function' value='0' />
+	<input type='hidden' name='SID' value='<%=SID%>' />
+	<table border='0' cellpadding='2' cellspacing='2' align='center'>
+		<tr>
+			<td class='title' align=center>
+				Counts Request
+				<br><br><br>
+			</td>
+		</tr>
+		<tr>
+			<td colspan='2'>
+				Thank you for your request.  Your inquiry will be sent to you via email or fax.
+		</td>
+		</tr>
+	</table>
+
+</form>
+<!-- end custom content -->

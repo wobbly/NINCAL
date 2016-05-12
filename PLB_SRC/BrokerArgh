@@ -1,0 +1,22 @@
+               Include        Common.inc
+               include        cons.inc
+               include        nbrkdd.inc
+Pc             Equ            0
+Release        Init           "not"
+File           File
+;...
+;
+Begin          Open           File,"\\nts1\e\data\text\ninbrk.july2002",read
+;
+Looper         Read           File,seq;MlrVars
+               Goto           Exit if over
+               packkey        NBRKFLD from BRKNUM,BRKCNT
+               call           Nbrktst
+               If             Not Over
+               Move           "T" to BrFaxOflag
+               call           Nbrkupd
+               endif
+               goto           Looper
+Exit           Stop
+               Include        nbrkio.inc
+               include        comlogic.inc

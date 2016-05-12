@@ -1,0 +1,206 @@
+ 
+****************************************************************************************************
+*                                                                                                  *
+*                         PLBUTILITIES.DLL - PlbUtilities 1.0 Type Library                         *
+*                         ================================================                         *
+*                                                                                                  *
+*         Type Library Path        :    I:\C++\PLBUTILITIES\RELEASEMINDEPENDENCY\PLBUTILITIES.DLL  *
+*                                                                                                  *
+*         Class ID                 :    {96D8222C-BB8B-473F-A808-345763EF4861}                     *
+*                                                                                                  *
+*         Version                  :    1.0                                                        *
+*                                                                                                  *
+*         Pl/b Data Type           :    Control                                                    *
+*                                                                                                  *
+*         Created by               :    Festus                                                     *
+*                                                                                                  *
+*         On WorkStation           :    CONSOLE                                                    *
+*                                                                                                  *
+*         TimeStamp                :    2001/10/27 10H46:39.00                                     *
+*                                                                                                  *
+****************************************************************************************************
+*                       Created by CyBry, Inc - EasyCOM V1.0 - www.CyBry.com                       *
+*                     Licensed to : CyBry, Inc. - Festus Redelinghuys - 899232                     *
+****************************************************************************************************
+ 
+ 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++                                                                                                  +
++                                 Default CoClass Interface - # 1                                  +
++                                 ===============================                                  +
++                                                                                                  +
++         CoClass Name             :    Image                                                      +
++                                                                                                  +
++         Interface Name           :    IImage                                                     +
++                                                                                                  +
++         Description              :    IImage Interface                                           +
++                                                                                                  +
++         Version                  :    1.0                                                        +
++                                                                                                  +
++         Threading Model          :    Apartment                                                  +
++                                                                                                  +
++         Class ID                 :    {909A28AC-55FE-463D-BE29-CEC66A37F382}                     +
++                                                                                                  +
++         Program ID               :    PlbUtilities.Image.1                                       +
++                                                                                                  +
++         Vers. Ind. Program ID    :    PlbUtilities.Image                                         +
++                                                                                                  +
++         Function Count           :    1                                                          +
++                                                                                                  +
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 
+....................................................................................................
+.                                                                                                  .
+.                              Class Object Pl/b Data Type Definition                              .
+.                              ======================================                              .
+.                                                                                                  .
+....................................................................................................
+ 
+Image                         Control   CLASS="PlbUtilities.Image" // Version Independent Program 
+//                                                                 // ID 
+ 
+          Create              Window;Image=2000:2000:2000:2000,Visible=0
+ 
+ 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                 /
+//        Function Name            :    GetDllExportedFunctionNames                                /
+//                                                                                                 /
+//        Description              :    This method returns the names of all the exported          /
+//                                 :    functions in a Dll                                         /
+//                                                                                                 /
+//        Function ID              :             1                                                 /
+//                                                                                                 /
+////////////////////////////////////////////////////////////////////////////////////////////////////
+ 
+GetDllExportedFunctionNames   Integer   4                   // VT_I4 
+DllName                       Dim       1024                // VT_BSTR 
+FunctionNames                 Variant                       // VT_VARIANT 
+ 
+          Image.GetDllExportedFunctionNames GIVING GetDllExportedFunctionNames USING *DllName=DllName:
+                                                                                     *FunctionNames=FunctionNames
+ 
+ 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++                                                                                                  +
++                                 Default CoClass Interface - # 2                                  +
++                                 ===============================                                  +
++                                                                                                  +
++         CoClass Name             :    uShell                                                     +
++                                                                                                  +
++         Interface Name           :    IuShell                                                    +
++                                                                                                  +
++         Description              :    IuShell Interface                                          +
++                                                                                                  +
++         Version                  :    1.0                                                        +
++                                                                                                  +
++         Threading Model          :    Apartment                                                  +
++                                                                                                  +
++         Class ID                 :    {603DBD90-3E0B-4D4F-B6E2-CD0A7A576CA6}                     +
++                                                                                                  +
++         Program ID               :    PlbUtilities.uShell.1                                      +
++                                                                                                  +
++         Vers. Ind. Program ID    :    PlbUtilities.uShell                                        +
++                                                                                                  +
++         Function Count           :    1                                                          +
++                                                                                                  +
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 
+....................................................................................................
+.                                                                                                  .
+.                              Class Object Pl/b Data Type Definition                              .
+.                              ======================================                              .
+.                                                                                                  .
+....................................................................................................
+ 
+uShell                        Control   CLASS="PlbUtilities.uShell" // Version Independent 
+//                                                                  // Program ID 
+ 
+          Create              Window;uShell=2000:2000:2000:2000,Visible=0
+ 
+ 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                 /
+//        Function Name            :    GetFolder                                                  /
+//                                                                                                 /
+//        Description              :    Select a folder using the OS folder selection dialog       /
+//                                                                                                 /
+//        Function ID              :             1                                                 /
+//                                                                                                 /
+////////////////////////////////////////////////////////////////////////////////////////////////////
+ 
+GetFolder                     Dim       1024                // VT_BSTR 
+hWnd                          Integer   4                   // VT_UINT 
+Title                         Dim       1024                // VT_BSTR 
+ 
+          uShell.GetFolder    GIVING GetFolder USING *hWnd=hWnd:
+                                                     *Title=Title
+ 
+ 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++                                                                                                  +
++                                 Default CoClass Interface - # 3                                  +
++                                 ===============================                                  +
++                                                                                                  +
++         CoClass Name             :    DLLInfo                                                    +
++                                                                                                  +
++         Interface Name           :    IDLLInfo                                                   +
++                                                                                                  +
++         Description              :    IDLLInfo Interface                                         +
++                                                                                                  +
++         Version                  :    1.0                                                        +
++                                                                                                  +
++         Threading Model          :    Apartment                                                  +
++                                                                                                  +
++         Class ID                 :    {37A5E55B-3F9D-4B2D-B027-8E932A720FBD}                     +
++                                                                                                  +
++         Program ID               :    PlbUtilities.DLLInfo.1                                     +
++                                                                                                  +
++         Vers. Ind. Program ID    :    PlbUtilities.DLLInfo                                       +
++                                                                                                  +
++         Function Count           :    1                                                          +
++                                                                                                  +
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 
+....................................................................................................
+.                                                                                                  .
+.                              Class Object Pl/b Data Type Definition                              .
+.                              ======================================                              .
+.                                                                                                  .
+....................................................................................................
+ 
+DLLInfo                       Control   CLASS="PlbUtilities.DLLInfo" // Version Independent 
+//                                                                   // Program ID 
+ 
+          Create              Window;DLLInfo=2000:2000:2000:2000,Visible=0
+ 
+ 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                                 /
+//        Function Name            :    GetDllVersion                                              /
+//                                                                                                 /
+//        Description              :    This method returns the Dll version of this control.       /
+//                                 :    DllVersion = Major,Minor,Method,Patch                      /
+//                                                                                                 /
+//        Function ID              :             1                                                 /
+//                                                                                                 /
+////////////////////////////////////////////////////////////////////////////////////////////////////
+ 
+GetDllVersion                 Dim       1024                // VT_BSTR 
+ 
+          DLLInfo.GetDllVersion GIVING GetDllVersion 
+ 
+****************************************************************************************************
+*                                                                                                  *
+*         END of Type Library - I:\C++\PLBUTILITIES\RELEASEMINDEPENDENCY\PLBUTILITIES.DLL          *
+*         ===============================================================================          *
+*                                                                                                  *
+*         Constants                :    0                                                          *
+*         Total Interfaces         :    3                                                          *
+*         Event Interfaces         :    0                                                          *
+*         CoClass Interfaces       :    3                                                          *
+*         Functions                :    3                                                          *
+*         Code Lines               :    205                                                        *
+*                                                                                                  *
+****************************************************************************************************
+ 

@@ -1,0 +1,303 @@
+*==============================================================================
+. Process for MENU2 items for UTILITIES
+.
+#MNU2	 MENU
+#MNU2ITM INIT	   ")Utilities;":	     ;Utility menu list
+		   ")Aamdex;":
+		   "Blok)edit;":
+		   ")Build;":
+		   ")Dump;":
+		   ")Index;":
+		   ")List;":
+		   ")Reformat;":
+		   "Sca)n;":
+		   ")Sort;":
+		   ")Textmatch"
+.
+.
+#MNU2RES FORM	   3
+.
+URES	 FORM	   2
+.
+.==============================================================================
+MAK2
+. Put MENU 2 ( Utilities ) into	the MAIN MENU BAR
+.
+	 CREATE	   #MNU2,#MNU2ITM
+	 ACTIVATE  #MNU2,MNU2EXEC,#MNU2RES
+	 RETURN
+.------------------------------------------------------------------------------
+ENAMNU2					;
+	 ENABLEITEM #MNU2		;
+	 RETURN				;
+.
+DISMNU2					;
+	 DISABLEITEM #MNU2		;
+	 RETURN				;
+*==============================================================================
+.
+MNU2EXEC	   ;
+	 MOVE	   "2",MENUSEL
+	 CALL	   MENUSOFF
+.
+	 CLEAR	   TEMP:	       ;Clear Temporary	work variable
+		   INPUT:	       ;Clear the INPUT	variable
+		   OUTPUT:
+		   STFLD:
+		   LENFLD:
+		   OPTIONS:
+		   ABORT:		;Clear the ABORT flag
+		   FLAGS
+.
+	 CALL	   SETOK	       Create OK Button
+.
+	 CALL	   SETCAN	       Create CANCEL Button
+.
+	 GETITEM   #MNU2,#MNU2RES,UNAME	 ;Retrieve the menu entry name
+.
+	 PACK	   DIM40,"Sunbelt Workshop: ",UNAME
+	 SETWTITLE DIM40
+	 CLEAR	   DIM40
+	 MOVE	   "Input: ",INPUTQ
+.
+	 PERFORM   #MNU2RES:
+		   AAMDEX:	       ; Result	= 1
+		   BLOKEDIT:	       ; Result	= 2
+		   BUILD:	       ; Result	= 3
+		   DUMP:	       ; Result	= 4
+		   INDEX:	       ; Result	= 5
+		   LIST:	       ; Result	= 6
+		   REFORMAT:	       ; Result	= 7
+		   SCAN:	       ; Result	= 8
+		   SORT:	       ; Result	= 9
+		   TXTMATCH	       ; Result	= 10
+	 RETURN
+.==============================================================================
+.
+AAMDEX
+	 MOVE	   "SUNAAMDX",UNAME
+	 CALL	   SETBG
+	 CALL	   SETINP
+	 CALL	   SETOUT
+	 CALL	   SETLEN
+	 CALL	   SETOPT
+	 CALL	   RESETBG
+	 CALL	   ACTALL
+	 SETFOCUS  INPUTF
+	 RETURN
+.------------------------------------------------------------------------------
+.
+BLOKEDIT
+	 MOVE	   "CMD	FILE: ",INPUTQ
+	 CALL	   SETBG
+	 CALL	   SETINP
+	 CALL	   SETOUT
+	 CALL	   SETOPT
+	 CALL	   RESETBG
+	 CALL	   ACTALL
+	 SETFOCUS  INPUTF
+	 RETURN
+.------------------------------------------------------------------------------
+.
+BUILD
+	 CALL	   SETBG
+	 CALL	   SETOUT
+	 CALL	   SETOPT
+	 CALL	   RESETBG
+	 CALL	   ACTALL
+	 SETFOCUS  OUTPUTF
+	 RETURN
+.------------------------------------------------------------------------------
+.
+DUMP
+	 MOVE	   "SUNDUMP",UNAME
+	 CALL	   SETBG
+	 CALL	   SETINP
+	 CALL	   SETOPT
+	 CALL	   RESETBG
+	 CALL	   ACTALL
+	 SETFOCUS  INPUTF
+	 RETURN
+.------------------------------------------------------------------------------
+.
+FREE
+	 MOVE	   "DRIVE NO: ",INPUTQ
+	 CALL	   SETBG
+	 CALL	   SETINP
+	 CALL	   RESETBG
+	 CALL	   ACTALL
+	 SETFOCUS  INPUTF
+	 RETURN
+.------------------------------------------------------------------------------
+.
+INDEX
+	 MOVE	   "SUNINDEX",UNAME
+	 CALL	   SETBG
+	 CALL	   SETINP
+	 CALL	   SETOUT
+	 CALL	   SETLEN
+	 CALL	   SETTMP
+	 CALL	   SETOPT
+	 CALL	   RESETBG
+	 CALL	   ACTALL
+	 SETFOCUS  INPUTF
+	 RETURN
+.------------------------------------------------------------------------------
+.
+LIST		   ;
+	 MOVE	   "SUNLIST",UNAME
+	 CALL	   SETBG
+	 CALL	   SETINP
+	 CALL	   SETST
+	 CALL	   SETSPL
+	 CALL	   SETOPT
+	 CALL	   RESETBG
+	 CALL	   ACTALL
+	 SETFOCUS  INPUTF
+	 RETURN
+.------------------------------------------------------------------------------
+.
+REFORMAT
+	 CALL	   SETBG
+	 CALL	   SETINP
+	 CALL	   SETOUT
+	 CALL	   SETOPT
+	 CALL	   RESETBG
+	 CALL	   ACTALL
+	 SETFOCUS  INPUTF
+	 RETURN
+.------------------------------------------------------------------------------
+.
+SCAN
+	 MOVE	   "SUNSCAN",UNAME
+	 CALL	   SETBG
+	 CALL	   SETINP
+	 CALL	   RESETBG
+	 CALL	   ACTALL
+	 SETFOCUS  INPUTF
+	 RETURN
+.------------------------------------------------------------------------------
+.
+SORT
+	 MOVE	   "SUNSORT",UNAME
+	 CALL	   SETBG
+	 CALL	   SETINP
+	 CALL	   SETOUT
+	 CALL	   SETTMP
+	 CALL	   SETOPT
+	 CALL	   RESETBG
+	 CALL	   ACTALL
+	 SETFOCUS  INPUTF
+	 RETURN
+.------------------------------------------------------------------------------
+.
+TXTMATCH
+	 MOVE	   "TXTMATCH",UNAME
+	 CALL	   SETBG
+	 CALL	   SETINP
+	 CALL	   SETOUT
+	 CALL	   RESETBG
+	 CALL	   ACTALL
+	 SETFOCUS  INPUTF
+	 RETURN
+.==============================================================================
+.
+MNU2OK				       ;Process	the OK button for utility
+	 IF ( INPFLG = 1 )
+	   TYPE	     INPUT
+	   RETURN    IF	EOS	       ;Nothing	to do if no input
+	 ENDIF
+.
+	 IF ( OUTFLG = 1 )
+	   TYPE	     OUTPUT
+	   RETURN    IF	EOS	       ;Nothing	to do if no req	output
+	 ENDIF
+	 CALL	   CLEANUP
+	 CLEAR	   DIM40
+	 UNPACK	   DIM40,S$CMDLIN
+.
+	 IF ( INPFLG = 0 & OUTFLG = 1 )
+	   MOVE	     OUTPUT,INPUT
+	   MOVE	     "1",INPFLG
+	   MOVE	     "0",OUTFLG
+	 ENDIF
+.
+	 CLEAR	   S$CMDLIN
+	 APPEND	   "..\CODE\",S$CMDLIN
+	 APPEND	   UNAME,S$CMDLIN
+	 APPEND	   " ",S$CMDLIN
+.
+. PROCESS INPUT
+.
+	 IF ( INPFLG = 1 )
+	   CMATCH    " ",INPUT
+	   IF	     NOT EOS
+	     APPEND    INPUT,S$CMDLIN
+	   ENDIF
+	 ENDIF
+.
+. PROCESS OUTPUT
+.
+	 IF ( OUTFLG = 1 )
+	   APPEND    ",",S$CMDLIN
+	   CMATCH    " ",OUTPUT
+	   IF	     NOT EOS
+	     APPEND    OUTPUT,S$CMDLIN
+	   ENDIF
+	 ENDIF
+.
+	 IF ( LENFLG = 1 )
+	   APPEND    ",",S$CMDLIN
+	   CMATCH    "_",LENFLD
+	   IF	     NOT EOS
+	     APPEND    "L",S$CMDLIN
+	     APPEND    LENFLD,S$CMDLIN
+	   ENDIF
+	 ENDIF
+.
+	 IF ( STFLG = 1	)
+	   APPEND    ",",S$CMDLIN
+	   CMATCH    "_",STFLD
+	   IF	     NOT EOS
+	     APPEND    "S",S$CMDLIN
+	     APPEND    STFLD,S$CMDLIN
+	   ENDIF
+	 ENDIF
+.
+	 IF	   (TMPFLG=1)
+	   APPEND    ",",S$CMDLIN
+	   CMATCH    "_",STFLD
+	   IF	     NOT EOS
+	     APPEND    TMPFLD,S$CMDLIN
+	   ENDIF
+	 ENDIF
+.
+	 IF	   (SPLFLG=1)
+	   APPEND    ",",S$CMDLIN
+	   CMATCH    "_",STFLD
+	   IF	     NOT EOS
+	     APPEND    SPOOL,S$CMDLIN
+	   ENDIF
+	 ENDIF
+.
+	 IF	   (OPTFLG=1)
+	   CMATCH    "_",OPTIONS
+	   IF	     NOT EOS
+	     APPEND    " -",S$CMDLIN
+	     APPEND    OPTIONS,S$CMDLIN
+	   ENDIF
+	 ENDIF
+.
+	 RESET	   S$CMDLIN
+.
+	 IF	   (#MNU2RES=1 | #MNU2RES=5 | #MNU2RES=9)
+	   EXECUTE   S$CMDLIN
+	 ELSE
+	   DISPLAY   *COLOR=0x80,*ES;
+	   CHAIN     S$CMDLIN		 ;
+	 ENDIF
+	 CALL	   CLEANUP
+	 CALL	   MENUSON
+	 RETURN
+*==============================================================================
+							

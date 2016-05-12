@@ -1,0 +1,1529 @@
+...............................................................................
+.   THIS FILE CONTAINS PLB PROFILES AND WINAPI STRUCTURES FOR DLL CALLS
+...............................................................................
+.
+.   The purposes of this file is so that ALL of us can contribute to the PLB
+.   language. It takes time to add instructions into PLB (plus ANSI approval)
+.   but in the meantime a job can already be done before that. This file
+.   belongs to ALL of us, please let us keep it tidy.
+.
+.
+.   Author's  : Sunbelt PLB WebBoard users @  http://www.sunbelt-plb.com
+.   Date      : 7 June 1998                -  First release on PLB WebBoard
+.   Copyright : None, Freeware.            -  If you improve this routine
+.                                             please let all of us have a copy
+.   Version   :  1.04 -13 June 1998        -  Latest version and date
+.
+.==============================================================================
+.
+.   WINAPI CALLS CONTENTS.
+.
+.
+.   The inclusion/exclusion of any and all of the routines below are determined
+.   by the compiler directives 'Profiles.DIR' which should be copied into and
+.   and modified in your program to suite your needs.Maintenance of the
+.   compiler directives must be done by you althought a 'Sample' file containing
+.   the compiler directives is updated and available with this file.
+.
+.   Dll librarys with the '*' prefix MUST be loaded before use. The others
+.   should allready be loaded.
+.
+.      Routine entry points       Library      Description
+.      ========================   ============ ================================
+.   1. GetLastError             - kernel32.Dll Get last windows operation error
+.   2. LoadLibrary              - kernel32.Dll Loads Dll or Driver API library
+.   3. GetFileTime              - kernel32.Dll Get date/Time stamp of a file
+.   4. SetFileTime              - kernel32.Dll Change the date/time stamp of a file
+.   5. SystemTimeToFileTime     - kernel32.Dll Convert System time to file time format
+.   6. FileTimeToSystemTime     - kernel32.Dll Convert File time to system time format
+.   7. FileTimeToLocalFileTime  - kernel32.Dll Convert file time to local file time
+.   8. LocalFileTimeToFileTime  - kernel32.Dll Convert local time to file time
+.   9. CompareFileTime          - kernel32.Dll Compare two 64 bit file times
+.  10. TwainIsAvailable         -*Eztw32.Dll   Test if twain driver is loaded
+.  11. TwainSelectImageSource   -*Eztw32.Dll   Select twain input device ( Scanner etc.)
+.  12. TwainAcquireToClipboard  -*Eztw32.Dll   Acquire an image to the clipboard
+.  13. TwainAcquireToFilename   -*Eztw32.Dll   Acquire an image to a file name
+.  14. CopyFile                 - kernel32.Dll Copy a file
+.  15. GetDriveType             - kernel32.Dll Get the type of drive
+.  16. GetWindowsDirectory      - kernel32.Dll Get windows directory name
+.  17. FindFirstFile            - kernel32.Dll Find first file and file information
+.  18. FindNextFile             - kernel32.Dll Find the next file after FindFirstFile
+.  19. FindClose                - kernel32.Dll Close find-handle used
+.  20. CloseHandle              - kernel32.Dll Close a handle used ( Basically the same as FindClose)
+.  21. OpenPrinter              - winspool.Drv Open a printer ( Driver)
+.  22. ClosePrinter             - winspool.Drv Close a printer ( Driver)
+.  23. DocumentProperties       - winspool.Drv Read/Write to printer ( Driver)
+.  24. mciSendString            -*winmm.Dll    Send MCI command to media device
+.  25. mciGetErrorString        -*winmm.Dll    Get error message from MCI device
+.  26. GetSystemDirectory       - kernel32.Dll Get the path to the windows system directory
+.  27. LoadCursor               - user32.Dll   Load cursor
+.  28. SetCursor                - user32.Dll   Set new cursor
+.  29. LoadCursorFromFile       - user32.Dll   Load a new cursor from a .CUR file
+.  30. SetClassLong             - user32.Dll   Changes properties of a window
+.  31. GetClassLong             - user32.Dll   Retrieve selected window property
+.  32. QueryServiceConfig       - advapi.Dll   Retrieves configuration parameters for a service
+.  33. DeleteFile               - kernel32.lib Deletes specified file
+.
+. 999. Skeleton                                Sample format of Profile and WinApi call
+.
+...............................................................................
+.   FILE MAINTENANCE
+.
+.   This file is maintained by Festus Redelinghuys. If you have ANY Api's and/or
+.   DLL's with a 'C++' header file that we could use in PLB please put it
+.   on the Sunbelt WebBoard or e-mail to me at plbsa@icon.co.za
+.   When you change anything increment the minor version. Make sure you have
+.   the lastest version before you modify and load it back on the WebBoard
+.
+.   FILE HISTORY:
+.
+.Vers. Date       Person     Modifications
+.===== ========== ========== ========================================================
+. 1.00 06/02/1998 Festus     Release of original file
+. 1.01 06/03/1998 Festus     Added LoadLibrary,Twain,Skeleton,CopyFile,GetDriveType:
+.                            GetWindowsDirectory,FindFirstFile,FindNextFile:
+.                            FindClose,CloseHandle,OpenPrinter,ClosePrinter:
+.                            DocumentProperties
+. 1.01 06/07/1998 Festus     Added mciSendString
+.                            Released 'Profiles.Api' on the WebBoard for the first time
+. 1.02 06/08/1998 Festus     Added mciGetErrorString,GetSystemDirectory. Changes to some of the notes
+.                            Change label 'APIMciReturnLenght' to 'BufferSize' to comply with uniformity
+. 1.03 06/09/1998 Festus     Compiler directives to force include/exclude of unused
+.                            WinApi routines
+. 1.04 06/10/1998 Festus     Added LoadCursor,SetCursor,LoadCursorFromFile
+.                            SetClassLong,GetClassLong
+. 1.04 06/13/1998 Festus     Added QueryServiceConfig
+.
+...............................................................................
+.   RECOGNITION's:
+.
+.   Twain                  : Thanks to David Gabler for the Twain Api calls
+.   Incl./Excl of routines : By recommendation from David. Thanks David.
+.   Load cursor suggestion : Thanks to David
+.
+...............................................................................
+.   NOTES ON MODIFYING 'PROFILES.API':
+.
+.   By seperating the Profile and WinApi declarations from the rest of a program
+.   allows you to compile this file standalone to test for errors. If this
+.   file is modified by anyone MUST it be compilable as is.If you haven't
+.   included the compiler directives will the compiler give warning messages
+.   and excluded ALL the WinApi routines but NO errors will be generated.
+.
+.   If you add it directly into this file please keep to the format and update
+.   the history and recognition sections. By keeping to this format will ALL
+.   of us be able to understand it.
+.
+.   NO Processing is done within this file except for the WinApi Calls and LastError
+.   It is the programmers responsibility to format variables BEFORE the WinApi
+.   is called ( Eq. Zero termination). Please don't do it in here.
+.
+.   Please add new new profiles at the bottom of this file. A skeleton has
+.   been added to be used
+.
+.   Keep the label names the same as C++ label names ( We want C programmers to convert to PLB )
+.   It is easier to refer to the Win32Help reference manual
+.   First use the available label names ( Eq. APIFileName ) before adding new labels
+.
+.   Please test the API after you have added it.
+.
+.   A 'Jump over' the WinApi calls allows this file to be placed before
+.   other program statements ( Common area excluded )
+.
+...............................................................................
+.   TIPS ON WINAPI'S
+.
+.   Please place general notes on API's in here and please add your name. This
+.   way we could contact the person to clarrify a TIP that has been placed.
+.
+.   1. Festus - Structures used in a Api is defined as a 'DIM' in the profile but
+.      is NOT zero terminated (Reason : Structure could contain 0x00 in itself)
+.      Do not get confused with eq. a APIFileName which must be zero terminated
+.   2. Festus - The 'Result' from a WinApi call remains INT  4. This way you don't have to worry
+.      about the size everytime you create a new WinApi call profile.
+.   3. Festus - When a structure is build use 'Packkey' to build it and 'Unpack' to parse out the structure
+.   4. Festus - Data types - When converting from 'C' or VB used these replacements
+.
+.      C Declaration             VB    PLB profile PLB Var.Type C Arg.Type Comment
+.      ======================= ======= =========== ============ ========== ==========
+.      Integer                 Integer Int2        Integer 2    ByVal    
+.      Integer Pointer (LPINT) Integer Int4        Integer 4    ByRef
+.      Long                    Long    Int4        Integer 4    ByVal
+.      Long Integer Pointer    Long    Int4        Integer 4    ByRef
+.      String Pointer (LPSTR)  String  Dim         Dim   <size> ByVal      Zero terminated incl.
+.      Handle                  Long    Int4        Integer 4    ByVal
+.      Char                    String  Dim         Dim   <size> ByVal      Zero terminated incl.
+.      Void Pointer            Any     Int4        Integer 4    ByRef
+.
+.   5. 
+.
+.==============================================================================
+
+.   Jump over profile and WinApi declarations. Avoid accidental running of routines
+
+                        GOTO            JumpOver        .Routines must be called
+
+.------------------------------------------------------------------------------
+.                          DATA DECLARATIONS USED BY WINAPI's
+.------------------------------------------------------------------------------
+
+.   VARIABLES COMMON TO API CALLS
+
+APILastError               Integer         4,"0"           Last windows error code
+APIResult                  Integer         4,"0"           Result from API call
+APIFileHandle              Integer         4               File handle
+APIWindowHandle            Integer         4               Window handle
+APIPrinterHandle           Integer         4               PrinterHandle
+APIFileName                Dim             260             Path and File name Zero terminated
+APIFileName2               Dim             260             Path and File name Zero terminated
+APILibFileName             Dim             260             Library path and file name Zero terminated
+APIPrinterName             Dim             32              Printer File name Zero Terminated
+APIParameter               Integer         4               Parameter - Work variable
+APIPath                    Dim             260             Drive and path ( NO file name) Zero Terminated
+APIBufferSize              Integer         4               BufferSize
+
+...............................................................................
+
+.   VARIABLES USED BY SPECIFIC ROUTINES
+
+.   Used by : SystemTimeToFileTime,FileTimeToSystemTime,FileTimeToLocalFileTime
+.             LocalFileTimeToFileTime,CompareFileTime,GetFileTime,SetFileTime
+
+APICreationTime            Dim             8               FILETIME structure
+.       Int     4                                       LowDateTime
+.       Int     4                                       HighDateTime
+APILastAccessTime          Dim             8               FILETIME structure
+.       Int     4                                       LowDateTime
+.       Int     4                                       HighDateTime
+APILastWriteTime           Dim             8               FILETIME structure
+.       Int     4                                       LowDateTime
+.       Int     4                                       HighDateTime
+APIFileTime                Dim             8               FILETIME structure
+.       Int     4                                       LowDateTime
+.       Int     4                                       HighDateTime
+APILocalFileTime           Dim             8               FILETIME structure
+.       Int     4                                       LowDateTime
+.       Int     4                                       HighDateTime
+APIFileTime2               Dim             8               FILETIME 2 structure ( Only Used by CompareFileTime)
+.       Int     4                                       LowDateTime
+.       Int     4                                       HighDateTime
+APISystemTime              Dim            16               SYSTEMTIME Structure
+.Year   Int     2                                       Year
+.Month  Int     2                                       Month
+.DoWeek Int     2                                       Week day Sun=0 Mon=1...
+.Day    Int     2                                       Day of the month
+.Hour   Int     2                                       Hours
+.Minute Int     2                                       Minutes
+.Second Int     2                                       Seconds
+.MilSec Int     2                                       Milli seconds
+
+.   Used by Twain - TwainAcquireToClipboard,TwainAcquireToFilename
+
+APIPixelType               Integer        4                PixelType - Used in Twain
+
+.   Used by Find file - FindFirstFile,FindNextFile,FindClose
+
+APIFileData                Dim            318              FILEDATA data structure
+.FileAttributes    Int     4                               File attributes
+.APICreationTime   Dim     8                               STRUCTURE - Creation time
+.APILastAccessTime Dim     8                               STRUCTURE - Last time file was accessed
+.APILastWriteTime  Dim     8                               STRUCTURE - Last time written to file
+.FileSizeHigh      Int     4                               High order of file size ( 64 bits )
+.FileSizeLow       Int     4                               Low order of file size ( 64 bits )
+.Reserved1         Int     4                               Reserved
+.Reserved2         Int     4                               Reserved
+.APIFileName       Dim     260                             Path and File name
+.AlternateFileName Dim  14                              Alternate file name ( DOS file name)
+
+.   Used by - DocumentProperties,OpenPrinter,ClosePrinter
+
+APIDevMode                 Dim             500             STRUCTURE DevMode
+.DeviceName       Dim   32                              Printer name Zero Terminated
+.SpecVersion      Int   2
+.DriverVersion    Int   2
+.Size             Int   2
+.DriverExtra      Int   2
+.Fields           Int   4
+.Orientation      Int   2
+.PaperSize        Int   2
+.PaperLenght      Int   2
+.PaperWidth       Int   2
+.Scale            Int   2
+.Copies           Int   2
+.DefaultSource    Int   2
+.PrintQuality     Int   2
+.Color            Int   2
+.Duplex           Int   2
+.YResolution      Int   2
+.TTOption         Int   2
+.Collate          Int   2
+.FormName         Dim   32                              Null Zero terminated
+.UnusedPadding    Int   2    
+.LogPixels        Int   2
+.BitsPerPel       Int   2
+.PelsWidth        Int   4
+.PelsHeight       Int   4
+.DisplayFlags     Int   4
+.DisplayFrequency Int   4
+.ICMMethod        Int   4  (Win95 Only)                Data only valid for Win 95
+.ICMIntent        Int   4      "                                 "
+.MediaType        Int   4      "                                 "
+.DitherType       Int   4      "                                 "
+.Reserved1        Int   4      "                                 "
+.Reserved2        Int   4      "                                 "
+.Private          Dim   64                             Private data from manufacturer
+.PrivateExtra     Dim   288                            Extra space incase more needed
+
+APIPrinterDefault          Dim             500             STRUCTURE Printer defaults
+.DeviceName       Dim   32                              Printer name Zero Terminated
+.SpecVersion      Int   2
+.DriverVersion    Int   2
+.Size             Int   2
+.DriverExtra      Int   2
+.Fields           Int   4
+.Orientation      Int   2
+.PaperSize        Int   2
+.PaperLenght      Int   2
+.PaperWidth       Int   2
+.Scale            Int   2
+.Copies           Int   2
+.DefaultSource    Int   2
+.PrintQuality     Int   2
+.Color            Int   2
+.Duplex           Int   2
+.YResolution      Int   2
+.TTOption         Int   2
+.Collate          Int   2
+.FormName         Dim   32                              Null Zero terminated
+.UnusedPadding    Int   2    
+.LogPixels        Int   2
+.BitsPerPel       Int   2
+.PelsWidth        Int   4
+.PelsHeight       Int   4
+.DisplayFlags     Int   4
+.DisplayFrequency Int   4
+.ICMMethod        Int   4  (Win95 Only)                Data only valid for Win 95
+.ICMIntent        Int   4      "                                 "
+.MediaType        Int   4      "                                 "
+.DitherType       Int   4      "                                 "
+.Reserved1        Int   4      "                                 "
+.Reserved2        Int   4      "                                 "
+.Private          Dim   64                             Private data from manufacturer
+.PrivateExtra     Dim   288                            Extra space incase more needed
+
+APIModeFlag                Integer         4              Read/Write switch for Dev driver
+
+.   Used by mciSendString,mciGetErrorString - Media Control interface 
+
+APIMciCommand              Dim             256             MCI command string ( Zero terminated)
+APIMciReturn               Dim             256             MCI status return string 
+APIMciErrorCode            Dim             256             MCI error code returned ( Zero terminated)
+
+.   Used by Cursor's - LoadCursor,SetCursor
+
+APICursorHandle            Integer         4               Handle of cursor
+APICursorName              Dim             260             Cursor name Zero Terminated
+APIApplicHandle            Integer         4               Handle of current application
+
+.   Used by SetClassLong - Change a Window's properties
+
+APIClassIndex              Integer         2               Index to windows property structure
+
+.   Used by QueryServiceConfig
+
+APIServiceConfig           Dim             36              STRUCTURE - Service configuration
+.ServiceType    Int    4                                ServiceType
+.StartType      Int    4                                StartType
+.ErrorControl   Int    4                                ErrorControl
+.BinaryPathName Int    4                                Path to service binary file name zero terminated
+.LoadOrderGroup Int    4                                LoadOrderGroup zero terminated
+.TagId          Int    4                                Tag ID
+.Dependencies   Int    4                                Dependencies zero terminated
+.ServiceStartName Int  4                                Service start name
+.DisplayName    Int    4                                Display name zero terminated
+
+APIServiceHandle           Integer         4               Service Handle
+APIBytesNeeded             Dim             4               Bytes needed ( the 4 bytes would contain an integer value in a DIM)
+
+.   Used by < name > - < description >
+
+.------------------------------------------------------------------------------
+.                          PROFILE'S AND WINAPI CALLS.
+.------------------------------------------------------------------------------
+...............................................................................
+.   GetLastError - Retrieves the error code of the last windows operation
+...............................................................................
+.   Notes    :
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APILastError       - Int    4   Don't care
+.   On exit  : APILastError       - Int    4   Last window error code
+
+                        IFNZ            Api001          Compiler incl/Excl directive
+
+GetLastErrorProfile     Profile         kernel32.dll:   Dll library
+                                        GetLastError:   Entry Point
+                                        Int4            Type return
+
+GetLastError            WinApi          GetLastErrorProfile Giving APILastError
+                        RETURN
+
+                        XIF                             End of compiler directive
+
+...............................................................................
+.   Load Library - Loads a Dll or Driver library
+...............................................................................
+.   Notes    :
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APILibFileName     - Dim    260     Path and library file name
+.              APIResult          - Int    4       Don't care
+.   On exit  : APILibFileName     - Unchanged             
+.              APIResult          - Int    4       Handle of library if successful
+.                                               Zero if failed to load
+
+                        IFNZ            Api002          Compiler incl/Excl directive
+
+LoadLibraryProfile      Profile         kernel32.Dll:   Dll library
+                                        LoadLibraryA:   Dll entry point
+                                        Int4:           Type return
+                                        Dim             Library to load file name
+
+LoadLibrary             WinApi          LoadLibraryProfile Giving APIResult Using APILibFileName
+
+                        Call            GetLastError    Load the last error value
+                        RETURN
+
+                        XIF                             End of compiler directive
+
+...............................................................................
+.   GetFileTime - Retrieves the date and time a file was created.
+...............................................................................
+.   Notes    :
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APIFileHandle      - Int    4       Contains file handle of file
+.              APICreationTime    - Dim    8       Don't care
+.              APILastAccessTime  - Dim    8       Don't care
+.              APILastWriteTime   - Dim    8       Don't care
+.              APIResult          - Int    4       Don't care
+.   On exit  : APIFileHandle      - Int    4       Unchanged
+.              APICreationTime    - Dim    8       Updated
+.              APILastAccessTime  - Dim    8       Updated
+.              APILastWriteTime   - Dim    8       Updated
+.              APIResult          - Int    4       True/False is set
+
+                        IFNZ            Api003          Compiler incl/Excl directive
+
+GetFileTimeProfile      Profile         kernel32.dll:   Dll library
+                                        GetFileTime:    Entry Point
+                                        Int4:           Type return
+                                        Int4:           File Handle
+                                        Dim:            Creation time
+                                        Dim:            Last access time
+                                        Dim             Last write time
+
+GetFileTime             WinApi          GetFileTimeProfile Giving APIResult Using APIFileHandle:     File handle
+                                        APICreationTime:   Creation date/time
+                                        APILastAccessTime: Last time accessed
+                                        APILastWriteTime   Last time written to
+
+                        Call            GetLastError    Load the last error value
+                        RETURN
+
+                        XIF                             End of compiler directive
+
+...............................................................................
+.   SetFileTime - Changes the file's date and time stamp
+...............................................................................
+.   Notes    :
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APIFileHandle      - Int    4       Contains file handle of file
+.              APICreationTime    - Dim    8       New time
+.              APILastAccessTime  - Dim    8       New time
+.              APILastWriteTime   - Dim    8       New time
+.              APIResult          - Int    4       Don't care
+.   On exit  : APIFileHandle      - Int    4       Unchanged
+.              APICreationTime    - Dim    8       Unchanged
+.              APILastAccessTime  - Dim    8       Unchanged
+.              APILastWriteTime   - Dim    8       Unchanged
+.              APIResult          - Int    4       True/False is set
+
+                        IFNZ            Api004          Compiler incl/Excl directive
+
+SetFileTimeProfile      Profile         kernel32.dll:   Dll library
+                                        SetFileTime:    Entry Point
+                                        Int4:           Type return
+                                        Int4:           File Handle
+                                        Dim:            Creation time
+                                        Dim:            Last access time
+                                        Dim             Last write time
+
+SetFileTime             WinApi          SetFileTimeProfile Giving APIResult Using APIFileHandle:     File handle
+                                        APICreationTime:   Creation date/time
+                                        APILastAccessTime: Last time accessed
+                                        APILastWriteTime   Last time written to
+
+                        Call            GetLastError    Load the last error value
+                        RETURN
+
+                        XIF                             End of compiler directive
+
+...............................................................................
+.   SystemTimeToFileTime - Converts the system time to file's date and time format
+...............................................................................
+.   Notes    :
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APISystemTime      - Dim    16      System time
+.              APIFileTime        - Dim    8       Don't care
+.              APIResult          - Int    4       Don't care
+.   On exit  : APISystemTime      - Dim    16      Unchanged
+.              APIFileTime        - Dim    8       New converted time
+.              APIResult          - Int    4       True/False is set
+
+                        IFNZ            Api005          Compiler incl/Excl directive
+
+SystemTimeToFileTimeProfile  Profile    kernel32.dll:   Dll library
+                                        SystemTimeToFileTime:  Entry Point
+                                        Int4:           Type return
+                                        Dim:            System time
+                                        Dim             File Time APIResult
+
+SystemTimeToFileTime    WinApi          SystemTimeToFileTimeProfile Giving APIResult Using APISystemTime:
+                                        APIFileTime        New converted file time
+
+                        Call            GetLastError    Load the last error value
+                        RETURN
+
+                        XIF                             End of compiler directive
+
+...............................................................................
+.   FileTimeToSystemTime - Converts a file time to system time
+...............................................................................
+.   Notes    :
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APISystemTime      - Dim    16      Don't Care           
+.              APIFileTime        - Dim    8       File time to be converted
+.              APIResult          - Int    4       Don't care
+.   On exit  : APISystemTime      - Dim    16      New calculated system time
+.              APIFileTime        - Dim    8       Unchanged         
+.              APIResult          - Int    4       True/False is set
+
+                        IFNZ            Api006          Compiler incl/Excl directive
+
+FileTimeToSystemTimeProfile  Profile    kernel32.dll:   Dll library
+                                        FileTimeToSystemTime:  Entry Point
+                                        Int4:           Type return
+                                        Dim:            File Time APIResult
+                                        Dim             System time
+
+FileTimeToSystemTime    WinApi          FileTimeToSystemTimeProfile Giving APIResult Using APIFileTime:
+                                        APISystemTime      New converted file time
+
+                        Call            GetLastError    Load the last error value
+                        RETURN
+
+                        XIF                             End of compiler directive
+
+...............................................................................
+.   FileTimeToLocalFileTime - Converts a FILETIME to LOCALTIME (UTC to local)
+...............................................................................
+.   Notes    :
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : LocalTime       - Dim    8       Don't Care           
+.              APIFileTime        - Dim    8       File time to be converted
+.              APIResult          - Int    4       Don't care
+.   On exit  : LocalTime       - Dim    8       New calculated LOCAL time
+.              APIFileTime        - Dim    8       Unchanged         
+.              APIResult          - Int    4       True/False is set
+
+                        IFNZ            Api007          Compiler incl/Excl directive
+
+FileTimeToLocalFileTimeProfile Profile  kernel32.dll:   Dll library
+                                        FileTimeToLocalFileTime:  Entry Point
+                                        Int4:           Type return
+                                        Dim:            File Time 
+                                        Dim             LocalFileTime APIResult
+
+FileTimeToLocalFileTime WinApi          FileTimeToLocalFileTimeProfile Giving APIResult Using APIFileTime:
+                                        APILocalFileTime   New converted file time
+
+                        Call            GetLastError    Load the last error value
+                        RETURN
+
+                        XIF                             End of compiler directive
+
+...............................................................................
+.   LocalFileTimeToFileTime - Converts a LOCALTime to FILETIME (Local to UCT)
+...............................................................................
+.   Notes    :
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APIFileTime        - Dim    8       Don't Care           
+.              APILocalFileTime   - Dim    8       File time to be converted
+.              APIResult          - Int    4       Don't care
+.   On exit  : APIFileTime        - Dim    8       New calculated File time
+.              APILocalFileTime   - Dim    8       Unchanged         
+.              APIResult          - Int    4       True/False is set
+
+                        IFNZ            Api008          Compiler incl/Excl directive
+
+LocalFileTimeToFileTimeProfile Profile  kernel32.dll:   Dll library
+                                        LocalFileTimeToFileTime:  Entry Point
+                                        Int4:           Type return
+                                        Dim:            LocalFileTime 
+                                        Dim             File Time 
+
+LocalFileTimeToFileTime WinApi          LocalFileTimeToFileTimeProfile Giving APIResult Using APILocalFileTime:
+                                        APIFileTime        New converted file time
+
+                        Call            GetLastError    Load the last error value
+                        RETURN
+
+                        XIF                             End of compiler directive
+
+...............................................................................
+.   CompareFileTime - Compare two FileTime's ( 64 bits each)
+...............................................................................
+.   Notes    :
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APIFileTime        - Dim    8       First FileTime       
+.              APIFileTime2       - Dim    8       Second FileTime          
+.              APIResult          - Int    4       Don't care
+.   On exit  : APIFileTime        - Dim    8       Unchanged
+.              APIFileTime2       - Dim    8       Unchanged         
+.              APIResult          - Int    4      -1 = First file is less than second file
+.                                               0 = First file equal to second file
+.                                               1 = First file is greater than second file
+
+                        IFNZ            Api009            Compiler incl/Excl directive
+
+CompareFileTimeProfile  Profile         kernel32.dll:     Dll library
+                                        CompareFileTime:  Entry Point
+                                        Int4:             Type return
+                                        Dim:              FileTime 1
+                                        Dim               FileTime 2
+
+CompareFileTime         WinApi          CompareFileTimeProfile Giving APIResult Using APIFileTime:
+                                        APIFileTime2       New converted file time
+
+                        Call            GetLastError    Load the last error value
+                        RETURN
+
+                        XIF                             End of compiler directive
+
+...............................................................................
+.   Twain - Check if twain driver is loaded and the Scanner is ready
+...............................................................................
+.   Notes    :
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : The Twain driver 'Eztw32.Dll' must already be loaded ( LoadLibrary)
+.              APIResult          - Int    4       Don't care
+.   On exit  : Twain driver remains loaded 
+.              APIResult          - Int    4       0 = Twain driver NOT available
+.                                               1 = Twain driver ready
+
+                        IFNZ            Api010              Compiler incl/Excl directive
+
+TwainIsAvailableProfile Profile         eztw32.dll:         Dll library
+                                        TWAIN_IsAvailable:  Entry Point
+                                        Int4                Type return
+
+TwainIsAvailable        WinApi          TwainIsAvailableProfile Giving APIResult
+
+                        Call            GetLastError        Load the last error value
+                        RETURN
+
+                        XIF                                 End of compiler directive
+
+...............................................................................
+.   Twain - Select image source
+...............................................................................
+.   Notes    :
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APIWindowHandle    - Window handle of window to receive dialog box
+.              APIResult          - Int    4       Don't care
+.   On exit  : APIWindowHandle    - Unchanged
+.              APIResult          - Int    4       1 = Scanner not available or not switched on
+.                                               0 = Scanner is ready
+
+                        IFNZ            Api011                    Compiler incl/Excl directive
+
+TwainSelectImageSourceProfile Profile   eztw32.dll:               Dll library
+                                        TWAIN_SelectImageSource:  Entry Point
+                                        Int4:                     Type return
+                                        Int4                      Window Handle
+
+TwainSelectImageSource  WinApi          TwainSelectImageSourceProfile Giving APIResult Using APIWindowHandle
+
+                        Call            GetLastError        Load the last error value
+                        RETURN
+
+                        XIF                                 End of compiler directive
+
+...............................................................................
+.   Twain - Acquire image to clipboard
+...............................................................................
+.   Notes    :
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APIWindowHandle    - Int    4       Window handle of window to receive dialog box
+.              APIPixelType       - Int    4       Set pixel type or 0x00 for default
+.              APIResult          - Int    4       Don't care
+.   On exit  : APIWindowHandle    - Int    4       Unchanged
+.              APIPixelType       - Int    4       Unchanged
+.              APIResult          - Int    4       1 = Image acquired to clipboard
+.                                               0 = Image load failed
+
+                        IFNZ            Api012                    Compiler incl/Excl directive
+
+TwainAcquireToClipboardProfile Profile  eztw32.dll:               Dll library
+                                        TWAIN_AcquireToClipboard: Entry Point
+                                        Int4:                     Type return
+                                        Int4:                     APIWindowHandle
+                                        Int4                      APIPixelType
+
+TwainAcquireToClipboard WinApi          TwainAcquireToClipboardProfile Giving APIResult Using APIWindowHandle:
+                                        APIPixelType
+
+                        Call            GetLastError        Load the last error value
+                        RETURN
+
+                        XIF                                 End of compiler directive
+
+...............................................................................
+.   Twain - Acquire image to File name
+...............................................................................
+.   Notes    :
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APIWindowHandle    - Int    4       Window handle of window to receive dialog box
+.              APIFileName        - Dim    260     Path and file name to receive image(Zero term)
+.              APIResult          - Int    4       Don't care
+.   On exit  : APIWindowHandle    - Int    4       Unchanged
+.              APIFileName        - Dim    260     Unchanged
+.              APIResult          - Int    4       1 = Image acquired to File
+.                                               0 = Image load failed
+
+                        IFNZ            Api013                    Compiler incl/Excl directive
+
+TwainAcquireToFileNameProfile  Profile  eztw32.dll:               Dll library
+                                        TWAIN_AcquireToFilename:  Entry Point
+                                        Int4:                     Type return
+                                        Int4:                     Window handle
+                                        Dim                       File name
+
+TwainAcquireToFilename  WinApi          TwainAcquireToFilenameProfile Giving APIResult Using APIWindowHandle:
+                                        APIFileName                  File to receive image
+
+                        Call            GetLastError              Load the last error value
+                        RETURN
+
+                        XIF                                       End of compiler directive
+
+...............................................................................
+.   CopyFile - Copy file
+...............................................................................
+.   Notes    : 
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APIFileName        - Dim    260     Input file name ( Zero Terminated )
+.              APIFileName2       - Dim    260     Output file name ( Zero Terminated )          
+.              APIParameter       - Int    4       Copy parameters 1=Overwrite 0=Don't overwrite
+.              APIResult          - Int    4       Don't care
+.   On exit  : APIFileName        - Dim    260     Unchanged
+.              APIFileName2       - Dim    260     Unchanged
+.              APIParameter       - Int    4       Unchanged
+.              APIResult          - Int    4       1 = If successfull 
+.                                               0 = If failed ( Overwrite inhibited)
+
+                        IFNZ            Api014             Compiler incl/Excl directive
+
+CopyFileProfile         Profile         kernel32.Dll:      Dll library
+                                        CopyFileA:         Entry Point
+                                        Int4:              Type return
+                                        Dim:               Input file name
+                                        Dim:               Output file name
+                                        Int4               Overwrite parameters
+
+CopyFile                WinApi          CopyFileProfile Giving APIResult Using APIFileName:
+                                        APIFileName2:         Output file name
+                                        APIParameter          Overwrite parameter
+
+                        Call            GetLastError       Load the last error value
+                        RETURN
+
+                        XIF                                End of compiler directive
+
+...............................................................................
+.   GetDriveType - Get type of drive
+...............................................................................
+.   Notes    : 
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APIPath            - Dim    260     Root path of drive to get type of
+.              APIResult          - Int    4       Don't care
+.   On exit  : APIPath            - Dim    260     Unchanged
+.              APIResult          - Int    4        0 = Failed 
+.                                                1 = Drive does not exist
+.                                                2 = Drive removable
+.                                                3 = Drive is fixed
+.                                                4 = Network drive ( Remote )
+.                                                5 = CD drive
+.                                                6 = RamDrive
+
+                        IFNZ            Api015             Compiler incl/Excl directive
+
+GetDriveTypeProfile     Profile         kernel32.Dll:      Dll library
+                                        GetDriveTypeA:     Entry Point
+                                        Int4:              Type return
+                                        Dim                Root path of drive
+
+GetDriveType            WinApi          GetDriveTypeProfile Giving APIResult Using APIPath
+
+                        Call            GetLastError       Load the last error value
+                        RETURN
+
+                        XIF                                End of compiler directive
+
+...............................................................................
+.   GetWindowsDirectory - Get path of windows directory
+...............................................................................
+.   Notes    : The API returns the path Zero terminated. The BufferSize must 
+.              be set to max size -1 space for Zero Termination
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APIPath            - Dim    260     Don't care
+.              APIBufferSize      - Int    4       Set to 259 ( Max path lenght ) 1 byte space ZT
+.              APIResult          - Int    4       Don't care
+.   On exit  : APIPath            - Dim    260     Path to windows directory Zero Terminated by API
+.              APIBufferSize      - Int    4       Unchanged
+.              APIResult          - Int    4        0 = Failed
+.                                           APIResult = Lenght of Path excl Zero Term
+
+                        IFNZ            Api016                Compiler incl/Excl directive
+
+GetWindowsDirectoryProfile     Profile  kernel32.Dll:         Dll library
+                                        GetWindowsDirectoryA: Entry Point
+                                        Int4:                 Type return
+                                        Dim:                  Path to Windows directory
+                                        Int4                  Buffer Size
+
+GetWindowsDirectory     WinApi          GetWindowsDirectoryProfile Giving APIResult Using APIPath:
+                                        APIBufferSize           Path available buffer size
+
+                        Call            GetLastError       Load the last error value
+                        RETURN
+
+                        XIF                                End of compiler directive
+
+...............................................................................
+.   FindFirstFile - Find first file that match mask
+...............................................................................
+.   Notes    : 
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APIFileName        - Dim    260     Path and file name Zero Terminated
+.              APIFileData        - Dim    318     Don't care       
+.              APIResult          - Int    4       Don't care
+.   On exit  : APIFileName        - Dim    260     Unchanged
+.              APIFileData        - Dim    318     File Data structure that receives file data
+.              APIResult          - Int    4        0 = If failed
+.                                           APIResult = Return value - File handle
+
+                        IFNZ            Api017             Compiler incl/Excl directive
+
+FindFirstFileProfile    Profile         kernel32.Dll:      Dll library
+                                        FindFirstFileA:    Entry Point
+                                        Int4:              Type return
+                                        Dim:               File name ZT
+                                        Dim                File Data structure data
+
+FindFirstFile WinApi FindFirstFileProfile Giving APIResult Using APIFileName:
+                                        APIFileData           File Data structure data
+
+                        Call            GetLastError       Load the last error value
+                        RETURN
+
+                        XIF                                End of compiler directive
+
+...............................................................................
+.   FindNextFile - Find the next file that matches mask
+...............................................................................
+.   Notes    : Must first use FindFirstFile
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APIFileHandle      - Int    4       Handle of the first file found
+.              APIFileData        - Dim    318     File data of the first file found
+.              APIResult          - Int    4       Don't care
+.   On exit  : APIFileHandle      - Int    4       File handle of next file found
+.              APIFileData        - Dim    318     File data structure data    
+.              APIResult          - Int    4        1 = If successfull - File Data contains info
+.                                                0 = If failed - No more files available or error
+
+                        IFNZ            Api018             Compiler incl/Excl directive
+
+FindNextFileProfile     Profile         kernel32.Dll:      Dll library
+                                        FindNextFileA:     Entry Point
+                                        Int4:              Type return
+                                        Int4:              File handle returned
+                                        Dim                File data info structure
+
+FindNextFile            WinApi          FindNextFileProfile Giving APIResult Using APIFileHandle:
+                                        APIFileData           File Data Structure   
+
+                        Call            GetLastError       Load the last error value
+                        RETURN
+
+                        XIF                                End of compiler directive
+
+...............................................................................
+.   FindClose - Close the 'Find' handle used
+...............................................................................
+.   Notes    : Must first use FindFirstFile
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APIFileHandle      - Int    4       Handle of last file 'find'
+.              APIResult          - Int    4       Don't care
+.   On exit  : APIFileHandle      - Int    4       Unchanged
+.              APIResult          - Int    4        1 = If successfull
+.                                                0 = If failed 
+
+                        IFNZ            Api019             Compiler incl/Excl directive
+
+FindCloseProfile        Profile         kernel32.Dll:      Dll library
+                                        FindClose:         Entry Point
+                                        Int4:              Type return
+                                        Int4               File handle to close
+
+FindClose               WinApi          FindCloseProfile Giving APIResult Using APIFileHandle
+
+                        Call            GetLastError       Load the last error value
+                        RETURN
+
+                        XIF                                End of compiler directive
+
+...............................................................................
+.   CloseHandle - Close a handle used
+...............................................................................
+.   Notes    : This routine is basically the same as the FindClose routine
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APIFileHandle      - Int    4       Handle to close
+.              APIResult          - Int    4       Don't care
+.   On exit  : APIFileHandle      - Int    4       Unchanged
+.              APIResult          - Int    4        1 = If successfull
+.                                                0 = If failed 
+
+                        IFNZ            Api020             Compiler incl/Excl directive
+
+CloseHandleProfile      Profile         kernel32.Dll:      Dll library
+                                        CloseHandle:       Entry Point
+                                        Int4:              Type return
+                                        Int4               File handle to close
+
+CloseHandle             WinApi          CloseHandleProfile Giving APIResult Using APIFileHandle
+
+                        Call            GetLastError       Load the last error value
+                        RETURN
+
+                        XIF                                End of compiler directive
+
+...............................................................................
+.   OpenPrinter - Opens a printer device driver 
+...............................................................................
+.   Notes    : 
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APIPrinterName     - Dim    32      Printer Name Zero Terminated
+.              APIPrinterHandle   - Int    4       Don't care
+.              APIPrinterDefault  - Dim    500     Default printer settings STRUCTURE or Null if not used 
+.              APIResult          - Int    4       Don't care
+.   On exit  : APIPrinterName     - Dim    32      Unchanged
+.              APIPrinterHandle   - Int    4       Handle assigned to printer name
+.              APIPrinterDefault  - Dim    500     Unchanged
+.              APIResult          - Int    4        1 = If successfull - Printer entry found
+.                                                0 = If failed - No such printer configured
+
+                        IFNZ            Api021             Compiler incl/Excl directive
+
+OpenPrinterProfile      Profile         winspool.Dll:      Dll library
+                                        OpenPrinterA:      Entry Point
+                                        Int4:              Type return
+                                        Dim:               Printer name
+                                        Int4:              Printer Handle
+                                        Dim                Default printer settings
+
+OpenPrinter             WinApi          OpenPrinterProfile Giving APIResult Using APIPrinterName:
+                                        APIPrinterHandle:     Printer handle returned
+                                        APIPrinterDefault     Default setting
+
+                        Call            GetLastError       Load the last error value
+                        RETURN
+
+                        XIF                                End of compiler directive
+
+...............................................................................
+.   ClosePrinter - Close printer handle used
+...............................................................................
+.   Notes    : 
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APIPrinterHandle   - Int    4       Handle to close
+.              APIResult          - Int    4       Don't care
+.   On exit  : APIPrinterHandle   - Int    4       Unchanged
+.              APIResult          - Int    4        1 = If successfull
+.                                                0 = If failed 
+
+                        IFNZ            Api022             Compiler incl/Excl directive
+
+ClosePrinterProfile     Profile         winspool.Dll:      Dll library
+                                        ClosePrinter:      Entry Point
+                                        Int4:              Type return
+                                        Int4               Printer handle to close
+
+ClosePrinter            WinApi          ClosePrinterProfile Giving APIResult Using APIPrinterHandle
+
+                        Call            GetLastError       Load the last error value
+                        RETURN
+
+                        XIF                                End of compiler directive
+
+...............................................................................
+.   DocumentProperties - Read / Write printer properties including calling
+.                        printer dialog box
+...............................................................................
+.   Notes    : The APIDevMode structure is used as an Input/Output buffer. The DocumentProperties
+.              API allows for two different APIDevMode Structures but we only use one.
+.              The 'APIModeFlag' detemins if we read/write to the device driver
+. ***Festus*** THIS API IS CURRENTLY UNDER TEST - DO NOT USE UNTIL THESE LINES ARE REMOVED
+. ************ I am still trying to find out why the printer is not updated
+. ************ As soon as I have that sorted out will I place a Testxxx.dbs on
+. ************ the WebBoard.
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APIWindowHandle    - Int    4       Handle of window to host dialog box ( Zero if not used)
+.              APIPrinterHandle   - Int    4       Printer handle ( Set with OpenPrinter)
+.              APIPrinterName     - Dim    32      If read then don't care.If write set printer name
+.              DeviceMode      - Dim    500     From Drvr.If read then don't care
+.              DeviceMode      - Dim    500     To Drvr.  If write set contents 
+.              APIModeFlag        - Int    4       ModeFlag 8=Write. Change setting for this application
+.                                                        2=Read
+.                                                       10=Permanently change settings for all applications
+.                                                        4=Dialog Box
+.              APIResult          - Int    4       Don't care
+.   On exit  : APIWindowHandle    - Int    4       Unchanged
+.              APIPrinterHandle   - Int    4       Unchanged 
+.              APIPrinterName     - Dim    32      If read then printer name,If write then Unchanged
+.              DeviceMode      - Dim    500     Recv from Drvr.If read then new values into APIDevMode
+.              DeviceMode      - Dim    500     Send to Drvr.  If write then it is Unchanged 
+.              APIModeFlag        - Int    4       Unchanged
+.              APIResult          - Int    4        1 = If successfull 
+.                                                0 = If failed
+
+                        IFNZ            Api023               Compiler incl/Excl directive
+
+DocumentPropertiesProfile      Profile  winspool.Drv:        Dll library
+                                        DocumentPropertiesA: Entry Point
+                                        Int4:                Type return
+                                        Int4:                Window handle
+                                        Int4:                Printer handle
+                                        Dim:                 Printer name
+                                        Dim:                 APIDevMode Structure - Output from driver to structure
+                                        Dim:                 APIDevMode Structure - Input into driver from structure
+                                        Int4                 ModeFlag
+
+DocumentProperties      WinApi          DocumentPropertiesProfile Giving APIResult Using APIWindowHandle:
+                                        APIPrinterHandle:       Printer handle
+                                        APIPrinterName:         Printer name
+                                        APIDevMode:             APIDevMode - Output same as Input
+                                        APIDevMode:             APIDevMode - Input same as Output
+                                        APIModeFlag             APIModeFlag
+
+                        Call            GetLastError         Load the last error value
+                        RETURN
+
+                        XIF                                  End of compiler directive
+
+...............................................................................
+.   MCI - Media Control Interface - mciSendStringA - Send command to Media device
+...............................................................................
+.   Notes    : The following variables was taken from 'C'. All formats and
+.              commands have not been tested.
+.
+.            : <Device types>:    ( There are more than mentioned below)
+.               'cdaudio'       - CD audio player
+.               'waveaudio'     - Digitized waveform files
+.               'digitalvideo'  - Digital video in a window
+.               'videodisc'     - Video disc player
+.
+.            : <argument>:
+.               'audio all off' - Turns off the audio
+.               'audio left off'  Turns off left channel
+.               'audio right off' Turns off the right channel
+.               'video off'     - Turns video off on animate device
+.               'audio all on'  - Turn both channels on
+.               'audio left on' - Turn on left channel
+.               'audio right on'- Turn on right channel
+.               'video on'      - Turn on video playback
+.               'time format'   - Returns or sets the measurement unit for the file
+.
+.            : <capability>:      ( The response is returned in 'Return' 1=true,0=False)
+.               'can eject'
+.               'can reverse'
+.               'device type'
+.               'inputs'
+.               'use palettes'
+.               'can play'
+.               'can save'
+.               'has audio'
+.               'outputs'
+.               'can record'
+.               'compound device'
+.               'has video'
+.               'uses files'
+.
+.            : <status>:
+.
+.               'channels'      - Number of channels in audio device
+.               'bitspersample' - Bits per sample for wave audio device
+.               'mode'          - Returns "not ready","paused","playing","seeking","stopped"
+.               'position'      - Returned as current time format
+.               'ready'         - 'APIResult' 1=ready 0=Not ready
+.               'lenght'        - Samples in .Wav file
+.               'window handle' - Handle of window used for animated playback
+.
+.            : MCI commands:
+.               'capability'    - Req info about capabilities of a device
+.                               - FORMAT: "capability <devicetype> <capability>"
+.               'close'         - Close a device
+.                                 FORMAT: "close <devicetype>"
+.               'info'          - Req info about a device
+.               'open'          - Opens and initializes a device for use
+.                                 FORMAT: "open <path and file name.Wav> type <device type> alias <name>"
+.                                 'name' is a label assigned to the open file (simmilar as PLB 'name SNDFILE')
+.               'pause'         - Pause playing or recording on a device
+.                                 FORMAT: "pause <devicetype>"
+.               'play'          - Begins playing on a device
+.                                 FORMAT: "play <devicetype>"
+.                                     or: "play <name> from <from> to <to>"
+.               'record'        - Begins recording on a device
+.                               - FORMAT: "record <name> from <from> to <to>"
+.               'resume'        - Resume playing or recording on a paused device
+.                                 FORMAT: "resume <devicetype>"
+.               'seek'          - Change current possition in media ( Milli seconds)
+.                                 FORMAT: "seek <name> to <possition>"
+.                                    or : "seek <cd name> to <<track>:<minutes>:<seconds>>"
+.               'set'           - Changes control settings on a device
+.                                 FORMAT: "set <name> <argument> <property>"
+.                                     Eq: "set months time format samples"
+.               'status'        - Req status of a device
+.                                 FORMAT: "status <name> <status>"  (returned in 'APIResult')
+.               'stop'          - Stop playing or recording on a device
+.                                 FORMAT: "stop <devicetype>" Device is stopped even for Windows
+.                                   or  : "stop <name>"       Device remains enabled
+.               'save'          - Save recorded file
+.                               - FORMAT: "save <name> <path and file name>"
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APIMciCommand      - Dim    256     Mci Command zero terminated
+.              APIMciReturn       - Dim    256     Don't care               
+.              APIBufferSize      - Int    4       Set our buffer size (255+ZeroTerm=256)
+.              APIResult          - Int    4       Don't care
+.   On exit  : APIMciCommand      - Dim    256     Unchanged
+.              APIMciReturn       - Dim    256     Status of function call  
+.              APIBufferSize      - Int    4       Lenght in bytes of 'APIMciReturn'
+.              APIResult          - Int    4     >= 1 = If successfull - 
+.                                                0 = If failed -
+
+                        IFNZ            Api024             Compiler incl/Excl directive
+
+mciSendStringProfile    Profile         winmm.Dll:         Dll library
+                                        mciSendStringA:    Entry Point
+                                        Int4:              Type return
+                                        Dim:               Mci Command
+                                        Dim:               Return status
+                                        Int4               Lenght of return status
+
+mciSendString           WinApi          mciSendStringProfile Giving APIResult Using APIMciCommand:  
+                                        APIMciReturn:         Mci function return status
+                                        APIBufferSize         Lenght of return status
+
+                        Call            GetLastError       Load the last error value
+                        RETURN
+
+                        XIF                                End of compiler directive
+
+...............................................................................
+.   MCI - Media Control Interface - mciGetErrorStringA - Get error message form MCI device
+...............................................................................
+.       Notes :
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APIMciErrorCode    - Dim    256     Don't care
+.              APIMciReturn       - Dim    256     Don't care               
+.              APIBufferSize      - Int    4       Set our buffer size (255+ZeroTerm=256)
+.              APIResult          - Int    4       Don't care
+.   On exit  : APIMciErrorCode    - Dim    256     Error message returned
+.              APIMciReturn       - Dim    256     Status of function call  
+.              APIBufferSize      - Int    4       Lenght in bytes of 'APIMciReturn'
+.              APIResult          - Int    4        1 = If successfull - 
+.                                                0 = If failed -
+
+                        IFNZ            Api025             Compiler incl/Excl directive
+
+mciGetErrorStringProfile  Profile       winmm.Dll:         Dll library
+                                        mciGetErrorStringA: Entry Point
+                                        Int4:              Type return
+                                        Dim:               Mci Error code
+                                        Dim:               Return status
+                                        Int4               Lenght of return status
+
+mciGetErrorString       WinApi          mciGetErrorStringProfile Giving APIResult Using APIMciErrorCode:  
+                                        APIMciReturn:         Mci function return status
+                                        APIBufferSize         Lenght of return status
+
+                        Call            GetLastError       Load the last error value
+                        RETURN
+
+                        XIF                                End of compiler directive
+
+...............................................................................
+.   GetSystemDirectory - Get path of systems directory
+...............................................................................
+.   Notes    : The API returns the path Zero terminated. The BufferSize must 
+.              be set to max size -1 space for Zero Termination
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APIPath            - Dim    260     Don't care
+.              APIBufferSize      - Int    4       Set to 259 ( Max path lenght ) 1 byte space ZT
+.              APIResult          - Int    4       Don't care
+.   On exit  : APIPath            - Dim    260     Path to systems directory Zero Terminated by API
+.              APIBufferSize      - Int    4       Unchanged
+.              APIResult          - Int    4        0 = Failed
+.                                           APIResult = Lenght of Path excl Zero Term
+
+                        IFNZ            Api026                Compiler incl/Excl directive
+
+GetSystemDirectoryProfile      Profile  kernel32.Dll:         Dll library
+                                        GetSystemDirectoryA:  Entry Point
+                                        Int4:                 Type return
+                                        Dim:                  Path to Windows directory
+                                        Int4                  Buffer Size
+
+GetSystemDirectory      WinApi          GetSystemDirectoryProfile Giving APIResult Using APIPath:
+                                        APIBufferSize           Path available buffer size
+
+                        Call            GetLastError       Load the last error value
+                        RETURN
+
+                        XIF                                End of compiler directive
+
+...............................................................................
+.   Cursor - LoadCursor - Load a new cursor        
+...............................................................................
+.   Notes    : To select a Win95 cursor - On entry : set 'Handle' to HexZero
+.                                                  : APICursorName to one of following:
+.                                                         
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APIApplicHandle    - Int    4       Handle of application instance or Zero
+.              APICursorName      - Dim    260     Cursor name ( Zero terminated )
+.              APIResult          - Int    4       Don't care
+.   On exit  : APIApplicHandle    - Int    4       Unchanged
+.              APICursorName      - Dim    260     Unchanged                   
+.              APIResult          - Int    4        0 = If Failed
+.                                          'APIResult'= CursorHandle if successfull
+
+                        IFNZ            Api027             Compiler incl/Excl directive
+
+LoadCursorProfile       Profile         user32.Dll:        Dll library
+                                        LoadCursorA:       Entry Point
+                                        Int4:              Type return
+                                        Int4:              Applic handle
+                                        Dim                Cursor name
+
+LoadCursor              WinApi          LoadCursorProfile Giving APIResult Using APIApplicHandle:
+                                        APICursorName         Cursor name            
+
+                        Call            GetLastError       Load the last error value
+                        RETURN
+
+                        XIF                                End of compiler directive
+...............................................................................
+.   Cursor - SetCursor - Set cursor as current cursor
+...............................................................................
+.   Notes    : 
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APICursorHandle    - Int    4       Cursor handle to activate
+.              APIResult          - Int    4       Don't care
+.   On exit  : APICursorHandle    - Int    4       Unchanged
+.              APIResult          - Int    4        1 = If successfull
+.                                                0 = If failed
+
+                        IFNZ            Api028             Compiler incl/Excl directive
+
+SetCursorProfile        Profile         user32.Dll:        Dll library
+                                        SetCursor:         Entry Point
+                                        Int4:              Type return
+                                        Int4               Cursor Handle
+
+SetCursor               WinApi          SetCursorProfile Giving APIResult Using APICursorHandle
+
+                        Call            GetLastError       Load the last error value
+                        RETURN
+
+                        XIF                                End of compiler directive
+
+...............................................................................
+.   Cursor - LoadCursorFromFile - Load a cursor from a .CUR file
+...............................................................................
+.   Notes    : 
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APICursorName      - Dim    260     Path and cursor file name  Zero Terminated
+.              APIResult          - Int    4       Don't care
+.   On exit  : APICursorName      - Dim    260     Unchanged
+.              APIResult          - Int    4        0 = If failed
+.                                           APIResult = Handle of new cursor
+
+                        IFNZ            Api029             Compiler incl/Excl directive
+
+LoadCursorFromFileProfile      Profile  user32.Dll:        Dll library
+                                        LoadCursorFromFileA: Entry Point
+                                        Int4:              Type return
+                                        Dim                Cursor file name
+
+LoadCursorFromFile      WinApi          LoadCursorFromFileProfile Giving APIResult Using APICursorName
+
+                        Call            GetLastError       Load the last error value
+                        RETURN
+
+                        XIF                                End of compiler directive
+
+...............................................................................
+.   SetClassLong - Change properties of a window that has been set when the window was created
+...............................................................................
+.   Notes    : Carefull with this Api.
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APIWindowHandle    - Int    4       Handle of window properties to change
+.              APIClassIndex      - Int    2       Index to the property to change
+.              APIParameter       - Int    4       New value of property
+.              APIResult          - Int    4       Don't care
+.   On exit  : APIWindowHandle    - Int    4       Unchanged
+.              APIClassIndex      - Int    2       Unchanged
+.              APIParameter       - Int    4       Unchanged
+.              APIResult          - Int    4        0 = If Failed                       
+.                                           APIResult = Old value of property ( Save it)
+
+                        IFNZ            Api030             Compiler incl/Excl directive
+
+SetClassLongProfile     Profile         user32.Dll:        Dll library
+                                        SetClassLongA:     Entry Point
+                                        Int4:              Type return
+                                        Int4:              APIWindowHandle
+                                        Int2:              APIClassIndex
+                                        Int4               New property value
+
+SetClassLong            WinApi          SetClassLongProfile Giving APIResult Using APIWindowHandle:
+                                        APIClassIndex:        Index into window property table(struct)
+                                        APIParameter          New property value
+
+                        Call            GetLastError       Load the last error value
+                        RETURN
+
+                        XIF                                End of compiler directive
+
+...............................................................................
+.   GetClassLong - Retrieve a property of a window
+...............................................................................
+.   Notes    : 
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APIWindowHandle    - Int    4       Handle of window properties to change
+.              APIClassIndex      - Int    2       Index to the property to change
+.              APIResult          - Int    4       Don't care
+.   On exit  : APIWindowHandle    - Int    4       Unchanged
+.              APIClassIndex      - Int    2       Unchanged
+.              APIResult          - Int    4        0 = If Failed                       
+.                                           APIResult = Property value retrieved
+
+                        IFNZ            Api031             Compiler incl/Excl directive
+
+GetClassLongProfile     Profile         user32.Dll:        Dll library
+                                        GetClassLongA:     Entry Point
+                                        Int4:              Type return
+                                        Int4:              APIWindowHandle
+                                        Int2               APIClassIndex
+
+GetClassLong            WinApi          GetClassLongProfile Giving APIResult Using APIWindowHandle:
+                                        APIClassIndex         Index into window property table(struct)
+
+                        Call            GetLastError       Load the last error value
+                        RETURN
+
+                        XIF                                End of compiler directive
+
+...............................................................................
+.   QueryServiceConfig
+...............................................................................
+.   Notes    : This is a very advanced routine
+.              I have not tested this Api.
+.              APIBytesNeeded - This variable points to an ADDRESS of a variable
+.                            that receives the size of data returned. PLB profile
+.                            passes addresses of strings with the DIM type and therefore
+.                            the type is a DIM althought it would contain a Integer value
+.                            of the bytes needed
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APIServiceHandle   - Int    4       Handle of service       
+.              APIServiceConfig   - Dim    36      Don't care
+.              APIBufferSize      - Int    4       Set to service config size = 36
+.              APIBytesNeeded     - Dim    4       Don't care
+.              APIResult          - Int    4       Don't care
+.   On exit  : APIServiceHandle   - Int    4       Unchanged
+.              APIServiceConfig   - Dim    36      Updated information
+.              APIBufferSize      - Int    4       Unchanged
+.              APIBytesNeeded     - Dim    4       Amount of char's in Service Config returned
+.                                               NOTE: 4 bytes contain an Int 4 value
+.              APIResult          - Int    4        1 = If successfull
+.                                                0 = If failed
+
+                        IFNZ            Api032             Compiler incl/Excl directive
+
+QueryServiceProfile     Profile         advapi.Dll:        Dll library
+                                        QueryServiceA:     Entry Point
+                                        Int4:              Type return
+                                        Int4:              Service Handle
+                                        Dim:               APIServiceConfig
+                                        Int4:              BufferSize
+                                        Dim                APIBytesNeeded
+
+QueryService            WinApi          QueryServiceProfile Giving APIResult Using APIServiceHandle:
+                                        APIServiceConfig:     Service config STRUCTURE
+                                        APIBufferSize:        Service config buffer size
+                                        APIBytesNeeded        Lenght of string returned in APIServiceConfig
+
+                        Call            GetLastError       Load the last error value
+                        RETURN
+
+                        XIF                                End of compiler directive
+
+
+
+...............................................................................
+.   DeleteFile - Delete File
+...............................................................................
+.   Notes    :
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : APIFileName        - Dim    260     Name of File
+.              APIResult          - Int    4       Don't care
+.   On exit  : APIFileName        - Int    260     Hopefully Deleted
+.              APIResult          - Int    4       True/False is set
+
+
+                        IFNZ            Api033          Compiler incl/Excl directive
+
+DeleteFileProfile       Profile         kernel32.dll:   Dll library
+                                        DeleteFileA:    Entry Point
+                                        Int4:           Type return
+                                        Dim             APIFileName time
+
+DeleteFile              WinApi          DeleteFileProfile Giving APIResult Using APIFileName     File to delete
+
+                        Call            GetLastError    Load the last error value
+                        RETURN
+
+                        XIF                             End of compiler directive
+
+
+
+
+...............................................................................
+.   This is a SKELETON.Place copy/new Api above skeleton  }
+.   Only change contents of <> or add new lines.          } 
+.   Add new variables used to Data section                } Remove these lines
+.   Do not remove the 'skeleton'                          }
+.   Test the Api before putting it back on the WebBoard   }
+.                                                         }
+.   <<EntryPointName> - <Description of Api call>>
+...............................................................................
+.   Notes    : < Add any comments in here>
+.
+.              PLB Variable      PLB type Var.  Notes.
+.              ===============   ============== ===============================
+.   On entry : <Variable 1>    - <<Dim  100 >   <Description of contents>>
+.              <Variable 2>    - <<Form 10  >   <Description of contents>>
+.              APIResult          - Int    4       Don't care
+.   On exit  : <Variable 1>    - <<Dim  100 >   <Unchanged or new contents>>
+.              <Variable 2>    - <<Form 10  >   <Unchanged or new contents>>
+.              APIResult          - Int    4       <x>= If successfull - <Description>
+.                                               <y>= If failed - <Description>
+.                                           APIResult = Return value - <Description>
+
+                        IFNZ            Api999             Compiler incl/Excl directive
+
+<EntryPointName + 'Profile'>   Profile  <Api name.Dll>:    Dll library
+                                        <EntryPointname>:  Entry Point
+                                        Int4:              Type return
+                                        <Dim>:             <Variable 1 description>
+                                        <Int4>             <Variable 2 description>
+
+<EntryPointName>        WinApi          <EntryPointName + 'Profile'> Giving APIResult Using <Variable 1>:
+                                        <Variable 2>       <Variable description>
+
+                        Call            GetLastError       Load the last error value
+                        RETURN
+
+                        XIF                                End of compiler directive
+
+
+...............................................................................
+.                       END OF PROFILES.API
+.
+.   Don't place any code after this.
+...............................................................................
+JumpOver

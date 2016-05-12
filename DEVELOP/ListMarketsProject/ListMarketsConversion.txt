@@ -1,0 +1,147 @@
+PC	EQU	1
+.Include Files
+	include common.inc
+	include nonodd.inc
+	include cons.inc
+
+
+Release		INIT	"1.0"
+holdVar		dim	14
+nline1		dim	6
+nline2		dim	1
+nline3		dim	1
+nline4		dim	1
+nline5		dim	1
+nline6		dim	1
+nline7		dim	1
+nline8		dim	1
+nline9		dim	1
+
+tempfile2	file
+
+mss1	plform	Error
+	formload mss1
+.
+	erase	"c:\work\CategoryNEW.dat"
+	erase	"c:\work\Category.prn"
+	copyfile "f:\library\develop\listmarketsproject\mkt desig 6-16-06_2.prn","c:\work\Category.prn"
+	prep	tempfile2,"c:\work\CategoryNEW.dat",exclusive
+	open	tempfile,"c:\work\Category.prn",exclusive
+	call	Paint
+	loop
+dave		read	tempfile,SEQ;holdVar
+		until over
+.		clear 	vars and get data!
+		add	C1,howmany
+		display	*p10:12,"records processed : ",howmany
+		unpack	holdvar,notekey,ndate,ntime,nline1,nline2,nline3,nline4,nline5,nline6,ninits
+.		clear 	notekey
+.		clear 	ndate
+.		clear 	ntime
+.		clear 	nline
+.		clear 	ninits
+.		unpack 	holdVar, notekey
+.		bump 	holdVar,6
+.		unpack 	holdVar, ndate
+.		bump 	holdVar,8
+.		unpack 	holdVar, ntime
+.		bump 	holdVar,4
+.		unpack 	holdVar, nline1
+.		bump 	holdVar,60
+.		unpack 	holdVar, nline2
+.		bump 	holdVar,60
+.		unpack 	holdVar, nline3
+.		bump 	holdVar,60
+.		unpack 	holdVar, nline4
+.		bump 	holdVar,60
+.		unpack 	holdVar, nline5
+.		bump 	holdVar,60
+.		unpack 	holdVar, nline6
+.		bump 	holdVar,60
+.
+.		unpack 	holdVar, ninits
+.		bump 	holdVar,3
+.
+		call 	TRIM using nline1
+		call 	TRIM using nline2
+		call 	TRIM using nline3
+		call 	TRIM using nline4
+		call 	TRIM using nline5
+		call 	TRIM using nline6
+.
+DAVE2		clear 	NLINE
+.		if (nline1 <> "")
+.			append nline1, NLINE
+.			append NewLine, NLINE
+.		endif
+.		if (nline2 <> "")
+.			append nline2, NLINE
+.			append NewLine, NLINE
+.		endif
+.		if (nline3 <> "")
+.			append nline3, NLINE
+.			append NewLine, NLINE
+.		endif
+.		if (nline4 <> "")
+.			append nline4, NLINE
+.			append NewLine, NLINE
+.		endif
+.		if (nline5 <> "")
+.			append nline5, NLINE
+.			append NewLine, NLINE
+.		endif
+.		if (nline6 <> "")
+.			append nline6, NLINE
+.			append NewLine, NLINE
+.		endif
+.
+		if (nline1 <> "")
+			append nline1, NLINE
+		endif
+		if (nline2 <> "")
+			movefptr nline,result
+			if (result > 0)
+				append	newline,NLINE
+			endif
+			append nline2, NLINE
+		endif
+		if (nline3 <> "")
+			movefptr nline,result
+			if (result > 0)
+				append	newline,NLINE
+			endif
+			append nline3, NLINE
+		endif
+		if (nline4 <> "")
+			movefptr nline,result
+			if (result > 0)
+				append	newline,NLINE
+			endif
+			append nline4, NLINE
+		endif
+		if (nline5 <> "")
+			movefptr nline,result
+			if (result > 0)
+				append	newline,NLINE
+			endif
+			append nline5, NLINE
+		endif
+		if (nline6 <> "")
+			movefptr nline,result
+			if (result > 0)
+				append	newline,NLINE
+			endif
+			append nline6, NLINE
+		endif
+
+		reset	NLINE
+.
+		call Trim using NLINE
+		write	tempfile2,SEQ;ORDNOTESVARS
+	repeat
+
+	close 	tempfile
+	close 	tempfile2
+	shutdown
+.
+	include	comlogic.inc

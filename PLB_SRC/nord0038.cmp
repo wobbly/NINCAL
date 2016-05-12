@@ -1,0 +1,30 @@
+[Main]
+Type=1
+Src=nord0038.pls
+Targ=\\nins1\e\library\PLB_SRC\nord0038.exe
+Icon=\\nins1\e\apps\WINBATCH\Icons\ARTOWL7.ico
+CmpVersion=4
+[Options]
+TechWebPage=
+UACManifestSelection=asInvoker
+UACManifestUI=false
+CodeSign=0
+CodeSignDetails=~~
+RunHidden=0
+LargeExtractDest=0
+PreventAutoExtract=0
+[Version Info]
+Comments=
+CompanyName=
+FileDescription=nord0038
+FileVersion=1.0
+InternalName=nord0038.exe
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=nord0038.exe
+ProductName=nord0038
+ProductVersion=1.0
+[Other Files]
+Count=0
+[Extenders]
+Count=0

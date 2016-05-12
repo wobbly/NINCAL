@@ -1,0 +1,118 @@
+<!-- 1/4/2006 ASH - NEW FORM -->
+<!-- custom content goes here -->
+<script language="javascript">
+function changepg(newpos)
+{
+	document.statusrpt1Form.cgireadpos.value = newpos;
+	document.statusrpt1Form.cgifunction.value = 1;
+	document.statusrpt1Form.submit();
+}
+
+function shipSub(lrnumber,mlrname)
+{
+    document.statusrpt1Form.cgiordernum.value = lrnumber;
+	document.statusrpt1Form.cgimailername.value = mlrname;
+    document.statusrpt1Form.cgifunction.value = 2;
+    document.statusrpt1Form.submit();
+}
+
+</script>
+<script language="javascript">
+function searchAgain()
+{
+	document.statusrpt1Form.cgifunction.value = 0;
+	document.statusrpt1Form.submit();
+}
+</script>
+
+<form action='statusrpt.plc' name='statusrpt1Form' id='statusrpt1Form' method='POST'>
+    <input type='hidden' name='cgifunction' value='0' />
+    <input type='hidden' name='SID' value='<%=SID%>' />
+    <input type='hidden' name='cgilistnum' value='<%=cgilistnum%>' />
+    <input type='hidden' name='cgiordernum' value='<%=cgiordernum%>' />
+    <input type='hidden' name='cgimailername' value='<%=cgimailername%>' />
+    <table border='0' cellpadding='2' cellspacing='2' align='center'>
+        <tr>
+            <td class='title' align=center>
+                View Order
+                <br>
+                Search Text:  <%=cgiother%><br><br>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table class="datacontainer" cellpadding="2" cellspacing="0">
+                    <tr>
+                        <th align="center" valign="bottom">List Name</th>
+                        <th align="center" valign="bottom">Mailer Name</th>
+                        <th align="center" valign="bottom">Purchase Order</th>
+                        <th align="center" valign="bottom">Mailer Key</th>
+                        <th align="center" valign="bottom">Mail Date</th>
+                        <th align="center" valign="bottom">Status</th>
+<!-- START PATCH 4/27/2006 ADDED LOGIC -->
+                        <th align="center" valign="bottom">Qty</th>
+                        <th align="center" valign="bottom">Exc/Rent</th>
+<!-- END PATCH 4/27/2006 ADDED LOGIC -->
+                    </tr>
+<%DISPLAYRESULTS%>
+                    <tr class="datarow<%=cgidatarow%>">
+                        <td valign="bottom"><%=cgiordername%></td>
+                        <td valign="bottom"><%=cgimailername%></td>
+                        <td align="center" valign="bottom"><%=cgiponum%></td>
+                        <td align="center" valign="bottom"><%=cgimailerkey%></td>
+                        <td valign="bottom"><%=cgimailerdate%></td>
+                        <td valign="bottom"><%=cgistatus%></td>
+<!-- START PATCH 4/27/2006 ADDED LOGIC -->
+                        <td valign="bottom"><%=cgiorderqty%></td>
+                        <td valign="bottom"><%=cgiexcrent%></td>
+<!-- END PATCH 4/27/2006 ADDED LOGIC -->
+                    </tr>
+<%/DISPLAYRESULTS%>
+                    <tr>
+                        <td colspan="9" align=center>
+                            <%=cgilinks%>
+                        </td>
+                    </tr>
+    <!-- Begin PATCH 09DEC2008 ADDED LOGIC DLH -->
+					<tr>
+	<td colspan="10" align=center> Live Orders: <%=cgiordcount%> Qty Rental - <%=cgiordrent%> Exchange - <%=cgiordexch%> </td>
+					</tr>
+					<tr>
+	<td colspan="9" align=center> Live Lcr's: <%=cgilcrcount%> Qty Rental - <%=cgilcrrent%> Exchange - <%=cgilcrexch%> </td>
+					</tr>
+					<tr>
+	<td colspan="8" align=center> Billed Orders: <%=cgibldcount%> </td>
+					</tr>
+	<!-- End PATCH 09DEC2008 ADDED LOGIC DLH -->
+					<tr>
+						<td colspan="9" align=center>Page <%=cgiPageNum%> of <%=cgiTotPage%></td>
+					</tr>
+					<tr>
+						<td colspan="9" align=center><%=cgiRecNum%> Records Found</td>
+					</tr>
+
+    				<tr>
+                        <td colspan="9" align=center>
+							<input type=button value="Search Again" onclick=searchAgain()>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <input type='hidden' name='cgidatasource' value='<%=cgidatasource%>' />
+    <input type='hidden' name='cgireadpos' value='<%=cgireadpos%>' />
+	<input type='hidden' name='cgiTotPage' value='<%=cgiTotPage%>' />
+	<input type='hidden' name='cgiRecNum' value='<%=cgiRecNum%>' />
+<!-- Begin PATCH 09DEC2008 ADDED LOGIC DLH -->
+<!--  Live Orders -->
+	<input type='hidden' name='cgiordcount' value='<%=cgiordcount%>' />
+	<input type='hidden' name='cgiordrent' value='<%=cgiordrent%>' />
+	<input type='hidden' name='cgiordexch' value='<%=cgiordexch%>' />
+	<input type='hidden' name='cgilcrcount' value='<%=cgilcrcount%>' />
+	<input type='hidden' name='cgilcrrent' value='<%=cgilcrrent%>' />
+	<input type='hidden' name='cgilcrexch' value='<%=cgilcrexch%>' />
+	<input type='hidden' name='cgibldcount' value='<%=cgibldcount%>' />
+<!-- End PATCH 09DEC2008 ADDED LOGIC DLH -->
+</form>
+<!-- end custom content -->

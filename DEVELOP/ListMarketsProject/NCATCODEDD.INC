@@ -1,0 +1,49 @@
+* NCATCODEDD.INC
+* ************************************************************************************************
+**
+* NAMES IN THE NEWS MASTER CATEGORY CODES REFERENCE FILE
+* ************************************************************************************************
+**
+.
+.	FILE:	NINCODEDD.INC
+.     LENGTH:	14
+.	TYPE:	ISAM/AAM
+.	 KEY:	1-6	NCATCODENUM  (LIST NUM)
+.		XXX
+.		XXX
+.     AAMKEY:	XXXXXX
+...................................................................................................
+..
+NCATCODENAME	INIT	"NINCODE"
+NCATCODELIST	FILELIST
+NCATCODEFILE	IFILE	KEYLEN=6,FIXED=14,Name="NINCODE.isi"
+NCATCODEFLE2	AFILE	FIXED=14,Name="NINCODE.aam"
+	FILELISTEND
+NCATCODEFLAG	FORM	1
+NCATCODEFLD	DIM	6 // HOLD LIST NUM
+NCATCODEFLD1	DIM	4 // 3 PLUS 1  FOR AAM READ
+.
+NCATCODEVARS	LIST
+NCATCODENUM	DIM	6	1-6	LIST NUMBER
+NCATCODETYPE	DIM	1	7-7	LIST TYPE
+.1		"B"	Byrs/Subs
+.2		"D"	Dnrs/Mbrs
+.3		"C"	Compiled
+NCATCODEMARKET	DIM	27	8-34	BROAD MARKET
+NCATCODESUBMARK	DIM	43	35-77	SUB-MARKET
+NCATCODEENV	DIM	33	78-110	ENVIRONMENTAL
+NCATCODEPOLIT	DIM	33	111-143	POLITICAL
+NCATCODEHEALTH	DIM	29	144-172	HEALTH/CHARIT
+NCATCODEPROG	DIM	33	173-205	PROGRESSIVE
+NCATCODEFOCUS	DIM	1	206-206	LIST FOCUS
+.1		"C"	Christian
+.2		"V"	Veterans
+.3		"P"	Pets
+.4		"W"	Women
+.5		"K"	Children
+.6		"S"	Seniors
+.7		"G"	Gay/Lesbian
+.8		"J"	Jewish
+NCATCODEFILL	DIM	44	207-250
+
+	LISTEND

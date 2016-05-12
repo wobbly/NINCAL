@@ -1,0 +1,142 @@
+******************************************************
+*  DATACARD FILE DESCRIPTOR.
+. ....................................................
+* ****************************************************
+* NAMES IN THE NEWS MASTER DATACARD FILE.
+* ****************************************************
+.
+.      FILE:      NINDAT
+.    LENGTH:      600
+.  COMPRESS:      NONE
+.      TYPE:      AIM,ISAM,MANAGED
+. INDEX KEY:      2-7     LSTNUM
+.                 64-138  MLSTNAME
+.AIMDEX KEY:      2-7     LSTNUM
+.                 64-138  MLSTNAME
+.                 14-19   DATFUL
+.		   1-1	  STATUS
+.		  32-32	  NEW BYTE
+.		  33-33   EXCLUSIVE BYTE
+......................................................
+. LAST MODIFIED
+. patch 1.3 29JUNE2006 DMS - Add search, as per 6/12/2006 CTF Meeting
+. patch 1.2 21JUNE2006 ASH - Added aamdex for Fulfillment Number
+.	- 06Jul04 DLH Added NDatLUsage
+.	- 29Jul02 ASH Began conversion Process
+;Secondary FIles See
+;	include	ntxtdd.inc - DATACARD TEXT FILE
+;	include	nadddd.inc - address codes
+;	include	narrdd.inc - Arrangement codes
+;	include	ncatdd.inc - CATEGORY FILE DESCRIPTOR.
+;	include	NSLTdd.inc - SELECTION CODE FILE DESCRIPTOR.
+;	include	nsrcdd.inc - SOURCE CODE FILE DESCRIPTOR.
+;	include	nmoddd.inc - PRICE MODIFIER FILE DESCRIPTOR.
+.	include	nusedd.inc -  VARIaBLES MODULE FOR DATABUS PORT/USER IDENTIFICATION.
+.
+.       - 18JUN2005  DMB IP Address changed for File Manager
+.       - 06Apr2005  ASH  Modifed COMMPER
+.	- 15Nov95 DLH add key by name
+.	- 12/10/85 ADDED ONE BYTE TO EACH CATEGORY CODE, DELETED
+.	BLANK8. RECORD SIZE NOW VARIABLE TO MAX 2813.
+......................................................
+NDATNAME	DIM	8
+NDATNME1	INIT	"NINDAT  "
+NDATNME2	INIT	"NINDAT  "
+NDATNME3	INIT	"NINDAT4 "	3 is used for tdmc info (argh)
+NDATFLIST	FILELIST
+.NDATFILE	IFILE	KEYLEN=6,FIXED=600,Name="NINDAT.ISI|20.20.30.103:502"
+.START PATCH 1.2.8 REPLACED LOGIC
+.NDATFILE	IFILE	KEYLEN=6,FIXED=600,Name="NINDAT.ISI|10.10.30.103:502"
+..NDATFLE3	IFILE	KEYLEN=55,FIXED=600,Name="NINDAT4.ISI|20.20.30.103:502"
+.NDATFLE3	IFILE	KEYLEN=75,FIXED=600,Name="NINDAT4.ISI|10.10.30.103:502"
+..NDATFLE2	AFILE	FIXED=600,Name="NINDAT.AAM|20.20.30.103:502"
+.NDATFLE2	AFILE	FIXED=600,Name="NINDAT.AAM|10.10.30.103:502"
+NDATFILE	IFILE	KEYLEN=6,FIXED=600,Name="NINDAT.ISI"
+NDATFLE3	IFILE	KEYLEN=75,FIXED=600,Name="NINDAT4.ISI"
+NDATFLE2	AFILE	FIXED=600,Name="NINDAT.AAM"
+
+.END PATCH 1.2.8 REPLACED LOGIC
+.NDATFILE	IFILE	KEYLEN=6,FIXED=600,Name="NINDAT.ISI"
+.NDATFLE3	IFILE	KEYLEN=55,FIXED=600,Name="NINDAT4.ISI"
+.NDATFLE2	AFILE	FIXED=600,Name="NINDAT.AAM"
+	FILELISTEND
+NDATLOCK	FORM	1		0 OR 1=filepi,2=recordlock, 3=no lock
+NDATFLD		DIM	6
+NDATFLD1	DIM	9
+NDATFLD2	DIM	78
+NDATFLD3	DIM	75
+.START PATCH 1.2 ADDED LOGIC
+NDATFLD4	DIM	9
+.END PATCH 1.2 ADDED LOGIC
+.START PATCH 1.3 ADDED LOGIC
+NDATFLD5	DIM	4
+NDATFLD6	DIM	4
+NDATFLD7	DIM	4
+.END PATCH 1.3 ADDED LOGIC
+
+NDATFLAG	FORM	1
+NDATPATH	FORM	1
+.
+DATVARS		LIST
+STATUS		DIM	1       1-1    'W' FOR WITHDRAWN.
+LSTNUM		DIM	6       2-7    ZERO FILLED KEY.
+.Following was increased from 4 bytes
+OWNNUM		DIM	6       8-13   OWNER NUMBER (KEY FOR NINOWN CMPOWN FILES)
+.Following 2 were added
+DATFUL		DIM	6      14-19   FULFILLMENT NUMBER
+DATMAN		DIM	6      20-25   MANAGER
+DATMLR		DIM	6      26-31   MAILER  THIS WOULD NEGATE THE NEED FOR NINXRF.DAT!!!!!!!!!!
+.Possibly need fields for LCR routing and for Payment
+...............
+.10 Category fields have been moved to a subsidiary file
+NLSTCDE		DIM	1      32-32   NEW LIST CODE (Y or N).
+ELSTCDE		DIM	1      33-33   EXCLUSIVE CODE (N, C or  ).
+.                              'N' = NEW YORK, 'C'=CALIFORNIA, ' ' NONEXCLUSIVE
+.START PATCH 6APR2005 REPLACED LOGIC
+.COMMPER		DIM	3      34-36   COMMISSION.
+OLDCOMMPER		DIM	3      34-36   COMMISSION.  OBSOLETE FOR ALL NEWLY COMPILED PROGRAMS AS OF 4/6/2005
+.END PATCH 6APR2005 REPLACED LOGIC
+HOTLINE		DIM	1      37-37   HOTLINE CODE    (Y or N).
+NEWDATE		DIM	8      38-45   DATE CARD PUT UP CCYYMMDD FORMAT
+REVDATE		DIM	8      46-53   REVISION DATE CCYYMMDD FORMAT - PRINTED ON DATACARD
+PASSWORD	DIM	10     54-63   WHOM LAST UPDATED CARD  - PRINTED ON DATACARD
+MLSTNAME	DIM	75     64-138  MASTER LIST NAME.
+OLSTNAME	DIM	35    139-173  ORDER LIST NAME.
+.Addressing fields moved to subsidiary file
+.Source Code fields moved to subsidiary file
+.Arrangement fields moved to subsidiary file
+.Selection fields moved to subsidiary file
+.Mag Tape fields moved to subsidiary file
+CLEANCDE	DIM	4     174-177  CLEANED CODE (Cxxx).
+CLNINFO	DIM	38    178-215  CLEAN INFORMATION.
+NETNAME	DIM	4     216-219  NET NAME CODE (Nxxx).
+NETINFO	DIM	38    220-257  NET NAME INFORMATION.
+DELCODE	DIM	4     258-261  DELIVERY CODE (Dxxx).
+SAMPLE	DIM	4     262-265  SAMPLE CODE (Pxxx).
+.Should following be put into a separate file?????
+SEX	DIM	15    266-280  SEX TEXT.   OFF 1 BYTE
+MIN	DIM	11    281-291  MINIMUM TEXT.
+UNIVERSE	DIM	10    292-301  UNIVERSE QUANTITY.
+DATPAY	DIM	6     302-307  PAY-TO NUMBER.
+NDATCONV	DIM	1     308-308  CONVERSION BYTE
+NDATEXCH	DIM	1     309-309  1 = EITHER, 2 = EXCHANGE ONLY, 3 = RENTAL ONLY -- OBSOLETE!!! USING BYTE IN NINSEL INSTEAD
+UNITDATA	DIM	188   310-497
+.Text Fields will be contained in subsidiary file
+NDATWEB	DIM	1     498-498  ALLOWED ON WEBSITE
+NDATOFF	DIM	1     499-499  1=OFFICE USE ONLY
+NDATUPDDATE	DIM	8     500-507  UPDATE DATE
+NDATUPDINIT	DIM	10    508-517  UPDATE INITS
+NDATBUSY	DIM	1     518-518
+;begin patch 06July2004
+NDatLUSAGE	DIM	1     519-519   ; 'F' If we cannot sharelist usage info
+.START PATCH 6APR2005 REPLACED LOGIC
+.NDATFILL	DIM	81    520-600  FILLER
+COMMPER		DIM	6     520-525  COMMISSION.
+NDATFILL	DIM	75    526-600  FILLER
+.END PATCH 6APR2005 REPLACED LOGIC
+;NDATFILL	DIM	82    519-600  FILLER
+;end patch 06July2004
+.Eventually add following 2 fields:
+.	Verification Date - Data that List Owner last verified our datacard info
+.	Verification Schedule - Time frame when we start pestering List Owner about verifying our info.
+	 LISTEND

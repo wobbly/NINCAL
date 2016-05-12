@@ -1,0 +1,58 @@
+*==============================================================================
+. Process MENU 4 for DEMO
+.
+#MNU4	 MENU
+#MNU4ITM INIT	   ")Demo;":	       ;Demo menu list
+		   ")Scrdemo;":	       ;#1
+		   ")Tclip;":	       ;#2
+		   ")Image1;":	       ;#3
+		   ")Macsun;":	       ;#4
+		   "t)Alert;":	       ;#5
+		   "t)Chkgrp;":	       ;#6
+		   "t)Menu;":	       ;#7
+		   "t)Submenu;":       ;#8
+		   "Tstat)1;":	       ;#9
+		   "t)Edit;":	       ;#10
+		   "Tedit)2;":	       ;#11
+		   "tc)Ursor;":	       ;#12
+		   "t)Pict;":	       ;#13
+		   "tin)Fo;":	       ;#14
+		   "add)Ress;":	       ;#15
+		   "tta)B"	       ;#16
+.
+#MNU4RES  FORM	    3
+.
+*==============================================================================
+.
+. Put MENU 4 ( Demo ) into the MAIN MENU BAR
+.
+MAK4
+	 CREATE	   #MNU4,#MNU4ITM
+	 ACTIVATE  #MNU4,MNU4EXEC,#MNU4RES
+	 RETURN
+.------------------------------------------------------------------------------
+ENAMNU4
+	 ENABLEITEM #MNU4
+	 RETURN
+.
+DISMNU4
+	 DISABLEITEM #MNU4
+	 RETURN
+*==============================================================================
+.
+MNU4EXEC
+	 SETWTITLE "Sunbelt Workshop:DEMO"
+.
+	 CALL	   MENUSOFF
+.
+	 GETITEM   #MNU4,#MNU4RES,UNAME	 ;Retrieve the menu entry name
+	 
+	 TRAP	   MNU4FAIL IF CFAIL
+	 CHAIN	   UNAME	       ;
+	 TRAPCLR   CFAIL
+.
+	 RETURN
+MNU4FAIL
+	 ALERT	   CAUTION,CFAILMES,RES
+	 CALL	   MENUSON
+	 RETURN

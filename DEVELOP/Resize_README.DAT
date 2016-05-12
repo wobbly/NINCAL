@@ -1,0 +1,7 @@
+01/19/99
+
+This sub-directory contains code for testing the dynamic sizing
+of objects using a call to the system.  Several GUI programs currently
+contain basis for dynamic sizing but this has not yet been implemented.
+
+ASH

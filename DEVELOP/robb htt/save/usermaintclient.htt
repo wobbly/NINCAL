@@ -1,0 +1,286 @@
+<!-- custom content goes here -->
+<!-- START PATCH 1/3/2006 REPLACED LOGIC -->
+<!--
+	<script language="javascript">
+		function clearForm(){
+			document.newuserForm.cgifname.value = "";
+			document.newuserForm.cgilname.value = "";
+			document.newuserForm.cgiorganization.value = "";
+			document.newuserForm.cgiaddress.value = "";
+			document.newuserForm.cgicity.value = "";
+			document.newuserForm.cgizip.value = "";
+			document.newuserForm.cgitelephone.value = "";
+			document.newuserForm.cgifax.value = "";
+			document.newuserForm.cgiemail.value = "";
+			document.newuserForm.cgicompfunction.value = "";
+			document.newuserForm.cgiarea.value = "";
+			document.newuserForm.cgipassword.value = "";
+		}
+
+		function doDelete() {
+			document.newuserForm.cgifunction.value = 2;
+			document.newuserForm.submit();
+		}
+
+		function doSave() {
+
+			if (document.newuserForm.cgifname.value == '')
+			{
+				alert("First Name is a required field.");
+				document.newuserForm.cgifname.focus();
+				return;
+			}
+
+			if (document.newuserForm.cgilname.value == '')
+			{
+				alert("Last Name is a required field.");
+				document.newuserForm.cgilname.focus();
+				return;
+			}
+
+			if (document.newuserForm.cgiaddress.value == '')
+			{
+				alert("Address is a required field.");
+				document.newuserForm.cgiaddress.focus();
+				return;
+			}
+
+			if (document.newuserForm.cgicity.value == '')
+			{
+				alert("City is a required field.");
+				document.newuserForm.cgicity.focus();
+				return;
+			}
+
+			if (document.newuserForm.cgistate.value == '')
+			{
+				alert("State is a required field.");
+				document.newuserForm.cgistate.focus();
+				return;
+			}
+
+			if (document.newuserForm.cgizip.value == '')
+			{
+				alert("Zip is a required field.");
+				document.newuserForm.cgizip.focus();
+				return;
+			}
+
+			if (document.newuserForm.cgiphone.value == '')
+			{
+				alert("Telephone is a required field.");
+				document.newuserForm.cgiphone.focus();
+				return;
+			}
+
+			if (document.newuserForm.cgiemail.value == '')
+			{
+				alert("Email Address is a required field.");
+				document.newuserForm.cgiemail.focus();
+				return;
+			}
+
+			if (document.newuserForm.cgipassword.value != document.newuserForm.cgipassword2.value) {
+				alert("Passwords do not match.");
+				document.newuserForm.cgipassword.focus();
+				return false;
+			}
+
+			document.newuserForm.submit();
+		}
+	</script>
+-->
+	<script language="javascript">
+		function clearForm(){
+			document.newuserForm.cgifname.value = "";
+			document.newuserForm.cgilname.value = "";
+			document.newuserForm.cgiorganization.value = "";
+			document.newuserForm.cgiaddress.value = "";
+			document.newuserForm.cgicity.value = "";
+			document.newuserForm.cgizip.value = "";
+			document.newuserForm.cgitelephone.value = "";
+			document.newuserForm.cgifax.value = "";
+			document.newuserForm.cgiemail.value = "";
+			document.newuserForm.cgicompfunction.value = "";
+			document.newuserForm.cgiarea.value = "";
+			document.newuserForm.cgiusername.value = "";
+			document.newuserForm.cgipassword.value = "";
+		}
+
+		function doDelete() {
+			document.newuserForm.cgifunction.value = 2;
+			document.newuserForm.submit();
+		}
+
+		function doSave() {
+
+			if (document.newuserForm.cgifname.value == '')
+			{
+				alert("First Name is a required field.");
+				document.newuserForm.cgifname.focus();
+				return;
+			}
+
+			if (document.newuserForm.cgilname.value == '')
+			{
+				alert("Last Name is a required field.");
+				document.newuserForm.cgilname.focus();
+				return;
+			}
+
+			if (document.newuserForm.cgiaddress.value == '')
+			{
+				alert("Address is a required field.");
+				document.newuserForm.cgiaddress.focus();
+				return;
+			}
+
+			if (document.newuserForm.cgicity.value == '')
+			{
+				alert("City is a required field.");
+				document.newuserForm.cgicity.focus();
+				return;
+			}
+
+			if (document.newuserForm.cgistate.value == '')
+			{
+				alert("State is a required field.");
+				document.newuserForm.cgistate.focus();
+				return;
+			}
+
+			if (document.newuserForm.cgizip.value == '')
+			{
+				alert("Zip is a required field.");
+				document.newuserForm.cgizip.focus();
+				return;
+			}
+
+			if (document.newuserForm.cgiphone.value == '')
+			{
+				alert("Telephone is a required field.");
+				document.newuserForm.cgiphone.focus();
+				return;
+			}
+
+			if (document.newuserForm.cgiemail.value == '')
+			{
+				alert("Email Address is a required field.");
+				document.newuserForm.cgiemail.focus();
+				return;
+			}
+
+			if (document.newuserForm.cgipassword.value != document.newuserForm.cgipassword2.value) {
+				alert("Passwords do not match.");
+				document.newuserForm.cgipassword.focus();
+				return false;
+			}
+
+			if (document.newuserForm.cgiusername.value == '')
+			{
+				alert("Username is a required field.");
+				document.newuserForm.cgiusername.focus();
+				return false;
+			}
+
+			document.newuserForm.submit();
+		}
+	</script>
+<!-- END PATCH 1/3/2006 REPLACED LOGIC -->
+
+<form action='usermaint.plc' name='newuserForm' id='newuserForm' method='POST'>
+		<input type='hidden' name='cgifunction' value='1' />
+		<input type='hidden' name='SID' value='<%=SID%>' />
+		<input type='hidden' name='cgiuserid' value='<%=cgiuserid%>' />
+<center> <!-- 09/29/2010 BJACKSON -->
+    <table border='0' cellpadding='2' cellspacing='2' align='center'>
+        <tr>
+            <td class='title' colspan='2' align=center>
+                Member Information
+                <br><br>
+            </td>
+        </tr>
+        				<tr>
+							<td colspan="2">
+									<span class='errorMsg'><%=errorMsg%></span>
+							</td>
+				</tr>
+        <tr>
+            <td align='right' valign='top'><span class=small1>* </span>First Name:</td>
+            <td align='left' valign='top'><input type='text' name='cgifname' size='36' maxsize='32'value ='<%=cgifname%>'></td>
+        </tr>
+        <tr>
+            <td align='right' valign='top'><span class=small1>* </span>Last Name:</td>
+            <td align='left' valign='top'><input type='text' name='cgilname' size='36' maxsize='32' value ='<%=cgilname%>'></td>
+        </tr>
+				<tr>
+						<td align='right' valign='top'><span class=small1>* </span>Address:</td>
+						<td align='left' valign='top'><input type='text' name='cgiaddress' size='36' maxsize='80' value ='<%=cgiaddress%>'></td>
+        </tr>
+				<tr>
+						<td align='right' valign='top'><span class=small1>* </span>City:</td>
+						<td align='left' valign='top'><input type='text' name='cgicity' size='36' maxsize='32' value ='<%=cgicity%>'></td>
+        </tr>
+				<tr>
+					<td align='right' valign='top'><span class=small1>* </span>State:</td>
+					<td	align='left' valign='top'>
+<%DOSTATECODES%>
+<%/DOSTATECODES%>
+					</td>
+        </tr>
+        <tr>
+            <td align='right' valign='top'><span class=small1>* </span>Zip:</td>
+            <td align='left' valign='top'><input type='text' name='cgizip' size='10' maxsize='10' value ='<%=cgizip%>'></td>
+        </tr>
+		<tr>
+			<td align='right' valign='top'><span class=small1>* </span>Telephone:</td>
+			<td align='left' valign='top'><input type='text' name='cgiphone' size='10' maxsize='10' value ='<%=cgiphone%>'><br>
+			<font size=-1>No spaces or dashes: 5555555555</font>
+			</td>
+        </tr>
+		<tr>
+			<td align='right' valign='top'>Fax:</td>
+			<td align='left' valign='top'><input type='text' name='cgifax' size='10' maxsize='10' value ='<%=cgifax%>'><br>
+			<font size=-1>No spaces or dashes: 5555555555</font></td>
+        </tr>
+		<tr>
+			<td align='right' valign='top'><span class=small1>* </span>Email:</td>
+			<td align='left' valign='top'><input type='text' name='cgiemail' size='36' maxsize='60' value ='<%=cgiemail%>'></td>
+        </tr>
+<!-- START PATCH 1/3/2006 ADDED LOGIC -->
+		<tr>
+			<td align='right' valign='top'>Username:</td>
+			<td align='left' valign='top'><input type='text' name='cgiusername' size='12' maxsize='12' value ='<%=cgiusername%>'><br>
+        </tr>
+<!-- END PATCH 1/3/2006 ADDED LOGIC -->
+		<tr>
+			<td align='right' valign='top'>Password:</td>
+			<td align='left' valign='top'><input type='password' name='cgipassword' size='12' maxsize='12' value ='<%=cgipassword%>'><br>
+<!-- START PATCH 17NOV2005 REMOVED LOGIC -->
+<!--						<font size=-1>Only enter a password if you want to change the existing password.</font></td>  -->
+<!-- END PATCH 17NOV2005 REMOVED LOGIC -->
+        </tr>
+		<tr>
+			<td align='right' valign='top'>Confirm Password:</td>
+<!-- START PATCH 17NOV2005 REMOVED LOGIC -->
+<!--						<td align='left' valign='top'><input type='password' name='cgipassword2' size='12' maxsize='12' value =''></td>  -->
+			<td align='left' valign='top'><input type='password' name='cgipassword2' size='12' maxsize='12' value ='<%=cgipassword%>'></td>
+<!-- END PATCH 17NOV2005 REMOVED LOGIC -->
+        </tr>
+		<tr>
+			<td colspan= '2' align='center' span class='small1'>* Required Fields</td>
+		</tr>
+        <tr>
+            <td align='center' valign='top' colspan='2'>
+                <br>
+                <br>
+                <input type=button onClick="doSave();" value='Save'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<%=cgideletebutton%>
+                <input type=reset value='Reset'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
+        </tr>
+    </table>
+</center> <!-- 09/29/2010 BJACKSON -->
+</form>
+<script language="JavaScript"> document.newuserForm.cgifname.focus(); </script>
+<!-- end custom content -->

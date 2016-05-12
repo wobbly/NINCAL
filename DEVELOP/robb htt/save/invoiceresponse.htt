@@ -1,0 +1,40 @@
+<!-- custom content goes here -->
+<form action='invoice.plc' name='invoiceForm' id='invoiceForm' method='POST'>
+	<input type='hidden' name='cgifunction' value='0' />
+	<input type='hidden' name='SID' value='<%=SID%>' />
+	<table border='0' cellpadding='2' cellspacing='2' align='center'>
+		<tr>
+			<td class='title' align=center>
+				Invoice Request
+				<br><br><br>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<table class="datacontainer" cellpadding="2" cellspacing="0">
+					<tr>
+						<th>Mailer</th>
+						<th>List Name</th>
+						<th>P.O. Number</th>
+						<th>Mail Date</th>
+					</tr>
+<%DISPLAYRESULTS%>
+					<tr class="datarow<%=cgidatarow%>">
+						<td valign="bottom"><%=cgimailer%></td>
+						<td valign="bottom"><%=cgilistname%></td>
+						<td valign="bottom"><%=cgiponum%><input type='hidden' name='invoice<%=cgiinvnum%>' value='<%=cgiponnum%>'</td>
+						<td valign="bottom"><%=cgimaildate%></td>
+					</tr>
+<%/DISPLAYRESULTS%>
+					<tr>
+						<td colspan=4 align='center'>
+								<input type='submit' value='Search Again'>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+
+</form>
+<!-- end custom content -->

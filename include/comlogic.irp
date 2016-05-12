@@ -1,0 +1,7 @@
+[Files]
+INC=comlogic.inc
+ConversionOptions=Options.ini
+MSI=
+[Configuration]
+Type=2
+File=

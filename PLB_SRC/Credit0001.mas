@@ -1,0 +1,1565 @@
+PC       EQU       0
+         	INCLUDE   	COMMON.INC
+         	INCLUDE   	CONS.INC
+         	INCLUDE   	NSHPDD.INC
+         	INCLUDE   	NORDDD.INC
+         	INCLUDE   	NMLRDD.INC
+         	INCLUDE   	NOWNDD.INC
+         	INCLUDE   	NbrkDD.INC
+         	include   	winapi.inc
+	include   	ninvdd.inc
+        	include 	ndatdd.inc
+;begin patch 1.3
+              include       nadjdd.inc
+              include       consacct.inc
+              include       nmrgdd.inc
+              include       nacddd.inc
+              include       ndat3dd.inc
+;end patch 1.3
+;Following used only in order to load Search.plf
+        include ncmpdd.inc
+        include nrtndd.inc
+;.............................................................
+DIFF     FORM      10
+fivePER  FORM      10
+last     form      3
+Days     dim       5
+NDays    form      5
+Akey1    init      "01X"
+Akey4    init      "04X"
+;Following key not used by program but required for search.plf
+AKey2   init    "01F"
+AKey3   init    "02F"
+AKey1A  init    "01L"
+AKey2A  init    "02L"
+filler  init    "0000"
+filler2 init    "0000000"
+badstat init    "B*P"
+olddate dim     10
+Carr    init    0x7f
+testff  init    0xff
+test55  init    0x55
+test00  init    0x00
+test01  init    0x01
+test1   init    0x33
+test2   init    0x08
+hexeight integer 4,"4294967295"
+hextwo  init    0x02
+hexfour init    0x04
+ScanBreak form  "0"
+ManFeeflag dim      1
+;....................................................
+holdmdate form     5
+DateOkFlag dim     1
+okformore init     "Y"
+longest    form     5
+longestO   form     5
+shortest   form     5
+shortestO  form     5
+PaidDays   form     7
+OpenDays   form     7
+Paidcount  form     5
+opencount  form     5
+prepayflag dim      1
+prepaycount form    5
+prepaycounto form   5
+Guarcount   form    5         guaranteed and paid
+GuarcountO  form    5         guaranteed and open
+AdvLoPay    form    5         Advanced payment to List Owner
+AdvLoPayO   form    5         Advanced payment to List Owner  on open invoice
+;begin patch 1.3
+ARTotal     form    9.2
+;end patch 1.3
+;....counters for Non List Management
+longestN    form     5
+longestNO   form     5
+shortestN   form     5
+shortestNO  form     5
+PaidDaysN   form     7
+OpenDaysN   form     7
+PaidcountN  form     5
+opencountN  form     5
+prepayflagN dim      1
+prepaycountN form    5
+prepaycountNo form   5
+GuarcountN   form    5         guaranteed and paid
+GuarcountNO  form    5         guaranteed and open
+AdvLoPayN    form    5         Advanced payment to List Owner
+AdvLoPayNO   form    5         Advanced payment to List Owner  on open invoice
+;begin patch 1.3
+ARNonLO      form    9.2
+;end patch 1.3
+;.......................
+DateBranch  form    1       .'1=no date, 2=order date, 3=maildate, 4=returndate, 5= invoice date
+newdate1    dim    10      mm/dd/ccyy
+newdate2    dim    10      mm/dd/ccyy
+startdate   form      5
+Enddate     form      5
+str10a      dim     10
+CreditStopFlag dim   1         .No if break search loop
+;begin patch 1.3
+Mask14      INIT     "$$$,$$$,$$9.99"
+CalcARFlag  dim      1
+shipsw      dim      1
+mrgsw       dim      1
+;end patch 1.3
+;.......................................................................................................
+Release  init      "1.43"             DLH 005Mar03   .Add broker/consultant to list view
+;                                                    and problem with comlumn click on view 2
+;Release  init      "1.42"             DLH 18Dec02   .Force type of date select if dates entered
+;Release  init      "1.41"             DLH 15Apr02   .Turned off calls to AnimateIt
+;Release  init      "1.4"             DLH 24Oct01   .Changed listview index for "Days" view so they are in order.
+;Release  init      "1.3"             DLH 17May01   .Added Acct receivable fields and objects, fixed listview focus after
+;                                                   tab change
+RelDate  Init      "March 5, 2003"
+;RelDate  Init      "December 18, 2002"
+;RelDate  Init      "April 15, 2002"
+;RelDate  Init      "October 24, 2001"
+;RelDate  Init      "June 4, 2001"
+;Release  init      "1.2"             DLH 17May01
+;RelDate  Init      "May 17, 2001"
+;Release  init      "1.1"             DLH 06April01
+;Release  init      "1.0"             DLH 28March01 NEW
+;............................................................................
+;
+;
+;...MISC. ITEMS....................................
+colorfile file
+;Colors
+white   color
+grey    color
+RED     COLOR
+BLACK   COLOR
+;
+;Define Fonts to be used
+font1   font
+font2   font
+font3   font
+font4   font
+font5   font
+;
+;Set Up Menu Bar
+mFile    menu
+;mEdit    menu
+mHelp    menu
+;Set Up SubMenu for Options
+mOptions Menu
+sColor  submenu
+sSearch submenu
+;
+;Present Data for Menu Bar
+FData   init    "&File;&Print;Pre&view;-;E&xit"
+;EData   init    "&Edit;<1&Undo;-;<2&Cut;<3&Copy;<4&Paste;<5&Delete;-;<6&Select All"
+OData   init    "&Options;&Search-F2;-;&Color;"
+HData   init    "&Help;&About"
+;Present Data for SubMenu
+SData   init    ";&Broker;&List;&Mailer;&Ship-To"
+;Present Data for Colors SubMenu
+CData   init    ";&Background;&Text"
+;
+endindex form      9
+;.....Search  form       1
+Timer   Timer
+holdsInfo dim      36
+
+;Define Collections for Object Colors
+ColText Collection
+ColBack Collection
+
+
+;Define Colors for Each Object
+FTC     color
+BGC     color
+
+colornum dim   9(2)
+Fred     form    3
+Fgreen   form    3
+Fblue    form    3
+colorflag form   1
+
+;................................
+coll1   	collection
+specs   	form          4(4)
+size    	form          "1.000"
+infostring 	dim        590
+Tabnum  	form          2
+SaveTab 	form          2
+ListViewNum   form          2
+;............................
+;Constants for Animate Icon
+;These coordinates will place Icon directly
+AniH    init    "20"
+;AniV    init    "350"
+AniV    init    "550"
++
+;............................................................................................................
+;Set Vars used for About Box
+        move    "Credit0001.PLS",Wprognme
+        move    "Credit Information",Wfunction
+        move    "David Herrick",Wauthor
+        move    Release,Wrelease
+        move    Reldate to Wreldate
+;        move    "April 24, 2001",Wreldate
+;
+;Declare forms, Always declare child forms first
+;rpt     plform  Report
+animicon plform Animate         .CONTAINS ALL THE ICONS
+SRCH    plform  Search        
+mss1    plform  Error
+abt     plform  About
+Credita plform  credit0001A
+Creditb plform  credit0001B
+x       plform  credit0001
+        winhide
+;Load Forms, Always load parent form first
+        formload x
+        formload creditb,credit0001
+        formload credita,credit0001
+        formload abt
+        formload mss1
+        formload SRCH
+        formload animicon
+;Set tab index
+        move    C2,TabNum
+;Dynamically reset Animate as same size as Main window
+        getprop credit0001,height=H
+        setprop Animate,height=H
+        getprop credit0001,width=V
+        setprop Animate,width=V 
+;
+        
+        CREATE  TIMER,18000     .30 minutes
+        ACTIVATE TIMER,Timeout,RESULT
+;Create Menus
+        CREATE  credit0001;MFile,FData
+        create  Credit0001;mOptions,OData,mFile
+        create  Credit0001;mHelp,HData,mOptions
+        CREATE  Credit0001;sCOlor,Cdata,mOptions,1
+;Activate Menus
+;FileGo leads to stop
+        activate mFile,FileGo,result
+        activate mOptions
+        activate mHelp,HelpGo,result
+        activate sColor,ColorGo,result
+;Create SubMenu
+        create  Credit0001;sSearch,SData,mOptions,1
+;Activate SubMenus
+        activate sSearch,SearchGo,result        
+        activate Credit001Radio001
+;set properties in collection
+        listins ColText,Credit0001,credit001EditText001,credit001EditText002,credit001bEditText003:
+                credit001bEditText004,credit001bEditText005,credit001bEditText006,credit001bEditText007:
+                credit001bEditText008,credit001bEditText009,credit001bEditText010,credit001bEditText011:
+                credit001bEditText012,Credit001GoButton:
+                Credit001Mlrcomp:
+                credit001bstatText003,credit001bstatText004,credit001bstatText005,credit001bstatText006:
+                credit001bstatText007,credit001bstatText008,credit001bstatText009,credit001bstatText010:
+                credit001bstatText011,credit001bstatText012,credit001bstatText013,credit001bstatText014:
+                credit001bstatText015,credit001bstatText016,credit001bstatText017,credit001bstatText018:
+                Credit001brkcomp
+
+        listins Colback,Credit0001,credit001bEditText003:
+                credit001bEditText004,credit001bEditText005,credit001bEditText006,credit001bEditText007:
+                credit001bEditText008,credit001bEditText009,credit001bEditText010,credit001bEditText011:
+                credit001bEditText012,Credit001GoButton:
+                Credit001Mlrcomp:
+                credit001bstatText003,credit001bstatText004,credit001bstatText005,credit001bstatText006:
+                credit001bstatText007,credit001bstatText008,credit001bstatText009,credit001bstatText010:
+                credit001bstatText011,credit001bstatText012,credit001bstatText013,credit001bstatText014:
+                credit001bstatText015,credit001bstatText016,credit001bstatText017,credit001bstatText018:
+                Credit001brkcomp
+;Create fonts to be used
+        create  font1,"Arial",size=12,bold
+        create  font2,"Arial",size=8
+        create  font3,"Helvetica",size=9
+        create  font4,"Arial",size=14,italic        
+;Create Colors for EditText Inquiry
+        create  white=*white
+        create  grey=*ltgray
+        create  RED=*RED
+        create  black=*black
+;
+;Open color file
+opencolor
+        trap    colorerror if io
+        open    colorfile,"c:\progra~1\nincal\credit0001.col"
+        goto    colorerror if over
+        clear   n1
+        loop
+                add     c1,n1
+                read    colorfile,seq;colornum(n1)
+                until   over
+                until   (n1 = 2)
+        repeat
+        close   colorfile
+        trapclr io
+        unpack  colornum(1),Fred,Fgreen,Fblue
+        create  FTC=Fred:Fgreen:Fblue
+        setprop ColText,fgcolor=FTC
+        
+        unpack  colornum(2),Fred,Fgreen,Fblue
+        create  BGC=Fred:Fgreen:Fblue
+        setprop ColBack,bgcolor=BGC
+aftercolor   
+
+;Create Credit001aListView001 Columns
+;Column Clicking
+        Credit001aListView001.InsertColumn using "LR",50,1
+        Credit001aListView001.InsertColumn using "Orderdate",75,2
+        Credit001aListView001.InsertColumn using "Status",80,3
+        Credit001aListView001.InsertColumn using "Days",50,4
+        Credit001aListView001.InsertColumn using "Maildate",75,5
+        Credit001aListView001.InsertColumn using "List",190,6
+        Credit001aListView001.InsertColumn using "Amount Due",75,7
+;begin patch 1.43
+        Credit001aListView001.InsertColumn using "Broker/Consultant",75,8
+;end patch 1.43
+        CREDIT001aListView001.SetColumnFormat using 3,1              .set DAYS column justify right
+;
+;Create Credit001aListView002 Columns by days
+;Column Clicking
+;begin patch 1.4
+        Credit001aListView002.InsertColumn using "Pseudo Days",0,1
+        Credit001aListView002.InsertColumn using "Days",50,2
+        Credit001aListView002.InsertColumn using "LR",50,3
+        Credit001aListView002.InsertColumn using "Orderdate",75,4
+        Credit001aListView002.InsertColumn using "Status",80,5
+        Credit001aListView002.InsertColumn using "Maildate",75,6
+        Credit001aListView002.InsertColumn using "List",190,7
+        Credit001aListView002.InsertColumn using "Amount Due",75,8
+;begin patch 1.43
+        Credit001aListView002.InsertColumn using "Broker/Consultant",75,9
+;end patch 1.43
+        CREDIT001aListView002.SetColumnFormat using 1,1              .set DAYS column justify right
+;end patch 1.4
+;
+;Create Credit001aListView003 Columns by list
+;Column Clicking
+        Credit001aListView003.InsertColumn using "List",190,1
+        Credit001aListView003.InsertColumn using "LR",50,2
+        Credit001aListView003.InsertColumn using "Orderdate",75,3
+        Credit001aListView003.InsertColumn using "Status",80,4
+        Credit001aListView003.InsertColumn using "Days",50,5
+        Credit001aListView003.InsertColumn using "Maildate",75,6
+        Credit001aListView003.InsertColumn using "Amount Due",75,7
+;begin patch 1.43
+        Credit001aListView003.InsertColumn using "Broker/Consultant",75,8
+;end patch 1.43
+
+        CREDIT001aListView003.SetColumnFormat using 4,1              .set DAYS column justify right
+;
+        setitem Credit001ComboBox001,0,c1
+
+;Set Error Message Stat Text Boxes
+        call    SetCreditErrorMssgDefault
+; .................................................................
+        Deactivate Credita
+        Deactivate Creditb
+        move        c1 to n1
+	call        CreditTabChange
+        setfocus credit001EditText001
+        loop
+                waitevent
+                setitem timer,0,18000   .reset to 30 minutes
+        repeat
+        goto    timeout
+;.............................................................................................................
+;SetCreditDates - check for date goodies
+SetCreditDates
+;
+        move    yes to dateokflag
+        clear   mm
+        clear   dd
+        clear   yy
+        clear   newdate1
+        clear   newdate2
+drew
+        getitem Credit001ComboBox001,0,result
+        move    result to datebranch
+        getitem Credit001EditDate1,0,str10
+        clear   mm
+        clear   dd
+        clear   str2
+        clear   yy
+        call    TRIM using str10
+        count   N2,str10
+        if (N2 = 10)
+                unpack  str10,MM,str1,DD,str1,STR2,YY
+        elseif (N2 = 8)
+                unpack  str10,MM,DD,STR2,YY
+        elseif (N2 <> 0)
+                alert   caution,"Date Must be in MMDDCCYY Format",result
+		setFocus Credit001EditDate1
+                goto BadDate
+        endif
+        move    MM,N2
+        if (N2 > "12")
+                alert   caution,"Invalid Month!",result
+		setFocus Credit001EditDate1
+                goto BadDate
+        else
+                move    DD,N2
+                if (N2 > "31")
+                        alert   caution,"Invalid Day!",result
+			setFocus Credit001EditDate1
+	                goto BadDate
+                else
+                        move    STR2,N2
+                        if (N2 <> C0 AND (N2 < "19" OR N2 > "25"))
+                                alert   caution,"Invalid Year!",result
+				setFocus Credit001EditDate1
+		                goto BadDate
+                        endif
+                endif
+        endif
+        call    TRIM using MM
+        count   N2,MM
+        if (N2 <> 0 AND MM <> "00")
+                pack    newdate1,MM,SLASH,DD,SLASH,STR2,YY
+        else
+                clear   newdate1
+        endif
+        setitem Credit001EditDate1,0,newdate1
+;
+        clear   mm
+        clear   dd
+        clear   yy
+        clear   str2
+        clear   newdate2
+        getitem Credit001EditDate2,0,str10
+        call    TRIM using str10
+        count   N2,str10
+        if (N2 = 10)
+                unpack  str10,MM,str1,DD,str1,STR2,YY
+        elseif (N2 = 8)
+                unpack  str10,MM,DD,STR2,YY
+        elseif (N2 <> 0)
+                alert   caution,"Date Must be in MMDDCCYY Format",result
+		setFocus Credit001EditDate2
+                goto BadDate
+        endif
+        move    MM,N2
+        if (N2 > "12")
+                alert   caution,"Invalid Month!",result
+		setFocus Credit001EditDate2
+                goto BadDate
+        else
+                move    DD,N2
+                if (N2 > "31")
+                        alert   caution,"Invalid Day!",result
+	 		setFocus Credit001EditDate2
+                        goto BadDate
+                else
+                        move    STR2,N2
+                        if (N2 <> C0 AND (N2 < "19" OR N2 > "25"))
+                                alert   caution,"Invalid Year!",result
+				setFocus Credit001EditDate2
+                                goto BadDate
+                        endif
+                endif
+        endif
+        call    TRIM using MM
+        count   N2,MM
+        if (N2 <> 0 AND MM <> "00")
+                pack    NewDate2,MM,SLASH,DD,SLASH,STR2,YY
+        else
+                clear   NewDate2
+        endif
+        setitem Credit001EditDate2,0,NewDate2
+        if      (Newdate1  <= b1 and Newdate2 <= b1)
+        move    c0 to datebranch
+        endif
+        move    c0 to startdate
+        move    c0 to enddate
+        if      (newdate1 > b1)
+        unpack  newdate1 into mm,str1,dd,str1,str2,yy
+        call    cvtjul
+        move    juldays to startdate
+        endif
+        if      (newdate2 > b1)
+        unpack  newdate2 into mm,str1,dd,str1,str2,yy
+        call    cvtjul
+        move    juldays to enddate
+        endif
+dave142
+;begin patch 1.42
+        if     ((startdate > 0 or EndDate > 0)& DateBranch = 1)       .dates entered no date type
+                                alert   caution,"Specify Date type!",result
+                                setfocus  Credit001ComboBox001
+                                goto BadDate
+        endif
+
+        return
+
+BadDate
+        move    No to dateokflag
+        setprop Credit001GoButton,visible=1
+        setprop Credit001Stop,visible=0
+        return
+;LoadCreditSearchList - sort out keys being used and go to it
+LoadCreditSearchList
+         setprop   Credit001aListView003,enabled=1,bgcolor=white
+         setprop   Credit001aListView002,enabled=1,bgcolor=white
+         setprop   Credit001aListView001,enabled=1,bgcolor=white
+         setprop   Credit001aListView003,visible=0
+         setprop   Credit001aListView002,visible=0
+         setprop   Credit001aListView001,visible=1
+	 setfocus  Credit001aListView001
+         call      ClearCreditSearchList
+         MOVE      C2 TO NORDPATH
+         MOVE      C1 TO NinvPATH
+         clear     nordfld1
+         clear     nordfld2
+         clear     nordfld3
+         clear     nordfld4
+         clear     nordfld5
+         if        (mnum > " " and mnum <> "")
+         packkey   nordfld1 from akey1,mnum
+         endif
+         if        (brknum > " " and brknum <> "")
+         packkey   nordfld4 from akey4,brknum
+         endif
+;Set up Icon to display while searching
+        moveaddr credit0001,AnimateWindow
+        move    C1,AnimateCurIcon
+        move    C4,AnimateFrames
+        move    C0,AnimateIconID
+;position Icon to sit to left of FindIt button
+        move    AniH,H
+        move    AniV,V
+;        call    ANIMATEIT
+
+         call      nordaim
+         if        not over
+;list view goodies
+                call   checkinv
+                call   getbrk
+                call      LRLoop
+         endif
+	        destroy  AnimateIcon
+         return
+
+LRloop
+        loop
+;                call    ANIMATEIT
+                eventcheck
+	                if      (CreditStopFlag = No)
+			call     ClearCreditSearchList
+                        move     no to okformore
+	                goto     Fini
+		        endif
+                call NordKG
+                if not over
+                move    yes to okformore
+                call    checkinv
+                call   getbrk
+                else
+                move    no to okformore
+	        destroy  AnimateIcon
+	        endif
+                until  (okformore = NO)
+        repeat
+        clear    str5
+fini
+        move     opencount to str5
+	setitem  credit001bEditText004,0,str5         .open count
+;
+        clear    str5
+        move     Paidcount to str5
+	setitem  credit001bEditText003,0,str5         .Paid count
+;
+        clear    str5
+        move     longest to str5
+	setitem  credit001bEditText005,0,str5         .Paid
+;
+        clear    str5
+        move     longestO to str5
+	setitem  credit001bEditText006,0,str5         .Open
+;
+        clear    str5
+        move     Shortest to str5
+	setitem  credit001bEditText007,0,str5         .Paid
+;
+;begin patch 1.3
+              move     mask14 to str14
+              edit     ARtotal to str14
+	setitem  credit001bEditText030,0,str14         .Total AR
+;
+              move     mask14 to str14
+              edit     ARNonLO to str14
+	setitem  credit001bEditText029,0,str14         .Non List Management related AR
+;end patch 1.3
+
+;
+        clear    str5
+        if       (opencount > 0)
+        move     ShortestO to str5
+        else
+        move     c0 to str5
+        endif
+	setitem  credit001bEditText008,0,str5         .Open
+
+;
+        if       (paidcount > 0 & paiddays > 0)
+        divide   paidcount into paiddays
+        move     paiddays into str7
+	setitem  credit001bEditText009,0,str7         .Paid average
+        endif
+;
+        if       (opencount > 0 & opendays > 0)
+        divide   opencount into opendays
+        move     opendays into str7
+	setitem  credit001bEditText010,0,str7         .open average
+        endif
+;
+        clear    str5
+        move     prepaycount to str5
+	setitem  credit001bEditText011,0,str5         .Paid Prepay count
+;
+        clear    str5
+        move     prepaycounto to str5
+	setitem  credit001bEditText012,0,str5         .Open Prepay count
+;
+        clear    str5
+        move     Guarcount to str5
+	setitem  credit001bEditText017,0,str5         .Paid Guar count
+;
+        clear    str5
+        move     GuarcountO to str5
+	setitem  credit001bEditText015,0,str5         .Open Guar count
+;
+        clear    str5
+        move     AdvLoPay to str5
+	setitem  credit001bEditText018,0,str5         .Paid Guar count adv pay to LO
+;
+        clear    str5
+        move     AdvLoPayO to str5
+	setitem  credit001bEditText016,0,str5         .Open Guar count adv pay to LO
+;........................................................
+        move     opencountN to str5
+	setitem  credit001bEditText028,0,str5         .open count
+;
+        clear    str5
+        move     PaidcountN to str5
+	setitem  credit001bEditText001,0,str5         .Paid count
+;
+        clear    str5
+        move     longestN to str5
+	setitem  credit001bEditText013,0,str5         .Paid
+;
+        clear    str5
+        move     longestNO to str5
+	setitem  credit001bEditText026,0,str5         .Open
+;
+        clear    str5
+        move     ShortestN to str5
+	setitem  credit001bEditText002,0,str5         .Paid
+;
+        clear    str5
+        if       (opencountN > 0)
+        move     ShortestNO to str5
+        else
+        move     c0 to str5
+        endif
+	setitem  credit001bEditText027,0,str5         .Open
+
+;
+        if       (paidcountN > 0 & paiddaysN > 0)
+        divide   paidcountN into paiddaysN
+        move     paiddaysN into str7
+	setitem  credit001bEditText020,0,str7         .Paid average
+        endif
+;
+        if       (opencountN > 0 & opendaysN > 0)
+        divide   opencountN into opendaysN
+        move     opendaysN into str7
+	setitem  credit001bEditText023,0,str7         .open average
+        endif
+;
+        clear    str5
+        move     prepaycountN to str5
+	setitem  credit001bEditText014,0,str5         .Paid Prepay count
+;
+        clear    str5
+        move     prepaycountNo to str5
+	setitem  credit001bEditText025,0,str5         .Open Prepay count
+;
+        clear    str5
+        move     GuarcountN to str5
+	setitem  credit001bEditText019,0,str5         .Paid Guar count
+;
+        clear    str5
+        move     GuarcountNO to str5
+	setitem  credit001bEditText022,0,str5         .Open Guar count
+;
+        clear    str5
+        move     AdvLoPayN to str5
+	setitem  credit001bEditText021,0,str5         .Paid Guar count adv pay to LO
+;
+        clear    str5
+        move     AdvLoPayNO to str5
+	setitem  credit001bEditText024,0,str5         .Open Guar count adv pay to LO
+        return
+;................................................................................................
+checkinv
+        if (OSTAT = "X" OR OSTAT = "z" OR OSTAT = "x" or Ostat = "l")
+        return
+        endif
+;
+;
+        move      no to ManFeeFlag
+        rep       zfill in olnum
+        	if       	(olnum = "014477" or olnum = "017889" or olnum = "009766" or olnum = "018710")            .List Management Related
+        	move      	Yes to ManFeeFlag
+        	endif
+        	if         	(olnum = "005051" or olnum = "016909" or olnum = "016898")            .List Management Related
+        	move      	Yes to ManFeeFlag
+        	endif
+        packkey    ninvfld from olrn
+;        call       ANIMATEIT
+        call       ninvkey
+        return     if over
+Datechk branch     datebranch of datechkx,Orderdate,MailDate,ReturnDate,InvoiceDate
+        goto       datechkx                  .no select goto exit
+;.........................
+;select by order date
+Orderdate
+        move        oodtem to mm
+        move        oodted to dd
+        move        oodtey to yy
+        call        cvtjul
+        goto        datechk1
+Maildate
+        move        omdtem to mm
+        move        omdted to dd
+        move        omdtey to yy
+        call        cvtjul
+        goto        datechk1
+Returndate
+        move        ortndtem to mm
+        move        ortndted to dd
+        move        ortndtey to yy
+        call        cvtjul
+        goto        datechk1
+Invoicedate
+        move        invdtem to mm
+        move        invdted to dd
+        move        invdtey to yy
+        call        cvtjul
+        goto        datechk1
+datechk1
+        if          (startdate > 0 and enddate > 0)
+                    if       (startdate <= juldays and juldays <= enddate)
+                    goto     datechkx
+                    else
+                    return
+                    endif
+        endif
+
+        if          (startdate > 0 and juldays >= startdate)
+        goto        datechkx
+        endif
+
+        if          (enddate > 0 and juldays <= enddate)
+        goto        datechkx
+        endif
+
+        return
+;
+;datechkx - date check exit load the list views
+Datechkx
+;credit001alistview001
+  	 Credit001aListView001.InsertItem giving N9 using OLRN
+;
+         clear     str10
+         pack      str10 from oodtem,slash,oodted,slash,oodtec,oodtey
+         Credit001aListView001.SetItemText using N9,str10,1
+;
+         clear     str10a
+         if        (omdtem <> "00" and omdtem <> "  ")
+         pack      str10a from omdtem,slash,omdted,slash,omdtec,omdtey
+         move      omdtem to mm
+         move      omdted to dd
+         move      omdtey to yy
+         else
+         pack      str10a from invdtem,slash,invdted,slash,invdtec,invdtey
+         move      invdtem to mm
+         move      invdted to dd
+         move      invdtey to yy
+         endif
+         call      cvtjul
+         move      juldays to holdmdate
+        cmatch     "P" to statb
+        if         equal
+        unpack     mlrpayd into str2,yy,mm,dd
+        else
+        clock      date to today
+        unpack     today into mm,str1,dd,str1,yy
+        endif
+        call      cvtjul
+;
+        sub       holdmdate from juldays
+        move      c0 to days
+        move      juldays to days
+        move      days to Ndays
+;
+        move       c0 to n1
+        move       guarcode to n1
+        if         (statb = "P" and N1 > 0 and N1 <=9)
+        add        c1 to Guarcount
+        endif
+        if         (statb = "O" and N1 > 0 and N1 <=9)
+        add        c1 to GuarcountO
+        endif
+;add another check for pending - in a control right now.
+        clear      prepayflag
+        match      "096" to addchg1
+        if         equal
+        move       yes to prepayflag
+        goto       prepayexit
+        endif
+        match      "096" to addchg2
+        if         equal
+        move       yes to prepayflag
+        goto       prepayexit
+        endif
+        match      "096" to addchg3
+        if         equal
+        move       yes to prepayflag
+        goto       prepayexit
+        endif
+        match      "096" to addchg4
+        if         equal
+        move       yes to prepayflag
+        goto       prepayexit
+        endif
+        match      "096" to addchg5
+        if         equal
+        move       yes to prepayflag
+        goto       prepayexit
+        endif
+        match      "096" to addchg6
+        if         equal
+        move       yes to prepayflag
+        goto       prepayexit
+        endif
+        match      "096" to addchg7
+        if         equal
+        move       yes to prepayflag
+        goto       prepayexit
+        endif
+        match      "096" to addchg8
+        if         equal
+        move       yes to prepayflag
+        goto       prepayexit
+        endif
+        match      "096" to addchg9
+        if         equal
+        move       yes to prepayflag
+        goto       prepayexit
+        endif
+        match      "096" to addchg10
+        if         equal
+        move       yes to prepayflag
+        endif
+prepayexit
+;
+	Credit001aListView001.SetItemText using N9,Days,3
+	Credit001aListView001.SetItemText using N9,str10a,4
+        Credit001aListView001.SetItemText using N9,o1des,5
+        Credit001aListView001.EnsureVisible GIVING n10 using N9,0
+        if         (statb = "P")                    .paid invoice
+        if         (prepayflag <> yes)               .not prepaid
+	        add        c1 to paidcount
+                if       (ManFeeFlag = No)            .NON List Management Related
+                add        c1 to paidcountn
+                endif
+
+                if      (ndays > 900)
+;                call    debug
+                endif
+		        if         (Ndays > Longest)
+		        move       Ndays to longest
+	        	endif
+
+		        if         (Ndays > LongestN & ManFeeFlag = No)
+		        move       Ndays to longestN
+	        	endif
+
+	        	if         (Ndays < shortest & Ndays > 0)
+		        move       Ndays to shortest
+	        	endif
+
+	        	if         (Ndays < shortestN & Ndays > 0 & ManFeeFlag = No)
+		        move       Ndays to shortestN
+	        	endif
+
+		        if         (Ndays > 0)
+	        	add        Ndays to PaidDays
+		        endif
+
+		        if         (Ndays > 0 & ManFeeFlag = No)
+	        	add        Ndays to PaidDaysN
+		        endif
+              else
+              add       c1 to prepaycount
+	              if        (ManFeeFlag = No)
+	              add       c1 to prepaycountN
+	              endif
+              endif
+;OPEN INVOICES Follow
+        else                                      .open invoices
+;begin patch 1.3
+         	call      wipecvars
+              if            (CalcARflag = yes)
+              move          yes to subppsw
+              MOVE      OLON TO NOWNFLD
+              CALL      NOWNKEY
+         	MOVE     YES TO SUBPPSW
+         	MOVE      NinvFLD to nmrgfld
+         	REP       ZFILL IN NMRGFLD
+         	move      c0 to nmrgrqty
+         	move      c0 to nmrgiqty
+         	move      c0 to nmrgnet
+         	CALL      NMRGKEY
+;
+         	move      lrn to nshpfld
+         	call      nshpkey
+         	move      olnum to ndatfld
+         	MOVE      C1 TO NDATPATH
+         	call      ndatkey
+;
+         	move     no to shipsw
+         	move     no to mrgsw
+;
+         	MOVE      LRN TO NmrgFLD
+;
+         	MOVE      LRN TO NshpFLD
+         	call      nmrgkey
+         	if        not over
+         	move     yes to mrgsw
+         	endif
+         	call      nshpkey
+         	if        not over
+         	move     yes to shipsw
+         	endif
+;
+              call          compute
+         	MOVE          LRN TO NADJFLD
+              call          nadjkey
+              add           asrecadj to formar
+;
+              endif
+;end patch 1.3
+        if         (prepayflag <> yes)
+	        add        c1 to opencount
+;begin patch 1.3
+                      add        FormAR to ARTotal
+;end patch 1.3
+	              if        (ManFeeFlag = No)
+	              add        c1 to opencountN
+;begin patch 1.3
+                            add        Formar to ARNonLO
+;end patch 1.3
+	              endif
+
+		        if         (Ndays > LongestO)
+		        move       Ndays to longestO
+		        endif
+
+		        if         (Ndays > LongestNO & ManFeeFlag = No)
+		        move       Ndays to longestNO
+		        endif
+
+	        	if         (Ndays < shortestO & Ndays > 0)
+		        move       Ndays to shortestO
+		        endif
+
+	        	if         (Ndays < shortestNO & Ndays > 0 & ManFeeFlag = No)
+		        move       Ndays to shortestNO
+		        endif
+
+		        if         (Ndays > 0)
+		        add        Ndays to OPENdays
+		        endif
+
+		        if         (Ndays > 0 & ManFeeFlag = No)
+		        add        Ndays to OPENdaysN
+		        endif
+                else
+
+                add     c1 to prepaycounto
+;begin patch 1.3
+                      add        FormAR to ARTotal
+;end patch 1.3
+                        if    (ManFeeFlag = No)
+	                add    c1 to prepaycountNo
+;begin patch 1.3
+                            add        Formar to ARNonLO
+;end patch 1.3
+                        endif
+                endif
+        endif
+;
+        cmatch     "P" to statb
+        if         equal
+	Credit001aListView001.SetItemText using N9,"Paid",2
+        else
+              call    debug
+	Credit001aListView001.SetItemText using N9,"Open",2
+              move          mask14 to str14
+              edit          formar to str14
+              Credit001aListView001.SetItemText using N9,str14,6
+        endif
+;begin patch 1.43
+              Credit001aListView001.SetItemText using N9,brcomp,7
+;end patch 1.43
+
+        ;...............
+;credit001alistview002
+TESTDAVE
+;begin patch 1.4
+               move         days to Ndays             .create pseudo days for correct sort
+               add          "10000" to Ndays
+               move         ndays to str5
+               move         days to Ndays             .restore variable
+
+  	 Credit001aListView002.InsertItem giving N9 using str5
+  	 Credit001aListView002.SetItemText Using N9,days,1
+;
+         clear     str10
+         pack      str10 from oodtem,slash,oodted,slash,oodtec,oodtey
+         Credit001aListView002.SetItemText using N9,olrn,2
+;
+         Credit001aListView002.SetItemText using N9,str10,3
+;
+        cmatch     "P" to statb
+        if         equal
+	Credit001aListView002.SetItemText using N9,"Paid",4
+        else
+	Credit001aListView002.SetItemText using N9,"Open",4
+              move          mask14 to str14
+              edit          formar to str14
+              Credit001aListView002.SetItemText using N9,str14,7
+        endif
+;
+	Credit001aListView002.SetItemText using N9,str10a,5
+        Credit001aListView002.SetItemText using N9,o1des,6
+;end patch 1.4
+        Credit001aListView002.EnsureVisible GIVING n10 using N9,0
+;begin patch 1.43
+              Credit001aListView002.SetItemText using N9,brcomp,8
+;end patch 1.43
+;...............
+;credit001alistview003
+   	 Credit001aListView003.InsertItem giving N9 using o1des
+;
+         clear     str10
+         pack      str10 from oodtem,slash,oodted,slash,oodtec,oodtey
+         Credit001aListView003.SetItemText using N9,olrn,1
+;
+         Credit001aListView003.SetItemText using N9,str10,2
+;
+        cmatch     "P" to statb
+        if         equal
+	Credit001aListView003.SetItemText using N9,"Paid",3
+        else
+	Credit001aListView003.SetItemText using N9,"Open",3
+              move          mask14 to str14
+              edit          formar to str14
+              Credit001aListView003.SetItemText using N9,str14,6
+        endif
+;
+	Credit001aListView003.SetItemText using N9,days,4
+	Credit001aListView003.SetItemText using N9,str10a,5
+
+        Credit001aListView003.EnsureVisible GIVING n10 using N9,0
+;begin patch 1.43
+              Credit001aListView003.SetItemText using N9,brcomp,7
+;end patch 1.43
+;
+        return
+; .........................................................................
+;
+Timeout
+        beep
+        beep
+        beep
+        winshow
+        stop
+
+ClearCreditSearchList
+;Clear ListView
+        Credit001aListView001.DeleteAllItems giving N9
+        Credit001aListView002.DeleteAllItems giving N9
+        Credit001aListView003.DeleteAllItems giving N9
+
+;
+        move         c0 to longest
+        move         "900" to shortest
+        move         c0 to longesto
+        move         "900" to shortesto
+        move         c0 to opencount
+        move         c0 to paidcount
+        move         c0 to opendays
+        move         c0 to paiddays
+        move         c0 to ndays
+        move         c0 to prepaycount
+        move         c0 to prepaycounto
+        move         c0 to Guarcount
+        move         c0 to Guarcounto
+        move         c0 to AdvLoPay
+        move         c0 to AdvLoPayO
+;begin patch 1.3
+        	move    	c0 to ARTotal
+        	move          c0 to ArNonLO
+;end patch 1.3
+;
+        move         c0 to longestN
+        move         "900" to shortestN
+        move         c0 to longestNo
+        move         "900" to shortestNo
+        move         c0 to opencountN
+        move         c0 to paidcountN
+        move         c0 to opendaysN
+        move         c0 to paiddaysN
+        move         c0 to prepaycountN
+        move         c0 to prepaycountNo
+        move         c0 to GuarcountN
+        move         c0 to GuarcountNo
+        move         c0 to AdvLoPayN
+        move         c0 to AdvLoPayNO
+;
+        clear        str5
+	setitem  credit001bEditText003,0,str5
+	setitem  credit001bEditText004,0,str5
+	setitem  credit001bEditText005,0,str5
+	setitem  credit001bEditText006,0,str5
+	setitem  credit001bEditText007,0,str5
+	setitem  credit001bEditText008,0,str5
+	setitem  credit001bEditText009,0,str5
+	setitem  credit001bEditText010,0,str5
+	setitem  credit001bEditText011,0,str5
+	setitem  credit001bEditText012,0,str5
+;	setitem  credit001bEditText013,0,str5
+;	setitem  credit001bEditText014,0,str5
+	setitem  credit001bEditText015,0,str5
+	setitem  credit001bEditText016,0,str5
+	setitem  credit001bEditText017,0,str5
+	setitem  credit001bEditText018,0,str5
+;
+	setitem  credit001bEditText001,0,str5
+	setitem  credit001bEditText002,0,str5
+	setitem  credit001bEditText019,0,str5
+	setitem  credit001bEditText020,0,str5
+	setitem  credit001bEditText021,0,str5
+	setitem  credit001bEditText022,0,str5
+	setitem  credit001bEditText023,0,str5
+	setitem  credit001bEditText024,0,str5
+	setitem  credit001bEditText025,0,str5
+	setitem  credit001bEditText026,0,str5
+	setitem  credit001bEditText027,0,str5
+	setitem  credit001bEditText028,0,str5
+;begin patch 1.3
+	setitem  credit001bEditText029,0,str5
+	setitem  credit001bEditText030,0,str5
+              call     wipecvars
+              sub      formar from formar
+              clear    str14
+;begin patch 1.3
+        return
+;.........................................................................................................
+getmailer
+	 getitem   credit001EditText001,0,str4
+	 call      trim using str4
+
+	 count     n2 in str4
+	 if        (n2 = c3)
+	 move      str4 to str3
+	 pack      str4 from c0,str3
+	 goto      buildmkey
+	 endif
+	 if        (n2 = c2)
+	 move      str4 to str2
+	 pack      str4 from c0,c0,str2
+	 goto      buildmkey
+	 endif
+	 if        (n2 = c1)
+	 move      str4 to str1
+	 pack      str4 from c0,c0,c0,str1
+	 goto      buildmkey
+	 endif
+
+buildmkey
+	 clear     mkey
+	 packkey   mkey from str4,z3
+	 clear     mnum
+	 call      nmlrkey
+	 if        not over
+	 setitem   credit001Mlrcomp,0,Mcomp
+         else
+	 setitem   credit001Mlrcomp,0," "
+	 endif
+         return
+GetBroker
+	 getitem   credit001EditText002,0,str4
+
+	 call      trim using str4
+	 count     n2 in str4
+	 if        (n2 = c3)
+	 move      str4 to str3
+	 pack      str4 from c0,str3
+	 goto      buildbrkfld
+	 endif
+	 if        (n2 = c2)
+	 move      str4 to str2
+	 pack      str4 from c0,c0,str2
+	 goto      buildbrkfld
+	 endif
+	 if        (n2 = c1)
+	 move      str4 to str1
+	 pack      str4 from c0,c0,c0,str1
+	 goto      buildbrkfld
+	 endif
+
+buildbrkfld
+	 clear     nbrkfld
+	 packkey   nbrkfld from str4,z3
+	 clear     brknum
+	 call      nbrkkey
+	 if        not over
+	 setitem   credit001BRkcomp,0,BRcomp
+         else
+	 setitem   credit001BRkcomp,0," "
+	 endif
+         return
+
+STOP
+;         CLOSE     LOGFILE
+                winshow
+         STOP
+;
+SetCreditErrorMssgDefault
+        setprop ErrorMssgStat1,visible=1
+        setprop ErrorMssgStat2,visible=1
+        setprop ErrorMssgStat3,visible=1
+        setprop ErrorMssgStat4,visible=1
+        setprop ErrorMssgStat5,visible=0
+        setitem ErrorMssgStat1,0,"Enter 4 Digit Mailer Number:"
+        setitem ErrorMssgStat2,0,""
+        setitem ErrorMssgStat3,0,"    Or hit F2 to Search"
+        setitem ErrorMssgStat4,0,"      By Company Name"
+        setitem ErrorMssgStat5,0,"      That Mailer Does Not Exist!"
+        setitem ErrorMssgOK,0,"&OK"
+        return
+;......................................................................................................................
+CreditSwitchToTwo
+        if (TabNum <> C1)
+                if (TabNum = C2)
+                        move    C1,N1
+                endif
+                call    CreditTabClick
+                move    C1,N1
+                call    CreditTabChange
+                setitem Credit001TabControl001,0,2
+        endif
+        return
+;......................................................................................................................
+;begin patch 1.43
+CreditForceToOne
+               setitem Credit001TabControl001,0,1
+               Deactivate Credita
+               Deactivate Creditb
+               move        c1 to n1
+	call        CreditTabChange
+
+               return
+;end patch 1.43
+                
+;..........................................................................................
+CreditTabClick
+        IF (N1 = C1)
+;begin patch 1.3
+	  getprop Credit001aListView001,visible=N9
+                move    n9 to ListViewNum
+;end patch 1.3
+                Deactivate Credita
+        else (N1 = C2 )
+                Deactivate Creditb
+;begin patch 1.3
+        setprop Credit001aListView001,visible=ListViewNum
+        call    CreditSortListView
+;end patch 1.3
+        Endif
+        return
+
+CreditTabChange
+        IF (N1 = C1)
+                move    C1,TabNum
+                Activate Credita
+                setfocus Credit001aListView001
+;begin patch 1.3
+	  setprop Credit001aListView001,visible=ListViewNum
+	  call    CreditSortListView
+;end patch 1.3
+                        LOOP
+                        CLEAREVENT
+                        UNTIL OVER
+                REPEAT
+
+        else (N1 = C2)
+;begin patch 1.3
+	  getprop Credit001aListView001,visible=N9
+                move    n9 to ListViewNum
+;end patch 1.3
+                move    C2,TabNum
+                Activate Creditb
+                setfocus Credit001bEditText003
+;Prevent occurance or accumulated events which may place "hidden" objects on wrong form
+;ie, ResetStatus Checkbox. This generally only happens with LostFocus events from Stats2.plf
+                LOOP
+                        CLEAREVENT
+                        UNTIL OVER
+                REPEAT
+        Endif
+        return
+;............................................................................................................
+CreditSortListView
+;Dynamically sorts Different ListViews.  
+;In order to switch between different ListViews we need two pieces of information.
+;We need to ascertain which column was clicked AND which ListView we currently
+;have visible, as each ListView has its' columns ordered differently.
+;Getprops will determine which ListView is currently active, #EventResult passed to result
+;prior to calling this subroutine will determine which column was clicked.
+        getprop Credit001aListView001,visible=N9
+        if (N9 = C1)    .crecit001aListView001 is visible
+;if (result = 0) then user clicked first column, which is equal to currently viewed ListView, so do nothing!
+;begin patch 1.3
+                If (result <> 3 and result <> 5)  .no click?
+                        setprop credit001aListView001,visible=1
+                        setprop credit001aListView003,visible=0
+                        setprop credit001aListView002,visible=0
+		        Credit001aListView001.EnsureVisible using c1,0
+                        setfocus Credit001alistview001
+                endif
+;end patch 1.3
+                if (result = 3)            .clicked on days
+                        setprop credit001aListView001,visible=0
+                        setprop credit001aListView003,visible=0
+                        setprop credit001aListView002,visible=1
+		        Credit001aListView002.EnsureVisible using c1,0
+;			Credit001aListView002.SetItemState giving N9 using 1,2,2
+                        setfocus Credit001alistview002
+                Elseif (result = 5)  .clicked on list
+                        setprop credit001aListView001,visible=0
+                        setprop credit001aListView003,visible=1
+                        setprop credit001aListView002,visible=0
+		        Credit001aListView003.EnsureVisible using c1,0
+;			Credit001aListView003.SetItemState giving N9 using 1,2,2
+                        setfocus Credit001alistview003
+                endif
+        else
+                getprop Credit001aListView002,visible=N9
+                if (N9 = C1)    .Credit001aListView002 is visible
+;if (result = 0) then user clicked first column, which is equal to currently viewed ListView, so do nothing!
+;begin patch 1.3
+;begin patch - note we have a hidden pseudo day column that scews the count
+;                        if (result <> 1 and result <> 5)
+                        if (result <> 2 and result <> 6)
+;end patch
+                                setprop Credit001aListView001,visible=0
+                                setprop Credit001aListView002,visible=2
+                                setprop Credit001aListView003,visible=0
+	                  Credit001aListView002.EnsureVisible using c1,0
+	                  setfocus Credit001alistview002
+;begin patch
+;                        Elseif (result = 1 )
+                        Elseif (result = 2 )
+;end patch
+;end patch 1.3
+                                setprop Credit001aListView001,visible=1
+                                setprop Credit001aListView002,visible=0
+                                setprop Credit001aListView003,visible=0
+		  Credit001aListView001.EnsureVisible using c1,0
+	                        setfocus Credit001alistview001
+;begin patch
+;                        Elseif (result = 5 )
+                        Elseif (result = 6 )
+;end patch
+                                setprop Credit001aListView001,visible=0
+                                setprop Credit001aListView002,visible=0
+                                setprop Credit001aListView003,visible=1
+			        Credit001aListView003.EnsureVisible using c1,0
+	                        setfocus Credit001alistview003
+	                endif
+          else
+;if (result = 0) then user clicked first column, which is equal to currently viewed ListView, so do nothing!
+;begin patch 1.3
+                        if (result <> 1 and result <> 4 )
+                                setprop Credit001aListView001,visible=1
+                                setprop Credit001aListView002,visible=0
+                                setprop Credit001aListView003,visible=0
+  	                  Credit001aListView003.EnsureVisible using c1,0
+	                  setfocus Credit001alistview003
+;                        if (result = 1 )   .want lr order
+                        Elseif (result = 1 )   .want lr order
+;end patch 1.3
+                                setprop Credit001aListView001,visible=1
+                                setprop Credit001aListView002,visible=0
+                                setprop Credit001aListView003,visible=0
+			        Credit001aListView001.EnsureVisible using c1,0
+	                        setfocus Credit001alistview001
+                        Elseif (result = 4 )      .age order
+                                setprop Credit001aListView001,visible=0
+                                setprop Credit001aListView002,visible=1
+                                setprop Credit001aListView003,visible=0
+			        Credit001aListView002.EnsureVisible using c1,0
+	                        setfocus Credit001alistview002
+	                endif
+                endif
+        endif
+        return
+;......................................................................................................
+FileGo
+                winshow
+                stop
+
+colorerror
+        noreturn
+        move    C1,colorflag
+        goto aftercolor
+ColorGo
+        if (result = C1)
+                call    BackColor
+        elseif (result = C2)
+                call    TextColor
+        else
+                return
+        endif
+        clear   n1
+        prep    colorfile,"c:\progra~1\nincal\credit0001.col"
+	        loop
+                add     c1,n1
+                write   colorfile,seq;colornum(n1)
+                until (n1 =2)
+        repeat
+        close   colorfile
+        return
+;Trap for Cancel Entry in Color System Menu
+ColorTrap
+        noreturn
+        return
+BackColor
+        trap    ColorTrap if object
+        create  BGC
+        trapclr object
+        setprop ColBack,bgcolor=BGC
+        getitem BGC,1,Fred
+        getitem BGC,2,Fgreen
+        getitem BGC,3,Fblue
+        pack    colornum(2),Fred,Fgreen,Fblue
+        return
+
+TextColor
+        trap    ColorTrap if object
+        create  FTC
+        trapclr object
+        setprop ColText,fgcolor=FTC
+        getitem FTC,1,Fred
+        getitem FTC,2,Fgreen
+        getitem FTC,3,Fblue
+        pack    colornum(1),Fred,Fgreen,Fblue
+        return        
+CreditXRefKeyPress
+        if (N9 = 113) .F2 Key calls Search Function
+;Virtual Key Value
+                goto SearchGo3
+        elseif (N9 = 120)     .F9 Key closes Search Function
+                setprop Search,visible=0
+        endif
+        return
+SearchGo
+        branch  result to SearchGo1,SearchGo2,SearchGo3,SearchGo4
+SearchGo1
+;BROKER
+        move    C1,SrchFlag
+        call    SearchSetTitle
+        call    SearchSetVisible
+        return
+SearchGo2        
+;LIST
+        move    C2,SrchFlag
+        call    SearchSetTitle
+        call    SearchSetVisible
+        return
+SearchGo3        
+;MAILER
+        move    C3,SrchFlag
+        call    SearchSetTitle
+        call    SearchSetVisible
+        return
+SearchGo4
+;SHIP-TO
+        move    C4,SrchFlag
+        call    SearchSetTitle
+        call    SearchSetVisible
+        return
+SearchLoad
+        branch SrchFlag to SearchLoad1,SearchLoad2,SearchLoad3,SearchLoad4
+SearchLoad1
+;BROKER
+        unpack  Srchstr,str4,str1,str3,str1,str45
+        setitem  Credit001EditText002,0,str4
+        setitem  Credit001BRkcomp,0,str45
+        setfocus Credit001EditText002
+        return
+SearchLoad2
+;LIST - not an option with this program
+        return
+SearchLoad3
+;MAILER
+        unpack  Srchstr,str4,str1,str3,str1,str45
+        setitem Credit001EditText001,0,str4
+        setitem Credit001Mlrcomp,0,str45
+        setfocus Credit001EditText001
+        return
+SearchLoad4
+;SHIP-TO - not an option with this program
+        return
+;
+
+HelpGo
+        setprop AboutMssg,visible=1
+        return       
+debug   return
+;
+;begin patch 1.43
+getbrk         
+	 clear     nbrkfld
+	 packkey   nbrkfld from obrknum,z3
+	 clear     brknum
+                clear     brcomp
+	 call      nbrkkey
+                return
+;end patch 1.43
+;
+         	INCLUDE   	NSHPIO.INC
+         	INCLUDE   	NMLRIO.INC
+         	INCLUDE   	NORDIO.INC
+         	INCLUDE   	NOWNIO.INC
+         	INCLUDE   	NbrkIO.INC
+	include   	ninvio.inc
+;begin patch 1.3
+              include       Nadjio.inc
+              include       compute.inc
+              include       nmrgio.inc
+              include       nacdio.inc
+              include       ndat3io.inc
+;end patch 1.3
+;Following used only in order to load Search.plf
+         include ncmpio.inc
+         include   ndatio.inc
+         include   nrtnio.inc
+         include   searchio.inc      .contains logic for search.plf
+         INCLUDE   COMLOGIC.INC
+

@@ -1,0 +1,60 @@
+<!-----------------------------------------------------------------------------
+
+   Program:		taunting.html
+
+    Author:		Brian Jackson
+
+ Copyright:   © 2004 Adjacency Consulting Group, Inc.  All rights reserved.
+
+      Date:		29 APR 2004
+
+   Purpose:		sample HTML page to show how to "call" a CGI script
+
+  Revision:   v1.0	29 ARP 2004		{BJACKSON
+
+   License:   This program is free software; you can redistribute it and/or
+              modify it under the terms of the GNU General Public License
+              as published by the Free Software Foundation; either version 2
+              of the License, or (at your option) any later version.
+
+              This program is distributed in the hope that it will be useful,
+              but WITHOUT ANY WARRANTY; without even the implied warranty of
+              MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+              GNU General Public License for more details.
+
+              You should have received a copy of the GNU General Public License
+              along with this program; if not, write to the Free Software
+              Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+----------------------------------------------------------------------------->
+<html>
+	<head>
+		<title>CGI Demonstration by bjackson@adjacency.net</title>
+	</head>
+	<body>
+		<form action='taunting.plc' name='taunting' id='taunting' method='POST'>
+<!-- <form method="post" action="\taunting.plc"> -->		
+			<table border=1 align=center>
+				<tr>
+					<td align=right>Enter a relative (i.e. mother, father, etc.):</td>
+					<td align=left><input type="text" name="relative1" value="" /></td>
+				</tr>
+				<tr>
+					<td align=right>Enter a type of animal:</td>
+					<td align=left><input type="text" name="animal" value="" /></td>
+				</tr>
+				<tr>
+					<td align=right>Enter another relative:</td>
+					<td align=left><input type="text" name="relative2" value="" /></td>
+				</tr>
+				<tr>
+					<td align=right>Enter a type of food:</td>
+					<td align=left><input type="text" name="food" value="" /></td>
+				</tr>
+				<tr>
+					<td colspan=2 align=center>
+						<input type=submit value='Submit'>
+					</td>
+				</tr>
+		</form>
+</html>

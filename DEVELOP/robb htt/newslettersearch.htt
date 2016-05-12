@@ -1,0 +1,27 @@
+<form action='newslettersearch.plc' name='searchform' id='searchform' method='POST'>
+		<input type='hidden' name='SID' value='<%=SID%>' />
+		<input type='hidden' name='cgifunction' value='1' />
+    <table border='0' cellpadding='2' cellspacing='2' align='center'>
+				<tr>
+            <td class='title' align=center>
+				Newsletter Search
+						</td>
+				</tr>
+				<tr>
+						<td align='center' valign='top'>
+							<input type='text' name='cgisearch' size='15' maxsize='15' value='<%=cgisearch%>'/>
+						</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+							<span class='errorMsg'><%=errorMsg%></span>
+					</td>
+				</tr>
+				<tr>
+						<td align='center' valign='top' colspan='2'>
+							<input type=submit value='Search'>
+						</td>
+				</tr>
+    </table>
+</form>
+<script language="JavaScript"> document.searchform.cgisearch.focus(); </script>

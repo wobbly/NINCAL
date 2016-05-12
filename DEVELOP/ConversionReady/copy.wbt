@@ -1,0 +1,83 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+; VERSION: 1.0  mls  COMPILES MULTIPLE PROGRAMS - need a file called COMPILE.DAT
+;                    in g:\data to contain only the 8 byte PRG name, no exts.                                                                     
+;                                                                                   
+;                                                                                   
+; NOTE:PROGRAMS USING THE HELP FUNCTION WILL POINT TO "HELP.HTM" IN F:\APPS\WINBATCH
+;                                                                                   
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+:BEGIN
+;====================================PARAMETERS======================================
+do="c:\command.com"
+Dsinit="f:\apps\plb\code\dsinit"
+interp="f:\apps\plb\code\plbwin.exe"
+Yr=StrSub(TimeYmdHms(),1,2)
+Day=StrSub(TimeYmdHms(),7,2)
+Mo=StrSub(TimeYmdHms(),4,2)
+Date="%mo%/%day%/%yr%"
+index="f:\netutils\sunidxnt.exe"
+aamdex="F:\netutils\sunaDxnt.exe"
+reformat="f:\apps\plb\code\reformat"
+sort="f:\netutils\sort.exe"
+who=Environment("user")
+nprint="f:\public\nprint.exe"
+n=0
+BoxColor(1,"128,0,0",1)
+BoxDrawRect(1,"0,0,1000,1000",2)
+BoxCaption(1,"Testing Job")
+;====================================================================================
+errormode(@NOTIFY)
+                    T=" "
+                    fn1="g:\data\COPY.DAT"
+                    Q=FileExist("%fn1%")      
+                    If Q == @FALSE Then goto cverror
+                    handle = FileOpen("G:\DATA\COPY.DAT", "READ")
+                    line=""
+                    DirChange("g:\data")
+                    ; This section returns the number of entries in the "DAT" file
+                    fs1 = FileSize( "%fn1%" )
+                    binbuf1 = binaryalloc( fs1 )
+                    BinaryRead( binbuf1, "G:\DATA\COPY.DAT" )
+                    Prgs = BinaryStrCnt( binbuf1, 0, fs1 - 1, @CR)
+                    BinaryFree( binbuf1 )
+                    GOTO COMPILE
+
+:COMPILE         
+      For a=n to prgs
+      n=n + 1
+      line = FileRead(handle)
+      If Line == "*EOF*" then goto EOJ
+      PR=StrSub(Line,1,8)
+BoxCaption(1,"Copying %line%")
+      FileCopy("H:\DATA\TEXT\%line%.DAT", "G:\DATA\TEXT\%line%.DAT", @true)
+      RunIconWait("%INDEX%","g:\data\INDEX\%line% -r")
+      RunIconWait("%aamdex%","g:\data\INDEX\%line% -r")
+      next      
+
+:EXIT
+FileDelete("g:\data\COPY.dat")
+goto end
+
+:CVERROR
+Display("3", "Error","COPY.DAT is not in g:\data.")
+
+:EOJ
+BoxCaption(1,"Copying NINPRINT")
+      FileCopy("H:\DATA\NINPRINT.DAT", "G:\DATA\NINPRINT.DAT", @true)
+      RunIconWait("%INDEX%","g:\data\INDEX\NINPRINT -r")
+      RunIconWait("%aamdex%","g:\data\INDEX\NINPRINT -r")
+BoxCaption(1,"Copying NINPRINTL")
+      FileCopy("H:\DATA\NINPRINTL.DAT", "G:\DATA\NINPRINTL.DAT", @true)
+      RunIconWait("%INDEX%","g:\data\INDEX\NINPRINTL -r")
+      RunIconWait("%aamdex%","g:\data\INDEX\NINPRINTL -r")
+BoxCaption(1,"Copying GUARANT")
+      FileCopy("H:\DATA\GUARANT.DAT", "G:\DATA\GUARANT.DAT", @true)
+      RunIconWait("%INDEX%","g:\data\INDEX\GUARANT -r")
+      RunIconWait("%aamdex%","g:\data\INDEX\GUARANT -r")
+BoxCaption(1,"Copying TDMCORD")
+      FileCopy("H:\DATA\TDMCORD.DAT", "G:\DATA\TDMCORD.DAT", @true)
+      RunIconWait("%INDEX%","g:\data\INDEX\TDMCORD -r")
+      RunIconWait("%aamdex%","g:\data\INDEX\TDMCORD -r")
+BoxCaption(1,"Indexing NINLRXNG")
+      RunIconWait("%INDEX%","g:\data\INDEX\NINLRXNG -r")

@@ -1,0 +1,38 @@
+<COLLECTION>
+  <BOOK>
+    <TITLE>Cosmos</TITLE>
+    <AUTHOR>
+      <SEX>Male</SEX>
+      <NAME>
+        <FIRSTNAME>Carl</FIRSTNAME>
+        <INITIAL>L</INITIAL>
+        <SURNAME>Sagan</SURNAME>
+      </NAME>
+    </AUTHOR>
+    <PUBLISHER>Ballantine Books</PUBLISHER>
+ </BOOK>
+ <BOOK>
+    <TITLE>Catwings</TITLE>
+    <AUTHOR>
+      <SEX>Female</SEX>
+      <NAME>
+        <FIRSTNAME>Ursula</FIRSTNAME>
+        <INITIAL>M</INITIAL>
+        <SURNAME>Le Guin</SURNAME>
+      </NAME>
+    </AUTHOR>
+    <PUBLISHER>Scholastic</PUBLISHER>
+ </BOOK>
+ <BOOK>
+    <TITLE>Home Town</TITLE>
+    <AUTHOR>
+      <SEX>BiSexual</SEX>
+      <NAME>
+        <FIRSTNAME>Tracy</FIRSTNAME>
+        <INITIAL>N</INITIAL>
+        <SURNAME>Kidder</SURNAME>
+      </NAME>
+    </AUTHOR>
+    <PUBLISHER>Random House</PUBLISHER>
+ </BOOK>
+</COLLECTION>

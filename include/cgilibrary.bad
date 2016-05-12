@@ -1,0 +1,1894 @@
+///////////////////////////////////////////////////////////////////////////////
+//                                                                           //
+//   PROGRAM:   CGILibary.inc                                                //
+//                                                                           //
+//    AUTHOR:   Brian Jackson (bjackson@adjacency.net)                       //
+//                                                                           //
+//      DATE:   11 APR 2001                                                  //
+//                                                                           //
+// COPYRIGHT:   2001-2004 Adjacency Consulting Group, Inc.                   //
+//              All rights reserved.                                         //
+//                                                                           //
+//  PURPOSE:    Common CGI routines for sending HTTP headers and parsing CGI //
+//                  data.                                                    //
+//                                                                           //
+// REVISION:                                                                 //
+//              VER14    DLH              Added                            //
+//              VER13   27APR2006 ASH     Added Questions/Comments tag       //
+//              VER12   06FEB2006 DMB     Added a newline feed to displayfile routine        //
+//              VER11   11JAN2006 ASH     Added Terms of Service link        //
+//              VER10   29DEC2005 ASH     Added Website Tracking Logic       //
+//              VER09   19DEC2005       DMB     Added index html code for login/logout.pls
+//               VER08       14DEC2005 ASH       Added ToolTips               //
+//               VER07       13DEC2005 ASH       Added Consultant file        //
+//              VER06   17 N0V 2005 ASH    Modified Navigation language      //
+//              VER05   27 SEP 2005 ASH    Modified Navigation menu          //
+//              VER04   19 AUG 2005 ASH    Added Client Number Loading       //
+//              VER03   28 JUL 2005 ASH    Exchange File Conversion          //
+//                                                                           //
+//              VER02   12 NOV 2004 BJACKSON    Added CGIDisplay routine.    //
+//                                               this routine reads an HTML  //
+//                                               file and writes out the     //
+//                                               contents of variables in    //
+//                                               place of ASP-style escape   //
+//                                               tags                        //
+//                                                                           //
+//              VER01   11 APR 2001 BJACKSON    Created                      //
+//                                                                           //
+///////////////////////////////////////////////////////////////////////////////
+errorMsg        dim     %1024
+SID             dim     %36
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+#ASCII          dim     01
+#buffer         dim     1024
+#bufferSave     dim     ^
+#CGIVariable    dim     256
+#CGIValue       dim     ^
+#cwk1           dim     1
+#cwk2           dim     2
+#cwk1024        dim     1024
+#dim5           dim     05
+#endTag         dim     40
+#environment    dim     ^
+#footerFileName dim     80
+#genericVar     dim     260
+#headerFileName dim     80
+#highByte       dim     01
+#htmlBuffer     dim     ^
+#httBuffer      dim     ^
+#httName        dim     260
+#labelBuffer    dim     ^
+#lowByte        dim     01
+#osType         dim     02
+#pBuffer        dim     ^
+#percentSign    dim     01
+#pGenericValue  dim     ^
+#selectedCode   dim     260
+#SID            dim     36
+#sourceData     dim     36
+#stateCode      dim     2
+#stateName      dim     20
+#typeDescription    dim     20
+#typeCode       dim     1
+#versionString  dim     17
+#workString     dim     ^
+
+newline2        dim     ^
+STDIN_DATA      dim     ^
+QUERY_STRING    dim     ^
+
+#fFooter        file
+#fHeader        file
+#fHTT           file
+#fLookup        file
+
+#form5          form    05
+#headersNotSent form    "1"
+#seq            form    "-1"
+//Begin Patch 09 VAR Added
+errormsg2       dim     %1024
+cgilogin  dim     %80
+//End Patch 09 VAR Added
+
+#CR             init    0x0D
+#hexRep         init    "0",0x00:
+                        "1",0x01:
+                        "2",0x02:
+                        "3",0x03:
+                        "4",0x04:
+                        "5",0x05:
+                        "6",0x06:
+                        "7",0x07:
+                        "8",0x08:
+                        "9",0x09:
+                        "A",0x0A:
+                        "B",0x0B:
+                        "C",0x0C:
+                        "D",0x0D:
+                        "E",0x0E:
+                        "F",0x0F
+#LF             init    0x0A
+
+#iASCII         integer 01
+#iHighByte      integer 01
+#iLowByte       integer 01
+#length         integer 01
+
+thisSession     record
+id              dim     36  // 001-036
+ipAddress       dim     15  // 037-051
+lastActivity    form    14  // 052-065
+userID          dim     36  // 066-101
+userType        dim     1   // 102-102
+userFName       dim     32  // 103-134
+userCompany     dim     6   // 135-140
+filler          dim     116 // 141-256
+                recordend
+
+#afterPos       integer 4
+#lp             integer 4
+#fp             integer 4
+#len            integer 4
+
+#fileManagerSettings    dim     260
+.START PATCH 10 ADDED LOGIC
+#DimPtr             dim       ^
+#DimPtr1  dim       ^
+#strParseRange      INIT      0x00,0xFF       .Allow all values
+.END PATCH 10 ADDED LOGIC
+///////////////////////////////////////////////////////////////////////////////
+  goto #end                                                                  //
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+//       CGIInit, a routine to build an appropriate newline2 character        //
+///////////////////////////////////////////////////////////////////////////////
+CGIInit routine
+
+    pack PF1 from "HTML"
+    smake #environment,256
+    smake #labelBuffer,65535
+    smake #htmlBuffer,65535
+
+    // get the os type (10 = Unix, any other, assume DOS/Windows)
+    clock version in #versionString
+    bump #versionString by 15
+    move #versionString to #osType
+    if (#osType = "10")
+        smake newline2,1
+        move #LF to newline2
+    else
+        smake newline2,2
+        pack newline2 from #CR,#LF
+    endif
+
+    // get the STDIN data
+    clear #form5
+    move "CONTENT_LENGTH" to #environment
+    clock env into #environment
+    bump #environment by 15
+    move #environment to #dim5
+    type #dim5
+    if equal
+        move #dim5 to #form5
+        if (#form5 = 0)
+            smake STDIN_DATA,1
+            smake #workString,256
+        else
+            smake STDIN_DATA,#form5
+            smake #workString,#form5
+        endif
+    else
+        smake STDIN_DATA,1
+        smake #workString,256
+    endif
+
+    if (#form5 > 0)
+        stream *STDIN,STDIN_DATA
+    endif
+
+    // get the query string from the environment table
+    smake QUERY_STRING,256
+    move "QUERY_STRING" to #environment
+    clock env,#environment
+    bump #environment by 12
+    move #environment to QUERY_STRING
+
+    return
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+//                                                                           //
+// CGISendHeaders, a routine to send the HTTP, Content-type, and expires     //
+//  HTTP headers.                                                            //
+//                                                                           //
+///////////////////////////////////////////////////////////////////////////////
+CGISendHeaders routine
+
+    stream *stdout,"HTTP/1.0 200 OK",newline2:
+                    "Content-type: text/html",newline2:
+                    "Expires: Tue 01 Jan 1980, 12:00:00 GMT",newline2,newline2
+
+    clear #headersNotSent
+
+    return
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+//                                                                           //
+// CGIPARSE, a routine to extract GET data from the                          //
+//  QUERY_STRING environment variable                                        //
+//                                                                           //
+///////////////////////////////////////////////////////////////////////////////
+CGIParse routine #CGIVariable,#CGIValue
+
+
+    // add an equal sign to the CGI Variable name (to ensure a match)
+    count #length in #CGIVariable
+    endset #CGIVariable
+    append "=" to #CGIVariable
+    add "1" to #length
+    reset #CGIVariable
+
+    // look for the CGI Variable in the query string
+    move STDIN_DATA to #workString
+    scan #CGIVariable in #workString
+    if not equal
+        // it wasn't in the POST data, so check the QUERY_STRING
+        move QUERY_STRING to #workString
+        scan #CGIVariable in #workString
+        if not equal
+            // it's not in the QUERY_STRING, so check the environment table
+            setlptr #CGIVariable to (#length - 1)
+            move #CGIVariable to #workString
+            clock env,#workString
+            if over
+                // it's not anywhere to be found...
+                setflag over
+                clear #CGIValue
+                return
+            endif
+        endif
+    endif
+
+    // get the encoded value
+    bump #workString by #length
+    if eos
+        // there was no value given and we've run out of data
+        clear #CGIValue
+        setflag over
+        return
+    endif
+
+    move #workString to #workString
+    scan "&" in #workString
+    if equal
+        bump #workString by -1
+        if eos
+            // there was no value given
+            clear #CGIValue
+            setflag over
+            return
+        endif
+        lenset #workString
+        reset #workString
+        move #workString to #workString
+    endif
+
+    // replace plus signs with spaces
+    replace "+ " in #workString
+
+    // replace every HEX code with it's ASCII value
+    loop
+        scan "%" in #workString
+        while equal
+
+
+        // move each byte of the hex string into a bucket
+        unpack #workString into #percentSign,#highByte,#lowByte
+
+        // replace the hex string (0-F) with its numeric counterpart (0-15)
+        replace #hexRep in #highByte
+        replace #hexRep in #lowByte
+
+        // convert these variables to numbers
+        move #highByte to #iHighByte
+        move #lowByte to #iLowByte
+
+        // calculate the ASCII value of the buckets
+        calc #iASCII = ((#iHighByte * 16) + #iLowByte)
+
+        // convert the ASCII code to a string
+        move #iASCII to #ASCII
+
+        // splice the ASCII value into the query string in place of the hex code                                                             //
+        splice #ASCII into #workString using 3
+        reset #workString
+    repeat
+
+    // move the result to the return value, and clear the over state
+    move #workString to #CGIValue
+    setflag not over
+
+    return
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+CGIErrorHandler
+
+  call CGISendHeaders if (#headersNotSent)
+
+  stream *stdout,"<hr>",newline2:
+                 "An unexpected error has occurred.<br>",newline2:
+                 "Error code: '",S$ERROR$,"'<br>",newline2:
+                 "<hr>",newline2
+  stop
+///////////////////////////////////////////////////////////////////////////////
+CGIRenderHeader
+
+.START PATCH 08 ADDED LOGIC
+          stream *stdout:
+          "<STYLE>",newline2:
+          "  ##tipBox {position: absolute; ",newline2:
+          "            width: 200px;",newline2:
+          "            z-index: 100;",newline2:
+          "            border: 1pt black solid;",newline2:
+          "            background: beige;",newline2:
+          "            visibility: hidden;",newline2:
+        "          font-family: helvetica;",newline2:
+        "          font-size: 12}",newline2:
+          "</STYLE>",newline2:
+          "<SCRIPT>",newline2:
+          "  /*  Your are permitted to reuse this code as long as the following copyright",newline2:
+          "      notice is not removed:",newline2:
+          "      The HTML tip handling code is copyright 1998 by insideDHTML.com, LLC. More information about this",newline2:
+          "      code can be found at Inside Dynamic HTML: HTTP://www.insideDHTML.com",newline2:
+          "  */",newline2:
+          "  // Support for all collection",newline2:
+          "  var allSupport = document.all!=null",newline2:
+          "  function setupEventObject(e) {",newline2:
+          "    // Map NS event object to IEs",newline2:
+          "    if (e==null) return // IE returns",newline2:
+          "    window.event = e",newline2:
+          "    window.event.fromElement = e.target",newline2:
+          "    window.event.toElement = e.target",newline2:
+          "    window.event.srcElement = e.target",newline2:
+          "    window.event.x = e.x",newline2:
+          "    window.event.y = e.y",newline2:
+          "    // Route the event to the original element",newline2:
+          "    // Necessary to make sure _tip is set.",newline2:
+          "    window.event.srcElement.handleEvent(e);",newline2:
+          "  }",newline2:
+          "  function checkName(src) {",newline2:
+          "    // Look for tooltip in IE",newline2:
+          "    while ((src!=null) && (src._tip==null))",newline2:
+          "    src = src.parentElement",newline2:
+          "    return src",newline2:
+          "  }",newline2:
+          "  function getElement(elName) {",newline2:
+          "    // Get an element from its ID",newline2:
+          "    if (allSupport)",newline2:
+          "      return document.all[elName]",newline2:
+          "    else",newline2:
+          "      return document.layers[elName]",newline2:
+          "  }",newline2:
+          "  function writeContents(el, tip) {",newline2:
+          "    // Replace the contents of the tooltip",newline2:
+          "    if (allSupport)",newline2:
+          "      el.innerHTML = tip",newline2:
+          "    else {",newline2:
+          "      // In NS, insert a table to work around",newline2:
+          "      // stylesheet rendering bug.",newline2:
+          "      // NS fails to apply style sheets when writing",newline2:
+          "      // contents into a positioned element.",newline2:
+          "      el.document.open()",newline2:
+          "      el.document.write(""<TABLE WIDTH=200 BORDER=1 bordercolor=black><TR><TD WIDTH=100% BGCOLOR=yellow>"")",newline2:
+          "      el.document.write(tip)",newline2:
+          "      el.document.write(""</TD></TR></TABLE>"")",newline2:
+          "      el.document.close()",newline2:
+          "    }",newline2:
+          "  }",newline2:
+          "  function getOffset(el, which) {",newline2:
+          "    // Function for IE to calculate position ",newline2:
+          "    // of an element.",newline2:
+          "    var amount = el[""offset""+which] ",newline2:
+          "    if (which==""Top"")",newline2:
+          "      amount+=el.offsetHeight",newline2:
+          "    el = el.offsetParent",newline2:
+          "    while (el!=null) {",newline2:
+          "      amount+=el[""offset""+which]",newline2:
+          "      el = el.offsetParent",newline2:
+          "    }",newline2:
+          "    return amount",newline2:
+          "  }",newline2:
+          "    function setPosition(el) {",newline2:
+          "    // Set the position of an element",newline2:
+          "    src = window.event.srcElement",newline2:
+          "    if (allSupport) {",newline2:
+          "      el.style.pixelTop = getOffset(src, ""Top"")",newline2:
+          "      el.style.pixelLeft = getOffset(src, ""Left"")",newline2:
+          "    } else",newline2:
+          "    {",newline2:
+          "      el.top = src.y + 20 ",newline2:
+          "      el.left = src.x ",newline2:
+          "    }",newline2:
+          "  }",newline2:
+          "  function setVisibility(el, bDisplay) {",newline2:
+          "    // Hide or show to tip",newline2:
+          "    if (bDisplay)",newline2:
+          "      if (allSupport)",newline2:
+          "         el.style.visibility = ""visible"" ",newline2:
+          "      else",newline2:
+          "         el.visibility = ""show"";",newline2:
+          "    else",newline2:
+          "      if (allSupport)",newline2:
+          "         el.style.visibility = ""hidden""",newline2:
+          "      else",newline2:
+          "         el.visibility = ""hidden""",newline2:
+          "  }",newline2:
+          "  function displayContents(tip) {",newline2:
+          "    // Display the tooltip. ",newline2:
+          "    var el = getElement(""tipBox"")",newline2:
+          "    writeContents(el, tip)",newline2:
+          "    setPosition(el)",newline2:
+          "    setVisibility(el, true)",newline2:
+          "  }",newline2:
+          "  function doMouseOver(e) {",newline2:
+          "    // Mouse moves over an element",newline2:
+          "    setupEventObject(e)",newline2:
+          "    var el, tip",newline2:
+          "    if ((el = checkName(window.event.srcElement))!=null)",newline2:
+          "      if  (!el._display) {",newline2:
+          "         displayContents(el._tip)",newline2:
+          "         el._display = true",newline2:
+          "      }",newline2:
+          "  }",newline2:
+          "  function doMouseOut(e) {",newline2:
+          "    // Mouse leaves an element",newline2:
+          "    setupEventObject(e)",newline2:
+          "    el = checkName(window.event.srcElement)",newline2:
+          "    var el, tip",newline2:
+          "    if ((el = checkName(window.event.srcElement))!=null)",newline2:
+          "      if (el._display)",newline2:
+          "         if ((el.contains==null) || (!el.contains(window.event.toElement))) {",newline2:
+          "           setVisibility(getElement(""tipBox""), false)",newline2:
+          "           el._display = false",newline2:
+          "         }",newline2:
+          "  }",newline2:
+          "  function doLoad() {",newline2:
+          "    // Do Loading",newline2:
+          "    if ((window.document.captureEvents==null) && (!allSupport))",newline2:
+          "      return // Not IE4 or NS4",newline2:
+          "    if (window.document.captureEvents!=null)  // NS - capture events",newline2:
+          "      window.document.captureEvents(Event.MOUSEOVER | Event.MOUSEOUT)",newline2:
+          "    window.document.onmouseover = doMouseOver;",newline2:
+          "    window.document.onmouseout = doMouseOut;",newline2:
+          "  }",newline2:
+          "  window.onload = doLoad",newline2:
+          "</SCRIPT>",newline2
+
+.END PATCH 08 ADDED LOGIC
+
+    move "variables;CGIHeader" to #headerFileName
+    clock ini,#headerFileName
+
+    getmode *openuseip=#fileManagerSettings
+    setmode *openuseip=""
+    open #fHeader,#headerFileName,read
+    setmode *openuseip=#fileManagerSettings
+    loop
+        read #fHeader,#seq;#cwk1024
+        until over
+        stream *STDOUT,#cwk1024,newline2
+    repeat
+
+    call cgiRenderMenu
+
+    return
+///////////////////////////////////////////////////////////////////////////////
+CGIRenderFooter
+
+    move "variables;CGIFooter" to #footerFileName
+    clock ini,#footerFileName
+    getmode *openuseip=#fileManagerSettings
+    setmode *openuseip=""
+    open #fFooter,#footerFileName,read
+    setmode *openuseip=#fileManagerSettings
+    loop
+        read #fFooter,#seq;#cwk1024
+        until over
+        stream *STDOUT,#cwk1024,newline2
+    repeat
+
+    return
+///////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+CGIDisplayFile lroutine #httName
+
+    smake #httBuffer,65535
+    clear #httBuffer
+
+    getmode *openuseip=#fileManagerSettings
+    setmode *openuseip=""
+    open #fHTT,#httName,read
+    setmode *openuseip=#fileManagerSettings
+    loop
+        read #fHTT,#seq;*ll,#buffer
+        until over
+        append #buffer to #httBuffer
+//Ver12 Patch
+        append newline2 to #httBuffer
+//Ver12 Patch End
+    repeat
+
+    reset #httBuffer
+    call CGIDisplay using #httBuffer
+    stream *stdout,#httBuffer
+
+    return
+///////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+CGIDisplay lroutine #pBuffer
+
+    loop
+        scan "<%" in #pBuffer
+        until not equal
+
+        movelptr #pBuffer to #lp
+        movefptr #pBuffer to #fp
+        scan "%>" in #pBuffer
+        if not equal
+            // missing an end tag
+            // TO DO: throw error!
+        endif
+
+        // make sure we include the '>' in our logical string
+        bump #pBuffer by 1
+        lenset #pBuffer
+        reset #pBuffer to #fp
+        move #pBuffer to #sourceData
+        movelptr #sourceData to #len
+        setlptr #pBuffer to #lp
+
+        // TO DO: validate for proper label format
+
+        // figure out what we're looking at
+        unpack #sourceData into #cwk2,#cwk1
+        if (#cwk1 = "=")
+            // we're displaying the contents of a plb variable - step one
+            //  is to find out what is between the tags
+            bump #sourceData by 3
+            move #sourceData to #genericVar
+            endset #genericVar
+            bump #genericVar by -2
+            lenset #genericVar
+            reset #genericVar
+            uppercase #genericVar
+
+            // now that we have a variable name, uppercase it because that's how
+            //  PL/B handles globals
+            moveptr 0,#pGenericValue
+            movegaddr #genericVar to #pGenericValue
+            if over
+                // there was no PL/B variable that matched the one from the template
+                splice "" into #pBuffer with #len
+            else
+                // #pGenericValue now contains the value of the requested variable
+                //  so replace the whole escape tag with the value
+                splice #pGenericValue into #pBuffer with #len
+            endif
+        else
+            // this is a label name so, we'll try to call that label
+            bump #sourceData by 2
+            move #sourceData to #genericVar
+            endset #genericVar
+            bump #genericVar by -2
+            lenset #genericVar
+            reset #genericVar
+            uppercase #genericVar
+
+            move #pBuffer to #labelBuffer
+            bump #labelBuffer by #len
+            pack #labelBuffer from #labelBuffer
+            pack #endTag from "<%/",#genericVar,"%>"
+            scan #endTag in #labelBuffer
+            if not equal
+                // we have a fatal error - no closing tag
+                stream *stdout,"<hr>The server encountered a fatal error.  A label reference was missing its closing tag.<br>":
+                    "Label Name: ",#genericVar,"<br>":
+                    "Error Code: ",s$error$,"<hr>",newline2
+                shutdown
+            else
+                bump #labelBuffer by -1
+                lenset #labelBuffer
+                reset #labelBuffer
+                packkey #labelBuffer from #labelBuffer
+                chop #labelBuffer
+
+                movelptr #labelBuffer to #afterPos
+                movefptr #pBuffer to #fp
+                movelptr #pBuffer to #lp
+                add #afterPos to #fp
+                add #len to #fp
+                add #len to #fp
+                add "1" to #fp
+
+                bump #pBuffer by -1
+                lenset #pBuffer
+                reset #pBuffer
+                stream *stdout,#pBuffer,newline2
+                setlptr #pBuffer to #lp
+                reset #pBuffer to #fp
+                pack #htmlBuffer from #pBuffer
+                moveptr #pBuffer to #bufferSave
+                trap #noLabel if cfail
+                    calls #genericVar using #labelBuffer
+                trapclr cfail
+                moveptr #bufferSave to #pBuffer
+                move #pBuffer to #pBuffer
+            endif
+        endif
+    repeat
+    reset #pBuffer
+
+    return
+///////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+.begin patch 14
+#selectedmlrnumber dim 6
+.end patch 14
+#selectedListnumber dim 6
+#compNumber         dim 6
+#error              integer 4
+#userType           dim 1
+ilist               integer 4
+#listLabel          dim 260
+mailerList          dim 260
+.START PATCH 03 REPLACED LOGIC
+mailer              dim 6
+.END PATCH 03 REPLACED LOGIC
+mailerCount         integer 4
+///////////////////////////////////////////////////////////////////////////////
+CGIRenderListNumberInput lroutine #selectedListnumber,#compNumber,#userType,#error
+
+    debug
+    if (#userType = "A" or #userType = "B")
+        // render an edit text
+        stream *stdout,"<input type='text' name='cgilistnum' size=10 maxlength=6 />",newline2
+    elseif (#userType = "C")
+        // render a select box based on the company number for this client
+        move #compNumber to compFld
+        clear compOldMlr
+.START PATCH 03 ADDED LOGIC
+        clear COMPNUM
+.END PATCH 03 ADDED LOGIC
+        call compKey
+        if (compOldMlr = "    ")
+            stream *stdout,"<input type='text' name='cgilistnum' size=10 maxlength=6 />",newline2
+        else
+            stream *stdout,"<select name='cgilistnum'>",newline2
+.START PATCH 03 REPLACED LOGIC
+            move COMPOLDMLR to NXRFFLD2
+            move COMPNUM to NXRFFLD2
+.END PATCH 03 REPLACED LOGIC
+            move "2" to NXRFPATH
+            call nxrfKey
+            loop
+                until over
+.START PATCH 03 REPLACED LOGIC
+                while (nxrfMlr = compOldMlr)
+                while (nxrfMlr = COMPNUM)
+.END PATCH 03 REPLACED LOGIC
+                packkey NDATFLD from nxrfList
+                call nDatKey
+                stream *stdout,"<option value='",nxrfList,"'>",nxrfList," - ",oLstName,newline2
+                call nxrfks
+            repeat
+            stream *stdout,"</select>"
+        endif
+    elseif (#userType = "O")
+        // render a select box based on the company number for this consultant
+        clear compOldMlr
+.START PATCH 07 REPLACED LOGIC
+        clear compfld12
+        pack compfld11 from "01X",#compNumber
+        call compaim2
+        loop
+            until over
+            // add Mailer to combo box
+.START PATCH 03 REPLACED LOGIC
+.            if (compoldmlr != "    ")
+.                append compoldmlr to mailerList
+            if (COMPMLRFLG = "T")
+                append COMPNUM to mailerList
+.END PATCH 03 REPLACED LOGIC
+            endif
+            call compkg2
+        repeat
+.................................
+          clear     NCLTFLD2
+          pack      NCLTFLD1,"01X",#compNumber
+          call      NCLTAIM
+          loop
+                    until over
+                    // add Mailer to validMailers
+                    pack      COMPFLD,NCLTCLIENT
+                    call      COMPKEY
+                    if not over
+                              if (COMPMLRFLG = "T")
+                              append    COMPNUM,mailerList
+                              endif
+                    endif
+                    call      NCLTKG
+          repeat
+.END PATCH 07 REPLACED LOGIC
+        reset mailerList
+
+        count mailerCount in mailerList
+        if not zero
+            stream *stdout,"<select name='cgilistnum'>",newline2
+            loop
+                until (mailerCount = 0)
+                move mailerList into mailer
+                packkey nxrffld2 from mailer
+                move "2" into nxrfpath
+                call nxrfkey
+                loop
+                    until over
+                    while (nxrfmlr = mailer)
+                    packkey ndatfld from nxrflist
+                    call ndatkey
+                    stream *stdout,"<option value='",nxrfList,"'>",nxrfList," - ",oLstName,newline2
+                    call nxrfks
+                repeat
+.START PATCH 03 REPLACED LOGIC
+                bump mailerList by 4
+                bump mailerList by 6
+.END PATCH 03 REPLACED LOGIC
+                count mailerCount in mailerList
+                if eos
+                    break
+                endif
+            repeat
+            debug
+            stream *stdout,"</select>"
+        else
+            stream *STDOUT,"<td colspan='1' align='center' class='datarow1'>We're sorry, we can't locate any records<br>associated with your agency.<br>":
+                    "If this is in error, please inform <br>your NIN contact so we can <br>trouble-shoot the problem.<br>Thank you.</td></tr>"
+            return
+        endif
+    endif
+
+    return
+///////////////////////////////////////////////////////////////////////////////
+
+.START PATCH 04 ADDED LOGIC
+///////////////////////////////////////////////////////////////////////////////
+CGIRenderClientNumberInput lroutine #selectedListnumber,#compNumber,#userType,#error
+          debug
+          if (#userType = "A" or #userType = "B")
+.Not yet in use!!
+// render an edit text
+                   stream    *stdout,"<input type='text' name='cgimailernum' size=10 maxlength=6 />",newline2
+          elseif (#userType = "C")
+.Not yet in use!!
+// render a select box based on the company number for this client
+          elseif (#userType = "O")
+// render a select box based on the company number for this consultant
+                    move      C0,N3
+.START PATCH 07 REPLACED LOGIC
+                   clear     compfld12
+                   pack      compfld11,"01X",#compNumber
+                   call      compaim2
+                   loop
+                             until over
+.// add Mailer to combo box
+                             if (COMPMLRFLG = "T")
+                                       add       C1,N3
+                                       if (N3 = C1)
+                                                 stream *stdout,"<select name='cgimailernum'>",newline2
+                                       endif
+                                       stream    *stdout,"<option value='",COMPNUM,"'>",COMPNUM," - ",COMPCOMP,newline2
+                             endif
+                             call compkg2
+                   repeat
+.................................
+                    clear     NCLTFLD2
+                    pack      NCLTFLD1,"01X",#compNumber
+                    call      NCLTAIM
+                    loop
+                              until over
+                              pack      COMPFLD,NCLTCLIENT
+                              call      COMPKEY
+                              if not over
+// add Mailer to combo box
+                                        if (COMPMLRFLG = "T")
+                                                  add       C1,N3
+                                                  if (N3 = C1)
+                                                            stream *stdout,"<select name='cgimailernum'>",newline2
+                                                  endif
+                                                  stream    *stdout,"<option value='",COMPNUM,"'>",COMPNUM," - ",COMPCOMP,newline2
+                                        endif
+                              endif
+                              call      NCLTKG
+                    repeat
+.END PATCH 07 REPLACED LOGIC
+                    if (N3 = C0)
+                              stream *STDOUT,"<td colspan='1' align='center' class='datarow1'>We're sorry, we can't locate any records<br>associated with your agency.<br>":
+                              "If this is in error, please inform <br>your NIN contact so we can <br>trouble-shoot the problem.<br>Thank you.</td></tr>"
+                              return
+                    else
+                              stream *stdout,"</select>"
+                    endif
+          endif
+          return
+///////////////////////////////////////////////////////////////////////////////
+.END PATCH 04 ADDED LOGIC
+
+///////////////////////////////////////////////////////////////////////////////
+.begin patch 14
+///////////////////////////////////////////////////////////////////////////////
+CGIRenderMLRNumberViewOrderInput lroutine #selectedMLRnumber,#compNumber,#userType
+
+    debug
+    if (#userType = "A" or #userType = "B")
+        // render an edit text
+        stream *stdout,"<input type='text' name='cgimailernum' size=10 maxlength=4 />",newline2
+    elseif (#userType = "C")
+        // render a select box based on the company number for this client
+        move #compNumber to compFld
+        clear compOldMlr
+        clear COMPNUM
+        clear COMPcomp
+        call compKey
+        if (compOldMlr = "    ")
+            stream *stdout,"<input type='text' name='cgimailernum' size=10 maxlength=4 />",newline2
+        else
+            stream *stdout,"<select name='cgimailernum'>",newline2
+                stream *stdout,"<option value='",compoldmlr,"'>",compoldmlr," - ",compcomp,newline2
+            stream *stdout,"</select>"
+        endif
+    elseif (#userType = "O")
+        // render a select box based on the company number for this consultant
+        clear compOldMlr
+          clear     NCLTFLD2
+          pack      NCLTFLD1,"01X",#compNumber
+          call      NCLTAIM
+          loop
+                    until over
+                    // add Mailer to validMailers
+                    pack      COMPFLD,NCLTCLIENT
+                    call      COMPKEY
+                    if not over
+                              if (COMPMLRFLG = "T")
+                              append    COMPNUM,mailerList
+                              endif
+                    endif
+                    call      NCLTKG
+          repeat
+        reset mailerList
+
+        count mailerCount in mailerList
+        if not zero
+            stream *stdout,"<select name='cgimailernum'>",newline2
+            loop
+                until (mailerCount = 0)
+                move mailerList into mailer
+          Packkey compFld from mailer
+          clear compOldMlr
+          clear COMPNUM
+          clear COMPcomp
+          call compKey
+                    stream *stdout,"<option value='",Compoldmlr,"'>",Compoldmlr," - ",compComp,newline2
+                bump mailerList by 6
+                count mailerCount in mailerList
+                if eos
+                    break
+                endif
+            repeat
+            debug
+            stream *stdout,"</select>"
+        else
+            stream *stdout,"<input type='text' name='cgimailernum' size=10 maxlength=4 />",newline2
+        endif
+    endif
+
+    return
+///////////////////////////////////////////////////////////////////////////////
+.end patch 14
+CGIRenderListNumberViewOrderInput lroutine #selectedListnumber,#compNumber,#userType
+
+    debug
+    if (#userType = "A" or #userType = "B")
+        // render an edit text
+        stream *stdout,"<input type='text' name='cgilistnum' size=10 maxlength=6 />",newline2
+    elseif (#userType = "C")
+        // render a select box based on the company number for this client
+        move #compNumber to compFld
+        clear compOldMlr
+.START PATCH 03 ADDED LOGIC
+        clear COMPNUM
+.END PATCH 03 ADDED LOGIC
+        call compKey
+        if (compOldMlr = "    ")
+            stream *stdout,"<input type='text' name='cgilistnum' size=10 maxlength=6 />",newline2
+        else
+            stream *stdout,"<select name='cgilistnum'>",newline2
+.START PATCH 03 REPLACED LOGIC
+            move COMPOLDMLR to NXRFFLD2
+            move COMPNUM to NXRFFLD2
+.END PATCH 03 REPLACED LOGIC
+            move "2" to NXRFPATH
+            call nxrfKey
+            loop
+                until over
+.START PATCH 03 REPLACED LOGIC
+                while (nxrfMlr = compOldMlr)
+                while (nxrfMlr = COMPNUM)
+.END PATCH 03 REPLACED LOGIC
+                packkey NDATFLD from nxrfList
+                call nDatKey
+                stream *stdout,"<option value='",nxrfList,"'>",nxrfList," - ",oLstName,newline2
+                call nxrfks
+            repeat
+            stream *stdout,"</select>"
+        endif
+    elseif (#userType = "O")
+        // render a select box based on the company number for this consultant
+        clear compOldMlr
+.START PATCH 07 REPLACED LOGIC
+        clear compfld12
+        pack compfld11 from "01X",#compNumber
+        call compaim2
+        loop
+            until over
+            // add Mailer to combo box
+.START PATCH 03 REPLACED LOGIC
+.            if (compoldmlr != "    ")
+.                append compoldmlr to mailerList
+            if (COMPMLRFLG = "T")
+                append COMPNUM to mailerList
+.END PATCH 03 REPLACED LOGIC
+            endif
+            call compkg2
+        repeat
+.................................
+          clear     NCLTFLD2
+          pack      NCLTFLD1,"01X",#compNumber
+          call      NCLTAIM
+          loop
+                    until over
+                    // add Mailer to validMailers
+                    pack      COMPFLD,NCLTCLIENT
+                    call      COMPKEY
+                    if not over
+                              if (COMPMLRFLG = "T")
+                              append    COMPNUM,mailerList
+                              endif
+                    endif
+                    call      NCLTKG
+          repeat
+.END PATCH 07 REPLACED LOGIC
+        reset mailerList
+
+        count mailerCount in mailerList
+        if not zero
+            stream *stdout,"<select name='cgilistnum'>",newline2
+            loop
+                until (mailerCount = 0)
+                move mailerList into mailer
+                packkey nxrffld2 from mailer
+                move "2" into nxrfpath
+                call nxrfkey
+                loop
+                    until over
+                    while (nxrfmlr = mailer)
+                    packkey ndatfld from nxrflist
+                    call ndatkey
+                    stream *stdout,"<option value='",nxrfList,"'>",nxrfList," - ",oLstName,newline2
+                    call nxrfks
+                repeat
+.START PATCH 03 REPLACED LOGIC
+                bump mailerList by 4
+                bump mailerList by 6
+.END PATCH 03 REPLACED LOGIC
+                count mailerCount in mailerList
+                if eos
+                    break
+                endif
+            repeat
+            debug
+            stream *stdout,"</select>"
+        else
+            stream *stdout,"<input type='text' name='cgilistnum' size=10 maxlength=6 />",newline2
+        endif
+    endif
+
+    return
+///////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+#selectedOrdernumber dim 6
+//#compNumber dim 6
+//#userType dim 1
+CGIRenderOrderNumberInput lroutine #selectedordernumber,#compNumber,#userType
+
+
+    move #compNumber to compFld
+    clear compOldBrk
+    clear compOldMlr
+    call compKey
+    if (#userType = "O")
+        // render a select box based on the company number for this consultant
+        clear compOldMlr
+.START PATCH 07 REPLACED LOGIC
+        clear compfld12
+        pack compfld11 from "01X",#compNumber
+        call compaim2
+        loop
+            until over
+            // add Mailer to combo box
+.START PATCH 03 REPLACED LOGIC
+.            if (compoldmlr != "    ")
+.                append compoldmlr to mailerList
+            if (COMPMLRFLG = "T")
+                append COMPNUM to mailerList
+.END PATCH 03 REPLACED LOGIC
+            endif
+            call compkg2
+        repeat
+.................................
+          clear     NCLTFLD2
+          pack      NCLTFLD1,"01X",#compNumber
+          call      NCLTAIM
+          loop
+                    until over
+                    // add Mailer to validMailers
+                    pack      COMPFLD,NCLTCLIENT
+                    call      COMPKEY
+                    if not over
+                              if (COMPMLRFLG = "T")
+                              append    COMPNUM,mailerList
+                              endif
+                    endif
+                    call      NCLTKG
+          repeat
+.END PATCH 07 REPLACED LOGIC
+        reset mailerList
+
+        count mailerCount in mailerList
+        if not zero
+            stream *stdout,"<select name='cgiordernumber'>",newline2
+            stream *stdout,"<option value='",oLRN,"'>","  ",newline2
+            loop
+                until (mailerCount = 0)
+                move mailerList into mailer
+.START PATCH 03 REPLACED TEMPORARY LOGIC
+                packkey nordfld1 from "01X",mailer
+                    move      mailer,COMPFLD
+                    call      COMPKEY
+                    call      Trim COMPOLDMLR
+                packkey nordfld1 from "01X",COMPOLDMLR
+.END PATCH 03 REPLACED TEMPORARY LOGIC
+                call nordaim
+                loop
+                    until over
+.START PATCH 03 REPLACED TEMPORARY LOGIC
+                    while (oMlrNum = mailer)
+                    while (oMlrNum = COMPOLDMLR)
+.END PATCH 03 REPLACED TEMPORARY LOGIC
+                    stream *stdout,"<option value='",oLRN,"'>",oLRN,newline2
+                    call NORDKG
+                repeat
+.START PATCH 03 REPLACED TEMPORARY LOGIC
+                bump mailerList by 4
+                bump mailerList by 6
+.END PATCH 03 REPLACED TEMPORARY LOGIC
+                count mailerCount in mailerList
+                if eos
+                    break
+                endif
+            repeat
+            debug
+            stream *stdout,"</select>"
+        else
+            stream *stdout,"<input type='text' name='cgiordernumber' size=10 maxlength=6 />",newline2
+        endif
+    else
+        stream *stdout,"<input type='text' name='cgiordernumber' size=10 maxlength=6 />",newline2
+    endif
+
+    return
+///////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+CGISelectState lroutine #selectedCode
+
+    // CGISelectState generates an HTML select containing state codes
+    //  for all the states contained in LUSTATES.DAT.  If a value
+    //  is passed into the calling routine (#selectedCode), then that
+    //  value will be highlighted and selected when the SELECT is rendered
+    getmode *openuseip=#fileManagerSettings
+    setmode *openuseip=""
+    open #fLookup,"LUSTATES.DAT"
+    setmode *openuseip=#fileManagerSettings
+    stream *stdout,"<select name='cgistate'>",newline2
+    loop
+        read #fLookup,#seq;*ll,#stateCode,#stateName
+        until over
+        if (#selectedCode = #stateCode)
+            stream *stdout,"<option value='",#stateCode,"' selected>"
+        else
+            stream *stdout,"<option value='",#stateCode,"'>"
+        endif
+        stream *stdout,#stateCode," - ",#stateName,"</option>",newline2
+    repeat
+    stream *stdout,"</select>",newline2
+    close #fLookup
+
+    return
+///////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+CGISelectUserType lroutine #selectedCode
+
+    getmode *openuseip=#fileManagerSettings
+    setmode *openuseip=""
+    open #fLookup,"LUUSERTYPES.DAT"
+    setmode *openuseip=#fileManagerSettings
+    stream *stdout,"<select name='cgiusertype'>",newline2
+    loop
+        read #fLookup,#seq;*ll,#typeCode,#typeDescription
+        until over
+        if (#selectedCode = #typeCode)
+            stream *stdout,"<option value='",#typeCode,"' selected>"
+        else
+            stream *stdout,"<option value='",#typeCode,"'>"
+        endif
+        stream *stdout,#typeCode," - ",#typeDescription,"</option>",newline2
+    repeat
+    stream *stdout,"</select>",newline2
+    close #fLookup
+
+    return
+///////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+CGISelectInvoiceFlag lroutine #selectedCode
+
+    getmode *openuseip=#fileManagerSettings
+    setmode *openuseip=""
+
+    stream *stdout,"<select name='cgiinvoiceflag'>",newline2
+    stream *stdout,"<option value='Y' "
+    if (#selectedCode = "Y")
+        stream *stdout,"selected"
+    endif
+    stream *stdout,">Y - Approved",newline2
+
+    stream *stdout,"<option value='P' "
+    if (#selectedCode = "P")
+        stream *stdout,"selected"
+    endif
+    stream *stdout,">P - Pending",newline2
+
+    stream *stdout,"<option value='N' "
+    if (#selectedCode != "Y" and #selectedCode != "P")
+        stream *stdout,"selected"
+    endif
+    stream *stdout,">N - No Access",newline2
+
+    stream *stdout,"</select>",newline2
+
+    return
+///////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+CGISelectCompanyNumber lroutine #selectedCode
+
+    trap compGone if IO
+        open compFList,read
+    trapclr IO
+    move c1 to compFlag
+
+    stream *stdout,"<select name='cgicompanynumber'>",newline2:
+        "<option value='      '></option>"
+    loop
+        call compKS
+        until over
+        if (#selectedCode = compNum)
+            stream *stdout,"<option value='",compNum,"' selected>"
+        else
+            stream *stdout,"<option value='",compNum,"'>"
+        endif
+        chop compComp
+        stream *stdout,compNum," - ",compComp,"</option>"
+    repeat
+    stream *stdout,"</select>",newline2
+    close compFList
+
+    return
+///////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+CGIRenderMenu
+.START PATCH 08 ADDED LOGIC
+        stream *stdout:
+            "<DIV ID=tipBox></DIV>",newline2
+.END PATCH 08 ADDED LOGIC
+    if (thisSession.userType = "C")
+        // render the client menu
+        stream *stdout:
+            "<script language=javascript src='/menu.js'></script>",newline2:
+            "<span class='menuText' align=center>Welcome, ",thisSession.userFName,"</span><br><br>",newline2:
+.START PATCH 11 REPLACED LOGIC
+            "Client Menu<hr>",newline2:
+            "<a class='menuHdrText'>Client Menu</a>",newline2:
+              "<hr>",newline2:
+.END PATCH 11 REPLACED LOGIC
+.START PATCH 08 REPLACED LOGIC
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/exchangereport.plc"");' onMouseOver='setStatus(""Exchange Report""); return true;' onMouseOut='setStatus(""""); return true;'>EXCHANGE REPORT</a><br />",newline2:
+.START PATCH 21 NOV2005 ASH ADDED LOGIC
+             "<br>":
+.END PATCH 21 NOV2005 ASH ADDED LOGIC
+.START PATCH 06 REPLACED LOGIC
+.            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/owneractivityrpt.plc"");' onMouseOver='setStatus(""Activity Report""); return true;' onMouseOut='setStatus(""""); return true;'>ACTIVITY REPORT</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/owneractivityrpt.plc"");' onMouseOver='setStatus(""Owner Activity Report""); return true;' onMouseOut='setStatus(""""); return true;'>OWNER ACTIVITY REPORT</a><br />",newline2:
+.END PATCH 06 REPLACED LOGIC
+.START PATCH 21 NOV2005 ASH ADDED LOGIC
+             "<br>":
+.END PATCH 21 NOV2005 ASH ADDED LOGIC
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/statusrpt.plc"");' onMouseOver='setStatus(""View Order""); return true;' onMouseOut='setStatus(""""); return true;'>VIEW ORDER</a><br />",newline2:
+.START PATCH 21 NOV2005 ASH ADDED LOGIC
+             "<br>":
+.END PATCH 21 NOV2005 ASH ADDED LOGIC
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/onlineinvoicing.plc"");' onMouseOver='setStatus(""View Invoice""); return true;' onMouseOut='setStatus(""""); return true;'>VIEW INVOICE</a><br />",newline2:
+.START PATCH 21 NOV2005 ASH ADDED LOGIC
+             "<br>":
+.END PATCH 21 NOV2005 ASH ADDED LOGIC
+.START PATCH 06 REPLACED LOGIC
+.            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/listsearch.plc"");' onMouseOver='setStatus(""Search Lists""); return true;' onMouseOut='setStatus(""""); return true;'>SEARCH LISTS</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/listsearch.plc"");' onMouseOver='setStatus(""Datacards & Samples""); return true;' onMouseOut='setStatus(""""); return true;'>DATACARDS & SAMPLES</a><br />",newline2:
+.END PATCH 06 REPLACED LOGIC
+//            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/memberdir.plc"");' onMouseOver='setStatus(""Member Directory""); return true;' onMouseOut='setStatus(""""); return true;'>MEMBER DIRECTORY</a><br />",newline2:
+.START PATCH 21 NOV2005 ASH ADDED LOGIC
+             "<br>":
+.END PATCH 21 NOV2005 ASH ADDED LOGIC
+            "<a class='menuText' href='javascript:doMenuItemUsermaint();' onMouseOver='setStatus(""Edit Profile""); return true;' onMouseOut='setStatus(""""); return true;'>EDIT PROFILE</a><br />",newline2:
+.START PATCH 21 NOV2005 ASH ADDED LOGIC
+             "<br>":
+.END PATCH 21 NOV2005 ASH ADDED LOGIC
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/logout.plc"");' onMouseOver='setStatus(""Log Out""); return true;' onMouseOut='setStatus(""""); return true;'>LOG OUT</a><br />",newline2:
+            "<form name=menuForm method='POST' action=''>",newline2:
+            "<input type=hidden name='SID' value='",thisSession.id,"' />",newline2:
+            "</form>",newline2:
+            "<form name=usermaintForm method='POST' action='/plb-bin/usermaint.plc'>",newline2:
+            "<input type=hidden name='SID' value='",thisSession.id,"' />",newline2:
+            "<input type=hidden name='cgiuserid' value='",thisSession.userID,"' />",newline2:
+            "</form>",newline2:
+            "</td>",newline2:
+            "<td width='600' valign='top' class='body'>",newline2:
+....................................................
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/exchangereport.plc"");' onMouseOver='this._tip=""View current exchange balances"";' onMouseOut='setStatus(""""); return true;'>EXCHANGE REPORT</a><br />",newline2:
+            "<br>":
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/owneractivityrpt.plc"");' onMouseOver='this._tip=""View/print monthly summary of list rental activity"";' onMouseOut='setStatus(""""); return true;'>OWNER ACTIVITY REPORT</a><br />",newline2:
+            "<br>":
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/statusrpt.plc"");' onMouseOver='this._tip=""View/print orders within the past year"";' onMouseOut='setStatus(""""); return true;'>VIEW ORDER</a><br />",newline2:
+            "<br>":
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/onlineinvoicing.plc"");' onMouseOver='this._tip=""View/print copies of invoices within the past year"";' onMouseOut='setStatus(""""); return true;'>VIEW INVOICE</a><br />",newline2:
+            "<br>":
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/listsearch.plc"");' onMouseOver='this._tip=""Search our database of lists & view mailer samples"";' onMouseOut='setStatus(""""); return true;'>DATACARDS & SAMPLES</a><br />",newline2:
+            "<br>":
+            "<a class='menuText' href='javascript:doMenuItemUsermaint();' onMouseOver='this._tip=""Modify/update user profile"";' onMouseOut='setStatus(""""); return true;'>EDIT PROFILE</a><br />",newline2:
+              "<br>":
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/logout.plc"");' onMouseOver='setStatus(""Log Out""); return true;' onMouseOut='setStatus(""""); return true;'>LOG OUT</a><br />",newline2:
+            "<form name=menuForm method='POST' action=''>",newline2:
+            "<input type=hidden name='SID' value='",thisSession.id,"' />",newline2:
+.START PATCH 11 ADDED LOGIC
+              "<a href='../tos.html';><font size=1 face='arial'>Terms of Service</font></a>",newline2:
+.END PATCH 11 REPLACED LOGIC
+.START PATCH 13 ADDED LOGIC
+              "<a href='/plb-bin/comments.plc';><font size=1 face='arial'>Questions/Comments?</font></a>",newline2:
+.END PATCH 13 REPLACED LOGIC
+            "</form>",newline2:
+            "<form name=usermaintForm method='POST' action='/plb-bin/usermaint.plc'>",newline2:
+            "<input type=hidden name='SID' value='",thisSession.id,"' />",newline2:
+            "<input type=hidden name='cgiuserid' value='",thisSession.userID,"' />",newline2:
+            "</form>",newline2:
+            "</td>",newline2:
+            "<td width='600' valign='top' class='body'>",newline2
+.END PATCH 08 REPLACED LOGIC
+    elseif (thisSession.userType = "O")
+        // render the consultant menu
+        stream *stdout:
+            "<script language=javascript src='/menu.js'></script>",newline2:
+            "<span class='menuText' align=center>Welcome, ",thisSession.userFName,"</span><br><br>",newline2:
+.START PATCH 11 REPLACED LOGIC
+            "Consultant Menu<hr>",newline2:
+            "<a class='menuHdrText'>Consultant Menu</a>",newline2:
+              "<hr>",newline2:
+.END PATCH 11 REPLACED LOGIC
+.START PATCH 08 REPLACED LOGIC
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/exchangereport.plc"");' onMouseOver='setStatus(""Exchange Report""); return true;' onMouseOut='setStatus(""""); return true;'>EXCHANGE REPORT</a><br />",newline2:
+.START PATCH 21 NOV2005 ASH ADDED LOGIC
+             "<br>":
+.END PATCH 21 NOV2005 ASH ADDED LOGIC
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/statusrpt.plc"");' onMouseOver='setStatus(""View Order""); return true;' onMouseOut='setStatus(""""); return true;'>VIEW ORDER</a><br />",newline2:
+.START PATCH 21 NOV2005 ASH ADDED LOGIC
+             "<br>":
+.END PATCH 21 NOV2005 ASH ADDED LOGIC
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/onlineinvoicing.plc"");' onMouseOver='setStatus(""View Invoice""); return true;' onMouseOut='setStatus(""""); return true;'>VIEW INVOICE</a><br />",newline2:
+.START PATCH 21 NOV2005 ASH ADDED LOGIC
+             "<br>":
+.END PATCH 21 NOV2005 ASH ADDED LOGIC
+.START PATCH 06 REPLACED LOGIC
+.            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/listsearch.plc"");' onMouseOver='setStatus(""Search Lists""); return true;' onMouseOut='setStatus(""""); return true;'>SEARCH LISTS</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/listsearch.plc"");' onMouseOver='setStatus(""Datacards & Samples""); return true;' onMouseOut='setStatus(""""); return true;'>DATACARDS & SAMPLES</a><br />",newline2:
+.END PATCH 06 REPLACED LOGIC
+//            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/memberdir.plc"");' onMouseOver='setStatus(""Member Directory""); return true;' onMouseOut='setStatus(""""); return true;'>MEMBER DIRECTORY</a><br />",newline2:
+.START PATCH 21 NOV2005 ASH ADDED LOGIC
+             "<br>":
+.END PATCH 21 NOV2005 ASH ADDED LOGIC
+            "<a class='menuText' href='javascript:doMenuItemUsermaint();' onMouseOver='setStatus(""Edit Profile""); return true;' onMouseOut='setStatus(""""); return true;'>EDIT PROFILE</a><br />",newline2:
+.START PATCH 21 NOV2005 ASH ADDED LOGIC
+             "<br>":
+.END PATCH 21 NOV2005 ASH ADDED LOGIC
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/logout.plc"");' onMouseOver='setStatus(""Log Out""); return true;' onMouseOut='setStatus(""""); return true;'>LOG OUT</a><br />",newline2:
+            "<form name=menuForm method='POST' action=''>",newline2:
+            "<input type=hidden name='SID' value='",thisSession.id,"' />",newline2:
+            "</form>",newline2:
+            "<form name=usermaintForm method='POST' action='/plb-bin/usermaint.plc'>",newline2:
+            "<input type=hidden name='SID' value='",thisSession.id,"' />",newline2:
+            "<input type=hidden name='cgiuserid' value='",thisSession.userID,"' />",newline2:
+            "</form>",newline2:
+            "</td>",newline2:
+            "<td width='600' valign='top' class='body'>",newline2:
+....................................................
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/exchangereport.plc"");' onMouseOver='this._tip=""View current exchange balances"";' onMouseOut='setStatus(""""); return true;'>EXCHANGE REPORT</a><br />",newline2:
+              "<br>":
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/statusrpt.plc"");' onMouseOver='this._tip=""View/print orders within the past year"";' onMouseOut='setStatus(""""); return true;'>VIEW ORDER</a><br />",newline2:
+              "<br>":
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/onlineinvoicing.plc"");' onMouseOver='this._tip=""View/print copies of invoices within the past year"";' onMouseOut='setStatus(""""); return true;'>VIEW INVOICE</a><br />",newline2:
+              "<br>":
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/listsearch.plc"");' onMouseOver='this._tip=""Search our database of lists & view mailer samples"";' onMouseOut='setStatus(""""); return true;'>DATACARDS & SAMPLES</a><br />",newline2:
+              "<br>":
+            "<a class='menuText' href='javascript:doMenuItemUsermaint();' onMouseOver='this._tip=""Modify/update user profile"";' onMouseOut='setStatus(""""); return true;'>EDIT PROFILE</a><br />",newline2:
+              "<br>":
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/logout.plc"");' onMouseOver='setStatus(""Log Out""); return true;' onMouseOut='setStatus(""""); return true;'>LOG OUT</a><br />",newline2:
+            "<form name=menuForm method='POST' action=''>",newline2:
+            "<input type=hidden name='SID' value='",thisSession.id,"' />",newline2:
+.START PATCH 11 ADDED LOGIC
+            "<a href='../tos.html';><font size=1 face='arial'>Terms of Service</font></a>",newline2:
+.END PATCH 11 REPLACED LOGIC
+.START PATCH 13 ADDED LOGIC
+              "<a href='/plb-bin/comments.plc';><font size=1 face='arial'>Questions/Comments?</font></a>",newline2:
+.END PATCH 13 REPLACED LOGIC
+            "</form>",newline2:
+            "<form name=usermaintForm method='POST' action='/plb-bin/usermaint.plc'>",newline2:
+            "<input type=hidden name='SID' value='",thisSession.id,"' />",newline2:
+            "<input type=hidden name='cgiuserid' value='",thisSession.userID,"' />",newline2:
+            "</form>",newline2:
+            "</td>",newline2:
+            "<td width='600' valign='top' class='body'>",newline2
+.END PATCH 08 REPLACED LOGIC
+    elseif (thisSession.userType = "B")
+        // render the broker menu
+        stream *stdout:
+            "<script language=javascript src='/menu.js'></script>",newline2:
+            "<span class='menuText' align=center>Welcome, ",thisSession.userFName,"</span><br><br>",newline2:
+.START PATCH 11 REPLACED LOGIC
+           "Broker Menu<hr>",newline2:
+            "<a class='menuHdrText'>Broker Menu</a>",newline2:
+              "<hr>",newline2:
+.END PATCH 11 REPLACED LOGIC
+.START PATCH 08 REPLACED LOGIC
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/statusrpt.plc"");' onMouseOver='setStatus(""View Order""); return true;' onMouseOut='setStatus(""""); return true;'>VIEW ORDER</a><br />",newline2:
+.START PATCH 21 NOV2005 ASH ADDED LOGIC
+             "<br>":
+.END PATCH 21 NOV2005 ASH ADDED LOGIC
+//            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/counts.plc"");' onMouseOver='setStatus(""Generate Counts""); return true;' onMouseOut='setStatus(""""); return true;'>MAILER COUNTS</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/onlineinvoicing.plc"");' onMouseOver='setStatus(""View Invoice""); return true;' onMouseOut='setStatus(""""); return true;'>VIEW INVOICE</a><br />",newline2:
+.START PATCH 21 NOV2005 ASH ADDED LOGIC
+             "<br>":
+.END PATCH 21 NOV2005 ASH ADDED LOGIC
+.START PATCH 06 REPLACED LOGIC
+.            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/listsearch.plc"");' onMouseOver='setStatus(""Search Lists""); return true;' onMouseOut='setStatus(""""); return true;'>SEARCH LISTS</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/listsearch.plc"");' onMouseOver='setStatus(""Datacards & Samples""); return true;' onMouseOut='setStatus(""""); return true;'>DATACARDS & SAMPLES</a><br />",newline2:
+.END PATCH 06 REPLACED LOGIC
+.START PATCH 21 NOV2005 ASH ADDED LOGIC
+             "<br>":
+.END PATCH 21 NOV2005 ASH ADDED LOGIC
+            "<a class='menuText' href='javascript:doMenuItemUsermaint();' onMouseOver='setStatus(""Edit Profile""); return true;' onMouseOut='setStatus(""""); return true;'>EDIT PROFILE</a><br />",newline2:
+.START PATCH 21 NOV2005 ASH ADDED LOGIC
+             "<br>":
+.END PATCH 21 NOV2005 ASH ADDED LOGIC
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/logout.plc"");' onMouseOver='setStatus(""Log Out""); return true;' onMouseOut='setStatus(""""); return true;'>LOG OUT</a><br />",newline2:
+            "<form name=menuForm method='POST' action=''>",newline2:
+            "<input type=hidden name='SID' value='",thisSession.id,"' />",newline2:
+            "</form>",newline2:
+            "<form name=usermaintForm method='POST' action='/plb-bin/usermaint.plc'>",newline2:
+            "<input type=hidden name='SID' value='",thisSession.id,"' />",newline2:
+            "<input type=hidden name='cgiuserid' value='",thisSession.userID,"' />",newline2:
+            "</form>",newline2:
+            "</td>",newline2:
+            "<td width='600' valign='top' class='body'>",newline2:
+......................................................
+.begin DH goes wild 08/06/08
+          "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/exchangereport.plc"");' onMouseOver='this._tip=""View current exchange balances"";' onMouseOut='setStatus(""""); return true;'>EXCHANGE REPORT</a><br />",newline2:
+            "<br>":
+.end DH goes wild 08/06/08
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/statusrpt.plc"");' onMouseOver='this._tip=""View/print orders within the past year"";' onMouseOut='setStatus(""""); return true;'>VIEW ORDER</a><br />",newline2:
+              "<br>":
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/onlineinvoicing.plc"");' onMouseOver='this._tip=""View/print copies of invoices within the past year"";' onMouseOut='setStatus(""""); return true;'>VIEW INVOICE</a><br />",newline2:
+              "<br>":
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/listsearch.plc"");' onMouseOver='this._tip=""Search our database of lists & view mailer samples"";' onMouseOut='setStatus(""""); return true;'>DATACARDS & SAMPLES</a><br />",newline2:
+              "<br>":
+            "<a class='menuText' href='javascript:doMenuItemUsermaint();' onMouseOver='this._tip=""Modify/update user profile"";' onMouseOut='setStatus(""""); return true;'>EDIT PROFILE</a><br />",newline2:
+              "<br>":
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/logout.plc"");' onMouseOver='setStatus(""Log Out""); return true;' onMouseOut='setStatus(""""); return true;'>LOG OUT</a><br />",newline2:
+            "<form name=menuForm method='POST' action=''>",newline2:
+            "<input type=hidden name='SID' value='",thisSession.id,"' />",newline2:
+.START PATCH 11 ADDED LOGIC
+            "<a href='../tos.html';><font size=1 face='arial'>Terms of Service</font></a>",newline2:
+.END PATCH 11 REPLACED LOGIC
+.START PATCH 13 ADDED LOGIC
+              "<a href='/plb-bin/comments.plc';><font size=1 face='arial'>Questions/Comments?</font></a>",newline2:
+.END PATCH 13 REPLACED LOGIC
+            "</form>",newline2:
+            "<form name=usermaintForm method='POST' action='/plb-bin/usermaint.plc'>",newline2:
+            "<input type=hidden name='SID' value='",thisSession.id,"' />",newline2:
+            "<input type=hidden name='cgiuserid' value='",thisSession.userID,"' />",newline2:
+            "</form>",newline2:
+            "</td>",newline2:
+            "<td width='600' valign='top' class='body'>",newline2
+.END PATCH 08 REPLACED LOGIC
+    elseif (thisSession.userType = "A")
+        // render the admin menu
+        stream *stdout:
+            "<script language=javascript src='/menu.js'></script>",newline2:
+            "<span class='menuText' align=center>Welcome, ",thisSession.userFName,"</span><br><br>",newline2:
+.START PATCH 11 REPLACED LOGIC
+            "Client Menu<hr>",newline2:
+            "<a class='menuHdrText'>Client Menu</a>",newline2:
+              "<hr>",newline2:
+.END PATCH 11 REPLACED LOGIC
+.START PATCH 08 REPLACED LOGIC
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/exchangereport.plc"");' onMouseOver='setStatus(""Exchange Report""); return true;' onMouseOut='setStatus(""""); return true;'>EXCHANGE REPORT</a><br />",newline2:
+.START PATCH 06 REPLACED LOGIC
+.            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/owneractivityrpt.plc"");' onMouseOver='setStatus(""Activity Report""); return true;' onMouseOut='setStatus(""""); return true;'>ACTIVITY REPORT</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/owneractivityrpt.plc"");' onMouseOver='setStatus(""Owner Activity Report""); return true;' onMouseOut='setStatus(""""); return true;'>OWNER ACTIVITY REPORT</a><br />",newline2:
+.END PATCH 06 REPLACED LOGIC
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/statusrpt.plc"");' onMouseOver='setStatus(""View Order""); return true;' onMouseOut='setStatus(""""); return true;'>VIEW ORDER</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/onlineinvoicing.plc"");' onMouseOver='setStatus(""View Invoice""); return true;' onMouseOut='setStatus(""""); return true;'>VIEW INVOICE</a><br />",newline2:
+//START PATCH 05 REPLACED LOGIC
+//            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/memberdir.plc"");' onMouseOver='setStatus(""Member Directory""); return true;' onMouseOut='setStatus(""""); return true;'>MEMBER DIRECTORY</a><br />",newline2:
+.START PATCH 06 REPLACED LOGIC
+.            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/listsearch.plc"");' onMouseOver='setStatus(""Search Lists""); return true;' onMouseOut='setStatus(""""); return true;'>SEARCH LISTS</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/listsearch.plc"");' onMouseOver='setStatus(""Datacards & Samples""); return true;' onMouseOut='setStatus(""""); return true;'>DATACARDS & SAMPLES</a><br />",newline2:
+.END PATCH 06 REPLACED LOGIC
+            "<a class='menuText' href='javascript:doMenuItemUsermaint();' onMouseOver='setStatus(""Edit Profile""); return true;' onMouseOut='setStatus(""""); return true;'>EDIT PROFILE</a><br />",newline2:
+//END PATCH 05 REPLACED LOGIC
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/logout.plc"");' onMouseOver='setStatus(""Log Out""); return true;' onMouseOut='setStatus(""""); return true;'>LOG OUT</a><br />",newline2:
+            "<br><br>Consultant Menu<hr>",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/exchangereport.plc"");' onMouseOver='setStatus(""Exchange Report""); return true;' onMouseOut='setStatus(""""); return true;'>EXCHANGE REPORT</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/statusrpt.plc"");' onMouseOver='setStatus(""View Order""); return true;' onMouseOut='setStatus(""""); return true;'>VIEW ORDER</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/onlineinvoicing.plc"");' onMouseOver='setStatus(""View Invoice""); return true;' onMouseOut='setStatus(""""); return true;'>VIEW INVOICE</a><br />",newline2:
+//START PATCH 05 ADDED LOGIC
+.START PATCH 06 REPLACED LOGIC
+.            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/listsearch.plc"");' onMouseOver='setStatus(""Search Lists""); return true;' onMouseOut='setStatus(""""); return true;'>SEARCH LISTS</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/listsearch.plc"");' onMouseOver='setStatus(""Datacards & Samples""); return true;' onMouseOut='setStatus(""""); return true;'>DATACARDS & SAMPLES</a><br />",newline2:
+.END PATCH 06 REPLACED LOGIC
+            "<a class='menuText' href='javascript:doMenuItemUsermaint();' onMouseOver='setStatus(""Edit Profile""); return true;' onMouseOut='setStatus(""""); return true;'>EDIT PROFILE</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/logout.plc"");' onMouseOver='setStatus(""Log Out""); return true;' onMouseOut='setStatus(""""); return true;'>LOG OUT</a><br />",newline2:
+//END PATCH 05 ADDED LOGIC
+            "<br><br>Broker Menu<hr>",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/statusrpt.plc"");' onMouseOver='setStatus(""View Order""); return true;' onMouseOut='setStatus(""""); return true;'>VIEW ORDER</a><br />",newline2:
+//            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/counts.plc"");' onMouseOver='setStatus(""Generate Counts""); return true;' onMouseOut='setStatus(""""); return true;'>MAILER COUNTS</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/onlineinvoicing.plc"");' onMouseOver='setStatus(""View Invoice""); return true;' onMouseOut='setStatus(""""); return true;'>VIEW INVOICE</a><br />",newline2:
+.START PATCH 06 REPLACED LOGIC
+.            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/listsearch.plc"");' onMouseOver='setStatus(""Search Lists""); return true;' onMouseOut='setStatus(""""); return true;'>SEARCH LISTS</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/listsearch.plc"");' onMouseOver='setStatus(""Datacards & Samples""); return true;' onMouseOut='setStatus(""""); return true;'>DATACARDS & SAMPLES</a><br />",newline2:
+.END PATCH 06 REPLACED LOGIC
+//START PATCH 05 ADDED LOGIC
+            "<a class='menuText' href='javascript:doMenuItemUsermaint();' onMouseOver='setStatus(""Edit Profile""); return true;' onMouseOut='setStatus(""""); return true;'>EDIT PROFILE</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/logout.plc"");' onMouseOver='setStatus(""Log Out""); return true;' onMouseOut='setStatus(""""); return true;'>LOG OUT</a><br />",newline2:
+//END PATCH 05 ADDED LOGIC
+            "<br><br>Administrative Menu<hr>",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/approveuser.plc"");' onMouseOver='setStatus(""Approve Member""); return true;' onMouseOut='setStatus(""""); return true;'>APPROVE MEMBERS</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/usermaint.plc"");' onMouseOver='setStatus(""Add Member""); return true;' onMouseOut='setStatus(""""); return true;'>ADD MEMBER</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/memberdir.plc"");' onMouseOver='setStatus(""Edit Member""); return true;' onMouseOut='setStatus(""""); return true;'>EDIT MEMBER</a><br />",newline2:
+            "<form name=menuForm method='POST' action=''>",newline2:
+            "<input type=hidden name='SID' value='",thisSession.id,"' />",newline2:
+            "</form>",newline2:
+.START PATCH 06 ADDED LOGIC
+            "<form name=usermaintForm method='POST' action='/plb-bin/usermaint.plc'>",newline2:
+            "<input type=hidden name='SID' value='",thisSession.id,"' />",newline2:
+            "<input type=hidden name='cgiuserid' value='",thisSession.userID,"' />",newline2:
+            "</form>",newline2:
+.END PATCH 06 ADDED LOGIC
+            "</td>",newline2:
+            "<td width='600' valign='top' class='body'>",newline2:
+......................................................................
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/exchangereport.plc"");' onMouseOver='this._tip=""View current exchange balances"";' onMouseOut='setStatus(""""); return true;'>EXCHANGE REPORT</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/owneractivityrpt.plc"");' onMouseOver='this._tip=""View/print monthly summary of list rental activity"";' onMouseOut='setStatus(""""); return true;'>OWNER ACTIVITY REPORT</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/statusrpt.plc"");' onMouseOver='this._tip=""View/print orders within the past year"";' onMouseOut='setStatus(""""); return true;'>VIEW ORDER</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/onlineinvoicing.plc"");' onMouseOver='this._tip=""View/print copies of invoices within the past year"";' onMouseOut='setStatus(""""); return true;'>VIEW INVOICE</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/listsearch.plc"");' onMouseOver='this._tip=""Search our database of lists & view mailer samples"";' onMouseOut='setStatus(""""); return true;'>DATACARDS & SAMPLES</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItemUsermaint();' onMouseOver='this._tip=""Modify/update user profile"";' onMouseOut='setStatus(""""); return true;'>EDIT PROFILE</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/logout.plc"");' onMouseOver='setStatus(""Log Out""); return true;' onMouseOut='setStatus(""""); return true;'>LOG OUT</a><br />",newline2:
+.START PATCH 11 REPLACED LOGIC
+            "<br><br>Consultant Menu<hr>",newline2:
+            "<br><br>",newline2:
+            "<a class='menuHdrText'>Consultant Menu</a>",newline2:
+              "<hr>",newline2:
+.END PATCH 11 REPLACED LOGIC
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/exchangereport.plc"");' onMouseOver='this._tip=""View current exchange balances"";' onMouseOut='setStatus(""""); return true;'>EXCHANGE REPORT</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/statusrpt.plc"");' onMouseOver='this._tip=""View/print orders within the past year"";' onMouseOut='setStatus(""""); return true;'>VIEW ORDER</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/onlineinvoicing.plc"");' onMouseOver='this._tip=""View/print copies of invoices within the past year"";' onMouseOut='setStatus(""""); return true;'>VIEW INVOICE</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/listsearch.plc"");' onMouseOver='this._tip=""Search our database of lists & view mailer samples"";' onMouseOut='setStatus(""""); return true;'>DATACARDS & SAMPLES</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItemUsermaint();' onMouseOver='this._tip=""Modify/update user profile"";' onMouseOut='setStatus(""""); return true;'>EDIT PROFILE</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/logout.plc"");' onMouseOver='setStatus(""Log Out""); return true;' onMouseOut='setStatus(""""); return true;'>LOG OUT</a><br />",newline2:
+.START PATCH 11 REPLACED LOGIC
+            "<br><br>Broker Menu<hr>",newline2:
+            "<br><br>",newline2:
+            "<a class='menuHdrText'>Broker Menu</a>",newline2:
+              "<hr>",newline2:
+.END PATCH 11 REPLACED LOGIC
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/statusrpt.plc"");' onMouseOver='this._tip=""View/print orders within the past year"";' onMouseOut='setStatus(""""); return true;'>VIEW ORDER</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/onlineinvoicing.plc"");' onMouseOver='this._tip=""View/print copies of invoices within the past year"";' onMouseOut='setStatus(""""); return true;'>VIEW INVOICE</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/listsearch.plc"");' onMouseOver='this._tip=""Search our database of lists & view mailer samples"";' onMouseOut='setStatus(""""); return true;'>DATACARDS & SAMPLES</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItemUsermaint();' onMouseOver='this._tip=""Modify/update user profile"";' onMouseOut='setStatus(""""); return true;'>EDIT PROFILE</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/logout.plc"");' onMouseOver='setStatus(""Log Out""); return true;' onMouseOut='setStatus(""""); return true;'>LOG OUT</a><br />",newline2:
+.START PATCH 11 REPLACED LOGIC
+            "<br><br>Administrative Menu<hr>",newline2:
+            "<br><br>",newline2:
+            "<a class='menuHdrText'>Administrative Menu</a>",newline2:
+              "<hr>",newline2:
+.START PATCH 11 REPLACED LOGIC
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/approveuser.plc"");' onMouseOver='setStatus(""Approve Member""); return true;' onMouseOut='setStatus(""""); return true;'>APPROVE MEMBERS</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/usermaint.plc"");' onMouseOver='setStatus(""Add Member""); return true;' onMouseOut='setStatus(""""); return true;'>ADD MEMBER</a><br />",newline2:
+            "<a class='menuText' href='javascript:doMenuItem(""/plb-bin/memberdir.plc"");' onMouseOver='setStatus(""Edit Member""); return true;' onMouseOut='setStatus(""""); return true;'>EDIT MEMBER</a><br />",newline2:
+            "<form name=menuForm method='POST' action=''>",newline2:
+            "<input type=hidden name='SID' value='",thisSession.id,"' />",newline2:
+.START PATCH 11 ADDED LOGIC
+            "<a href='../tos.html';><font size=1 face='arial'>Terms of Service</font></a>",newline2:
+.END PATCH 11 REPLACED LOGIC
+.START PATCH 13 ADDED LOGIC
+              "<a href='/plb-bin/comments.plc';><font size=1 face='arial'>Questions/Comments?</font></a>",newline2:
+.END PATCH 13 REPLACED LOGIC
+            "</form>",newline2:
+            "<form name=usermaintForm method='POST' action='/plb-bin/usermaint.plc'>",newline2:
+            "<input type=hidden name='SID' value='",thisSession.id,"' />",newline2:
+            "<input type=hidden name='cgiuserid' value='",thisSession.userID,"' />",newline2:
+            "</form>",newline2:
+            "</td>",newline2:
+            "<td width='600' valign='top' class='body'>",newline2
+.END PATCH 08 REPLACED LOGIC
+    else
+        // we don't have a user type, so render an empty menu.  We use a transparent image so that
+        //  we can make sure that the empty area is 120 pixels wide
+        stream *stdout,"<img src='/images/transparent.png' width='120'>",newline2:
+            "</td>",newline2:
+            "<td width='600' valign='top' class='body'>",newline2
+    endif
+    return
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+//Begin Patch 09 Code Added
+CGIRenderIndexPage
+          stream *stdout:
+      "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.0 Transitional//EN'>",newline2:
+       "<HTML>",newline2:
+          "<HEAD>",newline2:
+                    "<TITLE>Names in the News</TITLE>",newline2:
+                    "<META content='Names in the News provides mailing list brokerage, list management and analytical services to nonprofit organizations as part of their direct mail strategy to acquire new donors and members.' name=description>",newline2:
+                    "<META content='list, lists, mail, fundraising, fund raising, directmail, direct mail, list broker, list brokerage, list manager, list management, nonprofit,  non-profit, not-for-profit, charitable, environmental, political, consumer, recommendation, Democratic, progressive' name=keywords>",newline2:
+                    "<META http-equiv=Content-Type content='text/html; charset=iso-8859-1'>",newline2:
+                    "<LINK href='/nin_styles.css' type=text/css rel=stylesheet>",newline2:
+                    "<SCRIPT language=JavaScript type=text/JavaScript>",newline2:
+                              "<!--",newline2:
+                              "function MM_preloadImages() { //v3.0",newline2:
+                                        "var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();",newline2:
+                                        "var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)",newline2:
+                                        "if (a[i].indexOf('##')!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}",newline2:
+                              "}",newline2:
+                              "function MM_swapImgRestore() { //v3.0",newline2:
+                                        "var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;",newline2:
+                              "}",newline2:
+                              "function MM_findObj(n, d) { //v4.01",newline2:
+                                        "var p,i,x;  if(!d) d=document; if((p=n.indexOf('?'))>0&&parent.frames.length) {",newline2:
+                                        "d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}",newline2:
+                                        "if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];",newline2:
+                                        "for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);",newline2:
+                                        "if(!x && d.getElementById) x=d.getElementById(n); return x;",newline2:
+                              "}",newline2:
+                              "function MM_swapImage() { //v3.0",newline2:
+                                        "var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)",newline2:
+                                        "if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}",newline2:
+                              "}",newline2:
+                              "//-->",newline2:
+                    "</SCRIPT>",newline2:
+                    "<META content='MSHTML 6.00.2900.2523' name=GENERATOR>",newline2:
+          "</HEAD>",newline2:
+          "<BODY text=##777777 vLink=##748eb8 aLink=##2759a6 link=##2759a6 bgColor=##ffffff leftMargin=0 topMargin=0 onload=""MM_preloadImages('/images/navLeft_ON_01.gif','/images/navLeft_ON_02.gif','/images/navLeft_ON_03.gif','/images/navLeft_ON_04.gif')"" marginheight='0' marginwidth='0'>",newline2:
+                    "<TABLE cellSpacing=5 cellPadding=0 width=740 border=0>",newline2:
+                              "<TBODY>",newline2:
+                                        "<TR>",newline2:
+                                                  "<!-- DH <TD vAlign=center align=middle width=130 bgColor=##2858A6 height=95><A href='/index.htm'><IMG height=64 alt='Names in the News' src='/images/logo.gif' width=120 border=0></A></TD> -->",newline2:
+                                                  "<TD class=topframe width=600 bgColor=##d9ef86 colSpan=2 height=95>",newline2:
+                                                            "<Table cellSpacing=0 cellPadding=0 align=right border=0>",newline2:
+                                                                      "<TR>",newline2:
+                                                                                "<TD>",newline2:
+                                                                                          "<Table cellSpacing=0 cellPadding=0 align=right border=0>",newline2:
+                                                                                                    "<tr>",newline2:
+                                                                                                              "<td>",newline2:
+                                                                                                                        "<span class='errorMsg'>",errorMsg,"</span>",newline2:
+                                                                                                              "</td>",newline2:
+                                                                                                    "</tr>",newline2:
+                                                                                                    "<tr>",newline2:
+                                                                                                              "<td>",newline2:
+                                                                                                                        "<span class='errorMsg'>",errorMsg2,"</span>",newline2:
+                                                                                                              "</td>",newline2:
+                                                                                                    "</tr>",newline2:
+                                                                                                    "<tr>",newline2:
+                                                                                                              "<td>",newline2:
+                                                                                                                        "&nbsp",newline2:
+                                                                                                              "</td>",newline2:
+                                                                                                    "</tr>",newline2:
+                                                                                          "</Table>",newline2:
+                                                                                "</TD>",newline2:
+                                                                                "<TD>",newline2:
+                                                                                          "<Table cellSpacing=0 cellPadding=0 align=right border=0>",newline2:
+                                                                                                    "<Caption><b><font color='##7E884E' face='Arial' size=""2"">&nbsp;&nbsp;&nbsp;Account Login</font></b></Caption>",newline2:
+                                                                                                    "<form name='LoginForm' method='post' action='/plb-bin/login.plc'>",newline2:
+                                                                                                    "<input type='hidden' name='function' value='1' />                                        ",newline2:
+                                                                                                    "<input type='hidden' name='SID' value='' />                ",newline2:
+                                                                                                    "<input type='hidden' name='cgibroker' value='' />                                        ",newline2:
+                                                                                                    "<TR>",newline2:
+//                                                                                                            "<td valign=right>",newline2:
+//                                                                                                                      "<span class='errorMsg'>",newline2:
+//                                                                                                                      errorMsg,newline2:
+//                                                                                                                      "</span>",newline2:
+//                                                                                                            "</td>",newline2:
+                                                                                                              "<td align=right width=""150"">",newline2:
+                                                                                                                        "<b><font color='##7E884E' face='Arial' size='2'>Username</font></b>&nbsp;</td>",newline2:
+                                                                                                                        "<td width='85'>",newline2:
+                                                                                                                        "<input name='cgiusername' value='",newline2:
+                                                                                                                                  cgilogin,newline2:
+                                                                                                                        "'",newline2:
+                                                                                                                        "size='11' align=right></td>",newline2:
+                                                                                                                        "<td width=50>&nbsp",newline2:
+                                                                                                              "</td>",newline2:
+                                                                                                    "</TR>",newline2:
+                                                                                                    "<TR>",newline2:
+//                                                                                                            "<td>",newline2:
+//                                                                                                                      "<span class='errorMsg'>",newline2:
+//                                                                                                                      errorMsg2,newline2:
+//                                                                                                                      "</span>",newline2:
+//                                                                                                            "</td>",newline2:
+                                                                                                              "<TD align=right>",newline2:
+                                                                                                              "<b>",newline2:
+                                                                                                              "<font color='##7E884E' face='Arial' size='2'>Password&nbsp;</font></b></TD>",newline2:
+                                                                                                              "<TD width='85'>",newline2:
+                                                                                                              "<input type='password' name='cgipassword' size='11'align=right value='' /> </TD>",newline2:
+                                                                                                    "</TR>",newline2:
+                                                                                                    "<TR>",newline2:
+//                                                                                                            "<td>",newline2:
+//                                                                                                                      "&nbsp",newline2:
+//                                                                                                            "</td>",newline2:
+                                                                                                              "<td align=right>",newline2:
+                                                                                                                        "<a href='/plb-bin/passrequest.plc'><b><font size='1' face='Arial'>Forgot ",newline2:
+                                                                                                              "Your Password?</font></b></a>&nbsp&nbsp&nbsp",newline2:
+                                                                                                              "</td>",newline2:
+                                                                                                              "<TD width='85' align=center valign=center>",newline2:
+                                                                                                                        "<input type=image img border=""0"" src='/images/btn_logon.gif' width='38' height='19'>",newline2:
+                                                                                                              "</TD>",newline2:
+                                                                                                              "<TD>",newline2:
+                                                                                                                        "<A href='/plb-bin/registration.plc'><font size='1' face='Arial'>Register</font></a>",newline2:
+                                                                                                              "</TD>",newline2:
+                                                                                                    "</TR>",newline2:
+                                                                                                              "</form>",newline2:
+                                                                                          "</Table>",newline2:
+                                                                                "</TD>",newline2:
+                                                                      "</TR>",newline2:
+                                                            "</Table>",newline2:
+                                                  "</TD>",newline2:
+                                        "</TR>",newline2:
+                                        "<TR>",newline2:
+                                                  "<TD vAlign=top align=middle width=130 bgColor=##2858A6 height=95>",newline2:
+                                                                      "<TABLE id=Table_01 height=123 cellSpacing=0 cellPadding=0 width=130 border=0>",newline2:
+                                                                                "<TBODY>",newline2:
+                                                                                          "<TR>",newline2:
+                                                                                                    "<TD align=middle height=30><IMG height=23 alt='List Brokerage &amp; Management ' src='/images/tagline.gif' width=126></TD>",newline2:
+                                                                                          "</TR>",newline2:
+                                                                                          "<TR>",newline2:
+                                                                                          "         <TD align=middle bgColor=##ffffff><IMG height=5 src='/images/5pixTrans.gif' width=5></TD>",newline2:
+                                                                                          "</TR>",newline2:
+                                                                                          "<TR>",newline2:
+                                                                                                    "<TD align=middle height=45>",newline2:
+                                                                                                              "<SELECT style=""FONT-SIZE: 9pt; COLOR: ##000000; FONT-FAMILY: 'Arial'; BACKGROUND-COLOR: ##ffffff"" onchange=location=this.options[this.selectedIndex].value; name=select>",newline2:
+                                                                                                                        "<OPTION selected>Quick Links</OPTION>",newline2:
+                                                                                                                        "<OPTION value=""/index.htm"">Home</OPTION>",newline2:
+                                                                                                                        "<OPTION value=""/company.htm"">Company</OPTION>",newline2:
+                                                                                                                        "<OPTION value=""/clients.htm"">··Clients</OPTION>",newline2:
+"<!-- START PATCH 17NOV2005 REPLACED LOGIC -->",newline2:
+"<!--                                                                                                                   <OPTION value=""/management.htm"">··Management</OPTION>  -->",newline2:
+"                                                                                                                       <OPTION value=""/management.htm"">··Our Team</OPTION>",newline2:
+"<!-- END PATCH 17NOV2005 REPLACED LOGIC -->",newline2:
+                                                                                                                        "<OPTION value=""/services.htm"">Services</OPTION>",newline2:
+                                                                                                                        "<OPTION value=""/faqs.htm"">··FAQ</OPTION>",newline2:
+                                                                                                                        "<OPTION value=""/news.htm"">News</OPTION>",newline2:
+                                                                                                                        "<OPTION value=""/news.htm"">··Newsletter</OPTION>",newline2:
+                                                                                                                        "<OPTION value=""/contact.htm"">Contact</OPTION>",newline2:
+                                                                                                                        "<OPTION value=""/plb-bin/newclientinfo.plc"">··Client Info</OPTION>",newline2:
+                                                                                                                        "<OPTION value=""/plb-bin/login.plc"">Extranet</OPTION>",newline2:
+                                                                                                                        "<OPTION value=""/plb-bin/login.plc"">··Login</OPTION>",newline2:
+                                                                                                                        "<OPTION value=""/plb-bin/registration.plc"">··Register</OPTION>",newline2:
+                                                                                                                        "<OPTION value=""/plb-bin/newclientinfo.plc"">··Request Info.</OPTION>",newline2:
+                                                                                                              "</SELECT>",newline2:
+                                                                                                    "</TD>",newline2:
+                                                                                          "</tr>",newline2:
+                                                                                          "<TR>",newline2:
+                                                                                                    "<TD><A onmouseover=""MM_swapImage('Image5','','/images/navLeft_ON_01.gif',1)"" onmouseout=MM_swapImgRestore() href='/company.htm'><IMG height=30 alt=Company src='/images/navLeft_OFF_01.gif' width=130 border=0 name=Image5></A></TD>",newline2:
+                                                                                          "</TR>",newline2:
+                                                                                          "<TR>",newline2:
+                                                                                                    "<TD><A onmouseover=""MM_swapImage('Image6','','/images/navLeft_ON_02.gif',1)"" onmouseout=MM_swapImgRestore() href='/services.htm'><IMG height=30 alt=Services src='/images/navLeft_OFF_02.gif' width=130 border=0 name=Image6></A></TD>",newline2:
+                                                                                          "</TR>",newline2:
+                                                                                          "<TR>",newline2:
+                                                                                                    "<TD><A onmouseover=""MM_swapImage('Image7','','/images/navLeft_ON_03.gif',1)"" onmouseout=MM_swapImgRestore() href='/news.htm'><IMG height=30 alt=News src='/images/navLeft_OFF_03.gif' width=130 border=0 name=Image7></A></TD>",newline2:
+                                                                                          "</TR>",newline2:
+                                                                                          "<TR>",newline2:
+                                                                                          "         <TD><A onmouseover=""MM_swapImage('Image8','','/images/navLeft_ON_04.gif',1)"" onmouseout=MM_swapImgRestore() href='/contact.htm'><IMG height=30 alt=Contact src='/images/navLeft_OFF_04.gif' width=130 border=0 name=Image8></A></TD>",newline2:
+                                                                                          "</TR>",newline2:
+                                                                                          "<TR>",newline2:
+                                                                                          "         <TD><IMG height=3 alt="""" src='/images/navLeft_OFF_05.gif' width=130></TD>",newline2:
+                                                                                          "</TR>",newline2:
+                                                                                          "<TR>",newline2:
+                                                                                                    "<TD vAlign=center align=middle height=70><A href='/NewsLetters/CurrentNewsletter.pdf' target=_blank><IMG height=55 alt=Newsletter src='/images/btn_newsletter.gif' width=104 border=0></A><br><br>",newline2:
+                                                                                                    "<a href='search.html'><font size=2 face=""Arial"">Website Search</a></TD>",newline2:
+                                                                                          "</TR>",newline2:
+                                                                                          "<TR>",newline2:
+                                                                                          "         <TD class=cellDma vAlign=center align=middle height=60><A href='http://www.the-dma.org/' target=_blank><IMG height=43 alt='The DMA' src='/images/btn_DMAlogo.gif' width=67 border=0></A></TD>",newline2:
+                                                                                          "</TR>",newline2:
+.START PATCH 11 ADDED LOGIC
+                                                                                          "<TR>",newline2:
+                                                                                          "         <TD align='center'><a href=""../tos.html"";><font size=1 face='arial'>Terms of Service</font></a></TD>",newline2:
+                                                                                          "</TR>",newline2:
+.END PATCH 11 REPLACED LOGIC
+.START PATCH 13 ADDED LOGIC
+                                                                                          "<TR>",newline2:
+                                                                                          "         <TD align='center'><a href=""/plb-bin/comments.plc"";><font size=1 face='arial'>Questions/Comments?</font></a></TD>",newline2:
+                                                                                          "</TR>",newline2:
+.END PATCH 13 REPLACED LOGIC
+                                                                                "</TBODY>",newline2:
+                                                                      "</TABLE>",newline2:
+                                                  "</TD>",newline2:
+                                                  "<TD vAlign=center align=middle width=600 height=335>",newline2:
+                                                            "<IMG alt='Donor Aquisition' src='/images/copy_body.gif' useMap=##Map border=0>",newline2:
+                                                  "</TD>",newline2:
+                                                  "<TD vAlign=top align=middle width=200>",newline2:
+                                                            "<TABLE id=Table_01 height=335 cellSpacing=0 cellPadding=0 width=200 border=0>",newline2:
+                                                                      "<TBODY>",newline2:
+                                                                                "<TR>",newline2:
+                                                                                          "<TD bgColor=##2858A6><A href='/services.htm'><IMG height=50 alt='Read About Our Services' src='/images/navRight_OFF_01.jpg' width=200 border=0></A></TD>",newline2:
+                                                                                "</TR>",newline2:
+                                                                                "<TR>",newline2:
+                                                                                          "<TD bgColor=##2858A6><A href='/faqs.htm'><IMG height=55 alt='Learn the Basics' src='/images/navRight_OFF_02.jpg' width=200 border=0></A></TD>",newline2:
+                                                                                "</TR>",newline2:
+                                                                                "<TR>",newline2:
+                                                                                          "<TD bgColor=##2858A6><A href='http://www.ninlists.com/recos.htm'><IMG height=55 alt='Look at our Recos' src='/images/navRight_OFF_03.jpg' width=200 border=0></A></TD>",newline2:
+                                                                                "</TR>",newline2:
+                                                                                "<TR>",newline2:
+                                                                                          "<TD bgColor=##2858A6><A href='/plb-bin/newclientinfo.plc'><IMG height=85 alt='Talk to a Broker' src='/images/navRight_OFF_04.jpg' width=200 border=0></A></TD>",newline2:
+                                                                                "</TR>",newline2:
+                                                                                "<TR>",newline2:
+                                                                                          "<TD bgColor=##2858A6><A href='http://www.ninlists.com/'><IMG height=90 alt=Brokers src='/images/navRight_OFF_05.jpg' width=200 border=0></A></TD>",newline2:
+                                                                                "</TR>",newline2:
+                                                                      "</TBODY>",newline2:
+                                                            "</TABLE>",newline2:
+                                                  "</TD>",newline2:
+                                        "</TR>",newline2:
+                                        "<TR bgColor=##2858A6>",newline2:
+                                                  "<TD class=footer vAlign=center align=middle colSpan=3 height=35>",newline2:
+                                                            "<TABLE cellSpacing=0 cellPadding=0 width=""98%"" border=0>",newline2:
+                                                                      "<TBODY>",newline2:
+                                                                                "<TR class=arial10>",newline2:
+                                                                                          "<TD width='22%'>",newline2:
+                                                                                                    "<FONT color=##33FFOO>© 2004-2010. All Rights Reserved.</FONT>",newline2:
+                                                                                          "</TD>",newline2:
+                                                                                          "<TD class=cellFooterAddress align=right width='78%'>",newline2:
+                                                                                                    "<FONT color=##33FFOO>",newline2:
+                                                                                                              "180 Grand Av, Ste 1545, Oakland, CA 94612",newline2:
+                                                                                                              "<FONT color=##33FFOO>·</FONT> T: 415-989-3350",newline2:
+                                                                                                              "<FONT color=##33FFOO>·</FONT>",newline2:
+                                                                                                    "F: 415-433-7796",newline2:
+                                                                                                    "</FONT>",newline2:
+                                                                                          "</TD>",newline2:
+                                                                                "</TR>",newline2:
+                                                                      "</TBODY>",newline2:
+                                                            "</TABLE>",newline2:
+                                                  "</TD>",newline2:
+                                        "</TR>",newline2:
+                              "</TBODY>",newline2:
+                    "</TABLE>",newline2:
+                    "<P>&nbsp;</P>",newline2:
+                    "<MAP name=Map>",newline2:
+                    "         <AREA shape=RECT coords=233,268,352,301 href='/services.htm'>",newline2:
+                    "</MAP>",newline2:
+                    "</BODY>",newline2:
+                    "</HTML>",newline2
+                    return
+//End Patch 09 Code Added
+
+///////////////////////////////////////////////////////////////////////////////
+
+.START PATCH 10 ADDED LOGIC
+///////////////////////////////////////////////////////////////////////////////
+CGITrack Routine #DimPtr,#DimPtr1
+//#DimPtr  = Session ID
+//#DimPtr1 = Process ID
+          //A local Trim - cannot Trim a Local Variable in a different file!
+          chop      #DimPtr,#DimPtr                                             .get rid of trailing spaces
+          parse     #DimPtr INTO #DimPtr USING #strParseRange         .get rid of leading spaces
+          if (#DimPtr <> "")
+                    pack      NWEBFLD1,"01X",#DimPtr
+                    call      NWEBAIMT
+                    if not over
+                              //Refresh some values
+                              //This should happen with any process OTHER than Login
+                              call      NWEBAIM
+                    else      //Should only happen with Login
+                              move      #DimPtr,NWEBRECORD.NWEBSESSION
+                              move      fUserIO.userID,NWEBRECORD.NWEBID
+                              move      fUserIO.Email,NWEBRECORD.NWEBUSEREMAIL
+                              move      fUserIO.username,NWEBRECORD.NWEBUSERNAME
+                              move      fUserIO.userType,NWEBRECORD.NWEBUSERTYPE
+                              move      fUserIO.companyNumber,NWEBRECORD.NWEBCOMP
+                    endif
+
+          elseif (#DimPtr1 = "0002")
+                    //Registration
+                    move      fUserIO.userID,NWEBRECORD.NWEBID
+                    move      fUserIO.Email,NWEBRECORD.NWEBUSEREMAIL
+                    move      fUserIO.username,NWEBRECORD.NWEBUSERNAME
+                    move      fUserIO.userType,NWEBRECORD.NWEBUSERTYPE
+                    move      fUserIO.companyNumber,NWEBRECORD.NWEBCOMP
+          elseif (#DimPtr1 = "0003")
+                    //Password Request
+                    move      fUserIO.Email,NWEBRECORD.NWEBUSEREMAIL
+          endif
+          clock     timestamp,NWEBRECORD.NWEBTIME
+          move      #DimPtr1,NWEBRECORD.NWEBPROCESS
+          pack      NWEBFLD,#DimPtr,NWEBRECORD.NWEBPROCESS,NWEBRECORD.NWEBTIME
+
+          call      NWEBWRT
+          return
+///////////////////////////////////////////////////////////////////////////////
+.END PATCH 10 ADDED LOGIC
+
+///////////////////////////////////////////////////////////////////////////////
+
+#noLabel
+
+        stream *stdout,"<hr>The server encountered a fatal error.  A label reference could not be located.<br>":
+            "Label Name: ",#genericVar,"<br>":
+            "Error Code: ",s$error$,"<hr>",newline2
+        shutdown
+
+        return
+///////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+#end
+///////////////////////////////////////////////////////////////////////////////

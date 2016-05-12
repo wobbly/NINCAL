@@ -1,0 +1,101 @@
+<!-- custom content goes here -->
+	<script language="javascript">
+		function doMember() {
+			document.newuserForm.action = "memberdir.plc";
+			document.newuserForm.cgifunction.value = "0";
+			document.newuserForm.submit();
+		}
+	</script>
+
+<form action='usermaint.plc' name='newuserForm' id='newuserForm' method='POST'>
+		<input type='hidden' name='cgifunction' value='0' />
+		<input type='hidden' name='SID' value='<%=SID%>' />
+		<input type='hidden' name='cgiuserid' value='<%=cgiuserid%>' />
+    <table border='0' cellpadding='2' cellspacing='2' align='center'>
+				<tr>
+						<td colspan="2">
+								<span class='errorMsg'><%=errorMsg%></span>
+						</td>
+				</tr>
+        <tr>
+            <td class='title' colspan='2' align=center>
+                Member Information
+                <br>
+            </td>
+        </tr>
+        				<tr>
+							<td colspan="2">
+									<span class='errorMsg'><%=errorMsg%></span>
+							</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<table class="datacontainer" cellpadding="2" cellspacing="0" align="center">
+							<tr>
+									<th align='right' valign='top'>First Name:</th>
+									<td class=datarow align='left' valign='top'><%=cgifname%></td>
+							</tr>
+							<tr>
+									<th align='right' valign='top'>Last Name:</th>
+									<td class=datarow1 align='left' valign='top'><%=cgilname%></td>
+							</tr>
+							<tr>
+									<th align='right' valign='top'>Organization:</th>
+									<td class=datarow align='left' valign='top'><%=cgiorganization%></td>
+							</tr>
+							<tr>
+									<th align='right' valign='top'>Address:</th>
+									<td class=datarow1 align='left' valign='top'><%=cgiaddress%></td>
+							</tr>
+							<tr>
+									<th align='right' valign='top'>City:</th>
+									<td class=datarow align='left' valign='top'><%=cgicity%></td>
+							</tr>
+							<tr>
+								<th align='right' valign='top'>State:</th>
+								<td	class=datarow1 align='left' valign='top'><%=cgistate%>
+								</td>
+							</tr>
+							<tr>
+									<th align='right' valign='top'>Zip:</th>
+									<td class=datarow align='left' valign='top'><%=cgizip%></td>
+							</tr>
+							<tr>
+									<th align='right' valign='top'>Telephone:</th>
+									<td class=datarow1 align='left' valign='top'><%=cgiphone%></td>
+							</tr>
+							<tr>
+									<th align='right' valign='top'>Fax:</th>
+									<td class=datarow align='left' valign='top'><%=cgifax%></td>
+							</tr>
+							<tr>
+									<th align='right' valign='top'>Email:</th>
+									<td class=datarow1 align='left' valign='top'><%=cgiemail%></td>
+							</tr>
+							<tr>
+									<th align='right' valign='top'>Company Function:</th>
+									<td class=datarow align='left' valign='top'><%=cgicompfunction%></td>
+							</tr>
+							<tr>
+									<th align='right' valign='top'>Area:</th>
+									<td class=datarow1 align='left' valign='top'><%=cgiarea%></td>
+							</tr>
+							<tr>
+									<th align='right' valign='top'>User Type:</th>
+									<td	class=datarow align='left' valign='top'><%=cgiusertype%></td>
+							</tr>
+							<tr>
+								<td colspan="2" align="center">
+									<br><br>
+									<input type="submit" name="edit" value="Edit User" />
+									&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									<input type="button" name="member" onClick="doMember();" value="Member Directory" />
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+    </table>
+</form>
+<script language="JavaScript"></script>
+<!-- end custom content -->

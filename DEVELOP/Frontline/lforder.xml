@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<nin xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="lforder.xsd">
+<lforder>
+<lrnum>610398</lrnum>
+<orderdate>20060221</orderdate>
+<mailername>Environmental Defense</mailername>
+<listnum>666666</listnum>
+<listname>The Nature Conservancy</listname>
+<selection>24 months</selection>
+<qty>000018524</qty>
+<keycode>asdfj</keycode>
+<ponum>55asdfj</ponum>
+<media>FTP</media>
+<shipcontact>andy</shipcontact>
+<shipcompany>andy company</shipcompany>
+<shipaddr>1556 8th Avenue</shipaddr>
+<shipcity>San Francisco</shipcity>
+<shipstate>CA</shipstate>
+<shipzip>94122-222</shipzip>
+<shipemail>aharkin@nincal.com</shipemail>
+<maildate>20060320</maildate>
+<shipdate>20060223</shipdate>
+<shipvia>See Special Instructions</shipvia>
+<oppm>85.00</oppm>
+<selprice>10.00</selprice>
+<exchange>EXCHANGE</exchange>
+<specialselections>email gender</specialselections>
+<specialinstructions>
+FTP: ftp.abdata.com                                                                                 
+User name: 4108                                                                                     
+Password: Falc1600                                                                                  
+Verification email: NIA.MEADOWS@ALC.COM                                                             
+Key file: 2CM06-018                                                                                 
+                                                                                                    
+Select all available from ZIPS 1-2 sent to                                                          
+listfulfill@infousa.com                                                                             
+                                                                                                    
+Omit orders: 606637 and 606638                                                                      
+</specialinstructions>
+<opu>
+<opulr>123456789</opulr>
+<opuqty>000444444</opuqty>
+<opudate>20050621</opudate>
+</opu>
+<contact>Joey Gamache</contact>
+<entirelist>TRUE</entirelist>
+<orderterms>Exchange</orderterms>
+</lforder>
+</nin>

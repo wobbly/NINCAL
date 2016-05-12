@@ -1,0 +1,39 @@
+******************************************************
+*  NUSGDD INCLUSION
+*  DATACARD USAGE FILE.
+* ****************************************************
+* NAMES IN THE NEWS DATACARD USAGE FILE.
+* ****************************************************
+.
+.      FILE:      NINUSG
+.    LENGTH:      44
+.      TYPE:      AIM,ISAM,MANAGED
+. INDEX KEY:       1-12	NUSGLIST,NUSGMLR
+. AIMDEX KEY:      1-6	NUSGLIST
+.		   7-12	NUSGMLR
+.
+......................................................
+NUSGFNAME	INIT	"NINUSG"
+.
+NUSGFLIST	Filelist
+NUSGFILE	IFILE	KEYLEN=12,NODUPE,FIXED=44,Name="NINUSG.isi|NINS1:502"
+NUSGFLE2	AFILE	FIXED=44,Name="NINUSG.aam|NINS1:502"
+.NUSGFILE	IFILE	KEYLEN=12,FIXED=44,Name="NINUSG.isi|20.20.30.103:502"
+.NUSGFLE2	AFILE	FIXED=44,Name="NINUSG.aam|20.20.30.103:502"
+		filelistend
+.
+NUSGLOCK	FORM	1	0 OR 1=filepi,2=recordlock, 3=no lock
+NUSGFLD		DIM	12
+NUSGFLD1	DIM	9
+NUSGFLD2	DIM	9
+NUSGFLAG	FORM	1
+NUSGPATH	FORM	1
+.
+NUSGVARS	LIST
+NUSGLIST	DIM	6	1-6	LIST NUMBER (KEY)
+NUSGMLR	DIM	6	7-12	MAILER NUMBER (KEY)
+NUSGDATE	DIM	8      13-20	CREATION DATE - CCYYMMDD
+NUSGCODE	DIM	1      21-21	CREATION CODE - 1=weekly run, 2=hand entered
+NUSGINITS	DIM	3      22-24	INITIALS IF HAND ENTERED
+NUSGFILLER	DIM	20     25-44	FILLER
+		LISTEND

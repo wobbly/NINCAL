@@ -1,0 +1,62 @@
+<script language="javascript">
+	function formSub()
+	{
+		document.tosprereg.submit();
+	}
+</script>
+
+    <form action="tosprereg.plc" name="tosprereg" method="POST">
+	<input type='hidden' name='cgifunction' value='1' />
+	<input type='hidden' name='SID' value='<%=SID%>' />
+	<table>
+		<tr>
+			<td valign='top' class='body'>
+				<h2>TERMS OF SERVICE</h2>
+				By checking the box to complete your registration, you are agreeing to the
+				terms of service described below:
+				<ol>
+					<li><a href="http://www.namesinthenews.com" target="_blank">
+					www.NamesintheNews.com</a> and
+					<a href="http://www.ninlists.com" target="_blank">www.NINlists.com</a> are 
+					provided by Names in the News, Inc. on an &quot;as is&quot; and &quot;as available&quot; basis. 
+					Names in the News makes no representations or warranties of any kind, express or 
+					implied, as to the operation of these sites.
+					<br>
+					<br>
+					<li>Names in the News makes every effort to provide accurate information in both 
+					the public and private areas of our sites and we will never knowingly publish 
+					incorrect data. However, we reserve the right to correct, update or otherwise 
+					modify published data without penalty once we are made aware of errors or 
+					inaccuracies. This would include notifying the user of revised file counts, base 
+					prices and select fees, shipping costs, list descriptions, invoice totals, 
+					amounts due and similar details that reflect the dynamic nature of the list 
+					business.
+					<br>
+					<br>
+					<li>Registration and access to protected areas of the web sites is only for 
+					active Names in the News Clients. Due to the sensitive and proprietary nature of 
+					the content which is available in the protected areas of our web sites, we urge 
+					you to inform Names in the News about changes in status of employees or 
+					consultants who have registered with us, so that only appropriate personnel have 
+					access.
+				</ol>
+			</td>
+		</tr>
+		<tr>
+			<td align='center'>
+				<span class='errorMsg'><%=errorMsg%></span>
+			</td>
+		</tr>
+		<tr>
+			<td align='center'>
+				<input align="middle" type=checkbox name="cgitos" value="1">I have read and	agree to the terms of service.
+			</td>
+		</tr>
+		<tr>
+			<td align='center'>
+				<input type='hidden' name='cgiusername' value='<%=cgiusername%>' />
+				<input align="middle" type="button" value="Submit" onClick='formSub();'>
+			</td>
+		</tr>
+	</table>
+	

@@ -1,0 +1,184 @@
+..............................................................................
+.
+. NMODIO INCLUSION
+. NIN DATACARD PRICE MODIFIER FILE I/O ROUTINES
+.
+. FILE NAME : NINMOD
+. REC LENGTH: 42 VAR
+. INDEX KEY : 1-3
+.
+..............................................................................
+.
+. ENTRY POINT : NMODKEY
+. REQUIRED    : 'NMODFLD'
+. RETURNED    : DATACARD PRICE MODIFIER RECORD
+. DESCRIPTION : EXACT ISAM KEY READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NMODKEY
+	BRANCH	NMODFLAG,NMOD1
+	CALL	NMODOPEN
+NMOD1
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NMODFILE
+	READ	NMODFILE,NMODFLD;NMODVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NMODTST
+. REQUIRED    : NMODFLD
+. RETURNED    :
+. DESCRIPTION : TEST KEY
+.
+NMODTST
+	BRANCH	NMODFLAG,NMOD2
+	CALL	NMODOPEN
+NMOD2
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NMODFILE
+	READ	NMODFILE,NMODFLD;;
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NMODKS
+. REQUIRED    :
+. RETURNED    : DATACARD PRICE MODIFIER RECORD
+. DESCRIPTION : KEY SEQUENTIAL DATACARD PRICE MODIFIER FILE READ
+.
+NMODKS
+	BRANCH	NMODFLAG,NMOD3
+	CALL	NMODOPEN
+NMOD3
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NMODFILE
+	READKS	NMODFILE;NMODVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NMODSEQ
+. REQUIRED    :
+. RETURNED    : DATACARD PRICE MODIFIER RECORD
+. DESCRIPTION : SEQUENTIAL DATACARD PRICE MODIFIER FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NMODSEQ
+	BRANCH	NMODFLAG,NMOD4
+	CALL	NMODOPEN
+NMOD4
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NMODFILE
+	READ	NMODFILE,SEQ;NMODVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NMODWRT
+. REQUIRED    : 'NMODFLD'
+. RETURNED    :
+. DESCRIPTION : EXACT ISAM KEY TXT/ISI INSERT
+.
+NMODWRT
+	BRANCH	NMODFLAG,NMOD5
+	CALL	NMODOPEN
+NMOD5
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NMODFLIST
+	WRITE	NMODFLIST;NMODVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NMODUPD
+. REQUIRED    : A PREVIOUS KEY READ
+. RETURNED    :
+. DESCRIPTION : KEY UPDATE RECORD NUMBER FILE
+.
+NMODUPD
+	BRANCH	NMODFLAG,NMOD6
+	CALL	NMODOPEN
+NMOD6
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NMODFLIST
+	UPDATE	NMODFLIST;NMODVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NMODDEL
+. REQUIRED    : 'NMODFLD'
+. RETURNED    :
+. DESCRIPTION : EXACT ISAM KEY TXT/ISI DELETE
+.
+NMODDEL
+	BRANCH	NMODFLAG,NMOD7
+	CALL	NMODOPEN
+NMOD7
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NMODFLIST
+	DELETE	NMODFLIST
+	trapclr	IO
+	RETURN
+
+..............................................................................
+. ENTRY POINT : NMODAIM
+. REQUIRED    : NMODFLD1
+. RETURNED    : RECORD
+. DESCRIPTION : AIM FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NMODAIM
+	BRANCH	NMODFLAG,NMOD8
+	CALL	NMODOPEN
+NMOD8   
+	trap	IOMssg giving Error if IO
+	READ	NMODFLE2,NMODFLD1;NMODVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NMODKG
+. REQUIRED    : VALID PREVIOUS AIM READ
+. RETURNED    : RECORD
+. DESCRIPTION : AIM KEY GENEREIC FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NMODKG
+	BRANCH	NMODFLAG,NMOD10
+	CALL	NMODOPEN
+NMOD10
+	trap	IOMssg giving Error if IO
+	READKG	NMODFLE2;NMODVARS
+	trapclr	IO
+	RETURN
+
+...............................................................................
+.
+. ENTRY POINT : NMODOPEN
+. REQUIRED    : 'NMODFLAG'
+. RETURNED    : 'NMODFLAG' SET TO '1' IF OPENNED
+. DESCRIPTION : OPEN NIN DATACARD PRICE MODIFIER FILE
+.               DISPLAY ERROR AND ABORT IF NOT ON-LINE.
+.
+NMODOPEN
+	TRAP	NMODGONE giving Error if IO
+.	OPEN	NMODFLIST,EXCLUSIVE
+	OPEN	NMODFLIST
+	trapclr	IO
+	MOVE	C1,NMODFLAG
+	RETURN
+.
+NMODGONE
+	MOVE	NMODNAME,FILENAME
+	CALL	FILEGONE
+.
+..............................................................................

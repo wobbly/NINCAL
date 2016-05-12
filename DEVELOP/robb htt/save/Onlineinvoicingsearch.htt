@@ -1,0 +1,162 @@
+<!-- START PATCH 1/5/2006 ASH - REPLACED LOGIC -->
+<!--
+<script language="javascript">
+function formclear()
+{
+  document.optionlineinvForm.cgiordernumber.value="";
+  document.optionlineinvForm.cgicampaignnumber.value="";
+  document.optionlineinvForm.cgiponumber.value="";
+  document.optionlineinvForm.cgiordernumber.focus();
+}
+
+function formsubmit() {
+  if ((document.optionlineinvForm.cgiordernumber.value == "") & (document.optionlineinvForm.cgicampaignnumber.value == "") & (document.optionlineinvForm.cgiponumber.value == ""))
+  {
+    alert("Please enter a order, campaign, or P.O. number.");
+    document.optionlineinvForm.cgiordernumber.focus();
+    return false;
+  }
+  return true;
+}
+-->
+<script language="javascript">
+function formclear() {
+  document.optionlineinvForm.cgiordernumber.value="";
+  document.optionlineinvForm.cgiother.value="";
+  document.optionlineinvForm.cgiordernumber.focus();
+}
+
+function formsubmit() {
+  if ((document.optionlineinvForm.cgiordernumber.value == "") & (document.optionlineinvForm.cgiother.value == ""))
+  {
+    alert("Please enter an Order or Reference number.");
+    document.optionlineinvForm.cgiordernumber.focus();
+    return false;
+  }
+  return true;
+}
+</script>
+<!-- END PATCH 1/5/2006 ASH REPLACED LOGIC -->
+
+<form action='onlineinvoicing.plc' name='optionlineinvForm' id='optionlineinvForm' method='POST' onSubmit="return formsubmit();">
+  <input type='hidden' name='cgifunction' value='2' />
+  <input type='hidden' name='SID' value='<%=SID%>' />
+<center> <!-- 09/29/2010 BJACKSON -->
+  <table border="0" cellpadding='2' cellspacing='2' align='center' width="100%">
+    <tr>
+      <td colspan="2" class='title' align=center>
+        View Invoice
+        <br>
+        <br>
+        <br>
+      </td>
+    </tr>
+    <tr>
+<!-- START PATCH 15DEC2005 REPLACED LOGIC -->
+<!--      <td align=right >Order Number:</td> -->
+      <td align=right >NIN Order Number:</td>
+<!-- END PATCH 15DEC2005 REPLACED LOGIC -->
+      <td><input type=text name=cgiordernumber value="<%=cgiordernumber%>" size=10 maxlength=6 /></td>
+    </tr>
+	<tr><td colspan="2" align="center">or</td></tr>
+<!-- START PATCH 1/5/2006 ASH - REPLACED LOGIC -->
+<!--    <tr>
+<!--      <td align=right>Campaign Number:</td>
+<!--      <td><input type=text name=cgicampaignnumber value="<%=cgicampaignnumber%>" size=10 maxlength=6 /></td>
+<!--    </tr>
+<!--		<tr><td colspan="2"align="center">or</td></tr>
+<!--    <tr>
+<!--<!-- START PATCH 01DEC2005 REPLACED LOGIC -->
+<!--<!--      <td align=right>P.O. Number:</td> -->
+<!--      <td align=right>Purchase Order Number:</td>
+<!--<!-- END PATCH 01DEC2005 REPLACED LOGIC -->
+<!--      <td><input type=text name=cgiponumber value="<%=cgiponumber%>" size=12 maxlength=12 /></td>
+<!--    </tr>
+<!--		<tr><td colspan="2"align="center"><font class='smallformtext'>*search criteria is case sensitive</font></td></tr>
+<!--	</tr>
+-->
+	<tr>
+		<td align=center colspan=2>
+			If you use a reference name/number to track Orders, we may be able to find records using it.
+		</td>
+	</tr>
+<!-- START PATCH 26APR2006 ADDED LOGIC -->
+<!--
+	<tr>
+		<td align=center colspan=2>
+			<font class='smallformtext'>  Search criteria may be case sensitive.</font>
+		</td>
+	</tr>
+-->
+<!-- END PATCH 26APR2006 ADDED LOGIC -->
+	<tr>
+   		<td align=right>Reference Number:
+		</td>
+		<td align='left' valign='top'><input type='text' name='cgiother' size='12' maxsize='12'value ='<%=cgiother%>'></td>
+	</tr>
+<!-- END PATCH 1/5/2006 ASH - REPLACED LOGIC -->
+<!-- START PATCH 26APR2006 ADDED LOGIC -->
+  </table>
+  <table border='0' cellpadding='3' cellspacing='3' align='center' width="565">
+  	<tr>
+
+   		<td width="35%"></td>
+		<td align='left' valign='top' width="50%">
+			<font class='smallformtext2'>
+				Search Criteria:
+			</font>
+		</td>
+		<td width="15%"></td>
+	</tr>
+	<tr>
+   		<td width="35%"></td>
+		<td align='left' valign='top' width="50%">
+		  	<font class='smallformtext2'>
+			  <ul>
+			    <li>Can be partial</li>
+			  	<li>Must include at least 3 sequential, non-blank characters</li>
+			  	<li>Cannot include wildcards</li>
+			  	<li>*May be case sensitive</li>
+			  </ul>
+			</font>
+		</td>
+		<td width="15%"></td>
+	</tr>
+	</font>
+  </table>
+  <table border='0' cellpadding='2' cellspacing='2' align='center' width="565">
+<!-- END PATCH 26APR2006 ADDED LOGIC -->
+	<tr>
+	</tr>
+	<tr>
+	</tr>
+	<tr>
+		<td align='center' valign='top' colspan='2'>You can view Invoices for Mail Dates within the past 12 months.</td>
+	</tr>
+	<tr>
+
+<!-- START PATCH 1/4/2006 ASH REPLACED LOGIC -->
+<!--		<td align='center' valign='top' colspan='2'>If you'd like to see an older Invoice, please contact your NIN representative.</td>  -->
+		<td align='center' valign='top' colspan='2'>If you'd like to see an older Order, please contact your <a href="/index.php/contact-us/";>NIN representative</a>.</td>
+<!-- END PATCH 1/4/2006 ASH REPLACED LOGIC -->
+	</tr>
+    <tr>
+      <td colspan="2" align=center>
+        <br>
+<!-- START PATCH 10/14/2005 REPLACED LOGIC -->
+<!--
+        <input type="submit" name="submitbtn" value="Submit"/>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="reset" name="resetbtn" value="Reset" />
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="button" name="clearbtn" value="Clear" onClick="formclear();" />
+-->
+        <input type="submit" name="submitbtn" value="Submit"/>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="reset" name="clearbtn" value="Clear" />
+<!-- END PATCH 10/14/2005 REPLACED LOGIC -->
+    </tr>
+  </table>
+</center> <!-- 09/29/2010 BJACKSON -->
+</form>
+<!-- end custom content -->

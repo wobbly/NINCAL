@@ -1,0 +1,39 @@
+******************************************************
+*  NSRCDD INCLUSION
+*  SUBSIDIARY FILE FOR DATACARD
+*  SOURCE CODE FILE DESCRIPTOR.
+. ....................................................
+* ****************************************************
+* NAMES IN THE NEWS MASTER SOURCE CODE FILE.
+* ****************************************************
+.
+.      FILE:      NINSRC
+.    LENGTH:      9
+.      TYPE:      AIM,ISAM,MANAGED
+. INDEX KEY:      1-9	NSRCLIST + NSRCNUM
+.AIMDEX KEY:      1-6	NSRCLIST
+......................................................
+NSRCNAME	INIT	"NINSRC"
+NSRCFLIST	FILELIST
+.NSRCFILE	IFILE	KEYLEN=9,FIXED=12,Name="NINSRC.isi"
+.NSRCFLE2	AFILE	FIXED=12,Name="NINSRC.aam"
+.NSRCFILE	IFILE	KEYLEN=9,FIXED=12,Name="NINSRC.isi|20.20.30.103:502"
+NSRCFILE	IFILE	KEYLEN=9,FIXED=12,Name="NINSRC.isi|NINS1:502"
+.NSRCFLE2	AFILE	FIXED=12,Name="NINSRC.aam|20.20.30.103:502"
+NSRCFLE2	AFILE	FIXED=12,Name="NINSRC.aam|NINS1:502"
+
+		FILELISTEND
+.
+NSRCLOCK	FORM	1	0 OR 1=filepi,2=recordlock, 3=no lock
+NSRCFLD		DIM	9
+NSRCFLD1	DIM	9
+NSRCFLAG	FORM	1
+NSRCFLG2	FORM	1
+NSRCPATH	FORM	1
+.
+. 
+NSRCVARS	LIST
+NSRCLIST	DIM	6	1-6	LIST NUMBER
+NSRCNUM		DIM	3	7-9	SOURCE CODE NUMBER
+NSRCPER		DIM	3      10-12	SOURCE CODE PERCENTAGE
+		LISTEND

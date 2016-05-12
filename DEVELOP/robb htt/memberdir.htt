@@ -1,0 +1,73 @@
+<!-- custom content goes here -->
+
+<script>
+
+function clearFields(f, l, o, z){
+	f.value = "";
+	l.value = "";
+	o.value = "";
+	z.value = "";
+}
+
+
+function showAll(){
+	document.memberForm.cgifunction.value = 2;
+	document.memberForm.submit();
+}
+
+function formSub(){
+	document.memberForm.cgifunction.value = 1;
+	document.memberForm.submit();
+}
+
+</script>
+
+<form action='memberdir.plc' name='memberForm' id='memberForm' method='POST'>
+		<input type='hidden' name='SID' value='<%=SID%>' />
+		<input type='hidden' name='cgifunction' value='0' />
+		<input type='hidden' name='cgidatasource' value='<%=cgidatasource%>' />
+		<input type='hidden' name='cgireadpos' value='<%=cgireadpos%>' />
+
+    <table border='0' cellpadding='2' cellspacing='2' align='center'>
+        <tr>
+            <td class='title' colspan='2' align=center>
+                Member Directory
+                <br><br><br>
+            </td>
+        </tr>
+				<tr>
+						<td colspan="2">
+							<span class='errorMsg'><%=errorMsg%></span>
+						</td>
+				</tr>
+        <tr>
+            <td align='right' valign='top'>First Name:</td>
+            <td align='left' valign='top'><input type='text' name='cgifname' size='15' maxsize='32' value='<%=cgifname%>'></td>
+        </tr>
+        <tr>
+            <td align='right' valign='top'>Last Name:</td>
+            <td align='left' valign='top'><input type='text' name='cgilname' size='15' maxsize='32'value='<%=cgilname%>'></td>
+        </tr>
+        <tr>
+            <td align='right' valign='top'>Organization:</td>
+            <td align='left' valign='top'><input type='text' name='cgiorganization' size='20' maxsize='32' value='<%=cgiorganization%>'></td>
+        </tr>
+        <tr>
+            <td align='right' valign='top'>Zip:</td>
+            <td align='left' valign='top'><input type='text' name='cgizip' size='10' maxsize='10' value='<%=cgizip%>'></td>
+        </tr>
+        <tr>
+            <td align='center' valign='top' colspan='2'>
+                <br>
+                <br>
+                <input type='button' value='Show All' onClick='showAll();'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type='button' value='Search' onClick='formSub();'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type=reset value='Reset'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type='button' value='Clear' onClick='clearFields(memberForm.cgifname, memberForm.cgilname, memberForm.cgiorganization, memberForm.cgizip);'>
+
+            </td>
+        </tr>
+    </table>
+</form>
+<script language="JavaScript">document.memberForm.cgifname.focus();</script>
+<!-- end custom content -->

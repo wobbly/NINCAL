@@ -1,0 +1,184 @@
+..............................................................................
+.
+. NSELIO INCLUSION
+. NIN DATACARD SELECTION FILE I/O ROUTINES
+.
+. FILE NAME : NINSEL
+. REC LENGTH: 73 VAR
+. INDEX KEY : 1-9 (6 BYTE LIST NUMBER + 3 BYTE RECORD #)
+.
+..............................................................................
+.
+. ENTRY POINT : NSELKEY
+. REQUIRED    : 'NSELFLD'
+. RETURNED    : DATACARD SELECTION RECORD
+. DESCRIPTION : EXACT ISAM KEY READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NSELKEY
+	BRANCH	NSELFLAG,NSEL1
+	CALL	NSELOPEN
+NSEL1
+	trap	IOMssg giving Error if IO
+.	FILEPI	1;NSELFILE
+	READ	NSELFILE,NSELFLD;NSELVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSELTST
+. REQUIRED    : NSELFLD
+. RETURNED    :
+. DESCRIPTION : TEST KEY
+.
+NSELTST
+	BRANCH	NSELFLAG,NSEL2
+	CALL	NSELOPEN
+NSEL2
+	trap	IOMssg giving Error if IO
+.	FILEPI	1;NSELFILE
+	READ	NSELFILE,NSELFLD;;
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSELKS
+. REQUIRED    :
+. RETURNED    : DATACARD SELECTION RECORD
+. DESCRIPTION : KEY SEQUENTIAL DATACARD SELECTION FILE READ
+.
+NSELKS
+	BRANCH	NSELFLAG,NSEL3
+	CALL	NSELOPEN
+NSEL3
+	trap	IOMssg giving Error if IO
+.	FILEPI	1;NSELFILE
+	READKS	NSELFILE;NSELVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSELSEQ
+. REQUIRED    :
+. RETURNED    : DATACARD SELECTION RECORD
+. DESCRIPTION : SEQUENTIAL DATACARD SELECTION FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NSELSEQ
+	BRANCH	NSELFLAG,NSEL4
+	CALL	NSELOPEN
+NSEL4
+	trap	IOMssg giving Error if IO
+.	FILEPI	1;NSELFILE
+	READ	NSELFILE,SEQ;NSELVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSELWRT
+. REQUIRED    : 'NSELFLD'
+. RETURNED    :
+. DESCRIPTION : EXACT ISAM KEY TXT/ISI INSERT
+.
+NSELWRT
+	BRANCH	NSELFLAG,NSEL5
+	CALL	NSELOPEN
+NSEL5
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NSELFLIST
+	WRITE	NSELFLIST;NSELVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSELUPD
+. REQUIRED    : A PREVIOUS KEY READ
+. RETURNED    :
+. DESCRIPTION : KEY UPDATE RECORD NUMBER FILE
+.
+NSELUPD
+	BRANCH	NSELFLAG,NSEL6
+	CALL	NSELOPEN
+NSEL6
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NSELFLIST
+	UPDATE	NSELFLIST;NSELVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSELDEL
+. REQUIRED    : 'NSELFLD'
+. RETURNED    :
+. DESCRIPTION : EXACT ISAM KEY TXT/ISI DELETE
+.
+NSELDEL
+	BRANCH	NSELFLAG,NSEL7
+	CALL	NSELOPEN
+NSEL7
+	trap	IOMssg giving Error if IO
+	FILEPI	1;NSELFLIST
+	DELETE	NSELFLIST
+	trapclr	IO
+	RETURN
+
+..............................................................................
+. ENTRY POINT : NSELAIM
+. REQUIRED    : NSELFLD1,NSELFLD2,NSELFLD3
+. RETURNED    : RECORD
+. DESCRIPTION : AIM FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NSELAIM
+	BRANCH	NSELFLAG,NSEL8
+	CALL	NSELOPEN
+NSEL8   
+	trap	IOMssg giving Error if IO
+	READ	NSELFLE2,NSELFLD1,NSELFLD2,NSELFLD3;NSELVARS
+	trapclr	IO
+	RETURN
+
+..............................................................................
+.
+. ENTRY POINT : NSELKG
+. REQUIRED    : VALID PREVIOUS AIM READ
+. RETURNED    : RECORD
+. DESCRIPTION : AIM KEY GENEREIC FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NSELKG
+	BRANCH	NSELFLAG,NSEL9
+	CALL	NSELOPEN
+NSEL9
+	trap	IOMssg giving Error if IO
+	READKG	NSELFLE2;NSELVARS
+	trapclr	IO
+	RETURN
+
+...............................................................................
+.
+. ENTRY POINT : NSELOPEN
+. REQUIRED    : 'NSELFLAG'
+. RETURNED    : 'NSELFLAG' SET TO '1' IF OPENNED
+. DESCRIPTION : OPEN NIN DATACARD SELECTION FILE
+.               DISPLAY ERROR AND ABORT IF NOT ON-LINE.
+.
+NSELOPEN
+	TRAP	NSELGONE giving Error if IO
+.	OPEN	NSELFLIST,EXCLUSIVE
+	OPEN	NSELFLIST
+	trapclr	IO
+	MOVE	C1,NSELFLAG
+	RETURN
+.
+NSELGONE
+	MOVE	NSELNAME,FILENAME
+	CALL	FILEGONE
+.
+..............................................................................

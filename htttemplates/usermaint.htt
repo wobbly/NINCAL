@@ -1,0 +1,313 @@
+<!-- custom content goes here -->
+	<script language="javascript">
+		function clearForm(){
+			document.newuserForm.cgifname.value = "";
+			document.newuserForm.cgilname.value = "";
+			document.newuserForm.cgiorganization.value = "";
+			document.newuserForm.cgiaddress.value = "";
+			document.newuserForm.cgicity.value = "";
+			document.newuserForm.cgizip.value = "";
+			document.newuserForm.cgitelephone.value = "";
+			document.newuserForm.cgifax.value = "";
+			document.newuserForm.cgiemail.value = "";
+			document.newuserForm.cgicompfunction.value = "";
+			document.newuserForm.cgiarea.value = "";
+			document.newuserForm.cgipassword.value = "";
+		}
+
+		function doDelete() {
+			document.newuserForm.cgifunction.value = 2;
+			document.newuserForm.submit();
+		}
+
+		function doSave() {
+
+			if (document.newuserForm.cgifname.value == '')
+			{
+				alert("First Name is a required field.");
+				document.newuserForm.cgifname.focus();
+				return;
+			}
+
+			if (document.newuserForm.cgilname.value == '')
+			{
+				alert("Last Name is a required field.");
+				document.newuserForm.cgilname.focus();
+				return;
+			}
+
+			if (document.newuserForm.cgiorganization.value == '')
+			{
+				alert("Organization is a required field.");
+				document.newuserForm.cgiorganization.focus();
+				return;
+			}
+
+			if (document.newuserForm.cgiaddress.value == '')
+			{
+				alert("Address is a required field.");
+				document.newuserForm.cgiaddress.focus();
+				return;
+			}
+
+			if (document.newuserForm.cgicity.value == '')
+			{
+				alert("City is a required field.");
+				document.newuserForm.cgicity.focus();
+				return;
+			}
+
+			if (document.newuserForm.cgistate.value == '')
+			{
+				alert("State is a required field.");
+				document.newuserForm.cgistate.focus();
+				return;
+			}
+
+			if (document.newuserForm.cgizip.value == '')
+			{
+				alert("Zip is a required field.");
+				document.newuserForm.cgizip.focus();
+				return;
+			}
+
+			if (document.newuserForm.cgiphone.value == '')
+			{
+				alert("Telephone is a required field.");
+				document.newuserForm.cgiphone.focus();
+				return;
+			}
+
+			if (document.newuserForm.cgiemail.value == '')
+			{
+				alert("Email Address is a required field.");
+				document.newuserForm.cgiemail.focus();
+				return;
+			}
+
+			if (document.newuserForm.cgiusertype.value == '')
+			{
+				alert("User Type is a required field.");
+				document.newuserForm.cgiusertype.focus();
+				return;
+			}
+
+			if (document.newuserForm.cgicompanynumber.value == '')
+			{
+				alert("Company Number is a required field.");
+				document.newuserForm.cgicompanynumber.focus();
+				return;
+			}
+
+			if (document.newuserForm.cgipassword.value != document.newuserForm.cgipassword2.value) {
+				alert("Passwords do not match.");
+				document.newuserForm.cgipassword.focus();
+				return false;
+			}
+
+			if (document.newuserForm.cgiusertype.value == "P")
+			{
+				alert("You cannot save a Pending user record.  Please select another user type.");
+				document.newuserForm.cgiusertype.focus();
+				return;
+			}
+
+			document.newuserForm.submit();
+		}
+	</script>
+<!-- START PATCH 24JAN2006 ADDED LOGIC  -->
+	<script language="javascript">
+		function doSearch()
+		{
+			if (document.newuserForm.cgicompanynumber.value == '')
+			{
+				alert("Company Number is a required field.");
+				document.newuserForm.cgicompanynumber.focus();
+				return;
+			}
+			document.newuserForm.cgifunction.value = 3;
+			document.newuserForm.submit();
+		}
+	</script>
+<!-- END PATCH 24JAN2006 ADDED LOGIC -->
+
+<form action='usermaint.plc' name='newuserForm' id='newuserForm' method='POST'>
+	<input type='hidden' name='cgifunction' value='1' />
+	<input type='hidden' name='SID' value='<%=SID%>' />
+	<input type='hidden' name='cgiuserid' value='<%=cgiuserid%>' />
+<center> <!-- 09/29/2010 BJACKSON -->
+    <table border='0' cellpadding='2' cellspacing='2' align='center'>
+        <tr>
+            <td class='title' colspan='2' align=center>
+                Member Information
+                <br><br>
+            </td>
+        </tr>
+				<tr>
+						<td colspan="2">
+								<span class='errorMsg'><%=errorMsg%></span>
+						</td>
+				</tr>
+        <tr>
+            <td  align='right' valign='top'><span class=small1>* </span>First Name:</td>
+            <td align='left' valign='top'><input type='text' name='cgifname' size='36' maxlength='32'value ='<%=cgifname%>'></td>
+        </tr>
+        <tr>
+            <td align='right' valign='top'><span class=small1>* </span>Last Name:</td>
+            <td align='left' valign='top'><input type='text' name='cgilname' size='36' maxlength='32' value ='<%=cgilname%>'></td>
+        </tr>
+<!-- START PATCH 24JAN2006 MOVED LOGIC - TO -->
+		<tr>
+			<td align='right' valign='top'><span class=small1>* </span>Company Number:</td>
+			<td align='left' valign='top'><input type='companynumber' name='cgicompanynumber' size='6' maxlength='6' value='<%=cgicompanynumber%>'>
+				<%=cgicompanyname%><input type=button onClick="doSearch();" value='Pull Info from Program 34' >
+			</td>
+		</tr>
+		<tr>
+			<td align='right' valign='top'><span class=small1>* </span>User Type:</td>
+			<td	align='left' valign='top'>
+<%DOUSERTYPECODES%>
+<%/DOUSERTYPECODES%>
+			</td>
+        </tr>
+
+<!-- END PATCH 24JAN2006 MOVED LOGIC - TO -->
+		<tr>
+			<td align='right' valign='top'><span class=small1>* </span>Organization:</td>
+			<td align='left' valign='top'><input type='text' name='cgiorganization' size='36' maxlength='32' value ='<%=cgiorganization%>'></td>
+        </tr>
+		<tr>
+			<td align='right' valign='top'><span class=small1>* </span>Address:</td>
+			<td align='left' valign='top'><input type='text' name='cgiaddress' size='36' maxlength='80' value ='<%=cgiaddress%>'></td>
+        </tr>
+		<tr>
+			<td align='right' valign='top'><span class=small1>* </span>City:</td>
+			<td align='left' valign='top'><input type='text' name='cgicity' size='36' maxlength='32' value ='<%=cgicity%>'></td>
+        </tr>
+		<tr>
+			<td align='right' valign='top'><span class=small1>* </span>State:</td>
+			<td	align='left' valign='top'>
+<%DOSTATECODES%>
+<%/DOSTATECODES%>
+			</td>
+        </tr>
+        <tr>
+            <td align='right' valign='top'><span class=small1>* </span>Zip:</td>
+            <td align='left' valign='top'><input type='text' name='cgizip' size='10' maxlength='10' value ='<%=cgizip%>'></td>
+        </tr>
+		<tr>
+			<td align='right' valign='top'><span class=small1>* </span>Telephone:</td>
+			<td align='left' valign='top'><input type='text' name='cgiphone' size='10' maxlength='10' value ='<%=cgiphone%>'><br>
+			<font size=-1>No spaces or dashes: 5555555555</font></td>
+        </tr>
+<!-- START PATCH 10/19/2005 REMOVED LOGIC -->
+<!--
+				<tr>
+						<td align='right' valign='top'>Fax:</td>
+						<td align='left' valign='top'><input type='text' name='cgifax' size='10' maxlength='10' value ='<%=cgifax%>'><br>
+						<font size=-1>No spaces or dashes: 5555555555</font></td>
+-->
+<!-- END PATCH 10/19/2005 REMOVED LOGIC -->
+        </tr>
+		<tr>
+			<td align='right' valign='top'><span class=small1>* </span>Email:</td>
+			<td align='left' valign='top'><input type='text' name='cgiemail' size='36' maxlength='60' value ='<%=cgiemail%>'></td>
+        </tr>
+		<tr>
+			<td align='right' valign='top'>Company Function:</td>
+			<td align='left' valign='top'><input type='text' name='cgicompfunction' size='36' maxlength='32' value ='<%=cgicompfunction%>'></td>
+        </tr>
+		<tr>
+			<td align='right' valign='top'>Area:</td>
+			<td align='left' valign='top'><input type='text' name='cgiarea' size='36' maxlength='32' value ='<%=cgiarea%>'></td>
+        </tr>
+		<tr>
+<!-- START PATCH 18OCT2005 REPLACED LOGIC -->
+<!--		<td align='right' valign='top'>Username:</td> -->
+			<td align='right' valign='top'><span class=small1>* </span>Username:</td>
+<!-- END PATCH 18OCT2005 REPLACED LOGIC -->
+<!-- START PATCH 17APR2006 REPLACED LOGIC -->
+<!--			<td align='left' valign='top'><input type='text' name='cgiusername' size='12' maxlength='12' value ='<%=cgiusername%>'>12 characters max</td> -->
+			<td align='left' valign='top'><input type='text' name='cgiusername' size='12' maxlength='12' value ='<%=cgiusername%>'>5 - 12 characters</td>
+<!-- END PATCH 17APR2006 REPLACED LOGIC -->
+		</tr>
+		<tr>
+<!-- START PATCH 18OCT2005 REPLACED LOGIC -->
+<!--		<td align='right' valign='top'>Password:</td> -->
+			<td align='right' valign='top'><span class=small1>* </span>Password:</td>
+<!-- END PATCH 18OCT2005 REPLACED LOGIC -->
+			<td align='left' valign='top'>
+			<input type='password' name='cgipassword' size='12' maxlength='12' value ='<%=cgipassword%>'>
+<!-- START PATCH 17NOV2005 REMOVED LOGIC -->
+<!--							<font size=-1>
+								Only enter a password if you want to change the existing password.<br>
+								Leaving the password field blank will leave the current password unchanged.
+							</font>
+-->
+<!-- START PATCH 17NOV2005 REMOVED LOGIC -->
+<!-- START PATCH 17APR2006 ADDED LOGIC -->
+				6 - 12 characters
+<!-- START PATCH 17APR2006 ADDED LOGIC -->
+			</td>
+		</tr>
+		<tr>
+<!-- START PATCH 18OCT2005 REPLACED LOGIC -->
+<!--						<td align='right' valign='top'>Confirm Password:</td> -->
+			<td align='right' valign='top'><span class=small1>* </span>Confirm Password:</td>
+<!-- END PATCH 18OCT2005 REPLACED LOGIC -->
+<!-- START PATCH 17NOV2005 REPLACED LOGIC -->
+<!--						<td align='left' valign='top'><input type='password' name='cgipassword2' size='12' maxlength='12' value =''></td>  -->
+			<td align='left' valign='top'><input type='password' name='cgipassword2' size='12' maxlength='12' value ='<%=cgipassword%>'></td>
+<!-- END  PATCH 17NOV2005 REPLACED LOGIC -->
+		</tr>
+<!-- START PATCH 24JAN2006 MOVED LOGIC - FROM -->
+<!--
+				<tr>
+						<td align='right' valign='top'><span class=small1>* </span>User Type:</td>
+						<td	align='left' valign='top'>
+<%DOUSERTYPECODES%>
+<%/DOUSERTYPECODES%>
+						</td>
+        </tr>
+-->
+<!-- END PATCH 24JAN2006 MOVED LOGIC - FROM -->
+		<tr>
+			<td align='right' valign='top'><span class=small1>* </span>Invoice Access:</td>
+			<td	align='left' valign='top'>
+<%DOINVOICECODES%>
+<%/DOINVOICECODES%>
+			</td>
+		</tr>
+<!-- START PATCH 24JAN2006 MOVED LOGIC - FROM -->
+<!--
+		<tr>
+			<td align='right' valign='top'><span class=small1>* </span>Company Number:</td>
+			<td align='left' valign='top'><input type='companynumber' name='cgicompanynumber' size='6' maxlength='6' value='<%=cgicompanynumber%>'>
+				<%=cgicompanyname%>
+			</td>
+		</tr>
+-->
+<!-- END PATCH 24JAN2006 MOVED LOGIC - FROM -->
+<!-- START PATCH 20JAN2006 ASH ADDED LOGIC -->
+		<tr>
+			<td></td>
+			<td align='left' valign='top'><%=cgitos%></td>
+		</tr>
+<!-- END PATCH 20JAN2006 ASH ADDED LOGIC -->
+		<tr>
+			<td colspan= '2' align='center' span class='small1'>* Required Fields</td>
+		</tr>
+        <tr>
+            <td align='center' valign='top' colspan='2'>
+                <br>
+                <br>
+                <input type=button onClick="doSave();" value='Save' >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<%=cgideletebutton%>
+                <input type=reset value='Reset'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </td>
+        </tr>
+    </table>
+</center> <!-- 09/29/2010 BJACKSON -->
+</form>
+<script language="JavaScript"> document.newuserForm.cgifname.focus(); </script>
+<!-- end custom content -->

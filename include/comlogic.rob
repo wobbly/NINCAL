@@ -1,0 +1,3231 @@
+.....................................................................................................................
+. COMLOGIC INCLUSION
+.
+. HANDLES ALL COMMON ROUTINES USED THROUGHOUT THE SYSTEM.
+.
+.
+. DLH     29 April 2011 add  GetPDfpath
+. DLH     14 MArch 2011 add  Waitin    
+. DLH     14 February 2011 add GetSDrive
+. DLH     22 April 2008 convert Errmesg to sendmail routine
+.         Comment out MailMesg  - defunct
+. DLH       2007Apr27  995 patch 2.6 auto launch check and restore
+. DLH           2006August14  Patch 2.5 - Add SendMail routine
+. DMS           2006April7  Patch 2.4 - Add VerifyDate routine
+. ASH           2005March29 Patch 2.3 - Rewrote ExclusiveCheckBox routine
+. DLH           2005March02 patch 2.2 - added Debug subroutine
+. ASH           18FEB2005 PATCH #2.1 - PATCHED REPLACEIT ROUTINE
+. ASH           09APR2003 PATCH #2.0 - ADDED NEW ROUTINE, WITH APPROPRIATE VARS
+. ASH           11MAR2003 PATCH #1.9 - ADDED NEW ROUTINE, WITH APPROPRIATE VARS
+. ASH           21FEB2003 PATCH #1.8 - ADDED NEW ROUTINE, WITH APPROPRIATE VARS
+. ASH           13AUG2002 PATCH #1.7 - REPLACED TRIM LOGIC WITH SIMPLER SOLUTION
+. DLH          9Jul2002 PATCH #1.6 - ADDED GetWinVer
+. DLH         29Oct2001 PATCH #1.5 - ADDED ComlNX vars
+. ASH         07/06/01  PATCH #1.4 - ADDED BFILLIT
+. ASH         01/05/01  PATCH #1.3 - ADDED branch for alternate break characters for PARSITUP
+. ASH         05/08/00  PATCH #1.2 - ADDED condition to Trim routine for early exit
+. ASH         09/01/99  PATCH #1.1 - error trapping E-MAILS added to notify I.S. & User
+. D.L. Herick 06/06/96  modified end routine to use ANSI standard shutdown.
+. D.L. Herick 09/29/94  added rotdial.
+. E.W. LAKE   07/12/88  MODIFIED END ROUTINE. REMOVED CHAIN NULL/CHN & PAUSE.
+. E.W. LAKE   07/12/88  MODIFIED REMVTOF ROUTINE. USE SEQ. PROCESSING.
+. E.W. LAKE   03/30/88  ADDED REMVTOF ROUTINE
+. E.W. LAKE   03/10/88  ADDED END ROUTINE
+. E.W. LAKE   02/05/88  ADDED TIMETEST SUBROUTINE
+.
+....................................................................................................................
+.              IFNZ      PC
+.Local Pointer Vars used for GUI Programs
+#PSTRING        dim     ^
+#PSTRING1       dim     ^
+#PSTRING2       dim     ^
+#PBOOLEAN       form    ^
+#NINER          FORM    9
+#NINER2         FORM    9
+.START PATCH 1.4 ADDED LOGIC
+#NINER3         FORM    9
+#NINER4         FORM    9
+.END PATCH 1.4 ADDED LOGIC
+.START PATCH 1.9 ADDED LOGIC
+#NINER5         FORM    9
+#NINER6         FORM    9
+#NINER7         FORM    9.2
+#RESULT         FORM    20
+#RESULT2        FORM    20
+#RESULT3        FORM    20
+#RESULT4        FORM    20
+#LastDayArray       form      6(220)              .First 69 not used!!!
+#MonthArray         form      4(12),("0"),("31"),("59"),("90"),("120"),("151"),("181"),("212"),("243"),("273"),("304"),("334")    .Number of days in year at the beginning of each corresponding month
+#modulus  form      0.10
+#resultb  form      9.2
+#Year               form      4
+#MM                 form      2
+#DD                 form      2
+#Days               form      9
+#Hour               form      2
+#Minute             form      2
+#Second             form      2
+.END PATCH 1.9 ADDED LOGIC
+.START PATCH 2.0 ADDED LOGIC
+#PEDIT              EDITTEXT  ^
+#STRING             DIM       5000
+.END PATCH 2.0 ADDED LOGIC
+#STR5000          DIM     5000
+#STR25          DIM     25
+#STR1           DIM     1
+#STR2           DIM     2
+#STR3           DIM     3
+#STR4           DIM     4
+#LBREAK         INIT    " /'#\$&*([{"""
+#RBREAK         INIT    " ,./;:\!?%&)]}"
+.START PATCH 1.3 ADDED LOGIC
+#LBREAK2        INIT    " '#\$&*([{"""
+#RBREAK2        INIT    " ,.;:\!?%&)]}"
+.END PATCH 1.3 ADDED LOGIC
+#CARR           INIT    0x7f
+#HX20           INIT    0x20
+#HX7e           INIT    0x7e
+#HX80           INIT    0x80
+#HXff           INIT    0xff
+#RANGE          DIM     10
+#FILLER         INIT    "0000000000000000000000000"
+#CHECK1         CHECKBOX ^
+#CHECK2         CHECKBOX ^
+#CHECK3         CHECKBOX ^
+#Radio1         Radio ^
+#Radio2         Radio ^
+#Radio3         Radio ^
+.START PATCH 2.3 ADDED LOGIC
+#Radio4         Radio ^
+#Radio5         Radio ^
+#Radio6         Radio ^
+#Radio7         Radio ^
+.END PATCH 2.3 ADDED LOGIC
+.START PATCH 1.7 ADDED VAR
+#strParseRange      INIT      0x00,0xFF       .Allow all values
+.END PATCH 1.7 ADDED VAR
+.START PATCH 1.8 ADDED LOGIC
+#TempEdit EDITTEXT
+#TempWin  WINDOW
+.END PATCH 1.8 ADDED LOGIC
+.START PATCH 1.9 ADDED LOGIC
+.EXTERNAL ROUTINES FROM       DATEROUTINES.PLC
+CalDateToLinearDate2 external "DATEROUTINES;CalDateToLinearDate2"
+DowFromLinearDate2 external "DATEROUTINES;DowFromLinearDate2"
+.START PATCH 2.4 ADDED LOGIC
+#TempEDT  EDITDATETIME
+.END PATCH 2.4 ADDED LOGIC
+.END PATCH 1.9 ADDED LOGIC
+.               XIF
+..............................................................................
+..............................................................................
+.
+. ENTRY POINT: PAINT
+. REQUIRED   : 'STITLE' (PROGRAM TITLE), 'TODAY', 'COMPNME', 'PROGRAM'
+. RETURNED   :
+. DESCRIPTION: DISPLAYS THE SCREEN HEADING
+. PROGRAMMER : E.W. LAKE   05/28/87
+.              INITIAL RELEASE
+.
+PAINT       MOVELPTR  STITLE TO ComLN3
+         MOVE      C80 TO ComLN2
+         SUBTRACT  ComLN3 FROM ComLN2
+         DIVIDE    C2 INTO ComLN2
+         if        (program="MASTER")
+         setmode   *fullscr=on,*caret=block
+.         *bgpict="c:\0935.jpg"
+.        display   *setswall 1:24:1:80
+         DISPLAY   *Bgcolor 1,*ES:
+                   *BORDER
+          else
+         setmode   *caret=block
+         DISPLAY   *Bgcolor 1,*ES:
+                   *BORDER
+         endif
+         DISPLAY   *ES,*white,PROGRAM,B1,RELEASE:
+                   *P28:01,COMPNME:
+                   *P72:01,TODAY:
+                   *PN2:02,STITLE:
+                  *P01:03,*RPTCHAR I205:80
+
+.               CREATE          FileMenu,FileMenuData
+.               DISABLEITEM     FileMenu, PasteItem
+.               DISABLEITEM     FileMenu, CloseItem
+.               ACTIVATE        FileMenu,MenuAction,MenuResult
+.               LOOP
+.               WAITEVENT
+.               REPEAT          WHILE ( Done = FALSE )
+.               STOP
+.
+.MenuAction     BRANCH          MenuResult OF printsetup, printaction:
+.                               QuitAction
+.
+.printsetup
+.               ENABLEITEM      FileMenu, PsetupItem
+.               ENABLEITEM      FileMenu, CloseItem
+.               MOVE            TRUE TO IsOpen
+.               RETURN
+.
+.printAction
+.               ENABLEITEM      FileMenu, printItem
+.               ENABLEITEM      FileMenu, CloseItem
+.               MOVE            TRUE TO IsOpen
+.               RETURN
+.
+
+.CloseAction
+.               DISABLEITEM     FileMenu, CloseItem
+.               ENABLEITEM      FileMenu, psetupItem
+.               ENABLEITEM      FileMenu, printItem
+.               MOVE            FALSE TO IsOpen
+.               RETURN
+.
+.QuitAction     MOVE            TRUE TO Done
+.               RETURN
+.
+. End of program
+.
+         RETURN
+.
+..............................................................................
+.
+. ENTRY POINT: FUNCDISP
+. REQUIRED   :
+. RETURNED   :
+. DESCRIPTION: DISPLAYS THE FUNCTION KEY DESCRIPTION AREA ON LINE 23.
+. PROGRAMMER : E.W. LAKE   05/28/87
+.              INITIAL RELEASE
+.
+FUNCDISP DISPLAY   *RESETSW:
+                   *P01:23,*bgcolor 4,*DION,*YELLOW,"F1:",PF1:
+                           *bgcolor 1,B1,*bgcolor 4,*DION,*YELLOW,"F2:",PF2:
+                            *bgcolor 1,B1,*bgcolor 4,*DION,*YELLOW,"F3:",PF3:
+                            *bgcolor 1,B1,*bgcolor 4,*DION,*YELLOW,"F4:",PF4:
+                            *bgcolor 1,B1,*bgcolor 4,*DION,*YELLOW,"F5:",PF5:
+                           *bgcolor 1,*WHITE,*DIOFF
+         RETURN
+.
+..............................................................................
+.
+. ENTRY POINT: CLRWIND
+. REQUIRED   : 'TOPWIND' (TOP WINDOW COORDINATE), 'BOTWIND' (BOTTOM)
+. RETURNED   :
+. DESCRIPTION: CLEARS THE CURRENT SUB WINDOW
+. PROGRAMMER : E.W. LAKE   05/28/87
+.              INITIAL RELEASE
+.
+CLRWIND  MOVE      BOTWIND TO ComLN3
+         SUBTRACT  TOPWIND FROM ComLN3
+         ADD       C1 TO ComLN3
+         MOVE      C0 TO ComLN2
+CLRLINE  ADD       C1 TO ComLN2
+         DISPLAY   *P01:N2,*EL
+         COMPARE   ComLN2 TO ComLN3
+         GOTO      CLRLINE IF NOT EQUAL
+         RETURN
+.
+..............................................................................
+.
+. ENTRY POINT: setWIND
+. required   : TOPWIND,BOTWIN,LWIND,RWIND -  TO DEFINE WINDOW.
+. REQUIRED   : 'TOPWIND' (TOP WINDOW COORDINATE), 'BOTWIND' (BOTTOM)
+. RETURNED   :
+. DESCRIPTION: Defines SUB WINDOW
+. PROGRAMMER : D.L. Herrick   12/29/94
+.              INITIAL RELEASE
+setwind  CLEAR     STR2
+         MOVE      TOPWIND TO STR2
+         TYPE      STR2    *VALID NUMBER?
+         CALL      windef IF NOT EQUAL
+         CALL      windef IF EOS
+         COMPARE   C0 TO TOPWIND
+         CALL      windef IF NOT GREATER
+         DISPLAY   *SETSWALL  TOPWIND:BOTWIND:LWIND:RWIND;
+         RETURN
+.
+windef   MOVE      "09" TO TOPWIND    NO SPECS,SET TO DEFAULTS
+         MOVE      C24 TO BOTWIND
+         MOVE      "01" TO LWIND
+         MOVE      C80 TO RWIND
+         RETURN
+..............................................................................
+.
+. ENTRY POINT: DATETEST
+. REQUIRED   : 'MM' (MONTH), 'DD' (DAY), 'CC' (Century), 'YY' (YEAR)
+. RETURNED   : DATEFLAG (=0 IF OK, =1 IF NG)
+. DESCRIPTION: VALIDATES THE DATE
+. PROGRAMMER : E.W. LAKE   05/28/87
+.              INITIAL RELEASE
+.
+.Updated to include century     21oct96
+.                               D. L. Herrick
+DATETEST MOVE      C0 TO NYY                CLEAR NUMERICS
+         MOVE      C0 TO NMM
+         MOVE      C0 TO NDD
+         move      c0 to ncc
+         MOVE      YY TO NYY                MOVE DIMS TO FORMS.
+         MOVE      MM TO NMM
+         MOVE      DD TO NDD
+         move      cc to ncc
+         compare   c0 to ncc
+                if        equal
+                 move      "20" to ncc
+                 endif
+         MOVE      C28 TO NFEB
+         MOVE      C0 TO DATEFLAG
+.
+         compare   "21" to ncc
+         goto      dateng if not less     .invalid century
+         compare   "18" to ncc
+         goto      dateng if less     .invalid century
+.
+.         COMPARE   C80 TO NYY               VALIDATE YEAR.   *turned offset 1/4/00 jd
+.         GOTO      DATENG IF LESS
+.
+         MOVE      NYY TO ComLN2                CHECK FOR LEAP YEAR.
+         move      nyy to ComLN3
+         compare   c0 to nyy        century year?
+         if        equal            .yes
+         move      ncc to ComLN2
+         move      ncc to ComLN3
+         goto      leaper
+         endif
+leaper   DIVIDE    C4 INTO ComLN2
+         MULTIPLY  C4 BY ComLN2
+         COMPARE   ComLN3 TO ComLN2                LEAP YEAR?
+         GOTO      CHKMM IF NOT EQUAL       NO.
+         MOVE      C29 TO NFEB
+CHKMM    COMPARE   C1 TO NMM                VALIDATE MONTH.
+         GOTO      DATENG IF LESS
+         COMPARE   C13 TO NMM
+         GOTO      DATENG IF NOT LESS
+         LOAD      ComLN2 USING NMM FROM C31,NFEB,C31,C30,C31,C30:
+                                     C31,C31,C30,C31,C30,C31           
+         COMPARE   C1 TO NDD                VAILDATE DAY.
+         GOTO      DATENG IF LESS
+         COMPARE   ComLN2 TO NDD
+         RETURN    IF EQUAL
+         RETURN    IF LESS
+DATENG   MOVE      C1 TO DATEFLAG           INVALID DATE.
+         RETURN
+.
+..............................................................................
+.
+. ENTRY POINT: FILEGONE
+. REQUIRED   : 'FILENAME'
+. RETURNED   :
+. DESCRIPTION: DISPLAY MESSAGE, PUT ENTRY IN ERROR FILE
+. PROGRAMMER : E.W. LAKE   07/05/87
+.              INITIAL RELEASE
+.
+FILEGONE
+        IFZ     PC
+        If     (PF1 = "HTML")
+    stream *stdout,"HTTP/1.0 200 OK",CRLF:
+                   "Content-type: text/html",CRLF:
+                   "Expires: Tue 01 Jan 1980, 12:00:00 GMT",CRLF:
+                   CRLF
+.
+. stream *stdout,cgiInput,"<hr>"
+.
+.    // output the basic html elements
+               move           error to errmssg
+    stream *stdout,"<html>"
+    stream *stdout,"<body><BR>",Filename,"<BR>",crlf
+    stream *stdout,"Error :",errmssg,"<BR>",crlf
+    stream *stdout,"Location : ",locmssg,"<BR>",crlf
+    stream *stdout,"<center>"
+    stream *stdout,"<font face=""Tahoma"" size=4>"
+.    stream *stdout,"You forgot to fill something in, you food-trough-waterer, ":
+.                   "you!  Now, go back and do it right this time!"
+    stream *stdout,"</center>"
+    stream *stdout,"</body>"
+    stream *stdout,"</html>"
+        RETURN
+        Else
+                DISPLAY   *RESETSW,*P01:24,*EL,*B,ERROR,*R;
+                CLEAR     ERROR
+                APPEND    "MISSING * " TO ERROR
+                APPEND    FILENAME     TO ERROR
+                RESET     ERROR
+                TRAPCLR   F1
+                TRAPCLR   F2
+                TRAPCLR   F3
+                TRAPCLR   F4
+                TRAPCLR   F5
+                DISPLAY   *RESETSW,*P01:24,*EL,*B,FILENAME," File is off-line. ":
+                   *W4;    // we ALWAYS have to output this HTTP header first
+
+                noreturn
+                shutdown
+.        XIF
+        endif
+        XIF
+        IFNZ    PC
+                move    "Error: ",ErrMssg
+                move    "File Off-line: ",LocMssg
+                endset  ErrMssg
+                endset  LocMssg
+                append  Error,ErrMssg
+                append  FILENAME,LocMssg
+                reset   ErrMssg
+                reset   LocMssg
+                setprop ErrorMssgStat1,visible=1
+                setprop ErrorMssgStat2,visible=1
+                setprop ErrorMssgStat3,visible=0
+                setprop ErrorMssgStat4,visible=1
+                setprop ErrorMssgStat5,visible=1
+                setitem ErrorMssgStat1,0,"File Open Error!"
+                setitem ErrorMssgStat2,0,LocMssg
+                setitem ErrorMssgStat5,0,ErrMssg
+                setitem ErrorMssgStat4,0,"Contact IS With Error and Location!"
+                setitem ErrorMssgOK,0,"&Stop"
+                setprop ErrorMssg,visible=1
+                setitem ErrorMssgOK,0,"&OK"
+.START PATCH #1.1 -logic added for error trapping
+                clear   ErrMssg
+                clear   LocMssg
+                clear   taskname
+.begin patch 1.2
+.                append  "This is an Error e-mail from ",taskname
+.                append  Wprognme,taskname
+.                reset   taskname
+.                move    taskname,SmtpSubject Subject
+..Set the text message that is send with the attachments
+.                move    LocMssg,SmtpTextMessage(1)   .Array <Text message >
+.                move    ErrMssg,SmtpTextMessage(2)                        .Array <Text message >
+.                move    "FILEGONE Error",SmtpTextMessage(3)             .Array <Text message >
+.                Move         Error,SmtpTextMessage(4)             .Array <Text message >
+.                move    "4",SmtpTextIndexLast                           .Index to last entry in TextMessage array
+          Move      "Filegone subroutine",MailSubjct
+.         Move      Taskname,MailSubjct
+          Clear     Mailbody
+          append    locMssg,Mailbody
+          append    CRLF,Mailbody
+          append    ErrMssg,Mailbody
+          append    CRLF,Mailbody
+          append    "FILEGONE Error",Mailbody
+          append    CRLF,Mailbody
+          append    Error,Mailbody
+          append    CRLF,Mailbody
+          append    Filename,Mailbody
+          append    CRLF,Mailbody
+          append    Taskname,Mailbody
+          reset     Mailbody
+.end patch 1.2
+
+                call    errmesg
+                clear   ErrMssg
+                clear   LocMssg
+.END PATCH #1.1 -logic added for error trapping
+                stop
+        XIF
+.         STOP
+.
+..............................................................................
+.
+. ENTRY POINT: CVTJUL
+. REQUIRED   : 'MM','DD','YY'
+. RETURNED   : JULDAYS (#OF DAYS FROM 1-1-80)
+. DESCRIPTION: CONVERT GREGORIAN TO JULIAN
+. PROGRAMMER : E.W. LAKE   08/31/87
+.              INITIAL RELEASE
+.
+CVTJUL   MOVE      C0 TO NYY        CLEAR NUMERICS, DLH 14AUG91
+         MOVE      C0 TO NMM
+         MOVE      C0 TO NDD
+         MOVE      MM TO NMM
+         MOVE      DD TO NDD
+         MOVE      YY TO NYY
+         MOVE      C0 TO ComLN2
+         MOVE      C0 TO ComLN3
+         MOVE      C0 TO ComLN4
+         MOVE      C0 TO ComLN5
+         MOVE      C28 TO NFEB        *SET TO NON LEAP YEAR DAYS.
+.         MOVE      C0 TO FRM2
+.
+         MOVE      "79" TO ComLN2
+NXTYEAR  ADD       C1 TO ComLN2
+         COMPARE   NYY TO ComLN2
+         GOTO      SETDAYS IF EQUAL
+         MOVE      ComLN2 TO ComLN3
+         ADD       "365" TO ComLN5
+         DIVIDE    C4 INTO ComLN3
+         MULTIPLY  C4 BY ComLN3
+         COMPARE   ComLN2 TO ComLN3
+         GOTO      NXTYEAR IF NOT EQUAL
+         ADD       C1 TO ComLN5
+         GOTO      NXTYEAR
+.
+.SETDAYS  MOVE      YY TO ComLN2                 LEAP YEAR?
+SETDAYS  MOVE      C0 TO ComLN2
+         MOVE      YY TO ComLN2                 LEAP YEAR?
+         DIVIDE    C4 INTO NYY
+         MULTIPLY  C4 BY   NYY
+         COMPARE   ComLN2 TO   NYY
+         GOTO      ADDMOS IF NOT EQUAL      NO.
+         MOVE      C29 TO NFEB              YES.
+.ADDMOS   ADD       C1 TO FRM2
+.         COMPARE   FRM2 TO NMM
+ADDMOS   ADD       C1 TO ComLN4
+         COMPARE   ComLN4 TO NMM
+         GOTO      ADDDAYS IF EQUAL
+         MOVE      C0 TO ComLN2
+.         LOAD      ComLN2 USING FRM2 FROM C31,NFEB,C31,C30,C31,C30:
+         LOAD      ComLN2 USING ComLN4 FROM C31,NFEB,C31,C30,C31,C30:
+                                    C31,C31,C30,C31,C30,C31
+         ADD       ComLN2 TO ComLN5
+         GOTO      ADDMOS
+ADDDAYS  ADD       NDD TO ComLN5
+         MOVE      ComLN5 TO JULDAYS
+cvtjulx  RETURN
+..............................................................................
+.
+. ENTRY POINT: CVTJULTS
+. REQUIRED   : 'MM','DD','YY'
+. RETURNED   : JULDAYS (#OF DAYS FROM 1-1-1900)
+. DESCRIPTION: CONVERT GREGORIAN TO JULIAN FOR LOTUS
+. CURRENTLY PRESUMES CENTURY IS 1900
+. PROGRAMMER : D.L. HERRICK   08/05/93
+.              INITIAL RELEASE
+.
+CVTJULTS MOVE      C0 TO NYY        CLEAR NUMERICS
+         MOVE      C0 TO NMM
+         MOVE      C0 TO NDD
+         MOVE      MM TO NMM
+         MOVE      DD TO NDD
+         MOVE      YY TO NYY
+         MOVE      C0 TO ComLN2
+         MOVE      C0 TO ComLN3
+         MOVE      C0 TO ComLN4
+         MOVE      C0 TO ComLN5
+         MOVE      C28 TO NFEB        *SET TO NON LEAP YEAR DAYS.
+.         MOVE      C0 TO FRM2
+.
+         MOVE      "-1" TO ComLN2
+NXTYR    ADD       C1 TO ComLN2
+         COMPARE   NYY TO ComLN2
+         GOTO      SETDAY IF EQUAL
+         MOVE      ComLN2 TO ComLN3
+         ADD       "365" TO ComLN5
+         DIVIDE    C4 INTO ComLN3
+         MULTIPLY  C4 BY ComLN3
+         COMPARE   ComLN2 TO ComLN3
+         GOTO      NXTYR IF NOT EQUAL
+         ADD       C1 TO ComLN5
+         GOTO      NXTYR
+.
+.SETDAYS  MOVE      YY TO ComLN2                 LEAP YEAR?
+SETDAY   MOVE      C0 TO ComLN2
+         MOVE      YY TO ComLN2                 LEAP YEAR?
+         DIVIDE    C4 INTO NYY
+         MULTIPLY  C4 BY   NYY
+         COMPARE   ComLN2 TO   NYY
+         GOTO      ADDMO IF NOT EQUAL      NO.
+         MOVE      C29 TO NFEB              YES.
+.ADDMOS   ADD       C1 TO FRM2
+.         COMPARE   FRM2 TO NMM
+ADDMO    ADD       C1 TO ComLN4
+         COMPARE   ComLN4 TO NMM
+         GOTO      ADDDAY IF EQUAL
+         MOVE      C0 TO ComLN2
+.         LOAD      ComLN2 USING FRM2 FROM C31,NFEB,C31,C30,C31,C30:
+         LOAD      ComLN2 USING ComLN4 FROM C31,NFEB,C31,C30,C31,C30:
+                                    C31,C31,C30,C31,C30,C31
+         ADD       ComLN2 TO ComLN5
+         GOTO      ADDMO
+ADDDAY   ADD       NDD TO ComLN5
+         MOVE      ComLN5 TO JULDAYS
+         RETURN
+..........................................................................
+.
+. ENTRY POINT: NGCO
+. REQUIRED   :
+. RETURNED   :
+. DESCRIPTION: DISPLAYS BAD COMPANY MESSAGE, EXITS PROGRAM.
+. PROGRAMMER : 10-20-87  E.W. LAKE    INITIAL RELEASE
+.
+NGCO     KEYIN     *RESETSW,*P01:24,*EL,*B,"Invalid COMPANY Code. ",*CL,STR1
+         STOP
+.
+..........................................................................
+.
+. ENTRY POINT: TIMETEST
+. REQUIRED   : 'HH' (HOURS), 'MN' (MINUTES), 'SS' (SECONDS)
+. RETURNED   : TIMEFLAG (=0 IF OK, =1 IF NG)
+. DESCRIPTION: VALIDATES THE TIME
+. PROGRAMMER : E.W. LAKE   02/05/88
+.              INITIAL RELEASE
+.
+TIMETEST MOVE      C0 TO NYY                CLEAR NUMERICS
+         MOVE      C0 TO NMM
+         MOVE      C0 TO NDD
+         MOVE      HH TO NYY                MOVE DIMS TO FORMS.
+         MOVE      MN TO NMM
+         MOVE      SS TO NDD
+         MOVE      C1 TO TIMEFLAG
+         COMPARE   C0 TO NYY                CHECK HOURS
+         RETURN    IF EQUAL
+         COMPARE   NYY TO C24
+         RETURN    IF LESS
+         COMPARE   C0 TO NMM                CHECK MINUTES
+         RETURN    IF EQUAL
+         COMPARE   NMM TO C60
+         RETURN    IF LESS
+         COMPARE   C0 TO NDD                CHECK SECONDS
+         RETURN    IF EQUAL
+         COMPARE   NDD TO C60
+         RETURN    IF LESS
+         MOVE      C0 TO TIMEFLAG           TIME IS OK.
+         RETURN
+.
+..........................................................................
+.
+. ENTRY POINT: END
+. REQUIRED   : EXIT
+. RETURNED   :
+. DESCRIPTION: STOPS OR CHAIN NULL/CHN DEPENDING ON EXIT.
+. PROGRAMMER : E.W. LAKE  03/10/88
+.
+END      RESET     ERROR TO 10
+         MOVE      ERROR TO STR1
+         RESET     ERROR
+         BRANCH    EXIT TO ENDCHN
+         CMATCH    "*" TO STR1
+         if        not equal
+         shutdown  "CLS"
+         endif
+*         STOP      IF NOT EQUAL
+         CHAIN     "MASTER"
+ENDCHN
+         shutdown  "CLS"
+.         STOP
+.
+..........................................................................
+.
+. ENTRY POINT: REMVTOF
+. REQUIRED   : A SPLOPENED PRINT FILE PREPPED WITH THE 'PRTFILE' FILE NAME.
+. RETURNED   :
+. DESCRIPTION: WRITES A "+" OVER THE AUTOMATIC TOF INSERTED BY SPLOPEN.
+. PROGRAMMER : E.W. LAKE  03/30/88
+.
+REMVTOF  RETURN
+.REMVTOF  TRAP      REMVNG IF IO
+.         OPEN      TESTFILE,PRTFILE
+.         TRAPCLR   IO
+.         WRITE     TESTFILE,SEQ;"+";
+.         RETURN
+.REMVNG   NORETURN
+.         RETURN
+.
+..........................................................................
+.
+. ENTRY POINT: CVTGREG
+. REQUIRED   : JULDAYS (#OF DAYS FROM 1-1-80)
+. RETURNED   : 'MM','DD','YY'
+. DESCRIPTION: CONVERT JULIAN TO GREGORIAN
+. PROGRAMMER : E.W. LAKE   07/26/88
+.              INITIAL RELEASE
+.
+CVTGREG  MOVE      "79" TO NYY
+         MOVE      C0 TO NDD
+         MOVE      C0 TO NMM
+         MOVE      C0 TO ComLN2
+         MOVE      C0 TO ComLN3
+         MOVE      C0 TO ComLN4
+CVTG2    SUBTRACT  ComLN4 FROM JULDAYS
+         MOVE      "365" TO ComLN4              DEFAULT.
+         ADD       C1 TO NYY
+         MOVE      NYY TO ComLN3
+         DIVIDE    C4 INTO ComLN3               LEAP YEAR?
+         MULTIPLY  C4 BY ComLN3
+         COMPARE   NYY TO ComLN3
+         GOTO      CVTG3 IF NOT EQUAL       NO.
+         ADD       C1 TO ComLN4                 YES.
+CVTG3    COMPARE   JULDAYS TO ComLN4
+         GOTO      CVTG2 IF LESS            SUBTRACT ANOTHER YEAR.
+.
+         MOVE      "28" TO NFEB
+         MOVE      NYY TO ComLN2
+         DIVIDE    C4 INTO ComLN2
+         MULTIPLY  C4 BY ComLN2
+         COMPARE   NYY TO ComLN2                LEAP YEAR?
+         GOTO      CVTG4 IF NOT EQUAL       NO.
+         MOVE      "29" TO NFEB             YES.
+.
+CVTG4    MOVE      C0 TO ComLN2
+CVTG5    ADD       C1 TO ComLN2
+         LOAD      NDD USING ComLN2 FROM C31,NFEB,C31,C30,C31,C30:
+                                     C31,C31,C30,C31,C30,C31
+         SUBTRACT  NDD FROM JULDAYS
+         GOTO      CVTG6 IF EQUAL
+         GOTO      CVTG5 IF NOT LESS
+CVTG6    ADD       NDD TO JULDAYS
+         MOVE      JULDAYS TO NDD
+         MOVE      ComLN2      TO NMM
+         MOVE      NMM TO MM
+         MOVE      NDD TO DD
+         MOVE      NYY TO YY
+         REPLACE   ZFILL IN MM
+         REPLACE   ZFILL IN DD
+         REPLACE   ZFILL IN YY
+CVTGREGX
+         RETURN
+..........................................................................
+.
+. ENTRY POINT: FRAME
+. REQUIRED   :  UPLH, UPLV, LWRH, LWRV
+. RETURNED   :
+. DESCRIPTION:
+. PROGRAMMER :
+.
+FRAME    DISPLAY   *RESETSW
+         SUBTRACT  UPLH FROM LWRH GIVING ComLN2     positions left to right
+         SUBTRACT  C1 FROM ComLN2
+         DISPLAY   *PUPLH:UPLV,I218:            top left corner
+                   *RPTCHAR I196:N2:            top line
+                   I191                         top right corner
+.        SUBTRACT  UPLV FROM LWRV GIVING ComLN2     positions top to bottom
+         ADD       C1 TO UPLV GIVING ComLN2
+         LOOP
+         DISPLAY   *PUPLH:N2,I179:              left side line
+                   *PLWRH:N2,I179               right side line
+         ADD       C1 TO ComLN2
+         COMPARE   LWRV TO ComLN2
+         REPEAT    UNTIL EQUAL
+         SUBTRACT  LWRH FROM UPLH GIVING ComLN2     positions left to right
+         SUBTRACT  C1 FROM ComLN2
+         DISPLAY   *PUPLH:LWRV,I192:            bottom left corner
+                   *RPTCHAR I196:N2:            bottom line
+                   I217                         bottom right corner
+         RETURN
+.
+..........................................................................
+.
+. ENTRY POINT: BOX
+. REQUIRED   :
+. RETURNED   :
+. DESCRIPTION:
+. PROGRAMMER :
+.
+.BOX      SUBTRACT  UPLH FROM LWRH GIVING ComLN2     positions left to right
+.         SUBTRACT  C1 FROM ComLN2
+.         PRINT     I218:                        top left corner
+.                   *RPTCHAR I196:N2:            top line
+.                   I191                         top right corner
+..        SUBTRACT  UPLV FROM LWRV GIVING ComLN2     positions top to bottom
+.         ADD       C1 TO UPLV GIVING ComLN2
+.         LOOP
+.         DISPLAY   *PUPLH:N2,I179:              left side line
+.                   *PLWRH:N2,I179               right side line
+.         ADD       C1 TO ComLN2
+.         COMPARE   LWRV TO ComLN2
+.         REPEAT    UNTIL EQUAL
+.         SUBTRACT  LWRH FROM UPLH GIVING ComLN2     positions left to right
+.         SUBTRACT  C1 FROM ComLN2
+.         DISPLAY   *PUPLH:LWRV,I192:            bottom left corner
+.                   *RPTCHAR I196:N2:            bottom line
+.                   I217                         bottom right corner
+.         RETURN
+.............................................................................
+OVER     MOVE      YES TO OVER
+         RETURN
+.
+..............................................................................
+SendMail
+.2015 December 29
+           rep        UpLow,Mailfrom
+           rep        UpLow,MailServer
+                     if        (MailServer = "")
+                     Move      "10.10.30.74",MailServer
+                     move      No,MailTTLS          
+                     endif
+          if          (MailServer <> "10.10.30.74" & mailserver <> "smtp.office365.com") 
+                     Move      "10.10.30.74",MailServer
+                     move      No,MailTTLS          
+                     endif 
+
+                     if        (MailServer = "smtp.office365.com")
+                                if   (mailreply = "")
+                                move        mailfrom,mailreply
+                                move      "creques@nincal.com",mailfrom
+                                endif
+                     move      "creques@nincal.com",mailuser
+                     Move      "smtp.office365.com",MailServer
+                     Move      "99Webmail99",mailpass
+                     move      yes,MailTTLS          
+                     endif
+.....................................................................
+
+                     move      yes,mailtrace
+.                     if        (MailServer = "")
+.                     Move      "ninmail",MailServer
+.                     endif
+          if        (MailType <= "0")
+.          move      c0,MailType         .text
+.DLH 2014 November 24   c1 is HTML???????
+.          move      c3,MailType         .HTML
+          move      c1,MailType         .HTML
+          endif
+          move      mailtimer to n3
+.          if        (n3 < 180)
+.          Move      "180",MailTimer
+          if        (n3 < 360)
+          Move      "180",MailTimer
+          endif
+          if        (MailTimer = "0")
+          move      c10,MailTimer
+          Move      "180",MailTimer                 
+          endif
+          Count     n4,MailBody
+          if        (N4 = c0)                              .body(text) null not allowed
+          Append    B5,Mailbody
+          Append    CRLF,Mailbody
+          REset     Mailbody
+          endif
+          if        (MailTo = "")
+.         add alert
+          Alert  note,"I cannot send the email. No Destination!!!!",result
+          Move      No,MailOkFlag
+          return
+          endif
+
+
+          if        (MailFrom = "")
+.          pack      Taskname from "I cannot send the email. Sender!!!! "
+.          Alert  note,Taskname,result
+.          Move      No,MailOkFlag
+          append    CrLF,mailbody
+          append    "Sender was: ",mailbody
+          append    Mailfrom,mailbody
+          append    CrLF,mailbody
+          Move      "creques@nincal.com",Mailfrom
+          append    CrLF,mailbody
+          append    "Sender was invalid! substituted Creques, mailto = ",mailbody
+          append    mailto,mailbody
+          reset     Mailbody
+          
+.          return
+          endif
+
+.Begin test DH 03 October 2012      
+          if        (MailSSL = "Y" & MailTrace =  "Y")
+          move      "c:\work\MTrace.txt",MailTrace
+          MAILSEND  MailServer,MailTo,MailFrom,MailSubjct,MailBody:
+                    *TraceAppend=MailTrace:
+                    *ERROR=S$CMDLIN,*TIMEOUT=MailTimer,*Type=MailType:
+                    *CC=MailCC,*BCC=MailBcc,*ATTACHMENT=MailAttach:
+                    *ReplyTO=MailReply:
+                    *user=Mailuser,*PASSWORD=MailPass,*PORT=25,*OPENSSL
+.                    *user=Mailuser,*PASSWORD=MailPass,*PORT=587,*OPENSSL
+.                    *user=Mailuser,*PASSWORD=MailPass,*PORT=465,*OPENSSL
+.Begin test DH 05 Aug 08      
+.          if        (MailTrace =  "Y")
+          Elseif    (MailTrace =  "Y" & Mailssl <> "Y"  & MailTTLS <> "Y" )
+          move      "c:\work\MTrace.txt",MailTrace
+          MAILSEND  MailServer,MailTo,MailFrom,MailSubjct,MailBody:
+                    *TraceAppend=MailTrace:
+                    *ERROR=S$CMDLIN,*TIMEOUT=MailTimer,*Type=MailType:
+                    *CC=MailCC,*BCC=MailBcc,*ATTACHMENT=MailAttach
+.                    *ReplyTO=MailReply:
+.                    *user=Mailuser,*PASSWORD=MailPass
+
+          Elseif    (MailTrace <>  "Y" & Mailssl = "Y")
+          MAILSEND  MailServer,MailTo,MailFrom,MailSubjct,MailBody:
+                    *ERROR=S$CMDLIN,*TIMEOUT=MailTimer,*Type=MailType:
+                    *CC=MailCC,*BCC=MailBcc,*ATTACHMENT=MailAttach:
+                    *ReplyTO=MailReply:
+                    *user=Mailuser,*PASSWORD=MailPass,*PORT=587,*OPENSSL
+                    
+          Elseif    (MailTrace <>  "Y" & MailTTLS = "Y")
+          MAILSEND  MailServer,MailTo,MailFrom,MailSubjct,MailBody:
+                    *ERROR=S$CMDLIN,*TIMEOUT=MailTimer,*Type=MailType:
+                    *CC=MailCC,*BCC=MailBcc,*ATTACHMENT=MailAttach:
+                    *ReplyTO=MailReply:
+                    *user=Mailuser,*PASSWORD=MailPass,*PORT=587,*STARTTLS
+
+          Elseif    (MailTrace =  "Y" & MailTTLS = "Y")
+          move      "c:\work\MTrace.txt",MailTrace
+          MAILSEND  MailServer,MailTo,MailFrom,MailSubjct,MailBody:
+                    *TraceAppend=MailTrace:
+                    *ERROR=S$CMDLIN,*TIMEOUT=MailTimer,*Type=MailType:
+                    *CC=MailCC,*BCC=MailBcc,*ATTACHMENT=MailAttach:
+                    *ReplyTO=MailReply:
+                    *user=Mailuser,*PASSWORD=MailPass,*PORT=587,*STARTTLS
+
+          Else
+          MAILSEND  MailServer,MailTo,MailFrom,MailSubjct,MailBody:
+                    *ERROR=S$CMDLIN,*TIMEOUT=MailTimer,*Type=MailType:
+                    *CC=MailCC,*BCC=MailBcc,*ATTACHMENT=MailAttach
+.                    *user=Mailuser,*PASSWORD=MailPass
+          endif
+          
+.end test DH 05 Aug 08        
+          if        Not Zero                 .failed
+          Move      No,MailOkFlag
+.temp code
+          if        (Mailssl = "Y")
+          return
+          endif
+.          if        (MailTTLS = "Y")
+.          Move      "ninmail",MailServer
+.          move      "creques",mailuser
+.         
+.          endif
+.temp code
+          move      c1,MailType         .HTML
+          clear     #Str5000
+          pack      #Str5000 from "Error ","<br>":
+                    S$Cmdlin,"<br>":
+                    "Subject ","<br>",MailSubjct,"<br>":
+                    "Sender ",MailFrom,"<br>":
+                    "To ",MailTo,"<br>":
+                    "Body ","<br>":
+                    MailBody,"<br>":
+                    "Attachments ","<br>":
+                    "user: ":
+                    user,"<br>":
+                    "Comment: ":
+                    comment,"<br>":
+                    "mailuser: ",mailuser,"<br>":
+                    "mailreply: ",mailreply,"<br>":
+                    "password: ",mailpass,"<br>":  
+                    "server: ",mailserver,"<br>":
+                    "ttlsflag: ",mailttls,"<br>":
+                    MailAttach
+          MOve      #Str5000,MailBody
+          MOve      "InformationServices@nincal.com",MailTO
+          MOve      "creques@nincal.com",MailFrom
+          Move      "PLB error",MailSubjct
+          if        (MailTrace = "c:\work\MTrace.txt")
+          move      MailTrace,MailAttach
+          else
+          Clear     Mailattach          
+          endif     
+          if          (MailServer <> "10.10.30.74") 
+.
+          move      "creques@nincal.com",mailfrom
+          move      "creques@nincal.com",mailuser
+          Move      "10.10.30.74",MailServer
+          move      No,MailTTLS          
+          endif 
+                     if    (MailTTLS = "Y")
+                     MAILSEND  MailServer,MailTo,MailFrom,MailSubjct,MailBody:
+                               *ERROR=S$CMDLIN,*TIMEOUT=MailTimer,*Type=MailType:
+                               *ReplyTO=MailReply:
+                               *ATTACHMENT=MailAttach,*user=Mailuser,*PASSWORD=MailPass,*PORT=587,*STARTTLS
+                      else
+                     MAILSEND  MailServer,MailTo,MailFrom,MailSubjct,MailBody:
+                               *ERROR=S$CMDLIN,*TIMEOUT=MailTimer,*Type=MailType:
+                               *ATTACHMENT=MailAttach
+                      endif
+
+          Else
+          Move      Yes,MailOkFlag
+
+          endif
+          if        (MailTrace = "c:\work\MTrace.txt")
+          copyfile   "c:\work\MTrace.txt","c:\work\MTrace.save"
+          Erase     MailTrace 
+          endif
+          
+        Return                
+..............................................................................
+rotdial
+           add     c1 to position
+           display *bgcolor 3;
+           branch   position of p1,p2,p3,p4,p5,p6,p7,p8,p9
+           move    c0 to position
+p1         display *p79:24,*red,i179,*white;
+           goto    dialexit
+p2         display *p79:24,*red,"/",*white;
+           goto    dialexit
+p3         display *p79:24,*red,dash,*white;
+           goto    dialexit
+p4         display *p79:24,*red,"\",*white;
+           goto    dialexit
+p5         display *p79:24,*red,"|",*white;
+           goto    dialexit
+p6         display *p79:24,*red,"/",*white;
+           goto    dialexit
+p7         display *p79:24,*red,dash,*white;
+           goto    dialexit
+p8         display *p79:24,*red,"\",*white;       ."
+           goto    dialexit
+p9         display *p79:24,*red,"|",*white;
+           goto    dialexit
+dialexit   display *bgcolor 1;
+           return
+..............................................................................
+.
+. ENTRY POINT: PRTOFL
+. REQUIRED   :
+. RETURNED   :
+. DESCRIPTION: DISPLAYS PRINTER OFFLINE MESSAGE
+. PROGRAMMER : D.L. HERRICK  09JUL92
+.              INITIAL RELEASE
+.
+PRTOFL   TRAPCLR   PRTOFL
+         DISPLAY   *P1:24,*EL,*B,"PRINTER OFFLINE",*W2,*P1:24,*EL;
+         TRAP      PRTOFL IF PRTOFL
+         RETURN
+..............................................................................
+.
+. ENTRY POINT: upplow
+. REQUIRED   : STR55
+. RETURNED   : STR55
+. DESCRIPTION: converts from upper to lower case
+.            :ie ANACAPA FUND ----> Anacapa Fund
+. PROGRAMMER : D.L. HERRICK  24sep96
+.              INITIAL RELEASE
+.
+upplow
+         MATCH     "C.I.S.P.E.S." TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 10
+         goto       preloop
+         ENDIF
+
+         MATCH     "S.I.E.C.U.S." TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 10
+         goto       preloop
+         ENDIF
+
+         MATCH     "WETA" TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 3
+         goto       preloop
+         ENDIF
+
+         MATCH     "O'" TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 2
+         goto       preloop
+         ENDIF
+
+         MATCH      "CO-OP" TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 4
+         goto       preloop
+         ENDIF
+
+         MATCH      "P.E.T.A." TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 7
+         goto       preloop
+         ENDIF
+
+         MATCH      "M.A.D.D." TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 7
+         goto       preloop
+         ENDIF
+
+         MATCH      "NAACP" TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 4
+         goto       preloop
+         ENDIF
+
+         MATCH      "ASPCA" TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 4
+         goto       preloop
+         ENDIF
+
+
+         MATCH     "WSCL" TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 3
+         goto       preloop
+         ENDIF
+
+         MATCH     "WTTW" TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 3
+         goto       preloop
+         ENDIF
+
+
+         MATCH     "S.F." TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 2
+         goto       preloop
+         ENDIF
+
+         MATCH     "L.A." TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 3
+         goto       preloop
+         ENDIF
+
+         MATCH     "D.C." TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 3
+         goto       preloop
+         ENDIF
+
+         MATCH     "U.S." TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 2
+         goto       preloop
+         ENDIF
+
+         MATCH      "USCF" TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 3
+         goto       preloop
+         ENDIF
+
+         MATCH      "WGBH" TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 3
+         goto       preloop
+         ENDIF
+
+         MATCH      "WHYY" TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 3
+         goto       preloop
+         ENDIF
+
+         MATCH      "KQED" TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 3
+         goto       preloop
+         ENDIF
+
+         MATCH      "ACLU" TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 3
+         goto       preloop
+         ENDIF
+
+         MATCH      "WNET" TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 3
+         goto       preloop
+         ENDIF
+
+         MATCH      "KETC" TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 3
+         goto       preloop
+         ENDIF
+
+         MATCH      "ERA" TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 2
+         goto       preloop
+         ENDIF
+
+         MATCH      "DNC" TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 1
+         goto       preloop
+         ENDIF
+
+         MATCH      "USC" TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 2
+         goto       preloop
+         ENDIF
+
+         MATCH      "USA" TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 2
+         goto       preloop
+         ENDIF
+
+         MATCH     "US" TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 1
+         goto       preloop
+         ENDIF
+
+         MATCH     "NY" TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 1
+         goto       preloop
+         ENDIF
+
+         MATCH     "MD" TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 1
+         goto       preloop
+         ENDIF
+
+         MATCH     "PO " TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 1
+         goto       preloop
+         ENDIF
+
+         MATCH     "P.O." TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 2
+         goto       preloop
+         ENDIF
+
+
+         MATCH     "P O " TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 2
+         goto       preloop
+         ENDIF
+
+         MATCH     "MX P" TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 2
+         goto       preloop
+         ENDIF
+
+         MATCH     "N S" TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 1
+         goto       preloop
+         ENDIF
+
+         MATCH     "MD A" TO STR55
+         IF         EQUAL
+         BUMP       STR55 BY 2
+         goto       preloop
+         ENDIF
+
+preloop  bump      STR55 by 1                .leave 1st byte caps
+         rep       uplow in STR55           .replace all others
+ulloop
+         bump      STR55 by 1
+         goto      ulexit if eos
+
+         match    " a " to STR55
+         if        equal
+         movefptr  STR55 to ComLN2
+         add       c1 to ComLN2
+         goto      ulinc
+         endif
+
+         match     "O'" to STR55
+         if        equal
+         movefptr  STR55 to ComLN2
+         Add       c1 to ComLN2
+         goto      ulinc
+         endif
+
+
+         cmatch    b1 to STR55
+         goto      capsques if equal
+         goto      ulexit if eos
+
+         match    ". " to STR55
+         if        equal
+         movefptr  STR55 to ComLN2
+         add       c1 to ComLN2
+         goto      ulinc
+         endif
+
+         cmatch    "." to STR55
+         if        equal
+         movefptr  STR55 to ComLN2
+         add       c1 to ComLN2
+         goto      ulinc
+         endif
+
+         match    "- " to STR55
+         if        equal
+         movefptr  STR55 to ComLN2
+         add       c1 to ComLN2
+         goto      ulinc
+         endif
+
+         cmatch    "(" to STR55
+         if        equal
+         movefptr  STR55 to ComLN2
+         add       c1 to ComLN2
+         goto      ulinc
+         endif
+
+         cmatch    """ to STR55
+         if        equal
+         movefptr  STR55 to ComLN2
+         add       c1 to ComLN2
+         goto      ulinc
+         endif
+
+         cmatch    "," to STR55
+         if        equal
+         movefptr  STR55 to ComLN2
+         add       c1 to ComLN2
+         goto      ulinc
+         endif
+
+         cmatch    "-" to STR55
+         goto      capsques if equal
+
+         cmatch    slash to STR55
+         if        equal
+         movefptr  STR55 to ComLN2
+         add       c1 to ComLN2
+         goto      ulinc
+         endif
+
+         match     "inc" to STR55
+         if        equal
+         movefptr  STR55 to ComLN2
+         goto      ulinc
+         endif
+
+         goto      ulloop
+
+capsques bump      STR55 by 1
+         goto      ulexit if eos
+
+         movefptr  STR55 to ComLN2                 .where are we
+
+         cmatch    "(" to str55
+         if        equal
+         add       c1 to ComLN2
+         goto      ulinc
+         endif
+
+         cmatch    """ to str55
+         if        equal
+         add       c1 to ComLN2
+         goto      ulinc
+         endif
+
+         scan     "the " in STR55
+         if        equal
+         movefptr  STR55 to ComLN3
+         compare   ComLN2 to ComLN3     .same location?
+                if        equal          .yes
+                 add       c2 to ComLN2
+.                 bump      STR55 by 4     .don't change it
+                  reset     STR55 to ComLN2
+                 goto      ulloop
+                 endif
+         endif
+         reset   STR55 to ComLN2
+
+         scan     "for " in STR55
+         if        equal
+         movefptr  STR55 to ComLN3
+         compare   ComLN2 to ComLN3     .same location?
+                if        equal          .yes
+                 add       c2 to ComLN2
+.                 bump      STR55 by 4     .don't change it
+                  reset     STR55 to ComLN2
+                 goto      ulloop
+                 endif
+         endif
+         reset   STR55 to ComLN2
+
+         scan     "and " in STR55
+         if        equal
+         movefptr  STR55 to ComLN3
+         compare   ComLN2 to ComLN3     .same location?
+                if        equal          .yes
+                 add       c2 to ComLN2
+.                 bump      STR55 by 4     .don't change it
+                  reset     STR55 to ComLN2
+                 goto      ulloop
+                 endif
+         endif
+         reset   STR55 to ComLN2
+
+         scan     "with " in STR55
+         if        equal
+         movefptr  STR55 to ComLN3
+         compare   ComLN2 to ComLN3     .same location?
+                if        equal          .yes
+                 add       c3 to ComLN2
+.                 bump      STR55 by 4     .don't change it
+                  reset     STR55 to ComLN2
+                 goto      ulloop
+                 endif
+         endif
+         reset   STR55 to ComLN2
+
+         scan     "against " in STR55
+         if        equal
+         movefptr  STR55 to ComLN3
+         compare   ComLN2 to ComLN3     .same location?
+                if        equal          .yes
+                 add       c6 to ComLN2
+.                 bump      STR55 by 4     .don't change it
+                  reset     STR55 to ComLN2
+                 goto      ulloop
+                 endif
+         endif
+         reset   STR55 to ComLN2
+
+         scan     "under " in STR55
+         if        equal
+         movefptr  STR55 to ComLN3
+         compare   ComLN2 to ComLN3     .same location?
+                if        equal          .yes
+                 add       c4 to ComLN2
+.                 bump      STR55 by 4     .don't change it
+                  reset     STR55 to ComLN2
+                 goto      ulloop
+                 endif
+         endif
+         reset   STR55 to ComLN2
+
+         scan     "of " in STR55
+         if        equal
+         movefptr  STR55 to ComLN3
+         compare   ComLN2 to ComLN3     .same location?
+                if        equal          .yes
+                 add       c1 to ComLN2
+.                 bump      STR55 by 4     .don't change it
+                  reset     STR55 to ComLN2
+                 goto      ulloop
+                 endif
+         endif
+         reset   STR55 to ComLN2
+
+         scan     "on " in STR55
+         if        equal
+         movefptr  STR55 to ComLN3
+         compare   ComLN2 to ComLN3     .same location?
+                if        equal          .yes
+                 add       c1 to ComLN2
+.                 bump      STR55 by 4     .don't change it
+                  reset     STR55 to ComLN2
+                 goto      ulloop
+                 endif
+         endif
+         reset   STR55 to ComLN2
+
+         scan     "to " in STR55
+         if        equal
+         movefptr  STR55 to ComLN3
+         compare   ComLN2 to ComLN3     .same location?
+                if        equal          .yes
+                 add       c1 to ComLN2
+.                 bump      STR55 by 4     .don't change it
+                  reset     STR55 to ComLN2
+                 goto      ulloop
+                 endif
+         endif
+         reset   STR55 to ComLN2
+
+         scan     "in " in STR55
+         if        equal
+         movefptr  STR55 to ComLN3
+         compare   ComLN2 to ComLN3     .same location?
+                if        equal          .yes
+                 add       c1 to ComLN2
+                  reset     STR55 to ComLN2
+                 goto      ulloop
+                 endif
+         endif
+         reset   STR55 to ComLN2
+
+         scan     "at " in STR55
+         if        equal
+         movefptr  STR55 to ComLN3
+         compare   ComLN2 to ComLN3     .same location?
+                if        equal          .yes
+                 add       c1 to ComLN2
+                  reset     STR55 to ComLN2
+                 goto      ulloop
+                 endif
+         endif
+         reset   STR55 to ComLN2
+
+         MATCH     "aids" TO STR55
+         IF         EQUAL
+         splice     "AIDS",str55,4
+         add        c3 to ComLN2
+         reset      str55 to ComLN2
+         goto       ulloop
+         ENDIF
+
+         MATCH     "usa " TO STR55
+         IF         EQUAL
+         splice     "USA",str55,3
+         add        c2 to ComLN2
+         reset      str55 to ComLN2
+         goto       ulloop
+         ENDIF
+
+         MATCH     "dc " TO STR55
+         IF         EQUAL
+         splice     "DC",str55,2
+         add        c2 to ComLN2
+         reset      str55 to ComLN2
+         goto       ulloop
+         ENDIF
+
+         MATCH     "Dc " TO STR55
+         IF         EQUAL
+         splice     "DC",str55,2
+         add        c2 to ComLN2
+         reset      str55 to ComLN2
+         goto       ulloop
+         ENDIF
+
+         MATCH     "ii " TO STR55
+         IF         EQUAL
+         splice     "II",str55,2
+         add        c1 to ComLN2
+         reset      str55 to ComLN2
+         goto       ulloop
+         ENDIF
+
+         MATCH     "tv" TO STR55
+         IF         EQUAL
+         splice     "TV",str55,2
+         add        c1 to ComLN2
+         reset      str55 to ComLN2
+         goto       ulloop
+         ENDIF
+
+
+ulinc    movelptr STR55 to ComLN3
+         setlptr  STR55 to ComLN2
+         rep      lowup in STR55
+         setlptr  STR55 to ComLN3
+         goto     ulloop
+ulexit   reset    STR55 to 55
+         reset    STR55
+         RETURN
+.
+..............................................................................
+.
+. ENTRY POINT: Errmess
+. REQUIRED   : program,Message, ERROR (DECLARED in CONS.INC)
+.              Taskname
+. RETURNED   : NADA-
+. DESCRIPTION: Sends ERROR MESSAGE FOR PROGRAMS, THEN returns
+. PROGRAMMER : David Herrick 09Sep98
+.              Release 1.1  24Sep98 added dquotes for winbatch parsing
+.              INITIAL RELEASE 09Sep98
+Errmess   clear     taskname
+.dave messing around 2016 Jan 21
+.         pack      taskname from message,b1,program,b1,dquote,error,b1,s$error$,dquote
+         pack      taskname from user,b1,program,b1,dquote,error,b1,s$error$,dquote
+.         execute   taskname
+          Alert  note,taskname,result
+          move        "Creques@nincal.com",mailfrom
+          move        "informationservices@nincal.com",mailto
+          move         "error message",MailSubjct
+          move        taskname,mailbody
+          call        sendmail
+
+         return
+
+. ENTRY POINT: Errmesg
+. REQUIRED   : message info valid user name etc
+.
+. RETURNED   : NADA-
+. DESCRIPTION: Sends ERROR MESSAGE FOR PROGRAMS, THEN returns
+. PROGRAMMER : David Herrick 21April2008
+.              Release 1.2         convert to sendmail
+. PROGRAMMER : David Herrick 19Feb99
+.              Release 1.1
+.
+Errmesg   clear     taskname
+.dlh 12/16/2002
+.begin patch 1.2
+          Pack      Mailfrom from user,"@nincal.com"
+          pack      Mailto from         "InformationServices@NINCAL.com,",MailFrom
+          call      Sendmail
+          
+..         Move    "NTS2",SmtpEmailServer                   Address of email serverc
+.         Move    "NTS4",SmtpEmailServer                   Address of email serverc
+.         clear   smtpemailaddress
+.         append  user to SmtpEmailAddress
+.         append  "@nincal.com",SmtpEmailAddress
+.         reset    smtpemailaddress
+..        Move    "Dherric@nincal.com",SmtpEmailAddress                 Your email address
+.        Move    user,SmtpUserName                                User name
+.               Move          usernme,SmtpUserFullName              User Full Name
+.
+..   Set the destinations of the email. Max 100 (Mime spec)
+.
+.        Move    "InformationServices@NINCAL.com",SmtpDestinations(1,1)            Destination e-mail addr
+.        MOVE    smtpemailaddress to SmtpDestinations(2,1)                  .send a copy to the originator
+.        Move    "Information Services",SmtpDestinations(1,2)         Destination UserName
+.        MOVE     user,SmtpDestinations(2,2)                          originators UserName
+.        Move    "2",SmtpDestIndexLast                               Index to last entry in Dest array
+.
+..   Set the subject that will be applied to the email message
+.
+..      Move    "This is a test e-mail from master",SmtpSubject Subject
+.
+..   Set the text message that is send with the attachments
+.
+..       Move    "This is the text message line 1",SmtpTextMessage(1)   Array <Text message >
+..        Move    "This is the text message line 2",SmtpTextMessage(2)   Array <Text message >
+..        Move    "This is the text message line 3",SmtpTextMessage(3)   Array <Text message >
+..        Move    "This is the text message line 4",SmtpTextMessage(4)   Array <Text message >
+..        Move    "This is the text message line 5",SmtpTextMessage(5)   Array <Text message >
+.
+..        Move    "1",SmtpTextIndexLast                               Index to last entry in TextMessage array
+..   Set all the attached files names. They could be the same file if you just
+..   want to test it
+.
+.
+.        Move    "0",SmtpAttIndexLast                                Index to last entry - Only 1 entry
+.
+..   For debugging
+..   "Dot" out the line 'Clear ..." if you want to enable the LogFile
+.
+..        Move    "0",SmtpDispMode                                    Display log file
+..        Move    "C:\work\eMail.Log",SmtpLogFile          Path/filename to Log all socket read/writes
+.        Clear   SmtpLogFile                                         'Clear' disables the LogFile
+.
+..   Progress bar. It is currently enabled so you can have an indication of what
+..   goes on.If this lines of code is removed would the default be 0
+.
+..        Move    "1",SmtpProgress                                    Enable progress bars
+.
+..   Send the above eMail to the destination which happens to be myself
+..   If any errors detected the error code and human readable text is given
+.
+.        Call    SmtpSend   ( 'Send' is in Smtp.Pri which is included in TestSmtp.Dbs )
+.
+.        If      NOT Equal
+.         Pack   Mess,"Result Code ",SmtpResult," - ",SmtpResultText,NewLine:
+.                     "Status Code ",SmtpStatus," - ",SmtpStatusText
+.         Alert  Stop,Mess,F1,"PL/B emailer - ERROR"
+.        Else
+.         Alert  Stop,"eMail transmitted OK",F1,"PL/B emailer"
+.        Endif
+.end patch 1.2
+        return
+..............................................................
+. ENTRY POINT: Mailmesg
+. REQUIRED   : message info valid user name etc
+.
+. RETURNED   : NADA-
+. DESCRIPTION: Sends EMAIL MESSAGE FOR PROGRAMS, THEN returns
+. PROGRAMMER : David Herrick 19Feb99
+.              Amended for this subroutine:  Andrew Harkins 15Nov99
+.              Release 1.1
+.            change to send mail DLH 22 April 2008 
+.              Release 1.2
+.
+.begin patch 1.2 Defunct
+.Mailmesg
+.        clear   taskname
+.dlh 12/16/2002
+.         Move    "NTS2",SmtpEmailServer                   Address of email serverc
+.begin patch 1.2
+          
+.        move    "NTS4",SmtpEmailServer                   Address of email serverc
+.        clear   smtpemailaddress
+.        append  str45 to SmtpEmailAddress
+.        append  "@nincal.com",SmtpEmailAddress
+.        reset   smtpemailaddress
+.        move    str45,SmtpUserName                                User name
+.        move    str55,SmtpUserFullName              User Full Name
+..   Set the destinations of the email. Max 100 (Mime spec)
+.        move    smtpemailaddress to SmtpDestinations(1,1)                  .send a copy to the originator
+.        move    str45,SmtpDestinations(1,2)                          originators UserName
+.        move    "1",SmtpDestIndexLast                               Index to last entry in Dest array
+.        move    "0",SmtpAttIndexLast                                Index to last entry - Only 1 entry
+.
+.        clear   SmtpLogFile                                         'Clear' disables the LogFile
+.
+.        call    SmtpSend   ( 'Send' is in Smtp.Pri which is included in TestSmtp.Dbs )
+.
+.        if NOT Equal
+.                pack    Mess,"Result Code ",SmtpResult," - ",SmtpResultText,NewLine:
+.                        "Status Code ",SmtpStatus," - ",SmtpStatusText
+.                alert  Stop,Mess,F1,"PL/B emailer - ERROR"
+.        endif
+.        return
+..............................................................................
+.LOGIC ADDED FOR GUI PROGRAMS!!!!!!!!!!!!!!!!!!!!
+.               IFNZ      PC
+..............................................................................
+.
+. ENTRY POINT: IOMSSG
+. REQUIRED   : LOCATION, ERROR (BOTH DECLARED in CONS.INC)
+. RETURNED   : NADA- QUITS PROGRAM
+. DESCRIPTION: DISPLAYS ERROR MESSAGE FOR GUI PROGRAMS, THEN QUITS
+. PROGRAMMER : ANDREW HARKINS JULY 9,1998
+.              INITIAL RELEASE
+. NOTES:       EVERY PROGRAM WILL NEED to OPEN ERRORMSSG.PLF
+
+IOMssg
+        move    "Error: ",ErrMssg
+        move    "Location: ",LocMssg
+        endset  ErrMssg
+        endset  LocMssg
+        append  Error,ErrMssg
+        append  Location,LocMssg
+        reset   ErrMssg
+        reset   LocMssg
+        IFZ      PC
+    // we ALWAYS have to output this HTTP header first
+    stream *stdout,"HTTP/1.0 200 OK",CRLF:
+                   "Content-type: text/html",CRLF:
+                   "Expires: Tue 01 Jan 1980, 12:00:00 GMT",CRLF:
+                   CRLF
+.
+. stream *stdout,cgiInput,"<hr>"
+.
+.    // output the basic html elements
+    stream *stdout,"<html>"
+.    stream *stdout,"<body>",debug,"<BR>",crlf
+    stream *stdout,"Error :<BR>",errmssg,"<BR>",crlf
+    stream *stdout,"Location : ",locmssg,"<BR>",crlf
+    stream *stdout,"<center>"
+    stream *stdout,"<font face=""Tahoma"" size=4>"
+.    stream *stdout,"You forgot to fill something in, you food-trough-waterer, ":
+.                   "you!  Now, go back and do it right this time!"
+    stream *stdout,"</center>"
+    stream *stdout,"</body>"
+    stream *stdout,"</html>"
+        RETURN
+        XIF
+        IFNZ     PC
+        setprop ErrorMssgStat1,visible=1
+        setprop ErrorMssgStat2,visible=1
+        setprop ErrorMssgStat3,visible=1
+        setprop ErrorMssgStat4,visible=1
+        setprop ErrorMssgStat5,visible=1
+        setitem ErrorMssgStat1,0,"File I/O Error!"
+        setitem ErrorMssgStat2,0,LocMssg
+        setitem ErrorMssgStat3,0,KeyLocation
+        setitem ErrorMssgStat5,0,ErrMssg
+        setitem ErrorMssgStat4,0,"Contact IS With Error and Location!"
+        setitem ErrorMssgOK,0,"&Stop"
+        setprop ErrorMssg,visible=1
+        setitem ErrorMssgOK,0,"&OK"
+.START PATCH #1.1 -logic added for error trapping
+        clear   taskname
+        append  "This is an Error e-mail from ",taskname
+        append  Wprognme,taskname
+        reset   taskname
+.begin patch 1.2
+          Move      Taskname,MailSubjct
+          Clear     Mailbody
+          append    locMssg,Mailbody
+          append    CRLF,Mailbody
+          append    ErrMssg,Mailbody
+          append    CRLF,Mailbody
+          append    "I/O Error",Mailbody
+          append    CRLF,Mailbody
+          append    KeyLocation,Mailbody
+          reset     Mailbody
+.        move    taskname,SmtpSubject Subject
+..Set the text message that is send with the attachments
+.        move    LocMssg,SmtpTextMessage(1)   .Array <Text message >
+.        move    ErrMssg,SmtpTextMessage(2)                        .Array <Text message >
+.        move    "IO Error",SmtpTextMessage(3)             .Array <Text message >
+.        move    KeyLocation,SmtpTextMessage(4)             .Array <Text message >
+.        move    "4",SmtpTextIndexLast                           .Index to last entry in TextMessage array
+.end patch 1.2
+        call    errmesg
+        clear   ErrMssg
+        clear   LocMssg
+.END PATCH #1.1 -logic added for error trapping
+.Should this be a stop or a return?
+        stop
+       XIF
+............................................................................
+.
+. ENTRY POINT: RTRIM
+. REQUIRED   : #PSTRING,#STR1(DECLARED in COMLOGIC.INC) TempFPTR,#NINER
+. RETURNED   : #PSTRING WITHOUT RIGHT BLANKS
+. DESCRIPTION: PASSED ADDRESS OF STRING, TRIMS EXTRA RIGHT SPACES, RETURNS
+. PROGRAMMER : ANDREW HARKINS JULY 14,1998
+.              INITIAL RELEASE
+. NOTES      : SUBROUTINE RESETS #PSTRING
+.              SUBROUTINE ACCEPTS VARS UP TO DIM 999999999
+.              15JAN99  ASH  SUBBED ALL OCCURANCES OF 'N9' WITH NEW LOCAL VAR '#NINER'
+RTRIM   lroutine #PSTRING
+.Test for Null string
+        clear   #NINER
+        movelptr #PSTRING,#NINER
+        if (#NINER = C0)
+                return
+        else
+                clear   TempFPTR
+                movefptr #PSTRING,TempFPTR
+                if (TempFPTR = #NINER)
+                        move #PSTRING,#STR1
+                        if (#STR1 = " ")
+                                clear #PSTRING
+                                return
+                        endif
+                endif
+        endif
+.Right Trim
+        clear   #NINER
+        endset  #PSTRING
+        loop
+                move    #PSTRING,#STR1
+                until   (#STR1 <> " ")
+                bump    #PSTRING,-1
+.Test for string of blanks
+                movefptr #PSTRING,#NINER
+                if (#NINER = "1")
+                        move #PSTRING,#STR1
+                        if (#STR1 = " ")
+                                clear #NINER
+                                clear #PSTRING
+                                return
+                        endif
+                endif
+        repeat
+        movefptr #PSTRING,#NINER
+        setlptr #PSTRING,#NINER
+        reset   #PSTRING
+        clear   #NINER
+endrtrim
+        return
+.............................................................................
+.
+. ENTRY POINT: LTRIM
+. REQUIRED   : #PSTRING,#STR1 (declared in COMLOGIC.INC) TempFPTR,TempLPTR,#NINER,C1
+. RETURNED   : #PSTRING WITHOUT LEFT BLANKS
+. DESCRIPTION: PASSED ADDRESS OF STRING, TRIMS EXTRA LEFT SPACES, RETURNS
+. PROGRAMMER : ANDREW HARKINS JULY 16,1998
+.              INITIAL RELEASE
+. NOTES      : FORM POINTER AND LENGTH POINTER ARE MODIFIED!!!!
+.              LEFT BLANKS LOST FOREVER!!!!!!
+.              SUBROUTINE ACCEPTS VARS UP TO DIM 999999999
+.              15JAN99  ASH  SUBBED ALL OCCURANCES OF 'N9' WITH NEW LOCAL VAR '#NINER'
+LTRIM   lroutine #PSTRING
+.Test for Null string
+        clear   #NINER
+        movelptr #PSTRING,#NINER
+        if (#NINER = C0)
+                return
+        else
+                clear   TempFPTR
+                movefptr #PSTRING,TempFPTR
+                if (TempFPTR = #NINER)
+                        move #PSTRING,#STR1
+                        if (#STR1 = " ")
+                                clear #PSTRING
+                                return
+                        endif
+                endif
+        endif
+.Left Trim
+        clear   #NINER
+        clear   TempLPTR
+        movelptr #PSTRING,TempLPTR
+        move    C1,#NINER
+        loop
+                move    #PSTRING,#STR1
+                until   (#STR1 <> " ")
+                bump    #PSTRING,1
+                add     C1,#NINER
+.Test for string of blanks
+                if (#NINER = TempLPTR)
+                        move #PSTRING,#STR1
+                        if (#STR1 = " ")
+                                clear #NINER
+                                clear #PSTRING
+                                return
+                        endif
+                endif
+        repeat
+        reset   #PSTRING,#NINER
+.At this point string can be reset and blanks will reapppear
+        clear   TempLPTR
+        clear   TempFPTR
+        movelptr #PSTRING,TempLPTR
+        loop
+                until   (TempFPTR = TempLPTR)
+                if (#NINER > TempLPTR)
+                        move " ",#STR1
+                else
+                        move #PSTRING,#STR1
+                endif
+                setlptr #PSTRING,TempFPTR
+                append  #STR1,#PSTRING
+                add     C1,TempFPTR
+                add     C1,#NINER
+                setlptr #PSTRING,TempLPTR
+                if (#NINER <= TempLPTR)
+                        reset   #PSTRING,#NINER
+                endif
+        repeat
+.These subs will establish new Length Pointer
+.Logic= (Original Length Pointer)-(Location of first Non-Blank Character)+(New Form Pointer {1})
+        sub     TempLPTR,#NINER
+        sub     C1,#NINER
+        sub     #NINER,TempLPTR
+        setlptr #PSTRING,TempLPTR
+        reset   #PSTRING
+        clear   #NINER
+endltrim
+        return
+........................................................................................................
+.CHOPBEG - CHOP BEGINNING
+.
+. Removes leading spaces from a string variable.
+.
+. CALL     CHOPBEG USING {svar1}
+.
+. Note the following:
+.
+.   1. {svar1} is the field being modified.
+.
+. Instruction Examples:
+.
+.            CALL      CHOPBEG USING D20
+.
+. 05/16/02 GW Wrote include
+.
+.         %IFNDEF   CHOPBEG
+.CHOPBEG  EQU       1
+.         GOTO      #INCEND
+.
+. LROUTINE VARIABLES
+.
+#strChopBeg DIM ^
+.#strParseRange INIT 0x00,0xFF       .Allow all values
+CHOPBEG  LROUTINE   #strChopBeg
+.                             A little know fact about the parse is that it
+.                             skips all leading spaces then starts working on
+.                             the range. If all the values are in the range then
+.                             just the leading spaces are removed. (or in other 
+.                             words left blank surpression.) 
+         PARSE     #strChopBeg INTO #strChopBeg USING #strParseRange
+         RETURN
+.
+.#INCEND
+.         %ENDIF
+.
+.
+
+
+
+
+.............................................................................
+.
+. ENTRY POINT: TRIM
+. REQUIRED   : #PSTRING,#STR1 (declared in COMLOGIC.INC) TempFPTR,TempLPTR,#NINER,C1
+. RETURNED   : #PSTRING WITHOUT *ANY* BLANKS
+. DESCRIPTION: PASSED ADDRESS OF STRING, TRIMS EXTRA SPACES, RETURNS, LOGIC
+.              COMBINES A LEFT TRIM WITH A RIGHT TRIM
+. PROGRAMMER : ANDREW HARKINS JULY 16,1998
+.              INITIAL RELEASE
+. NOTES      : SUBROUTINE RESETS #PSTRING TO FIRST NON-BLANK CHARACTER ON LEFT
+.              FORM POINTER AND LENGTH POINTER ARE MODIFIED!!!!
+.              LEFT BLANKS LOST FOREVER!!!!!!
+.              SUBROUTINE ACCEPTS VARS UP TO DIM 999999999
+.              15JAN99  ASH  SUBBED ALL OCCURANCES OF 'N9' WITH NEW LOCAL VAR '#NINER'
+.              28DEC2000 ASH REPLACED ALL PREMATURE RETURNS WITH GOTO'S
+TRIM    lroutine #PSTRING
+.START PATCH 1.7 REPLACED LOGIC
+          chop      #PSTRING,#PSTRING                                 .get rid of trailing spaces
+          parse     #PSTRING INTO #PSTRING USING #strParseRange       .get rid of leading spaces
+EndTrim return
+..Test for Null string
+.        clear   #NINER
+.        movelptr #PSTRING,#NINER
+.        if (#NINER = C0)
+.                GOTO EndTrim
+..                return
+.        else
+.                clear   TempFPTR
+.                movefptr #PSTRING,TempFPTR
+..START PATCH 1.2 ADDED LOGIC
+.                if (TempFPTR = C0)
+.                        GOTO EndTrim
+..                        return
+.                endif
+..END PATCH 1.2 ADDED LOGIC
+.                if (TempFPTR = #NINER)
+.                        move #PSTRING,#STR1
+.                        if (#STR1 = " ")
+.                                clear #PSTRING
+.                                GOTO EndTrim
+..                                return
+.                        endif
+.                endif
+.        endif
+..Left Trim
+.        clear   #NINER
+.        clear   TempLPTR
+.        movelptr #PSTRING,TempLPTR
+.        move    C1,#NINER
+.        loop
+.                move    #PSTRING,#STR1
+.                until   (#STR1 <> " ")
+.                bump    #PSTRING,1
+.                add     C1,#NINER
+..Test for string of blanks
+.                if (#NINER = TempLPTR)
+.                        move #PSTRING,#STR1
+.                        if (#STR1 = " ")
+.                                clear #NINER
+.                                clear #PSTRING
+.                                GOTO EndTrim
+..                                return
+.                        endif
+.                endif
+.        repeat
+.        reset   #PSTRING,#NINER
+..At this point string can be reset and blanks will reapppear
+.        clear   TempLPTR
+.        clear   TempFPTR
+.        movelptr #PSTRING,TempLPTR
+.        loop
+.                until   (TempFPTR = TempLPTR)
+.                if (#NINER > TempLPTR)
+.                        move " ",#STR1
+.                else
+.                        move #PSTRING,#STR1
+.                endif
+.                setlptr #PSTRING,TempFPTR
+.                append  #STR1,#PSTRING
+.                add     C1,TempFPTR
+.                add     C1,#NINER
+.                setlptr #PSTRING,TempLPTR
+.                if (#NINER <= TempLPTR)
+.                        reset   #PSTRING,#NINER
+.                endif
+.        repeat
+..These subs will establish new Length Pointer
+..Logic= (Original Length Pointer)-(Location of first Non-Blank Character)+(New Form Pointer {1})
+.        sub     TempLPTR,#NINER
+.        sub     C1,#NINER
+.        sub     #NINER,TempLPTR
+.        setlptr #PSTRING,TempLPTR
+.        reset   #PSTRING
+..Trim Right
+.        clear   #NINER
+.        endset  #PSTRING
+.        loop
+.                move    #PSTRING,#STR1
+.                until   (#STR1 <> " ")
+.                bump    #PSTRING,-1
+.        repeat
+.        movefptr #PSTRING,#NINER
+.        setlptr #PSTRING,#NINER
+.        reset   #PSTRING
+.        clear   #NINER
+.EndTrim return
+..END PATCH 1.7 REPLACED LOGIC
+.............................................................................
+.
+. ENTRY POINT: ISNULL
+. REQUIRED   : #PSTRING,#PBOOLEAN,#STR1(DECLARED IN COMLOGIC.INC) TEMPFPTR,#NINER,C1
+.              #PSTRING = STRING VALUE, #PBOOLEAN = FORM 1 (N1)
+. RETURNED   : #PBOOLEAN, #PSTRING - WITHOUT BLANK CHAR
+. DESCRIPTION: PASSED ADDRESS OF STRING & BOOLEAN, TRIMS SPACE IN CASE VAR WAS RESET, RETURNS
+.              BOOLEAN VALUE & EMPTY STRING
+. PROGRAMMER : ANDREW HARKINS JULY 27,1998
+.              INITIAL RELEASE
+. NOTES      : SUBROUTINE CLEARS #PBOOLEAN!!!!!!!!!!
+.              SUBROUTINE WILL CLEAR #PSTRING IF FORM & LENGTH POINTERS ARE EQUAL & STRING CONTAINS 1 BLANK
+.              FORM POINTER AND LENGTH POINTER MAY BE MODIFIED!!!!
+.              SUBROUTINE ACCEPTS VARS UP TO DIM 999999999
+.              15JAN99  ASH  SUBBED ALL OCCURANCES OF 'N9' WITH NEW LOCAL VAR '#NINER'
+ISNULL  lroutine #PSTRING, #PBOOLEAN
+        clear   #PBOOLEAN
+        clear   #NINER
+        movelptr #PSTRING,#NINER
+        if (#NINER = C0)
+                move     C1,#PBOOLEAN
+                return
+        else
+.Test for a var which has been reset
+                clear   TempFPTR
+                movefptr #PSTRING,TempFPTR
+                if (TempFPTR = #NINER)
+                        move #PSTRING,#STR1
+                        if (#STR1 = " ")
+                                clear #PSTRING
+                                move C1,#PBOOLEAN
+                                return
+                        endif
+                endif
+        endif
+        return
+.............................................................................
+.
+. ENTRY POINT: ZFILLIT
+. REQUIRED   : #PSTRING,#NINER,#NINER2,#STR25,#FILLER (declared in COMLOGIC.INC) N1,TempLPTR(DECLARED in CONS.INC)
+. RETURNED   : #PSTRING PADDED WITH LEADING ZEROS
+. DESCRIPTION: PASSED ADDRESS OF STRING, PADS LEADING ZEROS, RETURNS
+. PROGRAMMER : ANDREW HARKINS APRIL 09,1999
+.              INITIAL RELEASE
+. NOTES      : ASSUMED TO BE USED ON NUMERIC DATA ENTERED VIA EDIT TEXT BOX
+.              ASSUMES EDIT TEXT BOX IS SET TO INTEGER AS EDITTYPE, THUS PREVENTING NEED TO TRIM
+.              IF BLANK SPACES ALLOWED IN DATA ENTRY, ASSUMES USER TRIMMED VAR
+.              MAXIMUM LENGTH OF STRING CURRENTLY SET TO '25'
+.              INCREASE OF #STR25 MUST BE REFLECTED IN #FILLER
+.              SUBROUTINE WILL ALLOW NULL STRING TO BE ZERO-FILLED IF N1 = C1
+ZFILLIT lroutine #PSTRING,N1
+.Test for Null string
+        clear   #NINER
+        clear   #NINER2
+        moveplen #PSTRING,#NINER        .DETERMINE PHYSICAL LENGTH OF #PSTRING
+        movelptr #PSTRING,#NINER2       .DETERMINE LOGICAL LENGTH OF #PSTRING
+        if (#NINER2 = C0 AND N1 = C0)   .FLAG MUST BE SET TO ALLOW NULL STRING TO BE ZERO-FILLED
+                return
+        elseif (#NINER2 < #NINER)
+                sub     #NINER2,#NINER
+                setlptr #FILLER,#NINER
+                pack    #STR25,#FILLER,#PSTRING
+                move    #STR25,#PSTRING
+        endif
+        return
+
+.............................................................................
+.
+. ENTRY POINT: PARSITUP
+. REQUIRED   : #PSTRING,#PSTRING2,#NINER,#NINER2,#STR1,#LBREAK,#RBREAK(declared in COMLOGIC.INC) C1(DECLARED in CONS.INC)
+. RETURNED   : #PSTRING - A LOGICAL SUBSTRING OF #PSTRING2
+.            : #PSTRING2 - RESET TO BYTE AFTER SUBSTRING EXTRACTION
+. DESCRIPTION: PASSES ADDRESS OF 2 STRINGS, PARSES, RETURNS
+. EXAMPLE    :
+.              STRING  INIT    "ABCDEFGHIJ"
+.              STRING1  DIM     4
+.              STRING2  DIM     4
+.              STRING3  DIM     4
+.                       CALL    PARSITUP USING STRING1,STRING
+.              *AFTER CALL, STRING1 = "ABCD",STRING2 = "",STRING3 = "", STRING = "EFGHIJ"
+.                       CALL    PARSITUP USING STRING2,STRING
+.              *AFTER CALL, STRING1 = "ABCD",STRING2 = "EFGH",STRING3 = "", STRING = "IJ"
+.                       CALL    PARSITUP USING STRING3,STRING
+.              *AFTER CALL, STRING1 = "ABCD",STRING2 = "EFGH",STRING3 = "IJ", STRING = ""
+.
+. PROGRAMMER : ANDREW HARKINS MAY 11,1999
+.              INITIAL RELEASE
+. NOTES      : BREAKING INTO SUB-STRING DETERMINED BY SPECIAL CHARACTERS.
+.              #PSTRING2 WILL NOT HAVE LEADING SPACES WHEN RETURNED.
+.              #RBREAK CONTAINS LOGICAL CHARACTERS ASSOCIATED WITH END OF A LINE.
+.              #LBREAK CONTAINS LOGICAL CHARACTERS ASSOCIATED WITH BEGINNING OF A LINE.
+.              #PSTRING CLEARED UPON ENTRY OF SUB-ROUTINE
+.              #PSTRING2 MUST HAVE LOGICAL LENGTH GREATER THAN '1'
+.              SUB-ROUTINE WILL BREAK ON '0X7F'
+. NOTES ON NATURE OF EDITTEXT BOXES AS OF 8.3B:
+.              1) MAXCHARS PROPERTY OVERRIDES MAXLINES PROPERTY
+.              2) SPACE CHARACTERS COLLECT AT END OF LINE, ALTHOUGH THEY ARE HIDDEN!!!
+.                 {ANY HIDDEN SPACE CHARACTERS ARE DELETED}
+.              3) IN ORDER TO ESTABLISH A MIRROR IMAGE BETWEEN EDITTEXT BOX AND PRINTED MATERIAL.
+.                 A) EDITTEXT FONT PROPERTY MUST BE PROPORTIONAL.
+.                 B) EDITTEXT WIDTH PROPERTY MUST VISUALLY MATCH WIDTH REQUIRED FOR PRINTING.
+.                 C) TO ACHIEVE A 'TABBED' EFFECT {SIMILAR TO THIS DOCUMENTATION!}:
+.                       i) CARRIAGE RETURN MUST BE ENTERED (see note #2)
+.                       ii) SPACES MAY THEN BE ENTERED ON NEXT LINE
+.START PATCH 1.3 ADDED LOGIC
+.PARSITUP lroutine #PSTRING,#PSTRING2
+PARSITUP lroutine #PSTRING,#PSTRING2,#PBOOLEAN
+.END PATCH 1.3 ADDED LOGIC
+        clear   #PSTRING
+        movefptr #PSTRING2,#NINER
+        movelptr #PSTRING2,#NINER2
+        if (#NINER <> #NINER2)
+                pack    #RANGE,#HX20,#HX7e,#HX80,#HXff
+                parse   #PSTRING2 into #PSTRING using #RANGE,truncate,noskip
+                if over         .reset source string and manage data
+                        movelptr #PSTRING,#NINER2
+                        add     #NINER2,#NINER
+                        reset   #PSTRING2,#NINER
+                        endset  #PSTRING
+                        move    #PSTRING,#STR1
+.START PATCH 1.3 REPLACED LOGIC
+.                        reset   #RBREAK
+.                        scan    #STR1,#RBREAK
+                        if (#PBOOLEAN = C1)
+                                reset   #RBREAK
+                                scan    #STR1,#RBREAK
+                        else
+                                reset   #RBREAK2
+                                scan    #STR1,#RBREAK2
+                        endif
+.END PATCH 1.3 REPLACED LOGIC
+                        if not equal
+                                move    #PSTRING2,#STR1
+.START PATCH 1.3 REPLACED LOGIC
+.                                reset   #LBREAK
+.                                scan    #STR1,#LBREAK
+                                if (#PBOOLEAN = C1)
+                                        reset   #LBREAK
+                                        scan    #STR1,#LBREAK
+                                else
+                                        reset   #LBREAK2
+                                        scan    #STR1,#LBREAK2
+                                endif
+.END PATCH 1.3 REPLACED LOGIC
+                                if not equal
+                                        loop
+                                                sub     C1,#NINER
+                                                sub     C1,#NINER2
+                                                bump    #PSTRING,-1
+                                                move    #PSTRING,#STR1
+.START PATCH 1.3 REPLACED LOGIC
+.                                                reset   #RBREAK
+.                                                scan    #STR1,#RBREAK
+                                                if (#PBOOLEAN = C1)
+                                                        reset   #RBREAK
+                                                        scan    #STR1,#RBREAK
+                                                else
+                                                        reset   #RBREAK2
+                                                        scan    #STR1,#RBREAK2
+                                                endif
+.END PATCH 1.3 REPLACED LOGIC
+                                                until equal
+                                                until (#NINER2 = C1)
+                                        repeat
+                                        if (#NINER2 = C1)
+                                                endset  #PSTRING
+                                                movelptr #PSTRING,#NINER2
+                                                add     #NINER2,#NINER
+                                        endif
+                                endif
+                        endif
+                        reset   #PSTRING
+                        setlptr #PSTRING,#NINER2
+                        reset   #PSTRING2,#NINER
+.Clear leading spaces
+                        loop
+                                move    #PSTRING2,#STR1
+                                until (#STR1 <> B1)
+                                bump    #PSTRING2
+                                until EOS
+                        repeat
+                endif
+                move    #PSTRING2,#STR1
+                if (#STR1 = #CARR)
+                        bump    #PSTRING2
+                endif
+.START PATCH 2/26/2004 ASH - ADDED LOGIC
+          elseif (#PSTRING2 = #CARR)    .Covers instances where last character is a Carriage return
+                    bump    #PSTRING2
+.END PATCH 2/26/2004 ASH - ADDED LOGIC
+        endif
+ENDPARSITUP
+        return
+
+.............................................................................
+.
+. ENTRY POINT: EXCLUSIVECHECKBOX
+. REQUIRED   : #CHECK1,#CHECK2,#CHECK3 (declared in COMLOGIC.INC), result, HowMany (declared in Cons.inc)
+. RETURNED   : EXCLUSIVELY CHECKED/UNCHECKED CHECKBOXES
+. DESCRIPTION: PASSED ADDRESSES OF CHECKBOXES, IF #CHECK CURRENTLY HAS VALUE, IT LOSES VALUE,
+.              ELSE IT ACQUIRES VALUE AND OTHER CHECKBOXES LOSE VALUE
+. PROGRAMMER : ANDREW HARKINS OCTOBER 07,1999
+.              INITIAL RELEASE
+. NOTES      : VARIABLES DECLARED LOCALLY.  CAN BE USED FOR EITHER TWO OR THREE CHECKBOXES.
+.              TO USE WITH TWO, SIMPLY NAME SECOND ARGUMENT TWICE.
+.              CAN BE EASILY EXPANDED TO INCORPORATE INFINITE # OF CHECKBOXES.
+ExclusiveCHECKBOX LRoutine #CHECK1,#CHECK2,#CHECK3
+        getitem #CHECK1,0,result
+        if (result = 1)
+                setitem #CHECK1,0,0
+        else
+                setitem #CHECK1,0,1
+                getitem #CHECK2,0,HowMany
+                if (HowMany = 1)
+                        setitem #CHECK2,0,0
+                else
+                        getitem #CHECK3,0,HowMany
+                        if (HowMany = 1)
+                                setitem #CHECK3,0,0
+                        endif
+.NEST INFINITE NUMBER OF ABOVE DECISION STATEMENT TO ADD EXTRA CHECKBOXES
+                endif
+        endif
+        return
+.............................................................................
+.
+. ENTRY POINT: EXCLUSIVERadio
+. REQUIRED   : #Radio1,#Radio2,#Radio3 (declared in COMLOGIC.INC), result, HowMany (declared in Cons.inc)
+. RETURNED   : EXCLUSIVELY CheckED/UNCheckedED Radios
+. DESCRIPTION: PASSED ADDRESSES OF RadioES, IF #Radio CURRENTLY HAS VALUE, IT LOSES VALUE,
+.              ELSE IT ACQUIRES VALUE AND OTHER Radios LOSE VALUE
+. PROGRAMMER : ANDREW HARKINS OCTOBER 07,1999
+.              INITIAL RELEASE
+. NOTES      : VARIABLES DECLARED LOCALLY.  CAN BE USED FOR EITHER TWO OR THREE RadioES.
+.              TO USE WITH TWO, SIMPLY NAME SECOND ARGUMENT TWICE.
+.              CAN BE EASILY EXPANDED TO INCORPORATE INFINITE # OF RadioES.
+.  ASH 29MAR2005 Increased option to 7 Radio Buttons - PTACH 2.3
+.START PATCH 2.3 REPLACED LOGIC
+.ExclusiveRadio LRoutine #Radio1,#Radio2,#Radio3
+.        getitem #Radio1,0,result
+.        if (result = 1)
+.                setitem #Radio1,0,0
+.        else
+.                setitem #Radio1,0,1
+.                getitem #Radio2,0,HowMany
+.                if (HowMany = 1)
+.                        setitem #Radio2,0,0
+.                else
+.                        getitem #Radio3,0,HowMany
+.                        if (HowMany = 1)
+.                                setitem #Radio3,0,0
+.                        endif
+..NEST INFINITE NUMBER OF ABOVE DECISION STATEMENT TO ADD EXTRA Radios
+.                endif
+.        endif
+.        return
+.....................................................
+ExclusiveRadio LRoutine #Radio1,#Radio2,#Radio3,#Radio4,#Radio5,#Radio6,#Radio7
+.Force a choice!  Do not allow user to unclick an item!
+.        getitem #Radio1,0,#result
+.        if (#result = 1)
+.                   setitem #Radio1,0,0
+.        endif
+          setitem #Radio1,0,1
+.If number of arguments increase, so does following loop.  Loop MAX equals total minus 1.
+          for #result,"1","6"
+                    loadadr   #Radio1,#result,#Radio2,#Radio3,#Radio4,#Radio5,#Radio6,#Radio7
+                    moveptr   #Radio1,#Radio1               .Over flag is set if Pointer is NULL
+                    until over
+                    setitem   #Radio1,0,0
+          repeat
+.Re-Initialize all Pointers
+        CLEARADR #Radio1,#Radio2,#Radio3,#Radio4,#Radio5,#Radio6,#Radio7
+        return
+.END PATCH 2.3 REPLACED LOGIC
+.............................................................................
+.
+. ENTRY POINT: FormatNumeric
+. REQUIRED   : #PSTRING,#PSTRING1,#PSTRING2,#STR1,#STR3,#STR4,#NINER,#NINER2 (declared in COMLOGIC.INC) TempFPTR,TempLPTR,C0
+. RETURNED   : #PSTRING2 WITH FORMATTED COMMAS
+. DESCRIPTION: PASSED ADDRESS OF STRING, FORMATS WITH COMMAS, PASSES BACK STRING2 IN NEW FORMAT
+. PROGRAMMER : ANDREW HARKINS NOVEMBER 17,1998
+.              INITIAL RELEASE
+.                PATCH 1.1 ASH 13MAR2002 BUG FIX WITH FIRST ARGUMENT HAVING "  0", OR DERIVATION
+. NOTES      :
+.FormatNumeric   lroutine #PSTRING1,#PSTRING2
+FormatNumeric   lroutine #PSTRING,#PSTRING2
+.START PATCH 1.1 - ADDED CASE FOR "0"
+          call      Trim using #PSTRING
+          if (#PSTRING = "0")
+                    move      "0",#PSTRING2
+                    return
+          endif
+.END PATCH 1.1 - ADDED CASE FOR "0"
+.Clear Destination Var
+        move    "0",#NINER
+        moveplen #PSTRING2,TempLPTR
+        setlptr #PSTRING2,TempLPTR
+        loop
+                reset   #PSTRING2,#NINER
+                append  " ",#PSTRING2
+                add     "1",#NINER
+                until (#NINER >= TempLPTR)
+        repeat
+.Move over new variable with added commas
+.        move    #PSTRING1,#PSTRING
+        movelptr #PSTRING,#NINER
+        if (#NINER < 4)
+                move    #PSTRING,#PSTRING2
+                return
+        else
+                movefptr #PSTRING,TempFPTR
+                sub     TempFPTR,#NINER,#NINER2
+                if (#NINER2 < 3)
+                        move    #PSTRING,#PSTRING2
+                        return
+                endif
+                loop
+                        until (#NINER < TempFPTR)
+                        setlptr #PSTRING,#NINER
+                        sub     "2",#NINER
+                        if (#NINER < TempFPTR)
+                                move    TempFPTR,#NINER
+                        endif
+                        reset   #PSTRING,#NINER
+                        move    #PSTRING,#STR3
+                        sub     "1",#NINER
+                        count   #NINER2,#STR3
+                        if (#NINER2 = 3)
+                                pack    #STR4,",",#STR3
+                                sub     "4",TempLPTR
+                                reset   #PSTRING2,TempLPTR
+                                if less
+                                        reset   #PSTRING2,C0
+                                        append  #STR3,#PSTRING2
+                                else
+                                        append  #STR4,#PSTRING2
+                                endif
+                        elseif (#NINER2 <> 0)
+                                sub     #NINER2,TempLPTR
+                                reset   #PSTRING2,TempLPTR
+                                if less
+                                        reset   #PSTRING2,C0
+                                endif
+                                append  #STR3,#PSTRING2
+                        endif
+                        until (#NINER2 = 0)
+                        reset   #PSTRING2,TempLPTR
+                        if less
+                                reset   #PSTRING2,C0
+                        endif
+                repeat
+        endif
+.Kill preceding garbage
+        moveplen #PSTRING2,TempLPTR
+        setlptr #PSTRING2,TempLPTR
+        move    "1",#NINER
+        loop
+                reset   #PSTRING2,#NINER
+                move    #PSTRING2,#STR1
+                until (#STR1 <> " " & #STR1 <> "," & #STR1 <> "0")
+                sub     "1",#NINER
+                reset   #PSTRING2,#NINER
+                append  " ",#PSTRING2
+                add     "2",#NINER
+                until (#NINER > TempLPTR)
+        repeat
+        moveplen #PSTRING2,TempLPTR
+        setlptr #PSTRING2,TempLPTR
+EndFormatNumeric
+        return
+.............................................................................
+.
+. ENTRY POINT: RemoveChar
+. REQUIRED   : #PSTRING,#PSTRING2,#STR1,#NINER,#NINER2 (declared in COMLOGIC.INC)TempFPTR,TempLPTR,C0
+. RETURNED   : #PSTRING WITHOUT ANY INSTANCES OF #PSTRING2
+. DESCRIPTION: PASSED ADDRESS OF STRING, REMOVES ANY INSTANCES OF #PSTRING2, PASSES BACK STRING
+. PROGRAMMER : ANDREW HARKINS NOVEMBER 18,1998
+.              INITIAL RELEASE
+. NOTES      :
+RemoveChar lroutine #PSTRING,#PSTRING2
+        movelptr #PSTRING,TempLPTR
+        loop
+                scan    #PSTRING2,#PSTRING
+                until not equal
+                movefptr #PSTRING,#NINER
+                add     "1",#NINER,#NINER2
+                sub     "1",#NINER
+                loop
+                        if (#NINER2 <= TempLPTR)
+                                reset   #PSTRING,#NINER2
+                                move    #PSTRING,#STR1
+                                reset   #PSTRING,#NINER
+                                append  #STR1,#PSTRING
+                                add     "1",#NINER
+                                add     "1",#NINER2
+                        endif
+                        until (#NINER2 > TempLPTR)
+                repeat
+                reset   #PSTRING
+                sub     "1",TempLPTR
+                setlptr #PSTRING,TempLPTR
+        repeat
+        return
+RemoveChar2   lroutine #PSTRING,#PSTRING2
+        movelptr #PSTRING,TempLPTR
+        movefptr #PSTRING,TempFPTR
+.        count   #NINER2,#PSTRING2
+        loop
+                scan    #PSTRING2,#PSTRING
+                until not equal
+                movefptr #PSTRING,#NINER
+                loop
+.                        sub     #NINER2,#NINER
+                        sub     "1",#NINER
+                        until (#NINER < C0)
+                        reset   #PSTRING,#NINER
+                        if (#NINER = C0)
+                                move    " ",#STR1
+                        else
+                                move    #PSTRING,#STR1
+                        endif
+                        append  #STR1,#PSTRING
+                repeat
+                setlptr #PSTRING,TempLPTR
+                reset   #PSTRING
+        repeat
+        setlptr #PSTRING,TempLPTR
+        reset   #PSTRING,TempFPTR
+        return
+
+.START PATCH 1.4 ADDED LOGIC
+.............................................................................
+.
+. ENTRY POINT: BFILLIT
+. REQUIRED   : #PSTRING,#NINER,#NINER2,#NINER3
+. RETURNED   : #PSTRING PADDED WITH TRAILING BLANKS
+. DESCRIPTION: PASSED ADDRESS OF STRING, PADS TRAILING BLANKS, RETURNS
+. PROGRAMMER : ANDREW HARKINS JULY 06,2001
+.              INITIAL RELEASE
+. NOTES      : USED TO PAD OUT EXTRA BLANK SPACES UP TO PHYSICAL LENGTH OF VARIABLE.
+.                USEFUL WHEN TRIMMED VARIABLES WILL CAUSE PROBLEMS LOADING INTO LISTVIEW OBJECTS,
+.                WHICH ASSUME THAT RECORD WAS FRESHLY READ FROM FILE, AND THUS HAS LENGTH POINTER
+.              THAT MATCHES PHYSICAL LENGTH.
+BFILLIT LRoutine #PSTRING
+          movelptr #PSTRING,#NINER
+          moveplen #PSTRING,#NINER2
+          for #NINER3 from #NINER to #NINER2
+                    reset     #PSTRING,#NINER3
+                    append    " ",#PSTRING
+          repeat
+          reset     #PSTRING
+BFILLITEnd
+          return
+
+.END PATCH 1.4 ADDED LOGIC
+........................................
+.End of GUI Logic
+.START PATCH 1.6 ADDED LOGIC
+.............................................................................
+.
+. ENTRY POINT: GetWinVer
+. REQUIRED   :
+. RETURNED   : OSFlag
+. DESCRIPTION: Get Windows Version we are running under
+. PROGRAMMER : David Herrick JULY 09,2002
+.              INITIAL RELEASE
+. NOTES      :
+.         0 = unknown
+.         1 = Windows NT
+.         2 = WIN32s Windows 3.1x (obsolete)
+.         3 = Window 95
+.         4 = Window 98
+.         5 = Windows 2000
+.         6 = Windows XP
+.         7 = Windows Vista
+.         8 = Windows CE
+.         9 = Windows 7
+.
+.OSMajor
+.Windows 10                                 10.0*
+.Windows Server 2016 Technical Preview      10.0*
+.Windows 8.1                                6.3*
+.Windows Server 2012 R2                     6.3*
+.Windows 8                                  6.2
+.Windows Server 2012                        6.2
+.Windows 7                                  6.1
+.Windows Server 2008 R2                     6.1
+.Windows Server 2008                        6.0
+.Windows Vista                              6.0
+.Windows Server 2003 R2                     5.2
+.Windows Server 2003                        5.2
+.Windows XP 64-Bit Edition                  5.2
+.Windows XP                                 5.1
+.Windows 2000                               5.0
+.
+GetWinVer
+winverdata  dim       800
+OSmajor      dim        10
+OSminor      dim        10
+          getinfo   system,str6
+          getinfo   system,winverdata
+          bump      winverdata,646
+          move      winverdata,taskname
+          unpack    Winverdata,OSMajor,OsMinor 
+          bump      winverdata,10
+          unpack    Winverdata,OsMinor 
+          move      winverdata,taskname
+.          unpack    str6 into str1,str2
+.          unpack    str2 into str1
+.          move      c0 to osflag
+.          move      Str1 to Osflag
+           move       OsMajor,osflag
+.test this method is depreciated as of win 8.x
+.lets force it and see if it works
+           move       c9,str1
+.
+          return
+.............................................................................
+.
+. ENTRY POINT: Waitin
+. REQUIRED   :  Number of milliseconds to wait #PSTRING  .ie 2000 = 20 sec
+. RETURNED   : Just loops for specified # of seconds
+. DESCRIPTION: 
+. PROGRAMMER : David Herrick Marc 14 2011
+.              INITIAL RELEASE
+.
+Waitin    lroutine #PSTRING
+          call      Trim using #Pstring
+          move      #Pstring,N10
+.          if        (n10 = c0)          .no time specifed
+.          move      "300",n10          .default 30 seconds
+.          endif
+.          Create    WaitTimer,N10
+.          ACTIVATE  WaitTIMER,TimeDone,RESULT
+. 
+.          LOOP
+.          EVENTREGISTER WaitTIMER,18,TimeDone
+.          UNTIL NOT EOS
+.          REPEAT
+.TimeDone
+.          DeACTIVATE  WaitTIMER
+.           Destroy   WaitTImer
+.
+.
+.          return
+          if        (n10 = c0)          .no time specifed
+          move      "3000",n10          .default 30 seconds
+          endif
+          clock   timestamp,timestamp1
+          move    timestamp1,time1
+          loop
+          clock   timestamp,timestamp
+          move    timestamp,time2
+          sub     time1,time2,time3
+          if        (time3 >= N10) .Seconds Maximum
+          break
+          endif
+          repeat
+.
+          return
+.............................................................................
+.
+. ENTRY POINT: GetPDFPath
+. REQUIRED   :
+. RETURNED   : pdfpath
+. DESCRIPTION: Get Windows pdf995 folder
+. PROGRAMMER : David Herrick April 29 2011
+.              INITIAL RELEASE
+GetPDfPath
+          call      getSDRive
+.update as 995 now installs in program files by default
+.          pack      PDFPath from sysdrive,"\Program Files (x86)"
+.          pack      PDFPath from sysdrive,"\Program Files (x86)\pdf995"
+          pack      pdfpath from sysdrive,"\Program Files\pdf995"
+          Path      Exist,PDFPath
+          if        over
+          pack      pdfpath from sysdrive,"\Program Files (x86)\pdf995" 
+.          pack      pdfpath from sysdrive,"\Program Files\pdf995"
+          else
+          pack      pdfpath from sysdrive,"\Program Files\pdf995"
+.          pack      pdfpath from sysdrive,"\Program Files (x86)\pdf995"
+          endif
+          return
+.............................................................................
+.
+. ENTRY POINT: GetSDrive
+. REQUIRED   :
+. RETURNED   : SysDrive
+. DESCRIPTION: Get Windows system drive letter
+. PROGRAMMER : David Herrick Feb 14 2011
+.              INITIAL RELEASE
+.
+GetSDrive
+          getinfo   system,str255
+          Bump      str255,55
+          Move      str255,SysDrive
+.
+          return
+.............................................................................
+.............................................................................
+.
+. ENTRY POINT: Get64OS
+. REQUIRED   :
+. RETURNED   : Bit64flag
+. DESCRIPTION: Windows system 64bit?
+. PROGRAMMER : David Herrick Aug 29 2011
+.              INITIAL RELEASE
+.
+Get64OS
+          move      "N",Bit64Flag
+          Path      Exist,"c:\program files (x86)"              .=program files (x86)  64 bit os
+          if        OVer
+          move      "N",Bit64Flag
+          else
+          move      yes,Bit64Flag
+          endif
+          return
+.............................................................................
+
+.
+TestClient
+. ENTRY POINT: TestClient
+. REQUIRED   :
+. RETURNED   : ClntServFlag
+. DESCRIPTION: Are we running plbclient or plbwin
+. PROGRAMMER : David Herrick March 11 2010
+.              INITIAL RELEASE
+. NOTES      :
+.         0 = PLBwin
+.         1 = PLBclient
+.         2 = PLCCLICON Console 
+.         3 = PLBCLIENT Pocket PC 
+.         4 = PLBCLIENT Hand Held 
+.         5 = PLBCLIENT Palm Top 
+          move      c0,ClntServFlag
+          Clock     Version,str35
+          scan      "cliwin",str35
+          if        equal     
+          Move      C1,ClntServFlag
+          endif
+          scan      "clicon",str35
+          if        equal
+          Move      C2,ClntServFlag
+          endif
+          scan      "cliwcepk",str35
+          if        equal
+          Move      C3,ClntServFlag
+          endif
+          scan      "cliwcehh",str35
+          if        equal
+          Move      C4,ClntServFlag
+          endif
+          scan      "cliwcept",str35
+          if        equal
+          Move      C5,ClntServFlag
+          endif
+
+          Return
+ 
+ 
+.END PATCH 1.4 ADDED LOGIC
+.START PATCH 1.8 ADDED LOGIC
+.............................................................................
+.
+. ENTRY POINT: REPLACEIT
+. REQUIRED   : #PSTRING,#PSTRING1,#PSTRING2
+. RETURNED   : #PSTRING WITH INSTANCES OF #PSTRING1 REPLACED WITH #PSTRING2
+. DESCRIPTION:
+. PROGRAMMER : ANDREW HARKINS FEBRUARY 21, 2003
+.              INITIAL RELEASE
+. NOTES      : USED TO REPLACE INSTANCES OF STRINGS WITHIN A PARENT STRING WITH ANOTHER VALID STRING.
+.                REQUIRES VALID DATA IN ALL 3 STRINGS
+.                AS PARENT STRING IS PASSED TO A TEMP. EDITTEXT BOX AND THEN REFRESHED, FORM/LENGTH
+.              POINTERS WILL BE REFRESHED.
+REPLACEIT LRoutine #PSTRING,#PSTRING1,#PSTRING2
+
+.Actual routine begins here
+          destroy   #TempEdit
+          destroy   #TempWin
+          create    #TempWin=0:0:0:0
+          create    #TempWin;#TempEdit=0:0:0:0
+          call      Trim using #PSTRING
+          if (#PSTRING = "")
+.START PATCH 4/7/2006 ASH - CODE CLEANUP
+.                   return
+                    goto ENDREPLACEIT
+.END PATCH 4/7/2006 ASH - CODE CLEANUP
+          endif
+          setitem   #TempEdit,0,""
+.
+          movefptr #PSTRING2,#NINER
+          movelptr #PSTRING2,#NINER2
+          if (#NINER = 0 | #NINER2 = 0)
+.Quit if there isn't anything in replacing Variable
+.START PATCH 4/7/2006 ASH - CODE CLEANUP
+.                   return
+                    goto ENDREPLACEIT
+.END PATCH 4/7/2006 ASH - CODE CLEANUP
+          endif
+          calc      #NINER4=(#NINER2-(#NINER-1))  .Establish length of replacing Variable
+.
+          movefptr #PSTRING1,#NINER3
+          movelptr #PSTRING1,#NINER2
+          if (#NINER3 = 0 | #NINER2 = 0)
+.Quit if there isn't anything in Variable to replace
+.START PATCH 4/7/2006 ASH - CODE CLEANUP
+.                   return
+                    goto ENDREPLACEIT
+.END PATCH 4/7/2006 ASH - CODE CLEANUP
+          endif
+          calc      #NINER2=(#NINER2-(#NINER3-1)) .Establish length of Variable to replace
+.Initialize form pointer for parent variable
+          move      C1,#NINER
+.START PATCH 2.1 ADDED LOGIC
+          movelptr #PSTRING,#NINER5
+.END PATCH 2.1 ADDED LOGIC
+          loop
+.Following is done in case #PSTRING contains a string with a form pointer NOT set to '1'.
+.Warning:  This routine will reset #PSTRING
+                    setitem   #TempEdit,0,#PSTRING
+                    getitem   #TempEdit,0,#PSTRING          .Refresh #PSTRING so form/length pointers it match data in #TempEdit
+                    reset     #PSTRING,#NINER
+                    scan      #PSTRING1,#PSTRING
+                    until not equal
+                    movefptr #PSTRING,#NINER3               .Store starting point of Variable to replace
+                    sub       "1",#NINER3
+                    calc      #NINER=(#NINER3+#NINER2)
+                    setitem   #TempEdit,1,#NINER3 .Set start point of highlight
+                    setitem   #TempEdit,2,#NINER  .Set end point of highlight
+                    setitem   #TempEdit,1,#PSTRING2
+                    getitem   #TempEdit,0,#PSTRING
+                    calc      #NINER=(#NINER3+#NINER4+1)
+.START PATCH 2.1 ADDED LOGIC
+.Prevent going beyond logical length of Master String
+                    until (#NINER > #NINER5)
+.END PATCH 2.1 ADDED LOGIC
+          repeat
+          reset     #PSTRING
+ENDREPLACEIT
+          destroy   #TempEdit
+          destroy   #TempWin
+          return
+.END PATCH 1.8 ADDED LOGIC
+.START PATCH 1.9 ADDED LOGIC
+.............................................................................
+.
+. ENTRY POINT: HexToDec
+. REQUIRED   : #PSTRING,#PBOOLEAN
+. RETURNED   : #PSTRING - UNCHANGED.  #PBOOLEAN WITH NEW DECIMAL VALUE OF HEX STRING #PSTRING
+. DESCRIPTION:
+. PROGRAMMER : ANDREW HARKINS MARCH 11, 2003
+.              INITIAL RELEASE
+. NOTES      : USED TO CONVERT A STRING OF HEX CHARACTERS IN A DECIMAL VALUE
+.                IF ROUTINE FAILS, #PBOOLEAN WILL RETURN WITH ZERO VALUE
+.                #PBOOLEAN - ALTHOUGH ORIGINALLY CONCEIVED TO ONLY HOLD BOOLEAN VALUES, IS
+.              HERE USED IN A MORE FLEXIBLE FASHION.
+HexToDec LRoutine #PSTRING,#PBOOLEAN
+          move      C0,#PBOOLEAN
+          move      "16",#NINER
+          call      Trim using #PSTRING
+          if (#PSTRING <> "")
+                    movefptr #PSTRING,#NINER2
+                    movelptr #PSTRING,#NINER3
+                    move      C0,#NINER4
+                    for #NINER5,#NINER3,#NINER2,"-1"
+                              move      C0,#NINER6
+                              reset     #PSTRING,#NINER5
+                              move      #PSTRING,#STR1
+                              if (#STR1 = "A" | #STR1 = "a")
+                                        move      "10",#NINER6
+                              elseif (#STR1 = "B" | #STR1 = "b")
+                                        move      "11",#NINER6
+                              elseif (#STR1 = "C" | #STR1 = "c")
+                                        move      "12",#NINER6
+                              elseif (#STR1 = "D" | #STR1 = "d")
+                                        move      "13",#NINER6
+                              elseif (#STR1 = "E" | #STR1 = "e")
+                                        move      "14",#NINER6
+                              elseif (#STR1 = "F" | #STR1 = "f")
+                                        move      "15",#NINER6
+                              else
+                                        type      #STR1
+                                        if not equal
+                                                  move      C0,#PBOOLEAN
+                                                  break
+                                        endif
+                              endif
+                              move      #STR1,#NINER6
+                              power     #NINER4,#NINER,#RESULT
+                              mult      #NINER6,#RESULT
+                              add       #RESULT,#PBOOLEAN
+                              add       C1,#NINER4
+                    repeat
+          endif
+EndHexToDec
+          setlptr   #PSTRING,#NINER3
+          reset     #PSTRING,#NINER2
+          return
+.............................................................................
+.
+. ENTRY POINT: UnixDateToCalcDate
+. REQUIRED   : #PSTRING,#PSTRING1
+. RETURNED   : #PSTRING - UNCHANGED.  #PSTRING1 WITH DATE IN FOLLOWING FORMAT:  CCYYMMDDHHMMSS
+. DESCRIPTION: TAKES A HEX STRING, USES HEXTODEC TO CONVERT TO DECIMAL VALUE
+.              ASSUMES UNIX HEX DATE PARAMETERS (ALL DATES STARTING ON 1/1/1970) &
+.              CALCULATES DATE.  ASSUMES CONVERTED DECIMAL VALUE REPRESENTS NUMBER
+.              OF SECONDS SINCE 12/31/1969.
+. PROGRAMMER : ANDREW HARKINS MARCH 12, 2003
+.              INITIAL RELEASE
+. NOTES      : USED TO CONVERT A UNIX HEX DATE INTO A DATE STRING
+.                IF ROUTINE FAILS, #PSTRING1 WILL RETURN CLEARED
+.                AS THIS ROUTINE CALLS ANOTHER ROUTINE WITHIN THIS INCLUDE, BE SURE
+.              THERE ARE NO CONFLICTS WITH ANY SHARED VARIABLES!!!!
+.              FOR INSTANCE - #RESULT CANNOT BE USED AS HEXTODEC MANIPULATES ITS VALUE
+UnixDateToCalcDate LRoutine #PSTRING,#PSTRING1
+          clear     #PSTRING1
+          call      HexToDec using #PSTRING,#RESULT3
+.All unfilled values are initialized to "0"
+          for #NINER,"70","220"
+                    calc      #LastDayArray(#NINER)=(365+#LastDayArray(#NINER-1))
+                    move      #NINER,#resultb
+                    calc      #modulus=(#resultb/4)
+                    if (#modulus = 0)
+                              calc      #LastDayArray(#NINER)=(#LastDayArray(#NINER)+1)
+                    endif
+          repeat
+.HEX date is calculated using GMT/UT.  Subtract 8 hours to get PST
+          sub       "28800",#RESULT3    .28800 = Number of seconds in 8 hours
+.
+          calc      #NINER2=(#RESULT3/86400)
+          for #NINER,"70","220"
+                    if (#NINER2 <= #LastDayArray(#NINER))
+                              break
+                    endif
+          repeat
+          for #NINER5,"1","11"
+                    calc      #NINER4=(#LastDayArray(#NINER-1)+#MonthArray(#NINER5+1))
+                    if (#NINER2 < #NINER4)
+                              move      #NINER5,#MM
+                              calc      #DD=(100+#NINER2-#LastDayArray(#NINER-1)-#MonthArray(#NINER5)+1)
+                              if (#NINER < 100)
+                                        calc      #Year=(1900+#NINER)
+                              elseif (#NINER < 200)
+                                        calc      #Year=(2000+(#NINER-100))
+                              elseif (#NINER < 300)
+                                        calc      #Year=(3000+(#NINER-200))
+                              endif
+                              break
+                    endif
+          repeat
+.PDT/Daylights Savings Time will add an hour back - must be determined after MM/DD is determined
+          clear     #STR1
+          if (#MM > 4 & #MM < 10)                 .May-September
+                    move      "1",#STR1
+          elseif (#MM = 4)
+                    if (#DD < 8)                  .PDT starts on first Sunday in April
+                              pack      #STR25,#Year,#MM,#DD
+                              call      CalDateToLinearDate2 using #STR25,#RESULT4
+                              call      DowFromLinearDate2 using #RESULT4,#NINER7
+                              if (#NINER7 = 1 | #NINER7 <= #DD)
+                                        move      "1",#STR1
+                              endif
+                    else
+                              move      "1",#STR1
+                    endif
+          elseif (#MM = 10)
+                    if (#DD > 24)                 .PDT ends on last Sunday in October
+                              pack      #STR25,#Year,#MM,#DD
+                              call      CalDateToLinearDate2 using #STR25,#RESULT4
+                              call      DowFromLinearDate2 using #RESULT4,#NINER7
+                              if (#NINER7 = 1 )
+                                        move      "1",#STR1
+                              else
+                                        calc      #NINER7=(#NINER7+31-#DD)
+                                        if (#NINER7 > 6)
+                                                  move      "1",#STR1
+                                        endif
+                              endif
+                    else
+                              move      "1",#STR1
+                    endif
+          endif
+          if (#STR1 = "1")
+.Add back 1 hour.  I must re-run this logic in case adding back the hour will change the date.
+                    add       "3600",#RESULT3
+                    calc      #NINER2=(#RESULT3/86400)
+                    for #NINER,"70","220"
+                              if (#NINER2 <= #LastDayArray(#NINER))
+                                        break
+                              endif
+                    repeat
+                    for #NINER5,"1","11"
+                              calc      #NINER4=(#LastDayArray(#NINER-1)+#MonthArray(#NINER5+1))
+                              if (#NINER2 < #NINER4)
+                                        move      #NINER5,#MM
+                                        calc      #DD=(100+#NINER2-#LastDayArray(#NINER-1)-#MonthArray(#NINER5)+1)
+                                        if (#NINER < 100)
+                                                  calc      #Year=(1900+#NINER)
+                                        elseif (#NINER < 200)
+                                                  calc      #Year=(2000+(#NINER-100))
+                                        elseif (#NINER < 300)
+                                                  calc      #Year=(3000+(#NINER-200))
+                                        endif
+                                        break
+                              endif
+                    repeat
+          endif
+.
+          calc      #RESULT2=(#RESULT3-(#LastDayArray(#NINER-1)+#MonthArray(#NINER5)+#DD-1)*86400)
+.
+          calc      #Hour=(#RESULT2/3600)
+          calc      #Minute=((#RESULT2-(#Hour*3600))/60)
+          calc      #Second=(#RESULT2-((#Hour*3600)+(#Minute*60)))
+          pack      #PSTRING1,#Year,#MM,#DD,#Hour,#Minute,#Second
+          rep       zfill,#PSTRING1
+          return
+.VERSION WITHOUT LOGIC TO AMEND GMT TO PST/PDT
+.UnixDateToCalcDate LRoutine #PSTRING,#PSTRING1
+.         clear     #PSTRING1
+.         call      HexToDec using #PSTRING,#RESULT3
+..All unfilled values are initialized to "0"
+.         for #NINER,"70","220"
+.                   calc      #LastDayArray(#NINER)=(365+#LastDayArray(#NINER-1))
+.                   move      #NINER,#resultb
+.                   calc      #modulus=(#resultb/4)
+.                   if (#modulus = 0)
+.                             calc      #LastDayArray(#NINER)=(#LastDayArray(#NINER)+1)
+.                   endif
+.         repeat
+.         calc      #NINER2=(#RESULT3/86400)
+.         for #NINER,"70","220"
+.                   if (#NINER2 <= #LastDayArray(#NINER))
+.                             break
+.                   endif
+.         repeat
+.         for #NINER5,"1","11"
+.                   calc      #NINER4=(#LastDayArray(#NINER-1)+#MonthArray(#NINER5+1))
+.                   if (#NINER2 < #NINER4)
+.                             move      #NINER5,#MM
+.                             calc      #DD=(100+#NINER2-#LastDayArray(#NINER-1)-#MonthArray(#NINER5)+1)
+.                             if (#NINER < 100)
+.                                       calc      #Year=(1900+#NINER)
+.                             elseif (#NINER < 200)
+.                                       calc      #Year=(2000+(#NINER-100))
+.                             elseif (#NINER < 300)
+.                                       calc      #Year=(3000+(#NINER-200))
+.                             endif
+.                             break
+.                   endif
+.         repeat
+.         calc      #RESULT2=(#RESULT3-(#LastDayArray(#NINER-1)+#MonthArray(#NINER5)+#DD-1)*86400)
+..
+.         calc      #Hour=(#RESULT2/3600)
+.         calc      #Minute=((#RESULT2-(#Hour*3600))/60)
+.         calc      #Second=(#RESULT2-((#Hour*3600)+(#Minute*60)))
+.         pack      #PSTRING1,#Year,#MM,#DD,#Hour,#Minute,#Second
+.         rep       zfill,#PSTRING1
+.         return
+.END PATCH 1.9 ADDED LOGIC
+........................................
+.START PATCH 2.0 ADDED LOGIC
+.............................................................................
+.
+. ENTRY POINT: RemoveControlChars
+. REQUIRED   : #PEDIT
+. RETURNED   : #PEDIT - WITH CONTROL CHARACTERS STRIPPED OUT
+. DESCRIPTION: TAKES AN EDIT TEXT BOX AND REPLACED ALL CONTROL CHARACTERS LESS THAN B1 AND GREATER THAN NEWLINE WITH A BLANK CHARACTER
+.              THIS CODE WAS POSTED ON WEBBOARD USING PARAMETERS OF B1 AND TILDE
+.                I HAVE AMENDED AS WE USE THE NEWLINE CHARACTER IN PRINTING PROGRAMS
+. PROGRAMMER : ANDREW HARKINS APRIL 09, 2003 (PULLED FROM CODE SUPLIED BY B. SWING & S. ELLIOT FROM CLAY COUNTY, MO)
+.              INITIAL RELEASE
+. NOTES      : #STRING CURRENTLY SET TO LENGTH OF 5000, THIS WILL NEED TO INCREASE IF EDITTEXT BOXES WILL HOLD MORE THAN THAT
+.
+RemoveControlChars Routine #PEDIT
+          clear     #STRING
+          unpack    #STRING,#STRING               .Clear any garbage that used to be in there
+          getitem   #PEDIT,0,#STRING
+          count     #NINER,#STRING
+          if (#NINER > 0)
+                    for #NINER2,"1",#NINER
+                              reset     #STRING,#NINER2
+                              move      #STRING,#STR1
+                              if (#STR1 < " " | #STR1 > newline)  // we got a control character
+                                        pack      #STR2,#STR1," "
+                                        reset     #STRING               // reposition to beginning
+                                        setlptr   #STRING               // reposition to end of data
+                                        replace   #STR2,#STRING
+                                        reset     #STRING,#NINER2        // reposition back to current location
+                              endif
+                    repeat
+                    reset     #STRING
+                    setitem   #PEDIT,0,#STRING
+          endif
+          return
+.END PATCH 2.0 ADDED LOGIC
+........................................
+.START PATCH 2.2 ADDED LOGIC
+.............................................................................
+.
+. ENTRY POINT: Debug
+. REQUIRED   : Nada
+. RETURNED   : Nada
+. DESCRIPTION: Prevides a handy label for debugging
+. PROGRAMMER : David Herrick 2005March02
+.              INITIAL RELEASE
+Debug
+          Return
+.End PATCH 2.2 ADDED LOGIC
+.............................................................................
+.START PATCH 2.4 ADDED LOGIC
+.............................................................................
+.
+. ENTRY POINT: VerifyDate
+. REQUIRED   : 1 form variable and 1 Edit Text Box
+. SYNTAX     : "call VerifyDate giving formVar using EditTextBox"
+. RETURNED   : formVar: 0 = invalid date, 1 = valid date, 3 = empty date
+. DESCRIPTION: Determines whether user's date is valid or not
+. PROGRAMMER : David Strahan 2006April7
+.                Initial Release
+VerifyDate          function
+PEdit5              EditText  ^  // input params b/t function and entry
+.
+          entry
+RetVal    form      1 // the following are local vars
+cc2       dim       2
+mm2       dim       2
+dd2       dim       2
+yy2       dim       2
+.
+          destroy #TempEDT // EditDateTime
+          create #TempEDT=16:17:35:42
+          clear #str25
+          getitem PEdit5,0,#str25  // put contents of passed editTextBox into #str25
+          call Trim using #str25
+          call      RemoveChar, #str25, SLASH  // in case date is in this format 04/05/2006
+                    count     result,#str25
+          if (result = 0)               // date is empty
+                    move "2", RetVal
+                    goto EndVerifyDate
+          elseif (result <> 8)          // date is not 8 digits long
+                    move "0", RetVal
+                    goto EndVerifyDate
+          endif
+          setitem #TempEDT,0,"19411207"  // initialize EDT to "pearl harbor"
+          //  need to get ddmmccyy into ccyymmdd
+          unpack #str25,mm2,dd2,cc2,yy2
+          clear #str25
+          pack #str25,cc2,yy2,mm2,dd2
+          call trim using #str25
+.          
+          setitem #TempEDT,0, #str25  // this is the value to be tested against
+          clear #str25
+          getitem #TempEDT,0, #str25   // see if new date is valid-or if pearl harbor remains
+          setlptr   #str25 TO 8  // chop off the time part of any date...
+          if (#str25 = "19411207")  // user date is not valid
+                    move "0", RetVal
+          else
+                    move "1", RetVal
+          endif
+EndVerifyDate
+          destroy #TempEDT
+          return using RetVal
+          functionend
+.END PATCH 2.4 ADDED LOGIC
+.begin patch 2.6 new routines
+.PDF995Auto   check ini file if auto is on turn it off and set flag to restore .ini file if necesary
+PDF995Auto
+                              call      GetPDfPath
+
+                                        pack      FileString from PdfPath,"\res\pdf995.ini"
+                                        pack      FileString1 from PdfPath,"\res\pdf995.out"
+                                        pack      FileString2 from PdfPath,"\res\pdf995.sav"
+.                                        else
+.                                        pack      FileString from sysdrive,"\progra~2\pdf995\res\pdf995.ini"
+.                                        pack      FileString1 from sysdrive,"\progra~2\pdf995\res\pdf995.out"
+.                                        pack      FileString2 from sysdrive,"\progra~3\pdf995\res\pdf995.sav"
+.                                        endif
+
+         pack      str45 from PDFPATH,"\res\pdf995.ini"
+         call      "GU$INI;GET_FROM_INI" USING str45:
+                   "Parameters":
+                   "Autolaunch":
+                   STR10
+          if        over
+.autolaunc did not exist
+          move      No to Reset995flag
+          Call      SetPDFFlag
+          return
+          endif
+          reset     str10
+          call      trim      using str10
+          move      str10,str1
+          if        (str1 = "1")
+          move      Yes to Reset995flag
+.cleanup any old save file
+         pack      KeyLocation,"Erasing old Save FIle "
+         pack      taskname from pdfpath,"\res\pdf995.Sav"
+         erase     taskname
+         move      "PDF995 SAVE",Filename
+         pack      KeyLocation,"Copy Ini to Sav "
+         CopyFile    Filestring,filestring2
+          
+          Call      SetPDFAuto
+          RETUrn
+          else
+          move      No to Reset995flag
+          REturn
+          endif          
+
+.old code below
+
+                              move      "PDF995 Copy",Filename
+                              pack      KeyLocation,"Prepping FIle "
+                              Trap      Filegone giving error if IO
+                              Open      TestFile,FileString
+                              Prepare   TempFile,Filestring1
+                              Loop
+                                        move      "PDF995 Copy",Filename
+                                        pack      KeyLocation,"Reading FIle "
+                                        Read      TestFile,seq;Taskname
+                                        Until Over
+                                        Scan      "Autolaunch=1" in taskname
+                                        If equal
+                                                  move      Yes to Reset995flag
+                                                  reset     taskname
+                                                  clear     taskname                                          
+                                                  Move      "Autolaunch=0" to taskname
+                                        endif
+                                        move      "PDF995 Copy",Filename
+                                        pack      KeyLocation,"Writing FIle "
+                                        write     tempfile,Seq;taskname
+                              Repeat
+
+                              move      "PDF995 Copy",Filename
+                              pack      KeyLocation,"WEOF FIle "
+                              weof      tempfile,seq
+                              move      "PDF995 Copy",Filename
+                              pack      KeyLocation,"Closing Output FIle "
+                              close     tempfile
+                              move      "PDF995 Copy",Filename
+                              pack      KeyLocation,"Closing Input FIle "
+                              close     testfile
+                              move      "PDF995 Copy",Filename
+                              pack      KeyLocation,"Erasing Save FIle "
+
+.                              Path      Exist,"c:\progra~2"              .=program files (x86)  64 bit os
+.                              if        over
+                              pack      taskname from pdfpath,"\res\pdf995.Sav"
+                              erase     taskname
+.                              Erase     "c:\progra~1\pdf995\res\pdf995.Sav"
+.                              else
+.                              Erase     "c:\progra~2\pdf995\res\pdf995.Sav"
+.                              endif                              
+                              Erase     Filestring2
+                              move      "PDF995 Rename",Filename
+                              pack      KeyLocation,"Ren Ini to Sav "
+.                              Rename    "c:\progra~1\\pdf995\res\pdf995.ini","c:\progra~1\\pdf995\res\pdf995.Sav"
+                              Rename    Filestring,filestring2
+                              move      "PDF995 Rename",Filename
+                              pack      KeyLocation,"Ren out to Ini"
+.                              Rename    "c:\progra~1\\pdf995\res\pdf995.out","c:\progra~1\\pdf995\res\pdf995.ini"
+                              rename    filestring1,filestring
+          Return                        
+.PDF995Auto0   restore ini flag is set on if so restore
+PDF995Auto0
+               if (Reset995Flag = yes)
+                              call      GetPDfPath
+                              Trap      Filegone giving error if IO
+.                              Path      Exist,"c:\progra~2"              .=program files (x86)  64 bit os
+.                              if        over
+                              pack      FileString from PDFPATH,"\res\pdf995.ini"
+                              pack      FileString2 from PDFPATH,"\res\pdf995.sav"
+.                              else
+.                              pack      FileString from sysdrive,"\progra~2\pdf995\res\pdf995.ini"
+.                              pack      FileString2 from sysdrive,"\progra~2\pdf995\res\pdf995.sav"
+.                              endif
+
+                              move      "PDF995 Restore",Filename
+                              pack      KeyLocation,"Erase temp ini FIle "
+                              Erase     Filestring
+                              move      "PDF995 Restore",Filename
+                              pack      KeyLocation,"Ren ini  to Save "
+                              Rename    filestring2,filestring
+               endif
+          Return
+
+.end patch 2.6 new routines
+SetMouseBusy
+              setmode         *mcursor=*wait
+              return
+SetMouseFree
+              setmode         *mcursor=*arrow
+              return
+.....................................................................................................................................
+.01 June 2012
+calcstarttime
+          Clock     Timestamp,str12
+          uNPACK    STR12 INTO STR8,n2,n3
+          if        (n2 < "23")        
+                    if        (n3 < "56")
+                    add       c3,n3
+                    else
+                    move      c2,n3
+                    add       c1,n2
+                    endif
+          Else
+                    if        (n3 < "56")
+                    add       c3,n3
+                    else
+                    move      c2,n3
+                    Move      c0,n2              
+                    endif
+          endif
+          move      n2,Hours
+          move      n3,n2
+          move      n2,Minutes
+          return

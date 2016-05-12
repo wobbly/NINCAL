@@ -1,0 +1,36 @@
+<!-- custom content goes here -->
+<script language="javascript">
+
+function shipSub(lrnumber)
+{
+    document.statusrpt1Form.cgiordernum.value = lrnumber;
+    document.statusrpt1Form.cgifunction.value = 2;
+    document.statusrpt1Form.submit();
+}
+
+</script>
+
+<form action='statusrpt.plc' name='statusrpt1Form' id='statusrpt1Form' method='POST'>
+    <input type='hidden' name='cgifunction' value='1' />
+    <input type='hidden' name='SID' value='<%=SID%>' />
+    <input type='hidden' name='cgilistnum' value='<%=cgilistnum%>' />
+    <input type='hidden' name='cgiordernum' value='<%=cgiordernum%>' />
+    <table border='0' cellpadding='2' cellspacing='2' align='center'>
+        <tr>
+            <td class='title' align=center>
+                Order Number <%=cgiordernum%>
+                <br><br>
+            </td>
+        </tr>
+        <tr>
+            <td colspan='2'>
+                <span class='errorMsg'><%=errorMsg%></span>
+                <br><br>
+            </td>
+        </tr>
+
+    </table>
+    <input type='hidden' name='cgidatasource' value='<%=cgidatasource%>' />
+    <input type='hidden' name='cgireadpos' value='<%=cgireadpos%>' />
+</form>
+<!-- end custom content -->

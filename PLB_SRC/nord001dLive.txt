@@ -1,0 +1,3873 @@
+Order5CheckDate                 CheckBox
+Order5ClearExcRent              Button
+Order5ClearExchange             Button
+Order5ClearRent                 Button
+Order5ComboCallerSearch         ComboBox
+Order5ComboContactSearch        ComboBox
+Order5ComboTypeSearch           ComboBox
+Order5Delete                    Button
+Order5Deny                      Button
+Order5EditFromSearch            EditText
+Order5EditListSearch            EditText
+Order5EditMlrSearch             EditText
+Order5EditSpecial1              EditText
+Order5EditSpecial3              EditText
+Order5EditSpecial4              EditText
+Order5EditToSearch              EditText
+Order5Email                     Button
+Order5Fax                       Button
+Order5GroupBox001               GroupBox
+Order5ListView                  ListView
+Order5ListView2                 ListView
+Order5ListView3                 ListView
+Order5ListView4                 ListView
+Order5ListView5                 ListView
+Order5ListView6                 ListView
+Order5OK                        Button
+Order5Print                     Button
+Order5StatCallerSearch          StatText
+Order5StatComboSearch           StatText
+Order5StatFromSearch            StatText
+Order5StatList                  StatText
+Order5StatListName              StatText
+Order5StatListSearch            StatText
+Order5StatMailer                StatText
+Order5StatMailerName            StatText
+Order5StatMlrSearch             StatText
+Order5StatNotes                 StatText
+Order5StatOffer                 StatText
+Order5StatOfferName             StatText
+Order5StatOwner                 StatText
+Order5StatOwnerName             StatText
+Order5StatSearch                StatText
+Order5StatSpecial               StatText
+Order5StatSpecial1              StatText
+Order5StatSpecialView           StatText
+Order5StatToSearch              StatText
+Order5StatType                  StatText
+Order5Stop                      Button
+Order5Switch                    Button
+#EventType 	Form 	4
+#EventResult 	Form 	11
+#EventObjId 	Form 	8
+#EventChar 	Dim 	1
+#EventMod 	Form 	4
+
+		SetMode *Pixel=On
+		Call CREATE_NORD001D
+		Loop
+		  EventWait
+		Repeat
+		Stop
+
+CREATE_NORD001D
+ 	CREATE 	Order5CheckDate=86:116:230:290,"Record Date":
+ 	BgColor=2147483663:
+ 	DropId=0:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	HelpId=0:
+ 	ObjectId=0:
+ 	TabId=129:
+ 	ZOrder=2630:
+ 	Appearance=1:
+ 	Tristate=0:
+ 	GroupId=0:
+ 	Font="'>MS Sans Serif'(8)":
+ 	ToolTip="":
+ 	AlignText=2:
+ 	CauseValid=0:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5ClearExcRent=415:435:360:420,"Exc/Rent":
+ 	DropId=0:
+ 	Enabled=0:
+ 	HelpId=60:
+ 	ObjectId=0:
+ 	TabId=210:
+ 	ZOrder=2420:
+ 	Cancel=0:
+ 	Default=0:
+ 	Font="'>MS Sans Serif'(8)":
+ 	Icon=0:
+ 	Picture=0:
+ 	ToolTip="":
+ 	CauseValid=0:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5ClearExchange=375:395:360:420,"Exch.":
+ 	DropId=0:
+ 	Enabled=0:
+ 	HelpId=60:
+ 	ObjectId=0:
+ 	TabId=190:
+ 	ZOrder=1650:
+ 	Cancel=0:
+ 	Default=0:
+ 	Font="'>MS Sans Serif'(8)":
+ 	Icon=0:
+ 	Picture=0:
+ 	ToolTip="":
+ 	CauseValid=0:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5ClearRent=395:415:360:420,"Rent":
+ 	DropId=0:
+ 	Enabled=0:
+ 	HelpId=60:
+ 	ObjectId=0:
+ 	TabId=200:
+ 	ZOrder=2340:
+ 	Cancel=0:
+ 	Default=0:
+ 	Font="'>MS Sans Serif'(8)":
+ 	Icon=0:
+ 	Picture=0:
+ 	ToolTip="":
+ 	CauseValid=0:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5ComboCallerSearch=35:56:55:225,"","M;.;.;.;.;.;.;.;.;.;.":
+ 	BgColor=16777215:
+ 	DropId=0:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	HelpId=0:
+ 	ObjectId=0:
+ 	Sorted=0:
+ 	TabId=100:
+ 	ZOrder=1680:
+ 	Appearance=1:
+ 	AutoRedraw=1:
+ 	ScrollBar=4:
+ 	ComboStyle=2:
+ 	Font="'>MS Sans Serif'(8)":
+ 	ToolTip="":
+ 	CauseValid=0:
+ 	Dock=3:
+ 	Anchor=7:
+ 	RowsVisible=0:
+ 	ScrollHide=0:
+ 	HorzExtent=0
+
+ 	CREATE 	Order5ComboContactSearch=55:76:55:225,"","M;.;.;.;.;.;.;.;.;.;.":
+ 	BgColor=16777215:
+ 	DropId=0:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	HelpId=0:
+ 	ObjectId=0:
+ 	Sorted=0:
+ 	TabId=110:
+ 	ZOrder=2070:
+ 	Appearance=1:
+ 	AutoRedraw=1:
+ 	ScrollBar=4:
+ 	ComboStyle=2:
+ 	Font="'>MS Sans Serif'(8)":
+ 	ToolTip="":
+ 	CauseValid=0:
+ 	Dock=3:
+ 	Anchor=7:
+ 	RowsVisible=0:
+ 	ScrollHide=0:
+ 	HorzExtent=0
+
+ 	CREATE 	Order5ComboTypeSearch=110:131:55:225,"","M;LCR's To Clear;LCR's Already Cleared;LCR's Already Faxed To Owner;LCR's Denied":
+ 	BgColor=16777215:
+ 	DropId=0:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	HelpId=0:
+ 	ObjectId=0:
+ 	Sorted=0:
+ 	TabId=130:
+ 	ZOrder=2390:
+ 	Appearance=1:
+ 	AutoRedraw=1:
+ 	ScrollBar=4:
+ 	ComboStyle=2:
+ 	Font="'>MS Sans Serif'(8)":
+ 	ToolTip="":
+ 	CauseValid=0:
+ 	Dock=3:
+ 	Anchor=7:
+ 	RowsVisible=0:
+ 	ScrollHide=0:
+ 	HorzExtent=0
+
+ 	CREATE 	Order5Delete=395:415:480:540,"Delete":
+ 	DropId=0:
+ 	Enabled=0:
+ 	HelpId=0:
+ 	ObjectId=0:
+ 	TabId=1470:
+ 	ZOrder=2640:
+ 	Cancel=0:
+ 	Default=0:
+ 	Font="'>MS Sans Serif'(8)":
+ 	Icon=0:
+ 	Picture=0:
+ 	ToolTip="":
+ 	CauseValid=0:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5Deny=415:435:420:480,"&Deny":
+ 	DropId=0:
+ 	Enabled=0:
+ 	HelpId=0:
+ 	ObjectId=0:
+ 	TabId=240:
+ 	ZOrder=1000:
+ 	Cancel=0:
+ 	Default=0:
+ 	Font="'>MS Sans Serif'(8)":
+ 	Icon=0:
+ 	Picture=0:
+ 	ToolTip="":
+ 	CauseValid=0:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5EditFromSearch=92:110:55:120:
+ 	Alignment=2:
+ 	BgColor=16777215:
+ 	Border=1:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	EditType=2:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	HelpId=0:
+ 	EditHideSel=1:
+ 	MaxChars=10:
+ 	MultiLine=1:
+ 	Static=0:
+ 	ObjectId=0:
+ 	ReadOnly=0:
+ 	TabId=126:
+ 	WordWrap=0:
+ 	ZOrder=2600:
+ 	ScrollBar=3:
+ 	Font="'>MS Sans Serif'(8)":
+ 	MaxCols=32000:
+ 	OverType=0:
+ 	SelectAll=1:
+ 	Password=0:
+ 	ClipSib=1:
+ 	ToolTip="":
+ 	CauseValid=0:
+ 	Dock=3:
+ 	Anchor=7:
+ 	LeftMargin=0:
+ 	RightMargin=0:
+ 	PasswordChar="":
+ 	TextOutConv=1:
+ 	AutoEnter=0
+
+ 	CREATE 	Order5EditListSearch=75:93:55:105:
+ 	Alignment=2:
+ 	BgColor=16777215:
+ 	Border=1:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	EditType=2:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	HelpId=0:
+ 	EditHideSel=1:
+ 	MaxChars=6:
+ 	MultiLine=1:
+ 	Static=0:
+ 	ObjectId=0:
+ 	ReadOnly=0:
+ 	TabId=120:
+ 	WordWrap=0:
+ 	ZOrder=2090:
+ 	ScrollBar=3:
+ 	Font="'>MS Sans Serif'(8)":
+ 	MaxCols=32000:
+ 	OverType=0:
+ 	SelectAll=1:
+ 	Password=0:
+ 	ClipSib=1:
+ 	ToolTip="":
+ 	CauseValid=0:
+ 	Dock=3:
+ 	Anchor=7:
+ 	LeftMargin=0:
+ 	RightMargin=0:
+ 	PasswordChar="":
+ 	TextOutConv=1:
+ 	AutoEnter=0
+
+ 	CREATE 	Order5EditMlrSearch=75:93:175:225:
+ 	Alignment=2:
+ 	BgColor=16777215:
+ 	Border=1:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	EditType=2:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	HelpId=0:
+ 	EditHideSel=1:
+ 	MaxChars=4:
+ 	MultiLine=1:
+ 	Static=0:
+ 	ObjectId=0:
+ 	ReadOnly=0:
+ 	TabId=123:
+ 	WordWrap=0:
+ 	ZOrder=2500:
+ 	ScrollBar=3:
+ 	Font="'>MS Sans Serif'(8)":
+ 	MaxCols=32000:
+ 	OverType=0:
+ 	SelectAll=1:
+ 	Password=0:
+ 	ClipSib=1:
+ 	ToolTip="":
+ 	CauseValid=0:
+ 	Dock=3:
+ 	Anchor=7:
+ 	LeftMargin=0:
+ 	RightMargin=0:
+ 	PasswordChar="":
+ 	TextOutConv=1:
+ 	AutoEnter=0
+
+ 	CREATE 	Order5EditSpecial1=375:435:40:360:
+ 	Alignment=2:
+ 	BgColor=16777215:
+ 	Border=1:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	EditType=1:
+ 	Enabled=0:
+ 	FgColor=2147483666:
+ 	HelpId=0:
+ 	EditHideSel=1:
+ 	MaxChars=674:
+ 	MultiLine=14:
+ 	Static=0:
+ 	ObjectId=0:
+ 	ReadOnly=0:
+ 	TabId=180:
+ 	WordWrap=1:
+ 	ZOrder=1000:
+ 	ScrollBar=4:
+ 	Font="'>Courier New'(10)":
+ 	MaxCols=32000:
+ 	OverType=0:
+ 	SelectAll=0:
+ 	Password=0:
+ 	ClipSib=1:
+ 	ToolTip="":
+ 	CauseValid=0:
+ 	Dock=3:
+ 	Anchor=7:
+ 	LeftMargin=0:
+ 	RightMargin=0:
+ 	PasswordChar="":
+ 	TextOutConv=1:
+ 	AutoEnter=0
+
+ 	CREATE 	Order5EditSpecial3=70:150:310:630:
+ 	Alignment=2:
+ 	BgColor=16777215:
+ 	Border=1:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	EditType=1:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	HelpId=0:
+ 	EditHideSel=1:
+ 	MaxChars=674:
+ 	MultiLine=100:
+ 	Static=0:
+ 	ObjectId=0:
+ 	ReadOnly=1:
+ 	TabId=1390:
+ 	WordWrap=1:
+ 	ZOrder=5:
+ 	ScrollBar=4:
+ 	Font="'>Courier New'(10)":
+ 	MaxCols=32000:
+ 	OverType=0:
+ 	SelectAll=0:
+ 	Password=0:
+ 	ClipSib=1:
+ 	ToolTip="":
+ 	CauseValid=0:
+ 	Dock=3:
+ 	Anchor=7:
+ 	LeftMargin=0:
+ 	RightMargin=0:
+ 	PasswordChar="":
+ 	TextOutConv=1:
+ 	AutoEnter=0
+
+ 	CREATE 	Order5EditSpecial4=70:150:310:630:
+ 	Alignment=2:
+ 	BgColor=16777215:
+ 	Border=1:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	EditType=1:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	HelpId=0:
+ 	EditHideSel=1:
+ 	MaxChars=674:
+ 	MultiLine=100:
+ 	Static=0:
+ 	ObjectId=0:
+ 	ReadOnly=1:
+ 	TabId=1480:
+ 	WordWrap=1:
+ 	ZOrder=10:
+ 	ScrollBar=4:
+ 	Font="'>Courier New'(10)":
+ 	MaxCols=32000:
+ 	OverType=0:
+ 	SelectAll=0:
+ 	Password=0:
+ 	ClipSib=1:
+ 	ToolTip="":
+ 	CauseValid=0:
+ 	Dock=3:
+ 	Anchor=7:
+ 	LeftMargin=0:
+ 	RightMargin=0:
+ 	PasswordChar="":
+ 	TextOutConv=1:
+ 	AutoEnter=0
+
+ 	CREATE 	Order5EditToSearch=92:110:160:225:
+ 	Alignment=2:
+ 	BgColor=16777215:
+ 	Border=1:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	EditType=2:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	HelpId=0:
+ 	EditHideSel=1:
+ 	MaxChars=10:
+ 	MultiLine=1:
+ 	Static=0:
+ 	ObjectId=0:
+ 	ReadOnly=0:
+ 	TabId=128:
+ 	WordWrap=0:
+ 	ZOrder=2610:
+ 	ScrollBar=3:
+ 	Font="'>MS Sans Serif'(8)":
+ 	MaxCols=32000:
+ 	OverType=0:
+ 	SelectAll=1:
+ 	Password=0:
+ 	ClipSib=1:
+ 	ToolTip="":
+ 	CauseValid=0:
+ 	Dock=3:
+ 	Anchor=7:
+ 	LeftMargin=0:
+ 	RightMargin=0:
+ 	PasswordChar="":
+ 	TextOutConv=1:
+ 	AutoEnter=0
+
+ 	CREATE 	Order5Email=395:415:420:480,"E-Mail":
+ 	DropId=0:
+ 	Enabled=0:
+ 	HelpId=0:
+ 	ObjectId=0:
+ 	TabId=230:
+ 	ZOrder=1600:
+ 	Cancel=0:
+ 	Default=0:
+ 	Font="'>MS Sans Serif'(8)":
+ 	Icon=0:
+ 	Picture=0:
+ 	ToolTip="":
+ 	CauseValid=0:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5Fax=375:395:420:480,"F&ax":
+ 	DropId=0:
+ 	Enabled=0:
+ 	HelpId=0:
+ 	ObjectId=0:
+ 	TabId=220:
+ 	ZOrder=1670:
+ 	Cancel=0:
+ 	Default=0:
+ 	Font="'>MS Sans Serif'(8)":
+ 	Icon=0:
+ 	Picture=0:
+ 	ToolTip="":
+ 	CauseValid=0:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5GroupBox001=30:135:10:300:
+ 	BgColor=2147483663:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	ObjectId=0:
+ 	Title="":
+ 	ZOrder=0:
+ 	BackStyle=1:
+ 	Font="'>MS Sans Serif'(8)":
+ 	ToolTip="":
+ 	Anchor=7
+
+ 	CREATE 	Order5ListView=185:375:10:630:
+ 	BgColor=16777215:
+ 	Border=1:
+ 	DropId=0:
+ 	Enabled=0:
+ 	FgColor=2147483666:
+ 	HelpId=0:
+ 	ObjectId=0:
+ 	TabId=170:
+ 	ZOrder=100:
+ 	Appearance=1:
+ 	AutoRedraw=1:
+ 	Font="'>Arial'(8)":
+ 	HideSel=0:
+ 	ViewStyle=3:
+ 	MultiSelect=1:
+ 	Arrange=3:
+ 	HideColHdr=0:
+ 	LabelWrap=0:
+ 	SortOrder=1:
+ 	SortHeader=1:
+ 	ToolTip="":
+ 	FullRow=1:
+ 	CauseValid=0:
+ 	CheckBox=0:
+ 	GridLine=0:
+ 	Activate=1:
+ 	HoverSel=0:
+ 	HotTrack=0:
+ 	HoverTime=0:
+ 	Dock=3:
+ 	Anchor=7:
+ 	OsEventMask=0
+
+ 	CREATE 	Order5ListView2=185:375:10:630:
+ 	BgColor=16777215:
+ 	Border=1:
+ 	DropId=0:
+ 	Enabled=0:
+ 	FgColor=2147483666:
+ 	HelpId=0:
+ 	ObjectId=0:
+ 	TabId=1300:
+ 	ZOrder=100:
+ 	Appearance=1:
+ 	AutoRedraw=1:
+ 	Font="'>Arial'(8)":
+ 	HideSel=0:
+ 	ViewStyle=3:
+ 	MultiSelect=1:
+ 	Arrange=3:
+ 	HideColHdr=0:
+ 	LabelWrap=0:
+ 	SortOrder=1:
+ 	SortHeader=1:
+ 	ToolTip="":
+ 	FullRow=1:
+ 	CauseValid=0:
+ 	CheckBox=0:
+ 	GridLine=0:
+ 	Activate=1:
+ 	HoverSel=0:
+ 	HotTrack=0:
+ 	HoverTime=0:
+ 	Dock=3:
+ 	Anchor=7:
+ 	OsEventMask=0
+
+ 	CREATE 	Order5ListView3=185:375:10:630:
+ 	BgColor=16777215:
+ 	Border=1:
+ 	DropId=0:
+ 	Enabled=0:
+ 	FgColor=2147483666:
+ 	HelpId=0:
+ 	ObjectId=0:
+ 	TabId=1310:
+ 	ZOrder=200:
+ 	Appearance=1:
+ 	AutoRedraw=1:
+ 	Font="'>Arial'(8)":
+ 	HideSel=0:
+ 	ViewStyle=3:
+ 	MultiSelect=1:
+ 	Arrange=3:
+ 	HideColHdr=0:
+ 	LabelWrap=0:
+ 	SortOrder=1:
+ 	SortHeader=1:
+ 	ToolTip="":
+ 	FullRow=1:
+ 	CauseValid=0:
+ 	CheckBox=0:
+ 	GridLine=0:
+ 	Activate=1:
+ 	HoverSel=0:
+ 	HotTrack=0:
+ 	HoverTime=0:
+ 	Dock=3:
+ 	Anchor=7:
+ 	OsEventMask=0
+
+ 	CREATE 	Order5ListView4=185:375:10:630:
+ 	BgColor=16777215:
+ 	Border=1:
+ 	DropId=0:
+ 	Enabled=0:
+ 	FgColor=2147483666:
+ 	HelpId=0:
+ 	ObjectId=0:
+ 	TabId=1310:
+ 	ZOrder=200:
+ 	Appearance=1:
+ 	AutoRedraw=1:
+ 	Font="'>Arial'(8)":
+ 	HideSel=0:
+ 	ViewStyle=3:
+ 	MultiSelect=1:
+ 	Arrange=3:
+ 	HideColHdr=0:
+ 	LabelWrap=0:
+ 	SortOrder=2:
+ 	SortHeader=1:
+ 	ToolTip="":
+ 	FullRow=1:
+ 	CauseValid=0:
+ 	CheckBox=0:
+ 	GridLine=0:
+ 	Activate=1:
+ 	HoverSel=0:
+ 	HotTrack=0:
+ 	HoverTime=0:
+ 	Dock=3:
+ 	Anchor=7:
+ 	OsEventMask=0
+
+ 	CREATE 	Order5ListView5=185:375:10:630:
+ 	BgColor=16777215:
+ 	Border=1:
+ 	DropId=0:
+ 	Enabled=0:
+ 	FgColor=2147483666:
+ 	HelpId=0:
+ 	ObjectId=0:
+ 	TabId=1500:
+ 	ZOrder=2680:
+ 	Appearance=1:
+ 	AutoRedraw=1:
+ 	Font="'>Arial'(8)":
+ 	HideSel=0:
+ 	ViewStyle=3:
+ 	MultiSelect=1:
+ 	Arrange=3:
+ 	HideColHdr=0:
+ 	LabelWrap=0:
+ 	SortOrder=2:
+ 	SortHeader=1:
+ 	ToolTip="":
+ 	FullRow=1:
+ 	CauseValid=0:
+ 	CheckBox=0:
+ 	GridLine=0:
+ 	Activate=1:
+ 	HoverSel=0:
+ 	HotTrack=0:
+ 	HoverTime=0:
+ 	Dock=3:
+ 	Anchor=7:
+ 	OsEventMask=0
+
+ 	CREATE 	Order5ListView6=185:375:10:630:
+ 	BgColor=16777215:
+ 	Border=1:
+ 	DropId=0:
+ 	Enabled=0:
+ 	FgColor=2147483666:
+ 	HelpId=0:
+ 	ObjectId=0:
+ 	TabId=1510:
+ 	ZOrder=2690:
+ 	Appearance=1:
+ 	AutoRedraw=1:
+ 	Font="'>Arial'(8)":
+ 	HideSel=0:
+ 	ViewStyle=3:
+ 	MultiSelect=1:
+ 	Arrange=3:
+ 	HideColHdr=0:
+ 	LabelWrap=0:
+ 	SortOrder=2:
+ 	SortHeader=1:
+ 	ToolTip="":
+ 	FullRow=1:
+ 	CauseValid=0:
+ 	CheckBox=0:
+ 	GridLine=0:
+ 	Activate=1:
+ 	HoverSel=0:
+ 	HotTrack=0:
+ 	HoverTime=0:
+ 	Dock=3:
+ 	Anchor=7:
+ 	OsEventMask=0
+
+ 	CREATE 	Order5OK=35:65:230:260,"OK":
+ 	DropId=0:
+ 	Enabled=1:
+ 	HelpId=0:
+ 	ObjectId=0:
+ 	TabId=140:
+ 	ZOrder=1600:
+ 	Cancel=0:
+ 	Default=0:
+ 	Font="'>MS Sans Serif'(8)":
+ 	Icon=0:
+ 	Picture=0:
+ 	ToolTip="":
+ 	CauseValid=0:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5Print=375:395:480:540,"Print":
+ 	DropId=0:
+ 	Enabled=0:
+ 	HelpId=0:
+ 	ObjectId=0:
+ 	TabId=250:
+ 	ZOrder=2460:
+ 	Cancel=0:
+ 	Default=0:
+ 	Font="'>MS Sans Serif'(8)":
+ 	Icon=0:
+ 	Picture=0:
+ 	ToolTip="":
+ 	CauseValid=0:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5StatCallerSearch=35:55:15:65,"Ca&ller","'>MS Sans Serif'(8)":
+ 	Alignment=2:
+ 	BgColor=2147483663:
+ 	Border=0:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	ObjectId=0:
+ 	ZOrder=1690:
+ 	BackStyle=1:
+ 	UseAltKey=1:
+ 	ToolTip="":
+ 	CauseValid=1:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5StatComboSearch=55:75:15:65,"Con&tact","'>MS Sans Serif'(8)":
+ 	Alignment=2:
+ 	BgColor=2147483663:
+ 	Border=0:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	ObjectId=0:
+ 	ZOrder=2080:
+ 	BackStyle=1:
+ 	UseAltKey=1:
+ 	ToolTip="":
+ 	CauseValid=1:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5StatFromSearch=92:112:15:45,"From","'>MS Sans Serif'(8)":
+ 	Alignment=2:
+ 	BgColor=2147483663:
+ 	Border=0:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	ObjectId=0:
+ 	ZOrder=2590:
+ 	BackStyle=1:
+ 	UseAltKey=1:
+ 	ToolTip="":
+ 	CauseValid=1:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5StatList=135:155:10:50,"List:","'>MS Sans Serif'(8)":
+ 	Alignment=2:
+ 	BgColor=2147483663:
+ 	Border=0:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	ObjectId=0:
+ 	ZOrder=1720:
+ 	BackStyle=1:
+ 	UseAltKey=1:
+ 	ToolTip="":
+ 	CauseValid=1:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5StatListName=135:155:50:300,"","'>MS Sans Serif'(8)":
+ 	Alignment=2:
+ 	BgColor=2147483663:
+ 	Border=0:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	ObjectId=0:
+ 	ZOrder=1850:
+ 	BackStyle=1:
+ 	UseAltKey=1:
+ 	ToolTip="":
+ 	CauseValid=1:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5StatListSearch=75:95:15:55,"L&ist","'>MS Sans Serif'(8)":
+ 	Alignment=2:
+ 	BgColor=2147483663:
+ 	Border=0:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	ObjectId=0:
+ 	ZOrder=2100:
+ 	BackStyle=1:
+ 	UseAltKey=1:
+ 	ToolTip="":
+ 	CauseValid=1:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5StatMailer=165:185:10:60,"Mailer:","'>MS Sans Serif'(8)":
+ 	Alignment=2:
+ 	BgColor=2147483663:
+ 	Border=0:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	ObjectId=0:
+ 	ZOrder=1710:
+ 	BackStyle=1:
+ 	UseAltKey=1:
+ 	ToolTip="":
+ 	CauseValid=1:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5StatMailerName=165:185:50:300,"","'>MS Sans Serif'(8)":
+ 	Alignment=2:
+ 	BgColor=2147483663:
+ 	Border=0:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	ObjectId=0:
+ 	ZOrder=1820:
+ 	BackStyle=1:
+ 	UseAltKey=1:
+ 	ToolTip="":
+ 	CauseValid=1:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5StatMlrSearch=75:95:130:170,"Mailer","'>MS Sans Serif'(8)":
+ 	Alignment=2:
+ 	BgColor=2147483663:
+ 	Border=0:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	ObjectId=0:
+ 	ZOrder=2490:
+ 	BackStyle=1:
+ 	UseAltKey=1:
+ 	ToolTip="":
+ 	CauseValid=1:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5StatNotes=380:400:10:50,"Note&s","'>MS Sans Serif'(8)":
+ 	Alignment=2:
+ 	BgColor=2147483663:
+ 	Border=0:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	ObjectId=0:
+ 	ZOrder=2300:
+ 	BackStyle=1:
+ 	UseAltKey=1:
+ 	ToolTip="":
+ 	CauseValid=1:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5StatOffer=150:170:310:350,"Offer:","'>MS Sans Serif'(8)":
+ 	Alignment=2:
+ 	BgColor=2147483663:
+ 	Border=0:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	ObjectId=0:
+ 	ZOrder=1890:
+ 	BackStyle=1:
+ 	UseAltKey=1:
+ 	ToolTip="":
+ 	CauseValid=1:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5StatOfferName=150:170:350:600,"","'>MS Sans Serif'(8)":
+ 	Alignment=2:
+ 	BgColor=2147483663:
+ 	Border=0:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	ObjectId=0:
+ 	ZOrder=1880:
+ 	BackStyle=1:
+ 	UseAltKey=1:
+ 	ToolTip="":
+ 	CauseValid=1:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5StatOwner=150:170:10:60,"Owner:","'>MS Sans Serif'(8)":
+ 	Alignment=2:
+ 	BgColor=2147483663:
+ 	Border=0:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	ObjectId=0:
+ 	ZOrder=1730:
+ 	BackStyle=1:
+ 	UseAltKey=1:
+ 	ToolTip="":
+ 	CauseValid=1:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5StatOwnerName=150:170:50:300,"","'>MS Sans Serif'(8)":
+ 	Alignment=2:
+ 	BgColor=2147483663:
+ 	Border=0:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	ObjectId=0:
+ 	ZOrder=1870:
+ 	BackStyle=1:
+ 	UseAltKey=1:
+ 	ToolTip="":
+ 	CauseValid=1:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5StatSearch=30:50:310:560,"","'>MS Sans Serif'(8,BOLD)":
+ 	Alignment=2:
+ 	BgColor=2147483663:
+ 	Border=0:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	Enabled=1:
+ 	FgColor=255:
+ 	ObjectId=0:
+ 	ZOrder=2380:
+ 	BackStyle=1:
+ 	UseAltKey=1:
+ 	ToolTip="":
+ 	CauseValid=1:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5StatSpecial=165:185:310:350,"Xstat:","'>MS Sans Serif'(8)":
+ 	Alignment=2:
+ 	BgColor=2147483663:
+ 	Border=0:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	ObjectId=0:
+ 	ZOrder=2200:
+ 	BackStyle=1:
+ 	UseAltKey=1:
+ 	ToolTip="":
+ 	CauseValid=1:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5StatSpecial1=165:185:350:625,"","'>MS Sans Serif'(8)":
+ 	Alignment=2:
+ 	BgColor=2147483663:
+ 	Border=0:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	Enabled=1:
+ 	FgColor=16711680:
+ 	ObjectId=0:
+ 	ZOrder=2210:
+ 	BackStyle=1:
+ 	UseAltKey=1:
+ 	ToolTip="":
+ 	CauseValid=1:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5StatSpecialView=50:70:310:500,"Spec. Instructions/L. O. Notes","'>MS Sans Serif'(8,BOLD)":
+ 	Alignment=2:
+ 	BgColor=2147483663:
+ 	Border=0:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	Enabled=1:
+ 	FgColor=0:
+ 	ObjectId=0:
+ 	ZOrder=2650:
+ 	BackStyle=1:
+ 	UseAltKey=1:
+ 	ToolTip="":
+ 	CauseValid=1:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5StatToSearch=92:112:130:160,"To","'>MS Sans Serif'(8)":
+ 	Alignment=2:
+ 	BgColor=2147483663:
+ 	Border=0:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	ObjectId=0:
+ 	ZOrder=2580:
+ 	BackStyle=1:
+ 	UseAltKey=1:
+ 	ToolTip="":
+ 	CauseValid=1:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5StatType=110:130:15:55,"Search ","'>MS Sans Serif'(8)":
+ 	Alignment=2:
+ 	BgColor=2147483663:
+ 	Border=0:
+ 	BdrColor=0:
+ 	Style=1:
+ 	DropId=0:
+ 	Enabled=1:
+ 	FgColor=2147483666:
+ 	ObjectId=0:
+ 	ZOrder=2400:
+ 	BackStyle=1:
+ 	UseAltKey=1:
+ 	ToolTip="":
+ 	CauseValid=1:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5Stop=35:65:260:290,"Stop":
+ 	DropId=0:
+ 	Enabled=0:
+ 	HelpId=0:
+ 	ObjectId=0:
+ 	TabId=150:
+ 	ZOrder=2470:
+ 	Cancel=0:
+ 	Default=0:
+ 	Font="'>MS Sans Serif'(8)":
+ 	Icon=0:
+ 	Picture=0:
+ 	ToolTip="":
+ 	CauseValid=0:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	CREATE 	Order5Switch=50:70:510:610,"Switch View":
+ 	DropId=0:
+ 	Enabled=1:
+ 	HelpId=0:
+ 	ObjectId=0:
+ 	TabId=1490:
+ 	ZOrder=2670:
+ 	Cancel=0:
+ 	Default=0:
+ 	Font="'>MS Sans Serif'(8)":
+ 	Icon=0:
+ 	Picture=0:
+ 	ToolTip="":
+ 	CauseValid=0:
+ 	Dock=3:
+ 	Anchor=7
+
+ 	EVENTREG 	Order5ClearExcRent,$CLICK,Click_Order5ClearExcRent:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ClearExchange,$CLICK,Click_Order5ClearExchange:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ClearRent,$CLICK,Click_Order5ClearRent:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ComboCallerSearch,$GOTFOCUS,GotFocus_Order5ComboCallerSearch:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ComboContactSearch,$GOTFOCUS,GotFocus_Order5ComboContactSearch:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ComboTypeSearch,$GOTFOCUS,GotFocus_Order5ComboTypeSearch:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5Delete,$CLICK,Click_Order5Delete:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5Deny,$CLICK,Click_Order5Deny:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5EditFromSearch,$GOTFOCUS,GotFocus_Order5EditFromSearch:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5EditFromSearch,$LOSTFOCUS,LostFocus_Order5EditFromSearch:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5EditListSearch,$GOTFOCUS,GotFocus_Order5EditListSearch:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5EditListSearch,$KEYPRESS,KeyPress_Order5EditListSearch:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5EditListSearch,$LOSTFOCUS,LostFocus_Order5EditListSearch:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5EditMlrSearch,$GOTFOCUS,GotFocus_Order5EditMlrSearch:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5EditMlrSearch,$KEYPRESS,KeyPress_Order5EditMlrSearch:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5EditMlrSearch,$LOSTFOCUS,LostFocus_Order5EditMlrSearch:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5EditSpecial1,$VALIDATE,Validate_Order5EditSpecial1:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5EditToSearch,$CHANGE,Change_Order5EditToSearch:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5EditToSearch,$LOSTFOCUS,LostFocus_Order5EditToSearch:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5Email,$CLICK,Click_Order5Email:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5Fax,$CLICK,Click_Order5Fax:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ListView,$CLICK,Click_Order5ListView:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ListView,$DBLCLICK,DblClick_Order5ListView:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ListView,$KEYPRESS,KeyPress_Order5ListView:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ListView,$COLCLICK,ColClick_Order5ListView:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ListView2,$CLICK,Click_Order5ListView2:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ListView2,$DBLCLICK,DblClick_Order5ListView2:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ListView2,$KEYPRESS,KeyPress_Order5ListView2:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ListView2,$COLCLICK,ColClick_Order5ListView2:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ListView3,$CLICK,Click_Order5ListView3:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ListView3,$DBLCLICK,DblClick_Order5ListView3:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ListView3,$KEYPRESS,KeyPress_Order5ListView3:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ListView3,$COLCLICK,ColClick_Order5ListView3:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ListView4,$CLICK,Click_Order5ListView4:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ListView4,$DBLCLICK,DblClick_Order5ListView4:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ListView4,$KEYPRESS,KeyPress_Order5ListView4:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ListView4,$COLCLICK,ColClick_Order5ListView4:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ListView5,$CLICK,Click_Order5ListView5:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ListView5,$DBLCLICK,DblClick_Order5ListView5:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ListView5,$KEYPRESS,KeyPress_Order5ListView5:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ListView5,$COLCLICK,ColClick_Order5ListView5:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ListView6,$CLICK,Click_Order5ListView6:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ListView6,$DBLCLICK,DblClick_Order5ListView6:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ListView6,$KEYPRESS,KeyPress_Order5ListView6:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5ListView6,$COLCLICK,ColClick_Order5ListView6:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5OK,$CLICK,Click_Order5OK:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5Print,$CLICK,Click_Order5Print:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5StatCallerSearch,$CLICK,Click_Order5StatCallerSearch:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5StatComboSearch,$CLICK,Click_Order5StatComboSearch:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5StatListSearch,$CLICK,Click_Order5StatListSearch:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5StatNotes,$CLICK,Click_Order5StatNotes:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5Stop,$CLICK,Click_Order5Stop:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	EVENTREG 	Order5Switch,$CLICK,Click_Order5Switch:
+		Type=#EventType,Result=#EventResult,ObjectId=#EventObjId:
+		Char=#EventChar,Modifier=#EventMod
+ 	ACTIVATE 	Order5CheckDate
+ 	ACTIVATE 	Order5ClearExcRent
+ 	ACTIVATE 	Order5ClearExchange
+ 	ACTIVATE 	Order5ClearRent
+ 	ACTIVATE 	Order5ComboCallerSearch
+ 	ACTIVATE 	Order5ComboContactSearch
+ 	ACTIVATE 	Order5ComboTypeSearch
+ 	ACTIVATE 	Order5Delete
+ 	ACTIVATE 	Order5Deny
+ 	ACTIVATE 	Order5EditFromSearch
+ 	ACTIVATE 	Order5EditListSearch
+ 	ACTIVATE 	Order5EditMlrSearch
+ 	ACTIVATE 	Order5EditSpecial1
+ 	ACTIVATE 	Order5EditSpecial3
+ 	ACTIVATE 	Order5EditSpecial4
+ 	ACTIVATE 	Order5EditToSearch
+ 	ACTIVATE 	Order5Email
+ 	ACTIVATE 	Order5Fax
+ 	ACTIVATE 	Order5GroupBox001
+ 	ACTIVATE 	Order5ListView3
+ 	ACTIVATE 	Order5ListView4
+ 	ACTIVATE 	Order5ListView5
+ 	ACTIVATE 	Order5ListView6
+ 	ACTIVATE 	Order5OK
+ 	ACTIVATE 	Order5Print
+ 	ACTIVATE 	Order5StatCallerSearch
+ 	ACTIVATE 	Order5StatComboSearch
+ 	ACTIVATE 	Order5StatFromSearch
+ 	ACTIVATE 	Order5StatList
+ 	ACTIVATE 	Order5StatListName
+ 	ACTIVATE 	Order5StatListSearch
+ 	ACTIVATE 	Order5StatMailer
+ 	ACTIVATE 	Order5StatMailerName
+ 	ACTIVATE 	Order5StatMlrSearch
+ 	ACTIVATE 	Order5StatNotes
+ 	ACTIVATE 	Order5StatOffer
+ 	ACTIVATE 	Order5StatOfferName
+ 	ACTIVATE 	Order5StatOwner
+ 	ACTIVATE 	Order5StatOwnerName
+ 	ACTIVATE 	Order5StatSearch
+ 	ACTIVATE 	Order5StatSpecial
+ 	ACTIVATE 	Order5StatSpecial1
+ 	ACTIVATE 	Order5StatSpecialView
+ 	ACTIVATE 	Order5StatToSearch
+ 	ACTIVATE 	Order5StatType
+ 	ACTIVATE 	Order5Stop
+ 	ACTIVATE 	Order5Switch
+
+	RETURN
+
+Click_Order5ClearExcRent
+	getitem	Order5EditSpecial1,0,hold2
+.If no Notes added then prompt
+	if (hold2 = "")
+		alert	plain,"Did you want to include Notes?",N2
+		if (N2 = C1)
+			setfocus Order5EditSpecial1
+			return
+		elseif (N2 = C3)
+			if (View5Flag = 1)
+				setfocus Order5ListView
+			elseif (View5Flag = 2)
+				setfocus Order5ListView2
+			elseif (View5Flag = 3)
+				setfocus Order5ListView3
+			elseif (View5Flag = 4)
+				setfocus Order5ListView4
+			elseif (View5Flag = 5)
+				setfocus Order5ListView5
+			elseif (View5Flag = 6)
+				setfocus Order5ListView6
+			endif
+			return
+		endif
+	endif
+	call	OrderDisableScreen5All
+	call	EmailChoice
+.Do not use #RESULT generically in following loop as it is
+.used to find hightlighted records in ListView object!
+.Any routine which is called in this loop may not use #RESULT!!!
+	move	SEQ,#result
+	loop
+ExcRentLoop
+		move	#result,N9
+		if (View5Flag = 1)
+			Order5ListView.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 2)
+			Order5ListView2.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 3)
+			Order5ListView3.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 4)
+			Order5ListView4.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 5)
+			Order5ListView5.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 6)
+			Order5ListView6.GetNextItem giving #result using C2,N9
+		endif
+		until (#result = SEQ)
+		if (View5Flag = 1)
+			Order5ListView.GetItemText giving NORDPFLD using #result,C0
+		elseif (View5Flag = 2)
+			Order5ListView2.GetItemText giving NORDPFLD using #result,C2
+		elseif (View5Flag = 3)
+			Order5ListView3.GetItemText giving NORDPFLD using #result,C2
+		elseif (View5Flag = 4)
+			Order5ListView4.GetItemText giving NORDPFLD using #result,C4
+		elseif (View5Flag = 5)
+			Order5ListView5.GetItemText giving NORDPFLD using #result,C4
+		elseif (View5Flag = 6)
+			Order5ListView6.GetItemText giving NORDPFLD using #result,C4
+		endif
+		move	C1,NORDPPATH
+		move	"Button-NORDPKEY",Location
+		pack    KeyLocation,"Key: ",NORDPFLD
+		call	NORDPKEY
+		if over
+			clear	taskname
+			append	"Unable to update LR#: ",taskname
+			append	NORDPFLD,taskname
+			append	carr,taskname
+			append	"Record no longer present!",taskname
+			reset	taskname
+			alert	caution,taskname,N10
+		else
+.Removed 02/15/2000 - ASH
+..Test for "EXCHANGE ONLY" Lists
+.			move	OLNUM,NDATFLD
+.			move    C1,NDATPATH
+.		        move    "O5.ClearRent-NDATKEY",Location
+.        		pack    KeyLocation,"Key: ",NDATFLD
+.		        call    NDATKEY
+.			if not over	.Only real possibility
+.				rep     lowup,TextData  .Just in case text entered in lower case
+.	                        scan    "EXCHANGE ONLY",TextData
+.        	                if equal
+.                	                clear   taskname
+.					append	"LR: ",taskname
+.					append	NORDPFLD,taskname
+.                        	        append  " is marked as 'EXCHANGE ONLY'.",taskname
+.                                	append  carr,taskname
+.	                                append  "Do you really want to Clear on Rental?",taskname
+.        	                        reset   taskname
+.                	                alert   plain,taskname,N7
+.					if (N7 <> 1)
+.						goto	ExcRentLoop
+.					endif
+.				endif
+.			endif
+			call	Order5TestBusy using NORDPFLD
+			if (str1 <> STAR)
+				call	Order5DeleteFromNINPRINT	
+				move	"E",str1	.OHIST
+				move	C2,str2		.OELCODE
+				move	"1",str3	.ORENT
+				move	"3",str4	.OCLRSTAT
+				call	Order5UpdateNINPRINTL using str1,str2,str3,str4,C1
+				call	Order5UpdateSpecial
+				move	"Exc/Rent.",str10
+.START PATCH 3.52 REPLACED LOGIC
+.				call	Order5Email
+				call	Order5Email using C0
+.END PATCH 3.52 REPLACED LOGIC
+			endif
+		endif
+	repeat
+	call	OrderOKBegin
+	RETURN
+
+Click_Order5ClearExchange
+	getitem	Order5EditSpecial1,0,hold2
+	call	OrderDisableScreen5All
+	call	EmailChoice
+.Do not use #RESULT generically in following loop as it is
+.used to find hightlighted records in ListView object!
+.Any routine which is called in this loop may not use #RESULT!!!
+	move	SEQ,#result
+	loop
+		move	#result,N9
+		if (View5Flag = 1)
+			Order5ListView.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 2)
+			Order5ListView2.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 3)
+			Order5ListView3.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 4)
+			Order5ListView4.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 5)
+			Order5ListView5.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 6)
+			Order5ListView6.GetNextItem giving #result using C2,N9
+		endif
+		until (#result = SEQ)
+		if (View5Flag = 1)
+			Order5ListView.GetItemText giving NORDPFLD using #result,C0
+		elseif (View5Flag = 2)
+			Order5ListView2.GetItemText giving NORDPFLD using #result,C2
+		elseif (View5Flag = 3)
+			Order5ListView3.GetItemText giving NORDPFLD using #result,C2
+		elseif (View5Flag = 4)
+			Order5ListView4.GetItemText giving NORDPFLD using #result,C4
+		elseif (View5Flag = 5)
+			Order5ListView5.GetItemText giving NORDPFLD using #result,C4
+		elseif (View5Flag = 6)
+			Order5ListView6.GetItemText giving NORDPFLD using #result,C4
+		endif
+		move	C1,NORDPPATH
+		move	"Button-NORDPKEY",Location
+		pack    KeyLocation,"Key: ",NORDPFLD
+		call	NORDPKEY
+		if over
+			clear	taskname
+			append	"Unable to update LR#: ",taskname
+			append	NORDPFLD,taskname
+			append	carr,taskname
+			append	"Record no longer present!",taskname
+			reset	taskname
+			alert	caution,taskname,N10
+		else
+			call	Order5TestBusy using NORDPFLD
+			if (str1 <> STAR)
+				call	Order5DeleteFromNINPRINT
+				move	"E",str1	.OHIST
+				move	C2,str2		.OELCODE
+				move	B1,str3		.ORENT
+				move	"1",str4	.OCLRSTAT
+				call	Order5UpdateNINPRINTL using str1,str2,str3,str4,C1
+				call	Order5UpdateSpecial
+				move	"Exchange.",str10
+.START PATCH 3.52 REPLACED LOGIC
+.				call	Order5Email
+				call	Order5Email using C0
+.END PATCH 3.52 REPLACED LOGIC
+			endif
+		endif
+	repeat
+	call	OrderOKBegin
+	return
+
+Order5UpdateNINPRINTL LRoutine DimPtr,DimPtr1,DimPtr2,DimPtr3,FrmPtr
+	pack	NORDPFLD1,"01X",OCO2CODE
+	pack	NORDPFLD2,"02X",OLNUM
+	pack	NORDPFLD3,"03X",OCOCODE
+	pack	NORDPFLD4,"04X",OHIST
+	move	C2,NORDPPATH
+       	move    "Button-NORDPAIM",Location
+	pack    KeyLocation,"Key: ",NORDPFLD1,COMMA,NORDPFLD2,COMMA,NORDPFLD3,COMMA,NORDPFLD4
+        call    NORDPAIM
+       	if over
+		alert caution,"NORDPAIM-Unable to Update NINPRINTL AamKey!!!",N10
+       	else
+		loop
+			until (OLRN = NORDPFLD)
+               		call    NORDPKG
+                       	if over
+                                alert	caution,"NORDPAIM-Unable to Update NINPRINTL AamKey!!!",N10
+				goto Update2
+			endif
+        	repeat
+.		move	DimPtr,OHIST
+.		move	DimPtr1,OELCODE
+.		move	DimPtr2,ORENT
+		call	Order5RefreshVars
+                move    "But.-Upd. NORDPFLE",Location
+		pack    KeyLocation,"Key: ",NORDPFLD1,COMMA,NORDPFLD2,COMMA,NORDPFLD3,COMMA,NORDPFLD4
+       	      	TRAP    IOMssg Giving Error if IO
+		FILEPI	1;NORDPFLE
+               	UPDATE  NORDPFLE;ORDVARS 
+		TRAPCLR IO
+.START PATCH 07FEB2002 IDEA OF THE MONTH - UPDATE NINORD4
+		if (FrmPtr = C1 & OSTAT = "p")
+	                move    OLRN,NORD4FLD
+        	        if (NORD4FLD <> "")
+                	        rep     zfill in NORD4FLD
+	                        move    "Button-NORD4KEY",Location
+        	                pack    KeyLocation,"Key: ",NORD4FLD
+                	        call    NORD4KEY
+                        	if over			.Something is wrong!!
+					alert	caution,"Unable to Update Sub-Status, Contact I.S.",N10
+				else
+					move	"09",NORD4STAT
+	        	                move    "Button-NORD4UPD",Location
+		               	        call    NORD4UPD
+				endif
+			endif
+		endif
+.END PATCH 07FEB2002 IDEA OF THE MONTH
+       	endif
+Update2
+.If NORDPAIM bombs then you need to refresh original ORDVARS
+.And then refresh new vars which are affected by Button which called this routine.
+	move	"Button-NORDKEY",Location
+	move	NORDPFLD,NORDFLD
+	pack    KeyLocation,"Key: ",NORDFLD
+	move	C1,NORDPATH
+	call	NORDKEY
+	if over
+		clear	taskname
+		append	"Master Order Record Not Updated!!",taskname
+		append	carr,taskname
+		append	"LR # ",taskname
+		append	NORDFLD,taskname
+		append	carr,taskname
+		append	"Notify I.S. Immediately!!",taskname
+		reset	taskname
+		alert	caution,taskname,N10
+	else
+.		move	DimPtr,OHIST
+.		move	DimPtr1,OELCODE
+.		move	DimPtr2,ORENT
+		call	Order5RefreshVars
+		move	"Button-NORDUPD",Location
+		pack    KeyLocation,"Key: ",NORDFLD
+.START PATCH 3.75 REPLACED LOGIC
+.		call	NORDUPD
+		call	IntegralStoreDetail using OLRN,C1
+		call	NORDUPD
+		call	IntegralTestDetail using OLRN,C1
+.END PATCH 3.75 REPLACED LOGIC
+	endif
+	return
+
+Order5DeleteFromNINPRINT
+        move    "O.5DEL.NPRINT-NINPRINT",Location
+        pack    KeyLocation,"Key: ",NORDPFLD
+        TRAP    IOMssg Giving Error if IO
+	filepi  3;ORDPRINT
+        read    ORDPRINT,NORDPFLD;;
+        if not over                  
+		if (OSTAT = "l" | OSTAT = "z")
+	        	delete  ORDPRINT,NORDPFLD
+		elseif (OSTAT = "p" | OSTAT = "x")
+			updatab ORDPRINT;*176," "
+		endif
+        endif
+	TRAPCLR	IO
+	return
+Order5UpdateSpecial
+	if (hold2 <> "")
+		getitem OptionsScreen5FileDefault,0,N1
+		if (N1 = 0)	.Ask question
+			call	Order5SelectInstructions		
+			if (howmany = C0)	.Closed down screen without selection
+				alert	note,"No Selection was made.  I will select default.",N6
+				getprop	Order5EditSpecial4,height=N9
+				if (N9 > C0)
+					call	Order5WriteToSpecial
+				else
+					call	Order5WriteToInternal
+				endif	
+			elseif (howmany = C1)	.Internal Notes
+				call	Order5WriteToInternal
+			elseif (howmany = C2)	.Special Instructions
+				call	Order5WriteToSpecial
+			endif
+		else
+			getprop	Order5EditSpecial4,height=N9
+			if (N9 > C0)
+				call	Order5WriteToSpecial
+			else
+				call	Order5WriteToInternal
+			endif
+		endif
+	endif
+	return
+
+Order5WriteToSpecial
+	pack    NSPEFLD,NORDPFLD
+       	rep     zfill,NSPEFLD
+      	move    "Button-NSPEKEY",Location
+	pack    KeyLocation,"Key: ",NSPEFLD
+       	call    NSPEKEY
+	if not over		.Should never occur, LCR's should always at least have XSTAT.
+		move    "Button-NSPEDEL",Location
+		call	NSPEDEL
+	endif
+	move	NORDPFLD,NSPELR
+	call	Trim using DESC002
+	pack	DESC002,DESC002,carr,hold2
+	if EOS
+		clear	taskname
+		append	NSPELR,taskname
+		append	" does not have enough space to include all Notes!",taskname
+		append	carr,taskname
+		append	"The Notes will be truncated!!",taskname
+		reset	taskname
+		alert	caution,taskname,N10
+	endif
+	move    "Button-NSPEWRT",Location
+	call	NSPEWRT
+	return
+Order5WriteToInternal
+	pack    NSPE2FLD,NORDPFLD
+       	rep     zfill,NSPE2FLD
+	move    "Button-NSPE2KEY",Location
+	pack    KeyLocation,"Key: ",NSPE2FLD
+       	call    NSPE2KEY
+	if not over		.Should never occur, LCR's should always at least have XSTAT.
+		move    "Button-NSPE2DEL",Location
+		call	NSPE2DEL
+	endif
+	move	NORDPFLD,NSPE2LR
+	call	Trim using DESC003
+	pack	DESC003,DESC003,carr,hold2
+	if EOS
+		clear	taskname
+		append	NSPELR,taskname
+		append	" does not have enough space to include all Notes!",taskname
+		append	carr,taskname
+		append	"The Notes will be truncated!!",taskname
+		reset	taskname
+		alert	caution,taskname,N10
+	endif
+	move    "Button-NSPE2WRT",Location
+	call	NSPE2WRT
+	return
+EmailChoice
+	move	C7,#howmany
+	getitem OptionsScreen5EMailOption,0,N1
+	if (N1 = 1)
+		alert   Type=style,"Send Email to Contact(s)?",#howmany
+	endif
+	return
+.START PATCH 3.52 REPLACED LOGIC
+.Order5Email
+Order5Email LRoutine FrmPtr
+.END PATCH 3.52 REPLACED LOGIC
+.START PATCH 3.77.7 REPLACED LOGIC
+.        if (#howmany <> 7 | OSTAT = "p") .YES
+	if (OSTAT = "l")	.Sales LCR - check to see if Pending Internal
+                move    OLRN,NORD5FLD
+       	        rep     zfill in NORD5FLD
+		move    "Email-NORD5KEY",Location
+		pack    KeyLocation,"Key: ",NORD5FLD
+		call    NORD5KEY
+	else
+		clear	NORD5STAT	
+	endif
+        if (#howmany <> 7 | OSTAT = "p" | NORD5STAT = "08") .YES
+.END PATCH 3.77.7 REPLACED LOGIC
+		if (View5Flag = 1)
+			Order5ListView.GetItemText giving str7 using #result,C0
+		elseif (View5Flag = 2)
+			Order5ListView2.GetItemText giving str7 using #result,C2
+		elseif (View5Flag = 3)
+			Order5ListView3.GetItemText giving str7 using #result,C2
+		elseif (View5Flag = 4)
+			Order5ListView4.GetItemText giving str7 using #result,C4
+		elseif (View5Flag = 5)
+			Order5ListView5.GetItemText giving str7 using #result,C4
+		elseif (View5Flag = 6)
+			Order5ListView6.GetItemText giving str7 using #result,C4
+		endif
+		cmatch	STAR,str7
+		if equal
+			bump	str7
+		endif
+...................
+		if (OSTAT = "p")
+.START PATCH 3.71.5 REPLACED LOGIC
+.			move	"ListManagementClearances",str45
+			move	"ListManagementPendingOrders",str45
+.END PATCH 3.71.5 REPLACED LOGIC
+			goto Order5EmailExit
+		endif
+...................		
+		if (View5Flag = 1)
+			Order5ListView.GetItemText giving str55 using #result,C10
+		elseif (View5Flag = 2)
+			Order5ListView2.GetItemText giving str55 using #result,C10
+		elseif (View5Flag = 3)
+			Order5ListView3.GetItemText giving str55 using #result,C10
+		elseif (View5Flag = 4)
+			Order5ListView4.GetItemText giving str55 using #result,C11
+		elseif (View5Flag = 5)
+			Order5ListView5.GetItemText giving str55 using #result,C11
+		elseif (View5Flag = 6)
+			Order5ListView6.GetItemText giving str55 using #result,C11
+		endif
+		clear   str45
+.START PATCH FOR NEW EMAIL ADDRESSES
+.		move    str55,str1
+.Order5EmailLoop
+.                bump    str55,1
+.                cmatch  B1,str55
+.                goto    Order5EmailLoop if not equal
+.                goto    Order5EmailExit if eos
+.                bump    str55,1
+.                move    str55,str6
+.                pack    str45,str1,str6
+.Order5EmailExit
+.	        reset   str55
+.		call	Trim using str45
+..............
+		move    str55,str45
+		call	RemoveChar using str45,B1
+Order5EmailExit
+.END PATCH FOR NEW EMAIL ADDRESSES
+.		if (View5Flag = 1)
+.			Order5ListView.GetItemText giving CNTNAME using result,C11
+.		elseif (View5Flag = 2)
+.			Order5ListView2.GetItemText giving CNTNAME using result,C13
+.		elseif (View5Flag = 3)
+.			Order5ListView3.GetItemText giving CNTNAME using result,C13
+.		else
+.			Order5ListView4.GetItemText giving CNTNAME using result,C14
+.		endif
+.		call	Trim using CNTNAME
+.START PATCH 3.52 REPLACED LOGIC
+.		move    "Clearance Notification",SmtpSubject Subject
+		if (FrmPtr = 0)
+			move    "Clearance Notification",SmtpSubject Subject
+		else
+			move    "Denied Notification",SmtpSubject Subject
+		endif
+.END PATCH 3.52 REPLACED LOGIC
+		clear	SmtpTextMessage(1)   Array <Text message >
+		move    C0,NUSEFLD
+	        move    C1,NUSEPATH
+        	move    PORTN,NUSEFLD
+	        rep     zfill,NUSEFLD
+        	call    NUSEKEY
+		call	Trim using NUSEUSER
+		append  NUSEUSER,SmtpTextMessage(1)
+.        	append  CNTNAME,SmtpTextMessage(1)
+.START PATCH 3.52 REPLACED LOGIC
+.		append  " Has Cleared LCR# ",SmtpTextMessage(1)
+.		append  str7,SmtpTextMessage(1)
+.		append  " For ",SmtpTextMessage(1)
+.		append  str10,SmtpTextMessage(1)
+		if (FrmPtr = 0)
+			append  " Has Cleared Pending Order# ",SmtpTextMessage(1)
+			append  str7,SmtpTextMessage(1)
+			append  " For ",SmtpTextMessage(1)
+			append  str10,SmtpTextMessage(1)
+		else
+.START PATCH 3.71.5 REPLACED LOGIC
+.			append  " Has Denied Pending Order# ",SmtpTextMessage(1)
+			if (OSTAT = "p")
+				append  " Has Denied Pending Order# ",SmtpTextMessage(1)
+			else
+				append  " Has Denied LCR# ",SmtpTextMessage(1)
+			endif
+.END PATCH 3.71.5 REPLACED LOGIC
+			append  str7,SmtpTextMessage(1)
+		endif
+.END PATCH 3.52 REPLACED LOGIC
+		reset	SmtpTextMessage(1)
+.START PATCH 07FEB2002 IDEA OF THE MONTH
+.	        move    "1",SmtpTextIndexLast                               Index to last entry in TextMessage array
+		if (View5Flag = 1)
+			Order5ListView.GetItemText giving OLSTNAME using #result,14
+			Order5ListView.GetItemText giving MCOMP using #result,16
+		elseif (View5Flag = 2)
+			Order5ListView2.GetItemText giving OLSTNAME using #result,C0
+			Order5ListView2.GetItemText giving MCOMP using #result,C1
+		elseif (View5Flag = 3)
+			Order5ListView3.GetItemText giving OLSTNAME using #result,C1
+			Order5ListView3.GetItemText giving MCOMP using #result,C0
+		elseif (View5Flag = 4)
+			Order5ListView4.GetItemText giving OLSTNAME using #result,C2
+			Order5ListView4.GetItemText giving MCOMP using #result,C3
+		elseif (View5Flag = 5)
+			Order5ListView5.GetItemText giving OLSTNAME using #result,C2
+			Order5ListView5.GetItemText giving MCOMP using #result,C3
+		elseif (View5Flag = 6)
+			Order5ListView6.GetItemText giving OLSTNAME using #result,C2
+			Order5ListView6.GetItemText giving MCOMP using #result,C3
+		endif
+.		move	C1,NMLRPATH
+.		pack	MKEY,OMLRNUM,"000"
+.		move	"O.5EMail-NMLRKEY",Location
+.		pack	KeyLocation,"Key: ",MKEY
+.		call	NMLRKEY
+.		call	Trim using MCOMP
+		pack	SmtpTextMessage(2),"Mailer: ",MCOMP
+.		move	C1,NDATPATH
+.		pack	NDATFLD,OLNUM
+.		move	"O.5EMail-NDATKEY",Location
+.		pack	KeyLocation,"Key: ",NDATFLD
+.		call	NDATKEY
+.		call	Trim using OLSTNAME
+		pack	SmtpTextMessage(3),"List:   ",OLSTNAME
+	        move    "3",SmtpTextIndexLast                               Index to last entry in TextMessage array
+.END PATCH 07FEB2002 IDEA OF THE MONTH
+        	call    mailmesg
+        endif
+	return
+
+Order5RefreshVars
+	move	DimPtr,OHIST
+	move	DimPtr1,OELCODE
+	move	DimPtr2,ORENT
+	move	DimPtr3,OCLRSTAT
+	move    C0,NUSEFLD
+        move    C1,NUSEPATH
+       	move    PORTN,NUSEFLD
+        rep     zfill,NUSEFLD
+       	call    NUSEKEY
+	move	NUSEINIT,OCLRINIT
+	unpack	timestamp,OCLRDTEC,OCLRDTEY,OCLRDTEM,OCLRDTED
+	return
+	RETURN
+
+Click_Order5ClearRent
+	getitem	Order5EditSpecial1,0,hold2
+	call	OrderDisableScreen5All
+	call	EmailChoice
+.Do not use #RESULT generically in following loop as it is
+.used to find hightlighted records in ListView object!
+.Any routine which is called in this loop may not use #RESULT!!!
+	move	SEQ,#result
+	loop
+RentLoop
+		move	#result,N9
+		if (View5Flag = 1)
+			Order5ListView.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 2)
+			Order5ListView2.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 3)
+			Order5ListView3.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 4)
+			Order5ListView4.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 5)
+			Order5ListView5.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 6)
+			Order5ListView6.GetNextItem giving #result using C2,N9
+		endif
+		until (#result = SEQ)
+		if (View5Flag = 1)
+			Order5ListView.GetItemText giving NORDPFLD using #result,C0
+		elseif (View5Flag = 2)
+			Order5ListView2.GetItemText giving NORDPFLD using #result,C2
+		elseif (View5Flag = 3)
+			Order5ListView3.GetItemText giving NORDPFLD using #result,C2
+		elseif (View5Flag = 4)
+			Order5ListView4.GetItemText giving NORDPFLD using #result,C4
+		elseif (View5Flag = 5)
+			Order5ListView5.GetItemText giving NORDPFLD using #result,C4
+		elseif (View5Flag = 6)
+			Order5ListView6.GetItemText giving NORDPFLD using #result,C4
+		endif
+		move	C1,NORDPPATH
+		move	"Button-NORDPKEY",Location
+		pack    KeyLocation,"Key: ",NORDPFLD
+		call	NORDPKEY
+		if over
+			clear	taskname
+			append	"Unable to update LR#: ",taskname
+			append	NORDPFLD,taskname
+			append	carr,taskname
+			append	"Record no longer present!",taskname
+			reset	taskname
+			alert	caution,taskname,N10
+		else
+.Removed 02/15/2000 - ASH
+..Test for "EXCHANGE ONLY" Lists
+.			move	OLNUM,NDATFLD
+.			move    C1,NDATPATH
+.		        move    "O5.ClearRent-NDATKEY",Location
+.        		pack    KeyLocation,"Key: ",NDATFLD
+.		        call    NDATKEY
+.			if not over	.Only real possibility
+.				rep     lowup,TextData  .Just in case text entered in lower case
+.	                        scan    "EXCHANGE ONLY",TextData
+.        	                if equal
+.                	                clear   taskname
+.					append	"LR: ",taskname
+.					append	NORDPFLD,taskname
+.                        	        append  " is marked as 'EXCHANGE ONLY'.",taskname
+.                                	append  carr,taskname
+.	                                append  "Do you really want to Clear on Rental?",taskname
+.        	                        reset   taskname
+.                	                alert   plain,taskname,N7
+.					if (N7 <> 1)
+.						goto	RentLoop
+.					endif
+.				endif
+.			endif
+.
+			call	Order5TestBusy using NORDPFLD
+			if (str1 <> STAR)		
+				call	Order5DeleteFromNINPRINT	
+				move	"E",str1	.OHIST
+				move	B1,str2		.OELCODE
+				move	"1",str3	.ORENT
+				move	"2",str4	.OCLRSTAT
+				call	Order5UpdateNINPRINTL using str1,str2,str3,str4,C1
+				call	Order5UpdateSpecial
+				move	"Rent.",str10
+.START PATCH 3.52 REPLACED LOGIC
+.				call	Order5Email
+				call	Order5Email using C0
+.END PATCH 3.52 REPLACED LOGIC
+			endif
+		endif
+	repeat
+	call	OrderOKBegin
+	RETURN
+
+GotFocus_Order5ComboCallerSearch
+	setprop Order5OK,default=1
+	RETURN
+
+GotFocus_Order5ComboContactSearch
+	setprop Order5OK,default=1
+	RETURN
+
+GotFocus_Order5ComboTypeSearch
+	setprop Order5OK,default=1
+	RETURN
+
+Click_Order5Delete
+	clear	taskname
+	append	"Are you sure you wish ",taskname
+	append	carr,taskname
+	append	"to Delete the selected LCR's?",taskname
+	reset	taskname
+	alert	plain,taskname,result
+	if (result <> 1)
+		return
+	endif
+	call	OrderDisableScreen5All
+.Do not use #RESULT generically in following loop as it is
+.used to find hightlighted records in ListView object!
+.Any routine which is called in this loop may not use #RESULT!!!
+	move	SEQ,#result
+	loop
+		move	#result,N9
+		if (View5Flag = 1)
+			Order5ListView.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 2)
+			Order5ListView2.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 3)
+			Order5ListView3.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 4)
+			Order5ListView4.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 5)
+			Order5ListView5.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 6)
+			Order5ListView6.GetNextItem giving #result using C2,N9
+		endif
+		until (#result = SEQ)
+		if (View5Flag = 1)
+			Order5ListView.GetItemText giving NORDPFLD using #result,C0
+		elseif (View5Flag = 2)
+			Order5ListView2.GetItemText giving NORDPFLD using #result,C2
+		elseif (View5Flag = 3)
+			Order5ListView3.GetItemText giving NORDPFLD using #result,C2
+		elseif (View5Flag = 4)
+			Order5ListView4.GetItemText giving NORDPFLD using #result,C4
+		elseif (View5Flag = 5)
+			Order5ListView5.GetItemText giving NORDPFLD using #result,C4
+		elseif (View5Flag = 6)
+			Order5ListView6.GetItemText giving NORDPFLD using #result,C4
+		endif
+		move	C1,NORDPPATH
+		move	"Button-NORDPKEY",Location
+		pack    KeyLocation,"Key: ",NORDPFLD
+		call	NORDPKEY
+		if over
+			clear	taskname
+			append	"Unable to update LR#: ",taskname
+			append	NORDPFLD,taskname
+			append	carr,taskname
+			append	"Record no longer present!",taskname
+			reset	taskname
+			alert	caution,taskname,N10
+		else	
+			call	Order5TestBusy using NORDPFLD
+			if (str1 <> STAR)
+				pack	NORDPFLD1,"01X",OCO2CODE
+				pack	NORDPFLD2,"02X",OLNUM
+				pack	NORDPFLD3,"03X",OCOCODE
+				pack	NORDPFLD4,"04X",OHIST
+				move    "Order5Delete-NORDPDEL",Location
+                                pack    KeyLocation,"Key: ",NORDPFLD,B1,NORDPFLD1,B1,NORDPFLD2,B1,NORDPFLD3,B1,NORDPFLD4
+                                call    NORDPDEL
+			endif
+		endif
+	repeat
+	call	OrderOKBegin
+	RETURN
+
+Click_Order5Deny
+	clear	taskname
+	append	"Are you sure you wish ",taskname
+	append	carr,taskname
+	append	"to Deny the selected LCR's?",taskname
+	reset	taskname
+	alert	plain,taskname,result
+	if (result <> 1)
+		return
+	endif
+	getitem	Order5EditSpecial1,0,hold2
+.If no Notes added then prompt
+	if (hold2 = "")
+		alert	plain,"Did you want to include Notes?",N2
+		if (N2 = C1)
+			setfocus Order5EditSpecial1
+			return
+		elseif (N2 = C3)
+			if (View5Flag = 1)
+				setfocus Order5ListView
+			elseif (View5Flag = 2)
+				setfocus Order5ListView2
+			elseif (View5Flag = 3)
+				setfocus Order5ListView3
+			elseif (View5Flag = 4)
+				setfocus Order5ListView4
+			elseif (View5Flag = 5)
+				setfocus Order5ListView5
+			elseif (View5Flag = 6)
+				setfocus Order5ListView6
+			endif
+			return
+		endif
+	endif
+	call	OrderDisableScreen5All
+.Do not use #RESULT generically in following loop as it is
+.used to find hightlighted records in ListView object!
+.Any routine which is called in this loop may not use #RESULT!!!
+	move	SEQ,#result
+	loop
+		move	#result,N9
+		if (View5Flag = 1)
+			Order5ListView.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 2)
+			Order5ListView2.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 3)
+			Order5ListView3.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 4)
+			Order5ListView4.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 5)
+			Order5ListView5.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 6)
+			Order5ListView6.GetNextItem giving #result using C2,N9
+		endif
+		until (#result = SEQ)
+		if (View5Flag = 1)
+			Order5ListView.GetItemText giving NORDPFLD using #result,C0
+		elseif (View5Flag = 2)
+			Order5ListView2.GetItemText giving NORDPFLD using #result,C2
+		elseif (View5Flag = 3)
+			Order5ListView3.GetItemText giving NORDPFLD using #result,C2
+		elseif (View5Flag = 4)
+			Order5ListView4.GetItemText giving NORDPFLD using #result,C4
+		elseif (View5Flag = 5)
+			Order5ListView5.GetItemText giving NORDPFLD using #result,C4
+		elseif (View5Flag = 6)
+			Order5ListView6.GetItemText giving NORDPFLD using #result,C4
+		endif
+		move	C1,NORDPPATH
+		move	"Button-NORDPKEY",Location
+		pack    KeyLocation,"Key: ",NORDPFLD
+		call	NORDPKEY
+		if over
+			clear	taskname
+			append	"Unable to update LR#: ",taskname
+			append	NORDPFLD,taskname
+			append	carr,taskname
+			append	"Record no longer present!",taskname
+			reset	taskname
+			alert	caution,taskname,N10
+		else	
+			call	Order5TestBusy using NORDPFLD
+			if (str1 <> STAR)
+				move	"z",str1		.OHIST
+				move	OELCODE,str2		.OELCODE
+				move	ORENT,str3		.ORENT
+				move	"4",str4	.OCLRSTAT
+				call	Order5UpdateNINPRINTL using str1,str2,str3,str4,C0
+				call	Order5UpdateSpecial
+.
+.................
+.				move	"Deny-NORDUPD",Location
+.				pack    KeyLocation,"Key: ",NORDPFLD
+.				if (OSTAT = "p")
+.					move    "x",OSTAT
+.				else
+..					move    "z",OSTAT
+.				endif
+.				call	NORDUPD
+..................
+				if (OSTAT = "p")	.Denied Pending LCR
+.................
+.					move    NORDPFLD,NORD4FLD
+.       	 		        move    "Deny-NORD4KEY",Location
+.					pack    KeyLocation,"Key: ",NORD4FLD
+.	        		        call    NORD4KEY
+.					if not over
+.						move    "06",NORD4STAT
+.		                                move    "Deny-NORD4UPD",Location
+.       	 	                        call    NORD4UPD
+.               	 	        endif				
+.................
+				else			.Denied Brokerage LCR
+					move    NORDPFLD,NORD5FLD
+	        		        move    "Deny-NORD5KEY",Location
+					pack    KeyLocation,"Key: ",NORD5FLD
+	        		        call    NORD5KEY
+					if not over
+						move    "07",NORD5STAT
+	                                	move    "Deny-NORD5UPD",Location
+	        	                        call    NORD5UPD
+        	        	        endif
+				endif
+.
+.Only delete Brokerage LCR's.  Update List Management LCR's.
+.This is done to prevent any Denied LCR's from being faxed to Owner
+			        move    "5DENY-NINPRINT",Location
+			        pack    KeyLocation,"Key: ",NORDPFLD
+			        TRAP    IOMssg Giving Error if IO
+				filepi  1;ORDPRINT
+			        read    ORDPRINT,NORDPFLD;;
+			        if not over                  
+					if (OSTAT = "l")
+						filepi  1;ORDPRINT
+	       					delete  ORDPRINT,NORDPFLD
+					else	OSTAT = "p"
+						filepi  1;ORDPRINT
+.................
+.						updatab ORDPRINT;*2,OSTAT,*176,"z"
+						updatab ORDPRINT;*176,"z"
+.................
+					endif
+		        	endif
+.START PATCH 3.52 ADDED LOGIC
+.START PATCH 3.71.5 ADDED LOGIC
+				move	C1,#howmany
+.END PATCH 3.71.5 ADDED LOGIC
+				call	Order5Email using C1
+.END PATCH 3.52 ADDED LOGIC
+				TRAPCLR	IO
+			endif
+		endif
+	repeat
+	call	OrderOKBegin
+	RETURN
+
+GotFocus_Order5EditFromSearch
+	setprop Order5OK,default=1
+	RETURN
+
+LostFocus_Order5EditFromSearch
+Order5EditFromLostFocus
+	getitem	Order5EditFromSearch,0,str10
+	call	Trim using str10
+	if (str10 <> "")
+		count	N2,str10
+		if (N2 = 8)
+			unpack	str10,MM,DD,CC,YY
+			pack	str10,MM,SLASH,DD,SLASH,CC,YY
+			setitem	Order5EditFromSearch,0,str10
+		elseif (N2 <> 10)
+			setitem	Order5EditFromSearch,0,""
+		endif
+	endif
+	RETURN
+
+GotFocus_Order5EditListSearch
+	setprop Order5OK,default=1
+	RETURN
+
+KeyPress_Order5EditListSearch
+	if (#EventResult = 113)	.F2 Key calls Search Function
+.Virtual Key Value
+		goto SearchGo2
+	elseif (#EventResult = 114)	.F3 Key calls Order Info Screen
+		move	"8",N4
+		call	CalcPseudoMouseForm using Order5EditListSearch
+		call	OrderDisplayList using Nord0001,Order5EditListSearch,N4,MouseForm,T1,L1
+	elseif (#EventResult = 120)	.F9 Key closes Search Function
+		setprop	Search,visible=0
+	endif
+	RETURN
+
+LostFocus_Order5EditListSearch
+	getitem	Order5EditListSearch,0,str6
+	call	ZFILLIT using str6,C0
+	setitem	Order5EditListSearch,0,str6
+	RETURN
+
+GotFocus_Order5EditMlrSearch
+	setprop Order5OK,default=1
+	RETURN
+
+KeyPress_Order5EditMlrSearch
+	if (#EventResult = 113)	.F2 Key calls Search Function
+.Virtual Key Value
+		goto SearchGo3
+	elseif (#EventResult = 114)	.F3 Key calls Order Info Screen
+		move	C8,N4		.Mimic a left mouse button click!
+		call	CalcPseudoMouseForm using Order5EditMlrSearch
+		call	OrderDisplayMailer using Nord0001,Order5EditMlrSearch,Order6EditMlrContact,N4,MouseForm,T1,L1
+	elseif (#EventResult = 120)	.F9 Key closes Search Function
+		setprop	Search,visible=0
+	endif
+	RETURN
+
+LostFocus_Order5EditMlrSearch
+	getitem	Order5EditMlrSearch,0,str4
+	call	ZFILLIT using str4,C0
+	setitem	Order5EditMlrSearch,0,str4
+	RETURN
+
+Validate_Order5EditSpecial1
+.START PATCH 3.7 ADDED LOGIC
+	call	RemoveControlChars using Order5EditSpecial1
+.END PATCH 3.7 ADDED LOGIC
+	RETURN
+
+Change_Order5EditToSearch
+	setprop Order5OK,default=1
+	RETURN
+
+LostFocus_Order5EditToSearch
+Order5EditToLostFocus
+	getitem	Order5EditToSearch,0,str10
+	call	Trim using str10
+	if (str10 <> "")
+		count	N2,str10
+		if (N2 = 8)
+			unpack	str10,MM,DD,CC,YY
+			pack	str10,MM,SLASH,DD,SLASH,CC,YY
+			setitem	Order5EditToSearch,0,str10
+		elseif (N2 <> 10)
+			setitem	Order5EditToSearch,0,""
+		endif
+	endif
+	RETURN
+
+Click_Order5Email
+	getitem	Order5EditSpecial1,0,hold2
+.If no Notes added then prompt
+	call	Trim using hold2	
+	if (hold2 = "")
+		alert	caution,"You need to include Notes!",N2
+		setfocus Order5EditSpecial1
+		return
+	endif
+.howmany is established in the following screen!!!
+	call	Order5SelectRecipient
+	if (RptCan = YES)
+		goto Order5EndEmail
+	endif
+.
+	call	OrderDisableScreen5All
+.	erase   "\\NTS0\D\DATA\EMAILFILE.DAT"
+.	erase   "\\NTS0\D\DATA\EMAILFILE.SRT"
+.       prepare tempfile,"\\NTS0\D\DATA\EMAILFILE.DAT"
+	erase   "\\NTS1\E\DATA\EMAILFILE.DAT"
+	erase   "\\NTS1\E\DATA\EMAILFILE.SRT"
+        prepare tempfile,"\\NTS1\E\DATA\EMAILFILE.DAT"
+testaroony
+.Do not use #RESULT generically in following loop as it is
+.used to find hightlighted records in ListView object!
+.Any routine which is called in this loop may not use #RESULT!!!
+	move	SEQ,#result
+	loop
+		move	#result,N9
+		if (View5Flag = 1)
+			Order5ListView.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 2)
+			Order5ListView2.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 3)
+			Order5ListView3.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 4)
+			Order5ListView4.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 5)
+			Order5ListView5.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 6)
+			Order5ListView6.GetNextItem giving #result using C2,N9
+		endif
+		until (#result = SEQ)
+		if (View5Flag = 1)
+			Order5ListView.GetItemText giving NORDPFLD using #result,C0
+			if (howmany = C1)	.CONTACTS
+				Order5ListView.GetItemText giving CNTNAME using #result,10
+			elseif (howmany = C2)	.CALLERS
+				Order5ListView.GetItemText giving CNTNAME using #result,11
+			endif
+		elseif (View5Flag = 2)
+			Order5ListView2.GetItemText giving NORDPFLD using #result,C2
+			if (howmany = C1)	.CONTACTS
+				Order5ListView2.GetItemText giving CNTNAME using #result,10
+			elseif (howmany = C2)	.CALLERS
+				Order5ListView2.GetItemText giving CNTNAME using #result,11
+			endif
+		elseif (View5Flag = 3)
+			Order5ListView3.GetItemText giving NORDPFLD using #result,C2
+			if (howmany = C1)	.CONTACTS
+				Order5ListView3.GetItemText giving CNTNAME using #result,10
+			elseif (howmany = C2)	.CALLERS
+				Order5ListView3.GetItemText giving CNTNAME using #result,11
+			endif
+		elseif (View5Flag = 4)
+			Order5ListView4.GetItemText giving NORDPFLD using #result,C4
+			if (howmany = C1)	.CONTACTS
+				Order5ListView4.GetItemText giving CNTNAME using #result,11
+			elseif (howmany = C2)	.CALLERS
+				Order5ListView4.GetItemText giving CNTNAME using #result,12
+			endif
+		elseif (View5Flag = 5)
+			Order5ListView5.GetItemText giving NORDPFLD using #result,C4
+			if (howmany = C1)	.CONTACTS
+				Order5ListView5.GetItemText giving CNTNAME using #result,11
+			elseif (howmany = C2)	.CALLERS
+				Order5ListView5.GetItemText giving CNTNAME using #result,12
+			endif
+		elseif (View5Flag = 6)
+			Order5ListView6.GetItemText giving NORDPFLD using #result,C4
+			if (howmany = C1)	.CONTACTS
+				Order5ListView6.GetItemText giving CNTNAME using #result,11
+			elseif (howmany = C2)	.CALLERS
+				Order5ListView6.GetItemText giving CNTNAME using #result,12
+			endif
+		endif
+		write	tempfile,seq;CNTNAME,NORDPFLD
+.
+		call	Order5TestBusy USING NORDPFLD
+.
+		if (str1 <> STAR)
+			call	Order5UpdateSpecial
+		endif	
+	repeat
+.	move    "\\NTS0\D\DATA\EMAILFILE.DAT,\\NTS0\D\DATA\EMAILFILE.SRT,\\NTS0\D\DATA;1-35",taskname
+	pack	taskname,NTWKPATH1,"EMAILFILE.DAT,",NTWKPATH1,"EMAILFILE.SRT,",NTWKPATH1,";1-35"
+        sort    taskname
+        if over
+		clear   taskname
+		append	"Email sort Failed!!",taskname
+		append	carr,taskname
+		append	"Email(s) were not sent!",taskname
+		reset	taskname
+                alert	caution,taskname,result
+		goto Order5EndEmail
+        endif
+	close	tempfile
+	move	C0,N1
+	clear	str35
+	clear	taskname
+	move    "In-House LCR Information",SmtpSubject
+	clear	SmtpTextMessage(1) 
+	append	"These Notes from ",SmtpTextMessage(1)
+	move    C0,NUSEFLD
+        move    C1,NUSEPATH
+        move    PORTN,NUSEFLD
+        rep     zfill,NUSEFLD
+        call    NUSEKEY
+	if over
+		clear	NUSEUSER
+	endif
+	call	Trim using NUSEUSER
+	
+	move    NUSEUSER,str35
+	move	NUSEUSER,str55
+	call    Order5EmailLoop2
+        clear   smtpemailaddress
+        append  str45 to SmtpEmailAddress
+        append  "@nincal.com",SmtpEmailAddress
+        reset   smtpemailaddress
+        move    str45,SmtpUserName                                User name
+
+	append	NUSEUSER,SmtpTextMessage(1)
+	append	" apply to the following LCR's:",SmtpTextMessage(1)
+	reset	SmtpTextMessage(1)
+	move	hold2,SmtpTextMessage(2)
+.	open    tempfile,"\\NTS0\D\DATA\EMAILFILE.SRT"
+	open    tempfile,"\\NTS1\E\DATA\EMAILFILE.SRT"
+        loop
+                read    tempfile,seq;CNTNAME,NORDPFLD
+		if over
+			if (N1 = C1)
+				call	Order5EmailContact
+			endif
+			goto Order5EndEmail
+		endif
+                if (str35 <> CNTNAME)
+			if (N1 = C0)
+                                move	C1,N1
+				move    CNTNAME,str35
+                                call    Order5EmailLoop2
+                        else
+                                call    Order5EmailContact
+				move    CNTNAME,str35
+				call    Order5EmailLoop2
+                        endif
+			move	C2,N9		.Initialize one less than actual next line
+		endif
+		add	C1,N9
+		clear	SmtpTextMessage(N9)
+		append	B1,SmtpTextMessage(N9)
+                append	NORDPFLD,SmtpTextMessage(N9)
+		reset	SmtpTextMessage(N9)
+	repeat
+	call	Order5EmailContact
+Order5EndEmail
+.START PATCH 3.68.8 ADDED LOGIC
+	close	tempfile
+.END PATCH 3.68.8 ADDED LOGIC
+	setitem	Order5EditSpecial1,0,""
+	call	Order5OKEnd
+	return
+
+Order5EmailLoop2
+	clear   str45
+.START PATCH FOR NEW EMAIL ADDRESSES
+.	move    str35,str1
+.	loop
+.	        bump    str35,1
+.        	cmatch  B1,str35
+.		until equal
+.        	goto Order5EmailExit2 if eos
+.	repeat
+.        bump    str35,1
+.	move    str35,str7
+.        call    RemoveChar using str7,B1
+.        move    str7,str6
+.        pack    str45,str1,str6
+.Order5EmailExit2
+.	reset   str35
+.	call	Trim using str45
+.
+	move	str35,str45
+	call	RemoveChar using str45,B1
+	call	Trim using str45
+.END PATCH FOR NEW EMAIL ADDRESSES
+	return
+
+Order5EmailContact
+        move    N9,SmtpTextIndexLast
+.       	call    mailmesg
+        clear   taskname
+        move    "NTS4",SmtpEmailServer                   Address of email serverc
+        move    str55,SmtpUserFullName              User Full Name
+.   Set the destinations of the email. Max 100 (Mime spec)
+        clear   SmtpDestinations(1,1)
+        append  str45 to SmtpDestinations(1,1)
+        append  "@nincal.com",SmtpDestinations(1,1)
+        reset   SmtpDestinations(1,1)
+        move    "1",SmtpDestIndexLast                               Index to last entry in Dest array
+        move    "0",SmtpAttIndexLast                                Index to last entry - Only 1 entry
+        clear   SmtpLogFile                                         'Clear' disables the LogFile
+        call    SmtpSend   ( 'Send' is in Smtp.Pri which is included in TestSmtp.Dbs )
+
+        if NOT Equal
+                pack    Mess,"Result Code ",SmtpResult," - ",SmtpResultText,NewLine:
+                        "Status Code ",SmtpStatus," - ",SmtpStatusText
+                alert  Stop,Mess,F1,"PL/B emailer - ERROR"
+        endif
+.        return
+	clear	SmtpTextMessage(3)
+	return
+	RETURN
+
+Click_Order5Fax
+	getitem	Order5EditSpecial1,0,hold2
+	call	OrderDisableScreen5All
+.Do not use #RESULT generically in following loop as it is
+.used to find hightlighted records in ListView object!
+.Any routine which is called in this loop may not use #RESULT!!!
+	move	SEQ,#result
+	loop
+		move	#result,N9
+		if (View5Flag = 1)
+			Order5ListView.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 2)
+			Order5ListView2.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 3)
+			Order5ListView3.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 4)
+			Order5ListView4.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 5)
+			Order5ListView5.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 6)
+			Order5ListView6.GetNextItem giving #result using C2,N9
+		endif
+		until (#result = SEQ)
+		if (View5Flag = 1)
+			Order5ListView.GetItemText giving NORDPFLD using #result,C0
+		elseif (View5Flag = 2)
+			Order5ListView2.GetItemText giving NORDPFLD using #result,C2
+		elseif (View5Flag = 3)
+			Order5ListView3.GetItemText giving NORDPFLD using #result,C2
+		elseif (View5Flag = 4)
+			Order5ListView4.GetItemText giving NORDPFLD using #result,C4
+		elseif (View5Flag = 5)
+			Order5ListView5.GetItemText giving NORDPFLD using #result,C4
+		elseif (View5Flag = 6)
+			Order5ListView6.GetItemText giving NORDPFLD using #result,C4
+		endif
+		move	C1,NORDPPATH
+		move	"Button-NORDPKEY",Location
+		pack    KeyLocation,"Key: ",NORDPFLD
+		call	NORDPKEY
+		if over
+			clear	taskname
+			append	"Unable to Fax LR#: ",taskname
+			append	NORDPFLD,taskname
+			append	carr,taskname
+			append	"Record no longer present!",taskname
+			reset	taskname
+			alert	caution,taskname,N10
+		else
+			call	Order5TestBusy using NORDPFLD
+			if (str1 <> STAR)
+				move	"*",str1	.OHIST
+				move	OELCODE,str2	.OELCODE
+				move	ORENT,str3	.ORENT
+				move	" ",str4
+				call	Order5UpdateNINPRINTL using str1,str2,str3,str4,C0
+				call	Order5UpdateSpecial
+			        move    "5FAX-NINPRINT",Location
+			        pack    KeyLocation,"Key: ",NORDPFLD
+			        TRAP    IOMssg Giving Error if IO
+				filepi  5;ORDPRINT,ORDPRNTA
+        	        	read    ORDPRINT,NORDPFLD;;
+        	        	if over
+					move	"F",ORCODE                  
+	        	        	write   ORDPRINT,NORDPFLD;ORDVARS
+        				insert  ORDPRNTA
+				else
+					updatab ORDPRINT;*1,"F",*176,OHIST
+			                flush   ORDPRINT
+        	        	endif
+				TRAPCLR	IO
+				pack    NSPEFLD,NORDPFLD
+			        rep     zfill,NSPEFLD
+        			move    "Fax-NSPEKEY",Location
+				pack    KeyLocation,"Key: ",NSPEFLD
+		        	call    NSPEKEY
+				if not over		.Should never occur, LCR's should always at least have XSTAT.
+					move    "Button-NSPEDEL",Location
+					call	NSPEDEL
+				endif
+				move	NORDPFLD,NSPELR
+				call	Trim using DESC002
+				unpack  timestamp,str2,YY,MM,DD
+				pack	DESC002,DESC002,carr,"Faxed To Owner:  ",MM,SLASH,DD,SLASH,str2,YY
+				move    "Fax-NSPEWRT",Location
+				call	NSPEWRT
+.START PATCH 3.75.6 ADDED LOGIC
+				if (OSCODE = "2")
+					pack	taskname,OLRN," is marked as 'Sample to Follow'!",newline,"Make sure you include a Sample if the List Owner",newline,"has not yet received it."
+					alert	caution,taskname,result
+				endif
+.END PATCH 3.75.6 ADDED LOGIC
+			endif
+		endif
+	repeat
+	call	OrderOKBegin
+	RETURN
+
+Click_Order5ListView
+OrderListViewScreen5Click
+	Order5ListView.GetNextItem giving N9 using C2
+	Order5ListView.GetItemText giving O1DES using N9,14
+        Order5ListView.GetItemText giving OWNOCPY using N9,15
+        Order5ListView.GetItemText giving MCOMP using N9,16
+        Order5ListView.GetItemText giving OFDESC using N9,17
+        Order5ListView.GetItemText giving DESC001 using N9,18
+	Order5ListView.GetItemText giving OLRN using N9,0
+	call	OrderLoadStatScreen5
+	RETURN
+
+DblClick_Order5ListView
+	Order5ListView.GetNextItem giving N9 using C2
+	Order5ListView.GetItemText giving NORDFLD using N9,0
+	setitem	OrderSearchKey,0,NORDFLD
+	call	OrderSwitchTab using C1
+	goto	ReLoad
+	RETURN
+
+KeyPress_Order5ListView
+	if (#EventResult = 40 OR #EventResult = 38 OR #EventResult = 34 OR #EventResult = 33)
+.Virtual Key Values
+.UpArrow = 38, DownArrow = 40, PageUp = 33, PageDown =34
+		goto OrderListViewScreen5Click
+	endif
+	RETURN
+
+ColClick_Order5ListView
+.Column Clicking
+.There are two options with Column Clicking.  The one implemented involves declaring three
+.ListView objects.  The different ListView objects have their columns ordered so
+.that the user can SORT AND SELECT based on different criteria.  The other option involves
+.using only one ListView object and SORTING on the different criteria.  With this second
+.option the user would not be able to SELECT on anything other than the first column.
+.Meaning, if the user sorted by Description, which is in column 2, and they entered "P"
+.on the keyboard, the ListView object would not automatically go to the entries beginning
+.with "P".  As the first option actually rearranges the order of the columns, entering "P"
+.will send the focus to the entries beginning with "P".  ASH
+	move	#EventResult,result
+ListView1ColClick
+	if (result = 1 OR result = 14)
+		setprop	Order5ListView,visible=0
+		setprop	Order5ListView3,visible=0
+		setprop	Order5ListView4,visible=0
+		setprop	Order5ListView5,visible=0
+		setprop	Order5ListView6,visible=0
+		setprop	Order5ListView2,visible=1
+		move	C2,View5Flag
+	elseif (result = 2 OR result = 16)
+		setprop	Order5ListView,visible=0
+		setprop	Order5ListView2,visible=0
+		setprop	Order5ListView4,visible=0
+		setprop	Order5ListView5,visible=0
+		setprop	Order5ListView6,visible=0
+		setprop	Order5ListView3,visible=1
+		move	C3,View5Flag
+	elseif (result = 9)
+		setprop	Order5ListView,visible=0
+		setprop	Order5ListView2,visible=0
+		setprop	Order5ListView3,visible=0
+		setprop	Order5ListView5,visible=0
+		setprop	Order5ListView6,visible=0
+		setprop	Order5ListView4,visible=1
+		move	C4,View5Flag
+	elseif (result = 5)
+		setprop	Order5ListView,visible=0
+		setprop	Order5ListView2,visible=0
+		setprop	Order5ListView3,visible=0
+		setprop	Order5ListView4,visible=0
+		setprop	Order5ListView6,visible=0
+		setprop	Order5ListView5,visible=1
+		move	C5,View5Flag
+	elseif (result = 6)
+		setprop	Order5ListView,visible=0
+		setprop	Order5ListView2,visible=0
+		setprop	Order5ListView3,visible=0
+		setprop	Order5ListView4,visible=0
+		setprop	Order5ListView5,visible=0
+		setprop	Order5ListView6,visible=1
+		move	C6,View5Flag
+	endif
+	RETURN
+
+Click_Order5ListView2
+OrderListView2Screen5Click
+	Order5ListView2.GetNextItem giving N9 using C2
+	Order5ListView2.GetItemText giving O1DES using N9,0
+        Order5ListView2.GetItemText giving OWNOCPY using N9,14
+        Order5ListView2.GetItemText giving MCOMP using N9,1
+        Order5ListView2.GetItemText giving OFDESC using N9,15
+        Order5ListView2.GetItemText giving DESC001 using N9,16
+	Order5ListView2.GetItemText giving OLRN using N9,2
+	call	OrderLoadStatScreen5
+	RETURN
+
+DblClick_Order5ListView2
+	Order5ListView2.GetNextItem giving N9 using C2
+	Order5ListView2.GetItemText giving NORDFLD using N9,2
+	setitem	OrderSearchKey,0,NORDFLD
+	call	OrderSwitchTab using C1
+	goto	ReLoad
+	RETURN
+
+KeyPress_Order5ListView2
+	if (#EventResult = 40 OR #EventResult = 38 OR #EventResult = 34 OR #EventResult = 33)
+.Virtual Key Values
+.UpArrow = 38, DownArrow = 40, PageUp = 33, PageDown =34
+		goto OrderListView2Screen5Click
+	endif
+	RETURN
+
+ColClick_Order5ListView2
+.Column Clicking
+.There are two options with Column Clicking.  The one implemented involves declaring three
+.ListView objects.  The different ListView objects have their columns ordered so
+.that the user can SORT AND SELECT based on different criteria.  The other option involves
+.using only one ListView object and SORTING on the different criteria.  With this second
+.option the user would not be able to SELECT on anything other than the first column.
+.Meaning, if the user sorted by Description, which is in column 2, and they entered "P"
+.on the keyboard, the ListView object would not automatically go to the entries beginning
+.with "P".  As the first option actually rearranges the order of the columns, entering "P"
+.will send the focus to the entries beginning with "P".  ASH
+	move	#EventResult,result
+ListView2ColClick
+	if (result = 2)
+		setprop	Order5ListView2,visible=0
+		setprop	Order5ListView3,visible=0
+		setprop	Order5ListView4,visible=0
+		setprop	Order5ListView5,visible=0
+		setprop	Order5ListView6,visible=0
+		setprop	Order5ListView,visible=1
+		move	C1,View5Flag
+	elseif (result = 1 OR result = 18)
+		setprop	Order5ListView,visible=0
+		setprop	Order5ListView2,visible=0
+		setprop	Order5ListView4,visible=0
+		setprop	Order5ListView5,visible=0
+		setprop	Order5ListView6,visible=0
+		setprop	Order5ListView3,visible=1
+		move	C3,View5Flag
+	elseif (result = 9)
+		setprop	Order5ListView,visible=0
+		setprop	Order5ListView2,visible=0
+		setprop	Order5ListView3,visible=0
+		setprop	Order5ListView5,visible=0
+		setprop	Order5ListView6,visible=0
+		setprop	Order5ListView4,visible=1
+		move	C4,View5Flag
+	elseif (result = 5)
+		setprop	Order5ListView,visible=0
+		setprop	Order5ListView2,visible=0
+		setprop	Order5ListView3,visible=0
+		setprop	Order5ListView4,visible=0
+		setprop	Order5ListView6,visible=0
+		setprop	Order5ListView5,visible=1
+		move	C5,View5Flag
+	elseif (result = 6)
+		setprop	Order5ListView,visible=0
+		setprop	Order5ListView2,visible=0
+		setprop	Order5ListView3,visible=0
+		setprop	Order5ListView4,visible=0
+		setprop	Order5ListView5,visible=0
+		setprop	Order5ListView6,visible=1
+		move	C6,View5Flag
+	endif
+	RETURN
+
+Click_Order5ListView3
+OrderListView3Screen5Click
+	Order5ListView3.GetNextItem giving N9 using C2
+	Order5ListView3.GetItemText giving O1DES using N9,1
+        Order5ListView3.GetItemText giving OWNOCPY using N9,14
+        Order5ListView3.GetItemText giving MCOMP using N9,0
+        Order5ListView3.GetItemText giving OFDESC using N9,15
+        Order5ListView3.GetItemText giving DESC001 using N9,16
+	Order5ListView3.GetItemText giving OLRN using N9,2
+	call	OrderLoadStatScreen5
+	RETURN
+
+DblClick_Order5ListView3
+	Order5ListView3.GetNextItem giving N9 using C2
+	Order5ListView3.GetItemText giving NORDFLD using N9,2
+	setitem	OrderSearchKey,0,NORDFLD
+	call	OrderSwitchTab using C1
+	goto	ReLoad
+	RETURN
+
+KeyPress_Order5ListView3
+	if (#EventResult = 40 OR #EventResult = 38 OR #EventResult = 34 OR #EventResult = 33)
+.Virtual Key Values
+.UpArrow = 38, DownArrow = 40, PageUp = 33, PageDown =34
+		goto OrderListView3Screen5Click
+	endif
+	RETURN
+
+ColClick_Order5ListView3
+.Column Clicking
+.There are two options with Column Clicking.  The one implemented involves declaring three
+.ListView objects.  The different ListView objects have their columns ordered so
+.that the user can SORT AND SELECT based on different criteria.  The other option involves
+.using only one ListView object and SORTING on the different criteria.  With this second
+.option the user would not be able to SELECT on anything other than the first column.
+.Meaning, if the user sorted by Description, which is in column 2, and they entered "P"
+.on the keyboard, the ListView object would not automatically go to the entries beginning
+.with "P".  As the first option actually rearranges the order of the columns, entering "P"
+.will send the focus to the entries beginning with "P".  ASH
+	move	#EventResult,result
+ListView3ColClick
+	if (result = 2)
+		setprop	Order5ListView2,visible=0
+		setprop	Order5ListView3,visible=0
+		setprop	Order5ListView4,visible=0
+		setprop	Order5ListView5,visible=0
+		setprop	Order5ListView6,visible=0
+		setprop	Order5ListView,visible=1
+		move	C1,View5Flag
+	elseif (result = 1 OR result = 17)
+		setprop	Order5ListView,visible=0
+		setprop	Order5ListView3,visible=0
+		setprop	Order5ListView4,visible=0
+		setprop	Order5ListView5,visible=0
+		setprop	Order5ListView6,visible=0
+		setprop	Order5ListView2,visible=1
+		move	C2,View5Flag
+	elseif (result = 9)
+		setprop	Order5ListView,visible=0
+		setprop	Order5ListView2,visible=0
+		setprop	Order5ListView3,visible=0
+		setprop	Order5ListView5,visible=0
+		setprop	Order5ListView6,visible=0
+		setprop	Order5ListView4,visible=1
+		move	C4,View5Flag
+	elseif (result = 5)
+		setprop	Order5ListView,visible=0
+		setprop	Order5ListView2,visible=0
+		setprop	Order5ListView3,visible=0
+		setprop	Order5ListView4,visible=0
+		setprop	Order5ListView6,visible=0
+		setprop	Order5ListView5,visible=1
+		move	C5,View5Flag
+	elseif (result = 6)
+		setprop	Order5ListView,visible=0
+		setprop	Order5ListView2,visible=0
+		setprop	Order5ListView3,visible=0
+		setprop	Order5ListView4,visible=0
+		setprop	Order5ListView5,visible=0
+		setprop	Order5ListView6,visible=1
+		move	C6,View5Flag
+	endif
+	RETURN
+
+Click_Order5ListView4
+OrderListView4Screen5Click
+	Order5ListView4.GetNextItem giving N9 using C2
+	Order5ListView4.GetItemText giving O1DES using N9,2
+        Order5ListView4.GetItemText giving OWNOCPY using N9,15
+        Order5ListView4.GetItemText giving MCOMP using N9,3
+        Order5ListView4.GetItemText giving OFDESC using N9,16
+        Order5ListView4.GetItemText giving DESC001 using N9,17
+	Order5ListView4.GetItemText giving OLRN using N9,4
+	call	OrderLoadStatScreen5
+	RETURN
+
+DblClick_Order5ListView4
+	Order5ListView4.GetNextItem giving N9 using C2
+	Order5ListView4.GetItemText giving NORDFLD using N9,4
+	setitem	OrderSearchKey,0,NORDFLD
+	call	OrderSwitchTab using C1
+	goto	ReLoad
+	RETURN
+
+KeyPress_Order5ListView4
+	if (#EventResult = 40 OR #EventResult = 38 OR #EventResult = 34 OR #EventResult = 33)
+.Virtual Key Values
+.UpArrow = 38, DownArrow = 40, PageUp = 33, PageDown =34
+		goto OrderListView4Screen5Click
+	endif
+	RETURN
+
+ColClick_Order5ListView4
+.ListView objects.  The different ListView objects have their columns ordered so
+.that the user can SORT AND SELECT based on different criteria.  The other option involves
+.using only one ListView object and SORTING on the different criteria.  With this second
+.option the user would not be able to SELECT on anything other than the first column.
+.Meaning, if the user sorted by Description, which is in column 2, and they entered "P"
+.on the keyboard, the ListView object would not automatically go to the entries beginning
+.with "P".  As the first option actually rearranges the order of the columns, entering "P"
+.will send the focus to the entries beginning with "P".  ASH
+	move	#EventResult,result
+ListView4ColClick
+	if (result = 4)
+		setprop	Order5ListView2,visible=0
+		setprop	Order5ListView3,visible=0
+		setprop	Order5ListView4,visible=0
+		setprop	Order5ListView5,visible=0
+		setprop	Order5ListView6,visible=0
+		setprop	Order5ListView,visible=1
+		move	C1,View5Flag
+	elseif (result = 2 OR result = 18)
+		setprop	Order5ListView,visible=0
+		setprop	Order5ListView3,visible=0
+		setprop	Order5ListView4,visible=0
+		setprop	Order5ListView5,visible=0
+		setprop	Order5ListView6,visible=0
+		setprop	Order5ListView2,visible=1
+		move	C2,View5Flag
+	elseif (result = 3 OR result = 19)
+		setprop	Order5ListView,visible=0
+		setprop	Order5ListView2,visible=0
+		setprop	Order5ListView4,visible=0
+		setprop	Order5ListView5,visible=0
+		setprop	Order5ListView6,visible=0
+		setprop	Order5ListView3,visible=1
+		move	C3,View5Flag
+	elseif (result = 8)
+		setprop	Order5ListView,visible=0
+		setprop	Order5ListView2,visible=0
+		setprop	Order5ListView3,visible=0
+		setprop	Order5ListView4,visible=0
+		setprop	Order5ListView6,visible=0
+		setprop	Order5ListView5,visible=1
+		move	C5,View5Flag
+	elseif (result = 9)
+		setprop	Order5ListView,visible=0
+		setprop	Order5ListView2,visible=0
+		setprop	Order5ListView3,visible=0
+		setprop	Order5ListView4,visible=0
+		setprop	Order5ListView5,visible=0
+		setprop	Order5ListView6,visible=1
+		move	C6,View5Flag
+	endif
+	RETURN
+
+Click_Order5ListView5
+OrderListView5Screen5Click
+	Order5ListView5.GetNextItem giving N9 using C2
+	Order5ListView5.GetItemText giving O1DES using N9,2
+        Order5ListView5.GetItemText giving OWNOCPY using N9,15
+        Order5ListView5.GetItemText giving MCOMP using N9,3
+        Order5ListView5.GetItemText giving OFDESC using N9,16
+        Order5ListView5.GetItemText giving DESC001 using N9,17
+	Order5ListView5.GetItemText giving OLRN using N9,4
+	call	OrderLoadStatScreen5
+	RETURN
+
+DblClick_Order5ListView5
+	Order5ListView5.GetNextItem giving N9 using C2
+	Order5ListView5.GetItemText giving NORDFLD using N9,4
+	setitem	OrderSearchKey,0,NORDFLD
+	call	OrderSwitchTab using C1
+	goto	ReLoad
+	RETURN
+
+KeyPress_Order5ListView5
+	if (#EventResult = 40 OR #EventResult = 38 OR #EventResult = 34 OR #EventResult = 33)
+.Virtual Key Values
+.UpArrow = 38, DownArrow = 40, PageUp = 33, PageDown =34
+		goto OrderListView5Screen5Click
+	endif
+	RETURN
+
+ColClick_Order5ListView5
+.ListView objects.  The different ListView objects have their columns ordered so
+.that the user can SORT AND SELECT based on different criteria.  The other option involves
+.using only one ListView object and SORTING on the different criteria.  With this second
+.option the user would not be able to SELECT on anything other than the first column.
+.Meaning, if the user sorted by Description, which is in column 2, and they entered "P"
+.on the keyboard, the ListView object would not automatically go to the entries beginning
+.with "P".  As the first option actually rearranges the order of the columns, entering "P"
+.will send the focus to the entries beginning with "P".  ASH
+	move	#EventResult,result
+ListView5ColClick
+	if (result = 4)
+		setprop	Order5ListView2,visible=0
+		setprop	Order5ListView3,visible=0
+		setprop	Order5ListView4,visible=0
+		setprop	Order5ListView5,visible=0
+		setprop	Order5ListView6,visible=0
+		setprop	Order5ListView,visible=1
+		move	C1,View5Flag
+	elseif (result = 2 OR result = 18)
+		setprop	Order5ListView,visible=0
+		setprop	Order5ListView3,visible=0
+		setprop	Order5ListView4,visible=0
+		setprop	Order5ListView5,visible=0
+		setprop	Order5ListView6,visible=0
+		setprop	Order5ListView2,visible=1
+		move	C2,View5Flag
+	elseif (result = 3 OR result = 19)
+		setprop	Order5ListView,visible=0
+		setprop	Order5ListView2,visible=0
+		setprop	Order5ListView4,visible=0
+		setprop	Order5ListView5,visible=0
+		setprop	Order5ListView6,visible=0
+		setprop	Order5ListView3,visible=1
+		move	C3,View5Flag
+	elseif (result = 10)
+		setprop	Order5ListView,visible=0
+		setprop	Order5ListView2,visible=0
+		setprop	Order5ListView3,visible=0
+		setprop	Order5ListView5,visible=0
+		setprop	Order5ListView6,visible=0
+		setprop	Order5ListView4,visible=1
+		move	C4,View5Flag
+	elseif (result = 8)
+		setprop	Order5ListView,visible=0
+		setprop	Order5ListView2,visible=0
+		setprop	Order5ListView3,visible=0
+		setprop	Order5ListView4,visible=0
+		setprop	Order5ListView5,visible=0
+		setprop	Order5ListView6,visible=1
+		move	C6,View5Flag
+	endif
+	RETURN
+
+Click_Order5ListView6
+OrderListView6Screen5Click
+	Order5ListView6.GetNextItem giving N9 using C2
+	Order5ListView6.GetItemText giving O1DES using N9,2
+        Order5ListView6.GetItemText giving OWNOCPY using N9,15
+        Order5ListView6.GetItemText giving MCOMP using N9,3
+        Order5ListView6.GetItemText giving OFDESC using N9,16
+        Order5ListView6.GetItemText giving DESC001 using N9,17
+	Order5ListView6.GetItemText giving OLRN using N9,4
+	call	OrderLoadStatScreen5
+	RETURN
+
+DblClick_Order5ListView6
+	Order5ListView6.GetNextItem giving N9 using C2
+	Order5ListView6.GetItemText giving NORDFLD using N9,4
+	setitem	OrderSearchKey,0,NORDFLD
+	call	OrderSwitchTab using C1
+	goto	ReLoad
+	RETURN
+
+KeyPress_Order5ListView6
+	if (#EventResult = 40 OR #EventResult = 38 OR #EventResult = 34 OR #EventResult = 33)
+.Virtual Key Values
+.UpArrow = 38, DownArrow = 40, PageUp = 33, PageDown =34
+		goto OrderListView6Screen5Click
+	endif
+	RETURN
+
+ColClick_Order5ListView6
+.ListView objects.  The different ListView objects have their columns ordered so
+.that the user can SORT AND SELECT based on different criteria.  The other option involves
+.using only one ListView object and SORTING on the different criteria.  With this second
+.option the user would not be able to SELECT on anything other than the first column.
+.Meaning, if the user sorted by Description, which is in column 2, and they entered "P"
+.on the keyboard, the ListView object would not automatically go to the entries beginning
+.with "P".  As the first option actually rearranges the order of the columns, entering "P"
+.will send the focus to the entries beginning with "P".  ASH
+	move	#EventResult,result
+ListView6ColClick
+	if (result = 4)
+		setprop	Order5ListView2,visible=0
+		setprop	Order5ListView3,visible=0
+		setprop	Order5ListView4,visible=0
+		setprop	Order5ListView5,visible=0
+		setprop	Order5ListView6,visible=0
+		setprop	Order5ListView,visible=1
+		move	C1,View5Flag
+	elseif (result = 2 OR result = 18)
+		setprop	Order5ListView,visible=0
+		setprop	Order5ListView3,visible=0
+		setprop	Order5ListView4,visible=0
+		setprop	Order5ListView5,visible=0
+		setprop	Order5ListView6,visible=0
+		setprop	Order5ListView2,visible=1
+		move	C2,View5Flag
+	elseif (result = 3 OR result = 19)
+		setprop	Order5ListView,visible=0
+		setprop	Order5ListView2,visible=0
+		setprop	Order5ListView4,visible=0
+		setprop	Order5ListView5,visible=0
+		setprop	Order5ListView6,visible=0
+		setprop	Order5ListView3,visible=1
+		move	C3,View5Flag
+	elseif (result = 10)
+		setprop	Order5ListView,visible=0
+		setprop	Order5ListView2,visible=0
+		setprop	Order5ListView3,visible=0
+		setprop	Order5ListView5,visible=0
+		setprop	Order5ListView6,visible=0
+		setprop	Order5ListView4,visible=1
+		move	C4,View5Flag
+	elseif (result = 8)
+		setprop	Order5ListView,visible=0
+		setprop	Order5ListView2,visible=0
+		setprop	Order5ListView3,visible=0
+		setprop	Order5ListView4,visible=0
+		setprop	Order5ListView6,visible=0
+		setprop	Order5ListView5,visible=1
+		move	C5,View5Flag
+	endif
+	RETURN
+
+Click_Order5OK
+OrderOKBegin
+.Disable Buttons
+	call	OrderDisableScreen5All
+	setprop	Order5Stop,enabled=1
+.	setprop OrderModify,enabled=0
+.	setprop OrderModify2,enabled=0
+	setprop OrderOK,enabled=0
+	setprop OrderOK2,enabled=0
+.Clear all ListViews
+	Order5listView.DeleteAllItems Giving result
+	Order5listView2.DeleteAllItems Giving result
+	Order5listView3.DeleteAllItems Giving result
+	Order5listView4.DeleteAllItems Giving result
+	Order5listView5.DeleteAllItems Giving result
+	Order5listView6.DeleteAllItems Giving result
+	setitem Order5StatListName,0,""
+        setitem Order5StatOwnerName,0,""
+        setitem Order5StatMailerName,0,""
+        setitem Order5StatOfferName,0,""
+        setitem Order5StatSpecial1,0,""
+.Find Parameters
+	getitem	Order5ComboTypeSearch,0,N1
+	add	C1,N1
+	move	N1,LCRMod
+	if (N1 = 2)
+		pack	NORDPFLD4,"04Xe"
+	elseif (N1 = 3)
+		pack	NORDPFLD4,"04XE"
+	elseif (N1 = 4)
+		pack	NORDPFLD4,"04X*"
+	else  .(N1 = 5)
+		pack	NORDPFLD4,"04Xz"
+	endif
+.
+	clear	NORDPFLD1
+	getitem	Order5ComboCallerSearch,0,N3
+	if (N3 <> 1)
+		getitem Order5ComboCallerSearch,N3,str45
+		unpack	str45,str35,str1,str2
+		pack	NORDPFLD1,"01X",str2
+	endif
+.
+	clear	NORDPFLD2	
+	getitem	Order5EditListSearch,0,str6
+	if (str6 <> "")
+		call 	ZFILLIT using str6,C0
+		setitem Order5EditListSearch,0,str6
+		pack	NORDPFLD2,"02X",str6
+	endif
+.	
+	clear	NORDPFLD3	
+	getitem	Order5ComboContactSearch,0,N4
+	if (N4 <> 1)
+		getitem Order5ComboContactSearch,N4,str45
+		unpack	str45,str35,str1,str2
+		pack	NORDPFLD3,"03X",str2
+	endif
+.
+	getitem	Order5EditMlrSearch,0,str4
+	call 	ZFILLIT using str4,C0
+	setitem	Order5EditMlrSearch,0,str4
+.
+	call	Order5EditFromLostFocus
+	clear	Hold5From
+	if (str10 <> "")
+		unpack	str10,MM,str1,DD,str1,CC,YY
+		pack	Hold5From,CC,YY,MM,DD
+	endif
+.
+	call	Order5EditToLostFocus
+	clear	Hold5To
+	if (str10 <> "")
+		unpack	str10,MM,str1,DD,str1,CC,YY
+		pack	Hold5To,CC,YY,MM,DD
+	endif
+.
+	getitem	Order5CheckDate,0,Hold5Date
+.
+	getitem	OptionsScreen5BrkFilter,0,N7
+.Read File
+	move	C0,HowMany	.HowMany used here as OrderLoadScreen5 does not access it
+	move	C2,NORDPPATH
+	move	"OK-NORDPAIM",Location
+	pack    KeyLocation,"Key: ",NORDPFLD1,COMMA,NORDPFLD2,COMMA,NORDPFLD3,COMMA,NORDPFLD4
+	call	NORDPAIM
+	if over
+		setprop ErrorMssgStat1,visible=0
+                setprop ErrorMssgStat2,visible=1
+                setprop ErrorMssgStat3,visible=0
+                setprop ErrorMssgStat4,visible=0
+                setprop ErrorMssgStat5,visible=1
+                setitem ErrorMssgStat2,0,"          There are no LCR'S"
+                setitem ErrorMssgStat5,0,"         Matching your criteria!!"
+                setitem ErrorMssgOK,0,"&OK"
+                setprop ErrorMssg,visible=1
+	else		
+		call	Order5OKFinalCheck
+		loop
+			move	"OK-NORDPKG",Location
+			call	NORDPKG
+			until over
+			call	Order5OKFinalCheck
+			eventcheck
+			until (StopFlag = YES)
+		repeat
+	endif
+	move	HowMany,str9
+	call	LTrim using str9
+	sub	C1,LCRMod,N1
+	getitem	Order5ComboTypeSearch,N1,str45
+.	getitem	Order5ComboTypeSearch,LCRMod,str45
+	pack	taskname,str9,B1,str45
+	setitem	Order5StatSearch,0,taskname
+	if (HowMany = C0)
+		move	C0,LCRMod
+	endif
+.I keep this section above Order5OKEnd as this section is used to select the top item
+.when the OK button is clicked.  Order5OKEnd is called by OrderEnableLower.  If you Modify
+.a record and then Quit/Save you may not want the top item automatically selected!!!
+	if (View5Flag = 1)
+		Order5ListView.SetItemState Giving result using *Index=0,*State=2,*Statemask=2
+		call	OrderListViewScreen5Click
+	elseif (View5Flag = 2)
+		Order5ListView2.SetItemState Giving result using *Index=0,*State=2,*Statemask=2
+		call	OrderListView2Screen5Click
+	elseif (View5Flag = 3)
+		Order5ListView3.SetItemState Giving result using *Index=0,*State=2,*Statemask=2
+		call	OrderListView3Screen5Click
+	elseif (View5Flag = 4)
+		Order5ListView4.SetItemState Giving result using *Index=0,*State=2,*Statemask=2
+		call	OrderListView4Screen5Click
+	elseif (View5Flag = 5)
+		Order5ListView5.SetItemState Giving result using *Index=0,*State=2,*Statemask=2
+		call	OrderListView5Screen5Click
+	elseif (View5Flag = 6)
+		Order5ListView6.SetItemState Giving result using *Index=0,*State=2,*Statemask=2
+		call	OrderListView6Screen5Click
+	endif
+Order5OKEnd
+.Called by Order5OK_Click, OrderTabChange
+.Enable Buttons
+	if (LCRMod = 3 | LCRMod = 5)	.Disable Buttons if LCR's Cleared/Denied
+		call	OrderEnableScreen5A
+	elseif (LCRMod = 1)
+		call	OrderEnableScreen5B
+	elseif (LCRMod = 0)
+		call	OrderEnableScreen5C
+	else
+		call	OrderEnableScreen5
+	endif
+	if (View5Flag = 1)
+		setfocus Order5ListView
+	elseif (View5Flag = 2)
+		setfocus Order5ListView2
+	elseif (View5Flag = 3)
+		setfocus Order5ListView3
+	elseif (View5Flag = 4)
+		setfocus Order5ListView4
+	elseif (View5Flag = 5)
+		setfocus Order5ListView5
+	elseif (View5Flag = 6)
+		setfocus Order5ListView6
+	endif
+.Enable OK buttons based on if in Modify/New modes
+	if (ExitFlag = YES)
+		setprop OrderOK,enabled=1
+	endif
+	if (ExitFlag2 = YES)
+		setprop OrderOK2,enabled=1
+	endif
+	return
+
+Order5OKFinalCheck
+	if ((LCRMod <> 3 & LCRMod <> 5) | N7 = 0 | OBRKRPT <> "1")
+		if (str4 = "" | str4 = OMLRNUM)
+			clear	str10
+			if (Hold5From <> "" | Hold5To <> "")
+				if (Hold5Date = C1)
+					pack	str10,OODTEC,OODTEY,OODTEM,OODTED
+				else
+					pack	str10,OCLRDTEC,OCLRDTEY,OCLRDTEM,OCLRDTED
+				endif
+				call	Trim using str10
+			endif
+			if (str10 <> "")
+				if ((Hold5From = "" | str10 >= Hold5From) & (Hold5To = "" | str10 <= Hold5To))
+					add	C1,HowMany
+					call	OrderLoadScreen5
+				endif
+			else	.No date range criteria
+				add	C1,HowMany
+				call	OrderLoadScreen5
+			endif
+		endif
+	endif
+	return
+	RETURN
+
+Click_Order5Print
+.	move	NO,RptCan
+	call	OrderSetScreen5Reports
+	setitem	ComboBoxes(1),0,RptType
+	setitem	ComboBoxes(2),0,PrintFlag
+	setprop Report2,visible=1
+	getitem	ComboBoxes(1),0,RptType	
+	getitem	ComboBoxes(2),0,PrintFlag
+	if (RptCan = YES)
+		return
+	endif
+.START PATCH 3.71 ADDED LOGIC
+	move	C3,#result2		.Initialize the var used for clearing records from NINPRINT
+.END PATCH 3.71 ADDED LOGIC
+.Set Parameters
+.START PATCH 3.71.2 ADDED LOGIC
+.START PATCH 3.76.1 REPLACED LOGIC
+.	if (PrintFlag = 4 & RptType <> 3)
+	if (PrintFlag = 4 & Rpttype <> 2)
+		clear	taskname
+		append	".PDF File Dump is only an option with the",taskname
+		append	carr,taskname
+		append	"Galley Report!  Select a different Printer.",taskname
+		reset	taskname
+		alert	caution,taskname,result
+		goto Click_Order5Print
+	endif
+	if (PrintFlag = 5 & RptType <> 3)
+.END PATCH 3.76.1 REPLACED LOGIC
+		clear	taskname
+		append	"Faxing is only an option with the",taskname
+		append	carr,taskname
+		append	"List Management Broker Report!  Select a different Printer.",taskname
+		reset	taskname
+		alert	caution,taskname,result
+		goto Click_Order5Print
+	endif
+.END PATCH 3.71.2 ADDED LOGIC	
+	if (RptType > 1)
+		if (RptType = 3 | RptType = 4)
+.			if (LCRMod <> 2 & LCRMod <> 4)
+			if (LCRMod <> 3 & LCRMod <> 5)
+				clear	taskname
+				append	"This report must be generated using",taskname
+				append	carr,taskname
+				append	"LCR's Already Cleared or LCR's Denied!",taskname
+				reset	taskname
+				alert	caution,taskname,result
+				setfocus Order5ComboTypeSearch
+				return
+			endif
+.			if (RptType = 3 & (PrintFlag = 2 | PrintFlag = 5))	.Broker Report in PDF Format/Fax
+			if (RptType = 3 & PrintFlag = 2)	.Broker Report in PDF Format
+				clear	str55
+				append	NTWKPATH3,str55
+.				append	"F:\users\",str55
+				if (userlogn <> "")
+					append	userlogn,str55
+					append	"\",str55
+				endif
+				append	"BRKFILE.DAT",str55
+				reset	str55
+.START PATCH 3.68.6 ADDED LOGIC
+			elseif (RptType = 4 & PrintFlag = 2)
+				alert	caution,"PDF format is not an option with this report!",result
+				goto Click_Order5Print
+.END PATCH 3.68.6 ADDED LOGIC
+			else
+				move	"C:\WORK\BRKFILE.DAT",str55
+			endif
+		elseif (RptType = 2)
+.			if (LCRMod <> 4 AND LCRMod <> 3)
+			if (LCRMod <> 4)
+.			if (LCRMod <> 3)
+				alert	caution,"This report must be generated using LCR's Faxed To Owner!",result
+				setfocus Order5ComboTypeSearch
+				return
+			endif
+			clear	str55
+			append	NTWKPATH3,str55
+.			append	"f:\users\",str55
+			if (userlogn <> "")
+				append	userlogn,str55
+				append	"\",str55
+			endif
+.............................
+.			append	"GALLEY.DAT",str55
+.START PATCH 3.77.5 REPLACED LOGIC
+.			if (PrintFlag = 2)
+			if (PrintFlag = 2 | PrintFlag = 4)
+.END PATCH 3.77.5 REPLACED LOGIC
+				clock	timestamp,str16
+				unpack	str16,str8,str8
+				append	str8,str55
+				append	".DAT",str55
+			else
+				append	"GALLEY.DAT",str55
+			endif
+.............................
+			reset	str55
+		endif
+		erase	str55
+		prepare tempfile,str55
+	endif	
+.Disable Screen
+	call	OrderDisableScreen5All	
+	call	OrderSetMouseBusy
+.Do not use #RESULT generically in following loop as it is
+.used to find hightlighted records in ListView object!
+.Any routine which is called in this loop may not use #RESULT!!!
+	move	SEQ,#result
+	loop
+		move	#result,N9
+		if (View5Flag = 1)
+			Order5ListView.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 2)
+			Order5ListView2.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 3)
+			Order5ListView3.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 4)
+			Order5ListView4.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 5)
+			Order5ListView5.GetNextItem giving #result using C2,N9
+		elseif (View5Flag = 6)
+			Order5ListView6.GetNextItem giving #result using C2,N9
+		endif
+		until (#result = SEQ)
+		if (View5Flag = 1)
+			Order5ListView.GetItemText giving NORDPFLD using #result,C0
+		elseif (View5Flag = 2)
+			Order5ListView2.GetItemText giving NORDPFLD using #result,C2
+		elseif (View5Flag = 3)
+			Order5ListView3.GetItemText giving NORDPFLD using #result,C2
+		elseif (View5Flag = 4)
+			Order5ListView4.GetItemText giving NORDPFLD using #result,C4
+		elseif (View5Flag = 5)
+			Order5ListView5.GetItemText giving NORDPFLD using #result,C4
+		elseif (View5Flag = 6)
+			Order5ListView6.GetItemText giving NORDPFLD using #result,C4
+		endif
+		move	C1,NORDPPATH
+		move	"Order5Print-NORDPKEY",Location
+		pack    KeyLocation,"Key: ",NORDPFLD
+		call	NORDPKEY
+		if over
+			clear	taskname
+			append	"Unable to Print LR#: ",taskname
+			append	NORDPFLD,taskname
+			append	carr,taskname
+			append	"Record no longer present!",taskname
+			reset	taskname
+			alert	caution,taskname,N10
+		else	
+			if (RptType = 3)	.Broker Report
+				call	Order5TestBusy using NORDPFLD
+				if (str1 <> STAR)
+					write	tempfile,seq;ORDVARS
+					move	"Order5Print-NORDPUPD",Location
+					pack    KeyLocation,"Key: ",NORDPFLD
+					move	"1",OBRKRPT
+					call	NORDPUPD
+					if over
+						clear	taskname
+						append	"Unable to update NINPRINTL LR#: ",taskname
+						append	NORDPFLD,taskname
+						reset	taskname
+						alert	caution,taskname,N10
+					endif
+				        move    "5PRINT-NINPRINT",Location
+				        pack    KeyLocation,"Key: ",NORDPFLD
+				        TRAP    IOMssg Giving Error if IO
+					read	ORDPRINT,NORDPFLD;;
+					if not over
+						filepi  1;ORDPRINT
+						updatab ORDPRINT;*166,OBRKRPT
+						if over
+							clear	taskname
+							append	"Unable to update NINPRINT LR#: ",taskname
+							append	NORDPFLD,taskname
+							reset	taskname
+							alert	caution,taskname,N10
+						endif
+					endif
+					TRAPCLR	IO
+					move	"Order5Print-NORDKEY",Location
+					move	NORDPFLD,NORDFLD
+					pack    KeyLocation,"Key: ",NORDFLD
+					move	C1,NORDPATH
+					call	NORDKEY
+					move	"Order5Print-NORDUPD",Location
+					move	"1",OBRKRPT
+					call	NORDUPD
+					if over
+						clear	taskname
+						append	"Unable to update NINORD LR#: ",taskname
+						append	NORDFLD,taskname
+						reset	taskname
+						alert	caution,taskname,N10
+					endif
+				endif
+			elseif (RptType = 2 | RptType = 4)	.Galley Listing List Clearance Request/Planner Report
+				write	tempfile,seq;ORDVARS
+				call	Order5NINPRINTCheck
+			else	.if (RptType = 1)	.Single List Clearance Request
+.Flag to use NUSEINITS instead of ODOWJ
+			        move	YES,InitFlag
+				call    OrderLCRPrintItRefresh
+.Above sub-routine will not find Special Instructions, proper Offer, proper INITIALS, or proper Caller so go get 'em.
+.START PATCH FOR NEW EMAIL ADDRESSES
+.				pack    str24,B10,B10,B10
+				pack    str55,B10,B10,B10,B10,B10,B10
+.END PATCH FOR NEW EMAIL ADDRESSES
+				if (View5Flag = 1)
+					Order5ListView.GetItemText giving CNTNAME using #result,C11
+				elseif (View5Flag = 2)
+					Order5ListView2.GetItemText giving CNTNAME using #result,C11
+				elseif (View5Flag = 3)
+					Order5ListView3.GetItemText giving CNTNAME using #result,C11
+				elseif (View5Flag = 4)
+					Order5ListView4.GetItemText giving CNTNAME using #result,12
+				elseif (View5Flag = 5)
+					Order5ListView5.GetItemText giving CNTNAME using #result,12
+				elseif (View5Flag = 6)
+					Order5ListView6.GetItemText giving CNTNAME using #result,12
+				endif
+				call	SVCREP2
+.
+				pack    NSPEFLD,OLRN
+			        rep     zfill,NSPEFLD
+        			move    "O5.Print-NSPEKEY",Location
+				pack    KeyLocation,"Key: ",NSPEFLD
+			        call    NSPEKEY
+				if (View5Flag = 1)
+					Order5ListView.GetItemText giving OFDESC using #result,17
+				elseif (View5Flag = 2)
+					Order5ListView2.GetItemText giving OFDESC using #result,15
+				elseif (View5Flag = 3)
+					Order5ListView3.GetItemText giving OFDESC using #result,15
+				elseif (View5Flag = 4)
+					Order5ListView4.GetItemText giving OFDESC using #result,16
+				elseif (View5Flag = 5)
+					Order5ListView5.GetItemText giving OFDESC using #result,16
+				elseif (View5Flag = 6)
+					Order5ListView6.GetItemText giving OFDESC using #result,16
+				endif
+.
+				call	splown		
+				if (PrintFlag = 2)  .PDF File
+	        	        	call    Trim using OLRN
+	        	        	if (OLRN = "")
+        	                		alert   caution,"Invalid LR#!!!",result
+						goto Order5PrintEnd
+	                		endif
+.                		        pack    APIFileName,"G:\data\",OLRN,".PDF",HexZero
+                		        pack    APIFileName,NTWKPATH1,OLRN,".PDF",HexZero
+					loop
+			                        call    FindFirstFile
+						until (APIResult = 0 | APIResult = hexeight)
+.File already exists, cannot create in PDF format!!
+						clear	taskname
+						append	"This file already exists in PDF format!!!",taskname
+						append	carr,taskname
+						append	"Someone may be producing a report using the same LR ##.",taskname
+						append	"Do you want to delete that copy?",taskname
+						reset	taskname
+       	                        		alert   plain,taskname,result
+						if (result <> 1)
+							goto Order5PrintEnd
+						endif
+						call	DeleteFile
+.Continue attempting to delete until the file is closed by whoever might have it open
+						until (APIResult <> 0 & APIResult <> hexeight)
+					repeat
+.Email file
+					clear	taskname
+.START PATCH 3.71.4 REPLACED LOGIC
+.					append  "!f:\apps\winbatch\butil job=killfile ",TASKNAME
+					append  "!\\nts0\c\apps\winbatch\butil job=killfile ",TASKNAME
+.END PATCH 3.71.4 REPLACED LOGIC
+				        append  " infile=",taskname
+					append	OLRN,taskname
+					append  " B=",taskname
+					append	userlogn,taskname
+					append	" pdf=y",taskname
+	        			reset   TASKNAME
+				        execute TASKNAME
+				endif
+				call	Order5NINPRINTCheck
+			endif
+		endif
+	repeat
+printtest
+	if (RptType = 2 | RptType = 3 | RptType = 4)
+		close	tempfile
+.Test to see if File was actually created
+                pack    APIFileName,str55,HexZero
+                call    FindFirstFile
+                if (APIResult <> 0 & APIResult <> hexeight) 
+.Only run Batch job if file exists
+			clear	taskname
+			if (RptType = 3)
+.				if (PrintFlag = 2 | PrintFlag = 5)
+				if (PrintFlag = 2)
+.START PATCH 3.71.4 REPLACED LOGIC
+.					append	"!c:\progra~1\lanbatch\batch -X -SC -Q\\nts0\c\lanbat~1 f:\apps\winbatch\butil job=BRKRPT ",taskname
+					append	"!c:\progra~1\lanbatch\batch -X -SC -Q\\nts0\c\lanbat~1 \\nts0\c\apps\winbatch\butil job=BRKRPT ",taskname
+.END PATCH 3.71.4 REPLACED LOGIC
+				else
+.START PATCH 3.71.4 REPLACED LOGIC
+.					append  "!f:\apps\winbatch\butil job=BRKRPT ",TASKNAME
+					append  "!\\nts0\c\apps\winbatch\butil job=BRKRPT ",TASKNAME
+.END PATCH 3.71.4 REPLACED LOGIC
+				endif
+.				append  "!f:\apps\winbatch\butil job=BRKRPT ",TASKNAME	
+			elseif (RptType = 2)
+				if (PrintFlag = 2)
+.START PATCH 3.71.4 REPLACED LOGIC
+.					append	"!c:\progra~1\lanbatch\batch -X -SC -Q\\nts0\c\lanbat~1 f:\apps\winbatch\butil job=GALLEYRPT ",taskname
+					append	"!c:\progra~1\lanbatch\batch -X -SC -Q\\nts0\c\lanbat~1 \\nts0\c\apps\winbatch\butil job=GALLEYRPT ",taskname
+.END PATCH 3.71.4 REPLACED LOGIC
+				else
+.START PATCH 3.71.4 REPLACED LOGIC
+.					append  "!f:\apps\winbatch\butil job=GALLEYRPT ",TASKNAME
+					append  "!\\nts0\c\apps\winbatch\butil job=GALLEYRPT ",TASKNAME
+.END PATCH 3.71.4 REPLACED LOGIC
+				endif
+			elseif (RptType = 4)
+.START PATCH 3.71.4 REPLACED LOGIC
+.				append  "!f:\apps\winbatch\butil job=PLNRPT ",TASKNAME
+				append  "!\\nts0\c\apps\winbatch\butil job=PLNRPT ",TASKNAME
+.END PATCH 3.71.4 REPLACED LOGIC
+			endif
+			append  " infile=",taskname
+			scan	".",str55
+			if equal
+				movefptr str55,N9
+				sub	C1,N9
+				setlptr	str55,N9
+				reset	str55
+			endif
+.INPNAME is 25 bytes long, so filename must be shortened.
+.It is chained programs responsibility to add path back
+			scan	NTWKPATH3,str55
+			if equal
+				reset	str55,16
+			endif
+       			append  str55,taskname
+			append  " P=",taskname
+			move	PrintFlag,str2
+			rep	zfill,str2
+       			append  str2,taskname
+			append  " B=",taskname
+			append	userlogn,taskname
+        		reset   TASKNAME
+	        	batch	TASKNAME
+                endif
+	endif
+Order5PrintEnd
+	call	OrderSetMouseFree
+	call	OrderOKBegin
+	return
+
+Order5NINPRINTCheck
+        move    "O.5NPRINTCHK.-NINPRINT",Location
+        pack    KeyLocation,"Key: ",OLRN
+        TRAP    IOMssg Giving Error if IO
+	readtab ORDPRINT,OLRN;*176,str1
+	if not over
+		if ((OSTAT = "p" & str1 = "*") | OSTAT = "l")
+.START PATCH 3.71 REPLACED LOGIC
+.			clear	taskname
+.			append	"LCR ## ",taskname
+.			append	OLRN,taskname
+.			append	" is scheduled to be faxed to the List Owner.",taskname
+.			append	carr,taskname
+.			append	"Do you want it deleted from the Print File?",taskname
+.			reset	taskname
+.			alert	plain,taskname,howmany
+.			if (howmany = 1)
+.				if (OSTAT = "l" | OSTAT = "z")
+.					filepi  1;ORDPRINT
+.					delete  ORDPRINT,OLRN
+.				elseif (OSTAT = "p" | OSTAT = "x")
+.					filepi  1;ORDPRINT
+.					updatab ORDPRINT;*176," "
+.				endif
+.			endif
+............................................................................................
+			if (#result2 = 1)
+				if (OSTAT = "l" | OSTAT = "z")
+					filepi  1;ORDPRINT
+					delete  ORDPRINT,OLRN
+				elseif (OSTAT = "p" | OSTAT = "x")
+					filepi  1;ORDPRINT
+					updatab ORDPRINT;*176," "
+				endif
+			else
+				getprop	Nord0001,bgcolor=colornum
+				call	Order5PrintDestroyScreen
+				create	MDateWindow=380:480:70:320,title="Screen 5 Print Options",wintype=1,winpos=3,bgcolor=colornum
+				pack	taskname,"LCR ## ",OLRN," is scheduled"
+				create	MDateWindow;StatTextBoxes(1)=5:20:1:250,taskname,"'>MS Sans Serif'(8)",Alignment=1
+				create	MDateWindow;StatTextBoxes(2)=20:35:1:250,"to be faxed to the List Owner.","'>MS Sans Serif'(8)",Alignment=1
+				create	MDateWindow;StatTextBoxes(3)=35:50:1:250,"Do you want it deleted from the Print File?","'>MS Sans Serif'(8)",Alignment=1
+				create	MDateWindow;Buttons(1)=60:80:20:80,"Yes To All",font="'>MS Sans Serif'(8)",default=1
+				create	MDateWindow;Buttons(2)=60:80:95:155,"Yes",font="'>MS Sans Serif'(8)"
+				create	MDateWindow;Buttons(3)=60:80:170:230,"No",font="'>MS Sans Serif'(8)"
+				eventreg MDateWindow,5,Order5PrintNo	    	.Register Close Event
+				activate StatTextBoxes(1)
+				activate StatTextBoxes(2)
+				activate StatTextBoxes(3)
+				activate Buttons(1),Order5PrintYesToAll,result
+				activate Buttons(2),Order5PrintYes,result
+				activate Buttons(3),Order5PrintNo,result
+				activate MDateWindow
+				if (#result2 <> 3)	.3 = No
+					if (OSTAT = "l" | OSTAT = "z")
+						filepi  1;ORDPRINT
+						delete  ORDPRINT,OLRN
+					elseif (OSTAT = "p" | OSTAT = "x")
+						filepi  1;ORDPRINT
+						updatab ORDPRINT;*176," "
+					endif
+				endif
+			endif
+.END PATCH 3.71 REPLACED LOGIC
+		endif
+	endif
+	TRAPCLR	IO
+	return
+
+.START PATCH 3.71 ADDED LOGIC
+Order5PrintYesToAll
+	move	C1,#result2
+	goto	Order5PrintDestroyScreen
+
+Order5PrintYes
+	move	C2,#result2
+	goto	Order5PrintDestroyScreen
+
+Order5PrintNo
+	move	C3,#result2
+	goto	Order5PrintDestroyScreen
+
+Order5PrintDestroyScreen
+	destroy StatTextBoxes(1)
+	destroy StatTextBoxes(2)
+	destroy StatTextBoxes(3)
+	destroy Buttons(1)
+	destroy Buttons(2)
+	destroy Buttons(3)
+	destroy MDateWindow
+	return
+.END PATCH 3.71 ADDED LOGIC
+	RETURN
+
+Click_Order5StatCallerSearch
+	setfocus Order5ComboCallerSearch
+	RETURN
+
+Click_Order5StatComboSearch
+	setfocus Order5ComboContactSearch
+	RETURN
+
+Click_Order5StatListSearch
+	setfocus Order5EditListSearch
+	RETURN
+
+Click_Order5StatNotes
+	setfocus Order5EditSpecial1
+	RETURN
+
+Click_Order5Stop
+	move	YES,StopFlag
+	setprop	Order5Stop,enabled=0
+	RETURN
+
+Click_Order5Switch
+	getprop	Order5EditSpecial4,height=N9
+	if (N9 > C0)
+		setprop	Order5EditSpecial4,height=0
+		setitem	Order5StatSpecialView,0,"Internal Notes"
+	else
+		getprop	Order5EditSpecial3,height=N9
+		setprop	Order5EditSpecial4,height=N9
+		setitem	Order5StatSpecialView,0,"Spec. Instructions/L. O. Notes"
+	endif
+	RETURN

@@ -1,0 +1,116 @@
+Note: The following shortcuts work with all versions of Excel. 
+Ctrl+A                                   Select all
+Ctrl+B                                    Bold
+Ctrl+C                                    Copy
+Ctrl+D                                   Fill down
+Ctrl+F                                    Find
+Ctrl+G                                   Go to …
+Ctrl+H                                   Replace
+Ctrl+I                                     Italic
+Ctrl+N                                   New Workbook
+Ctrl+O                                   Open
+Ctrl+P                                    Print
+Ctrl+R                                    Fill Right
+Ctrl+S                                    Save
+Ctrl+U                                   Underline
+Ctrl+V                                   Paste
+Ctrl+X                                    Cut
+Ctrl+Y                                    Repeat
+Ctrl+Z                                    Undo
+F1                                           Help
+F2                                           Edit
+F3                                           Paste Name
+F4                                           Repeat last action
+F5                                           Go to
+F6                                           Next pane
+F7                                           Spell check
+F8                                           Extend mode
+F9                                           Recalculate all workbooks
+F10                                         Activate menu bar
+F11                                         Create a new chart
+F12                                         Save as
+Ctrl+:                                     Insert current time
+Ctrl+;                                     Insert current date
+Ctrl+”                                    Copy value from cell above
+Ctrl+’                                     Copy formula from cell above
+Shift+F1                               What’s This?
+Shift+F2                               Edit cell comment
+Shift+F3                               Paste function into formula
+Shift+F4                               Find next
+Shift+F5                               Find (Search box)
+Shift+F6                               Previous pane
+Shift+F8                               Add to selection
+Shift+F9                               Calculate active worksheet
+Ctrl+Alt+F9                         Calculate all worksheets in all open workbooks regardless of whether they’ve changed since the last calculation
+Ctrl+Alt+Shift+F9             Rechecks dependent formulas and then calculates all cells in all open workbooks, including cells not marked as needing to be calculated
+Shift+F10                             Display shortcut menu
+Shift+F11                             New worksheet
+Shift+F12                             Save
+Ctrl+F3                                  Define name
+Ctrl+F4                                  Close
+Ctrl+F5                                  XL Restore window size
+Ctrl+F6                                  Next workbook window
+Ctrl+F7                                  Move window
+Ctrl+F8                                  Resize window
+Ctrl+F9                                  Minimize workbook
+Ctrl+F10                               Maximize or restore window
+Ctrl+F11                               Insert 4.0 macro sheet
+Ctrl+F12                               File open
+Alt+E+D                                                Delete a cell
+Alt+F1                                   Insert chart
+Alt+F2                                   Save as
+Alt+F4                                   Exit
+Ctrl+Shift+F3                      Create name by using names of column and row labels
+Ctrl+Shift+F6                      Previous window
+Ctrl+Shift+F12                   Print
+Alt+Shift+F1                       New worksheet
+Alt+Shift+F2                       Save
+Alt+=                                     AutoSum
+Ctrl+                                      Toggle value/formula display
+Ctrl+Home                          Move to beginning of worksheet
+Ctrl-Arrow                   Move to edge of region
+Alt-Page Up/Page Dn  Move left/right one screen
+Shift-Enter                   Move up through a selection
+Ctrl+Shift+A                       Insert argument names into formula
+Alt+’                                      Format style dialogue box
+Ctrl+Shift+!                         Comma format
+Ctrl+Shift+@                      Time format
+Ctrl+Shift+#                        Date format
+Ctrl+Shift+$                        Currency format
+Ctrl+Shift+%                       Percent format
+Ctrl+Shift+^                        Exponential format
+Ctrl+Shift+&                       Place outline border around selected cells
+Ctrl+Shift+¬_                        Remove outline border
+Ctrl+Shift+*                        Select the current region around the active cell in a pivot table report, select the entire pivot table report
+Ctrl+                                      Insert
+Ctrl-                                       Delete
+Ctrl+ 1                                   Format cells dialogue box
+Ctrl+2                                    Bold
+Ctrl+3                                    Italic
+Ctrl+4                                    Underline
+Ctrl+5                                    Strikethrough
+Ctrl+6                                    Show/hide objects
+Ctrl+7                                    Show/hide standard tool bar
+Ctrl+8                                    Toggle outline symbols
+Ctrl+9                                    Hide rows
+Ctrl+0                                    Hide columns
+Ctrl+Shift+(                         Unhide rows
+Ctrl+Shift+)                         Unhide columns
+Alt or F10                             Activate the menu
+Shift+Ctrl+F                        Format drop down list
+Shift+Ctrl+P                        Point size drop down list
+Esc                                          Cancels an entry in the cell or formula
+ 
+
+
+David L. Herrick                                       
+Chief Financial Officer
+Executive Vice President
+
+510.302.4606
+www.namesinthenews.com
+
+Facebook | Twitter
+
+ 
+

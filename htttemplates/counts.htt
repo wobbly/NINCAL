@@ -1,0 +1,72 @@
+<!-- custom content goes here -->
+<script>
+	function clearForm(){
+		document.countsForm.cgistates.value = "";
+		document.countsForm.cgilist.value = "";
+		document.countsForm.cgisegment.value = "";
+	}
+
+	function formSub()
+	{
+		document.countsForm.submit();
+	}
+</script>
+
+<form action='counts.plc' name='countsForm' id='countsForm' method='POST'>
+	<input type='hidden' name='function' value='1' />
+	<input type='hidden' name='SID' value='<%=SID%>' />
+	<table border='0' cellpadding='2' cellspacing='2' align='center'>
+		<tr>
+			<td class='title' colspan='2' align=center>
+				Mailer Counts
+				<br>
+				<%=cgicompanyname%>
+				<br><br>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<span class='errorMsg'><%=errorMsg%></span>
+			</td>
+		</tr>
+		<tr>
+			<td align='right' valign='top'>
+				States/SCF's:
+				<br>
+				<font size='-2'>CTRL+click to select multiple items</font>
+			</td>
+			<td align='left' valign='top'>
+				<select name='cgistates' multiple size=5>
+					<option>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td align='right' valign='top'>
+				List Number:
+			</td>
+			<td align='left' valign='top'>
+				<input type='text' name='cgilist' value='<%=cgilist%>' size=6 maxlength=6 />
+			</td>
+		</tr>
+		<tr>
+			<td align='right' valign='top'>
+				Segment:
+			</td>
+			<td align='left' valign='top'>
+				<input type='text' name='cgisegment' value='<%=cgisegment%>' />
+			</td>
+		</tr>
+		<tr>
+			<td align='center' valign='top' colspan='2'>
+				<br>
+				<br>
+				<input type='button' value='Search' onClick='formSub();'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type='reset' value='Reset'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type='button' value='Clear' onClick='clearForm();'>
+			</td>
+		</tr>
+	</table>
+</form>
+<script language="JavaScript">document.countsForm.cgistates.focus(); </script>
+<!-- end custom content -->

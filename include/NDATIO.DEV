@@ -1,0 +1,367 @@
+..............................................................................
+.
+. NDATIO INCLUSION
+. NIN DATACARD FILE I/O ROUTINES
+.
+. FILE NAME : NINDAT
+. REC LENGTH: 2813 VARIABLE
+. INDEX KEY : (1)  2-7       (LIST#)
+.             (2) 72-126   (list Name)      
+.AIMDEX KEYS: (1) 72-126   (LIST NAME)
+.
+.added
+.            14oct96 DLH deletek of ndatfld3 as called routine from ndatdel
+.                        corrects search prob on updated cards in alpha mode
+..............................................................................
+.
+. ENTRY POINT : NDATKEY
+. REQUIRED    : 'NDATPATH', 'NDATFLD'
+. RETURNED    : DATACARD 
+. DESCRIPTION : EXACT ISAM KEY READ
+.
+NDATKEY  branch    ndatpath of ndat1,ndat1x,ndat1b 
+ndat1    COMPARE   NDATPATH TO NDATFLAG
+         GOTO      NDAT1a IF EQUAL            
+         CALL      NDATOPEN
+NDAT1a   branch    ndatlock to ndat1al,ndat1ar,ndat1an
+.with file locks
+ndat1ar
+         FILEPI    1;NDATFILE
+         READ      NDATFILE,NDATFLD;DATVARS
+         goto      ndat1x
+.with record locks . note file open must have had flag set
+ndat1al
+         READLK    NDATFILE,NDATFLD;DATVARS
+         goto      ndat1x
+.with NO locks
+ndat1an
+         READ      NDATFILE,NDATFLD;DATVARS
+         goto      ndat1x
+.
+ndat1b   COMPARE   NDATPATH TO NDATFLG3
+         GOTO      NDAT1c IF EQUAL            
+         CALL      NDATOPEN
+NDAT1c   branch    ndatlock to ndat1cl,ndat1cr,ndat1cn
+
+ndat1cL  FILEPI    1;ndatfle3
+         READ      NDATFLE3,NDATFLD3;DATVARS
+         goto      ndat1x
+.with record locks . note file open must have had flag set
+ndat1cR
+         READLK    NDATFLE3,NDATFLD3;DATVARS
+         goto      ndat1x
+.with NO locks
+ndat1cn
+         READ      NDATFLE3,NDATFLD3;DATVARS
+         goto      ndat1x
+.
+ndat1x   RETURN
+..............................................................................
+.
+. ENTRY POINT : NDATTST
+. REQUIRED    : NDATFLD
+. RETURNED    :
+. DESCRIPTION : TEST KEY
+.
+NDATTST  branch    ndatpath to ndat2,ndat2x,ndat2b
+ndat2    COMPARE   NDATPATH TO NDATFLAG
+         GOTO      NDAT2a IF EQUAL
+         CALL      NDATOPEN
+NDAT2a   FILEPI    1;NDATFILE
+         READ      NDATFILE,NDATFLD;STR1
+         goto      ndat2x
+.
+ndat2b   branch    ndatflg3 to ndat2c
+         CALL      NDATOPN3
+NDAT2c   FILEPI    1;ndatfle3
+         READ      NDATFLE3,NDATFLD3;str1
+.
+ndat2x   RETURN
+..............................................................................
+.
+. ENTRY POINT : NDATKS
+. REQUIRED    : 'NDATPATH'
+. RETURNED    : DATACARD 
+. DESCRIPTION : KEY SEQUENTIAL DATACARD FILE READ
+.
+NDATKS   branch    ndatpath to ndat3a,ndat3x,ndat3b
+ndat3    COMPARE   NDATPATH TO NDATFLAG
+         GOTO      NDAT3a IF EQUAL
+         CALL      NDATOPEN
+NDAT3a   branch    ndatlock to ndat3al,ndat3ar,ndat3aL
+ndat3al  FILEPI    1;NDATFILE
+         READKS    NDATFILE;DATVARS
+         goto      ndat3x
+ndat3aR  
+         READKSLK    NDATFILE;DATVARS
+         goto      ndat3x
+ndat3aN  
+         READKS    NDATFILE;DATVARS
+         goto      ndat3x
+.
+ndat3b   branch    ndatflg3 to ndat3c
+         CALL      NDATOPN3
+NDAT3c   branch    ndatlock to ndat3cl,Ndat3cr,ndat3cN
+Ndat3cL  FILEPI    1;ndatfle3
+         READks    NDATFLE3;DATVARS
+         goto      ndat3x
+Ndat3cR 
+         READksLK    NDATFLE3;DATVARS
+         goto      ndat3x
+Ndat3cN  
+         READks    NDATFLE3;DATVARS
+         goto      ndat3x
+.
+ndat3x   RETURN
+..............................................................................
+.
+. ENTRY POINT : NDATSEQ
+. REQUIRED    :
+. RETURNED    : DATACARD 
+. DESCRIPTION : SEQUENTIAL DATACARD FILE READ
+.
+NDATSEQ  BRANCH    NDATFLAG TO NDAT4
+         CALL      NDATOPEN
+NDAT4    FILEPI    1;NDATFILE
+         READ      NDATFILE,SEQ;DATVARS
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NDATWRT
+. REQUIRED    : 'NDATFLD', 'NDATPATH=1'
+. RETURNED    :
+. DESCRIPTION : EXACT ISAM KEY TXT/ISI INSERT., AIM INSERTS.
+.
+NDATWRT  MOVE      C1 TO NDATPATH
+NDATWRT1 COMPARE   NDATPATH TO NDATFLAG
+         GOTO      NDAT5 IF EQUAL
+         CALL      NDATOPEN
+NDAT5    branch    ndatlock to ndat5L,Ndat5R
+ndat5l   FILEPI    1;NDATFILE
+         WRITE     NDATFILE,NDATFLD;*+,DATVARS
+         CALL      NDATWRT2
+         CALL      NDATWRT3
+         RETURN
+ndat5R 
+         WRITE   NDATFILE,NDATFLD;*+,DATVARS
+         CALL      NDATWRT2
+         CALL      NDATWRT3
+         RETURN
+.
+NDATWRT2 BRANCH    NDATFLG2 TO NDAT5B
+         CALL      NDATOPN2
+NDAT5B   branch    ndatlock to ndat5bL,ndat5bR
+ndat5bL  FILEPI    1;NDATFLE2
+         INSERT    NDATFLE2
+         RETURN
+ndat5bR
+         INSERT   NDATFLE2
+         RETURN
+.
+NDATWRT3 BRANCH    NDATFLG3 TO NDAT5c
+         CALL      NDATOPN3
+NDAT5c   branch    ndatlock to ndat5cL,ndat5cR
+ndat5cL  FILEPI    1;NDATFLE3
+         INSERT    NDATFLE3,mlstname
+         RETURN
+ndat5cR
+         INSERT    NDATFLE3,mlstname
+         RETURN
+.
+..............................................................................
+.
+. ENTRY POINT : NDATDEL
+. REQUIRED    : 'NDATPATH', 'NDATFLD'
+. RETURNED    :
+. DESCRIPTION : PATH=1 DELETES TXT & ISAM KEYS.
+.
+NDATDEL  BRANCH    NDATPATH TO NDATDEL1,NDATDEL2
+.
+NDATDEL1 COMPARE   NDATPATH TO NDATFLAG
+         GOTO      NDAT7 IF EQUAL
+         CALL      NDATOPEN
+NDAT7    CALL      NDATTST
+         RETURN    IF OVER
+         FILEPI    1;NDATFILE
+         DELETE    NDATFILE,NDATFLD
+         call      ndatdel3
+         RETURN
+.
+NDATDEL2 BRANCH    NDATFLG2 TO NDAT7B
+         CALL      NDATOPN2
+NDAT7B   FILEPI    1;NDATFLE2
+         DELETE    NDATFLE2
+         RETURN
+.
+NDATDEL3 BRANCH    NDATFLG3 TO NDAT7c
+         CALL      NDATOPN3
+NDAT7c   FILEPI    1;NDATFLE3
+.         read      ndatfle3,ndatfld3;;
+.         if        not over
+         DELETEk   NDATFLE3,ndatfld3;
+.         endif
+         RETURN
+.
+..............................................................................
+.
+. ENTRY POINT : NDATKP
+. REQUIRED    : 'NDATPATH'
+. RETURNED    : DATACARD DATa
+. DESCRIPTION : KEY SEQUENTIAL prior DATACARD FILE READ
+.
+NDATKP   branch    ndatpath to ndat8,ndat8x,ndat8b
+ndat8    COMPARE   NDATPATH TO NDATFLAG
+         GOTO      NDAT8a IF EQUAL
+         CALL      NDATOPEN
+NDAT8a   branch    ndatlock to ndat8aL,ndat8aR,ndat8aN
+ndat8aL  FILEPI    1;NDATFILE
+         READKP    NDATFILE;DATVARS
+         goto      ndat8x
+ndat8aR
+         READKPLK    NDATFILE;DATVARS
+         goto      ndat8x
+ndat8aN  
+         READKP    NDATFILE;DATVARS
+         goto      ndat8x
+.
+ndat8b   branch    ndatflg3 to ndat8c
+         CALL      NDATOPN3
+NDAT8c   branch    ndatlock to ndat8cL,ndat8cR,ndat8cN
+ndat8cL  FILEPI    1;NDATFLE3
+         READKP    NDATFLE3;DATVARS
+         goto       ndat8x
+ndat8cR 
+         READKPlk  NDATFLE3;DATVARS
+         goto       ndat8x
+ndat8cN 
+         READKP    NDATFLE3;DATVARS
+         goto       ndat8x
+ndat8x   RETURN
+..............................................................................
+.
+. ENTRY POINT : NDATAIM
+. REQUIRED    : NDATFLD2
+. RETURNED    : DATACARD RECORD
+. DESCRIPTION : AIM DATACARD FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NDATAIM  BRANCH    NDATFLG2 TO NDAT9
+         CALL      NDATOPN2
+NDAT9    BRANCH    NDATLOCK TO NDAT9l,NDAT9R,NDAT9N
+
+NDAT9L   FILEPI    1;NDATFLE2
+         READ      NDATFLE2,NDATFLD2;DATVARS
+         RETURN
+NDAT9r
+         READLK    NDATFLE2,NDATFLD2;DATVARS
+         RETURN
+NDAT9N
+         READ      NDATFLE2,NDATFLD2;DATVARS
+         RETURN
+..............................................................................
+.
+. ENTRY POINT : NDATKG
+. REQUIRED    : VALID PREVIOUS AIM READ
+. RETURNED    : DATACARD RECORD
+. DESCRIPTION : AIM KEY GENEREIC DATACARD FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NDATKG   BRANCH    NDATFLG2 TO NDAT10
+         CALL      NDATOPN2
+NDAT10   BRANCH    NDATLOCK TO NDAT10L,NDAT10R,NDAT10N
+NDAT10L  FILEPI    1;NDATFLE2
+         READKG    NDATFLE2;DATVARS                                
+         RETURN
+NDAT10R
+         READKGLK    NDATFLE2;DATVARS                                
+         RETURN
+NDAT10N  
+         READKG    NDATFLE2;DATVARS                                
+         RETURN
+..............................................................................
+.
+         IFZ      PC
+. ENTRY POINT : NDATKGP
+. REQUIRED    : PREVIOUS VALID AIM READ
+. RETURNED    : DATACARD RECORD
+. DESCRIPTION : KEY GENERIC PRIOR DATACARD FILE READ
+.               APPLICATION'S RESPONSIBILITY TO TEST FLAGS
+.
+NDATKGP  BRANCH    NDATFLG2 TO NDAT11
+         CALL      NDATOPN2
+NDAT11   FILEPI    1;NDATFLE2
+         READKGP   NDATFLE2;DATVARS
+.                                
+         RETURN
+         XIF
+...............................................................................
+.
+. ENTRY POINT : NDATOPEN
+. REQUIRED    : 'NDATPATH', 'NDATFLAG'
+. RETURNED    : 'NDATFLAG' SET TO THE PATH NUMBER: 'NDATPATH', IF OPENNED.
+. DESCRIPTION : OPEN NIN DATACARD FILE, DEPENDENT ON PATH NUMBER.
+.               DISPLAY ERROR AND ABORT IF NOT ON-LINE.
+.
+NDATOPEN LOAD      NDATNAME USING NDATPATH FROM NDATNME1,NDATNME2
+         TRAP      NDATGONE IF IO
+         BRANCH    NDATLOCK TO NDATOPENl,NDATOPENr
+NDATOPENl OPEN      NDATFILE,NDATNAME
+          TRAPCLR   IO
+          MOVE      NDATPATH TO NDATFLAG
+          RETURN
+NDATOPENr OPEN      NDATFILE,NDATNAME,LOCKMANUAL,SINGLE
+          TRAPCLR   IO
+          MOVE      NDATPATH TO NDATFLAG
+          RETURN
+NDATGONE MOVE      NDATNAME TO FILENAME
+         CALL      FILEGONE
+.
+...............................................................................
+.
+. ENTRY POINT : NDATOPN2
+. REQUIRED    :
+. RETURNED    : 'NDATFLG2' SET TO '1', IF OPENNED.
+. DESCRIPTION : OPEN NIN DATACARD FILE, AIMDEXED
+.               DISPLAY ERROR AND ABORT IF NOT ON-LINE.
+.
+NDATOPN2 TRAP      NDATGNE2 IF IO
+         BRANCH    NDATLOCK TO NDATOPN2L,NDATOPN2R
+         
+NDATOPN2L OPEN      NDATFLE2,NDATNME2
+          TRAPCLR   IO
+          MOVE      C1 TO NDATFLG2
+          RETURN
+NDATOPN2R OPEN      NDATFLE2,NDATNME2,,LOCKMANUAL,SINGLE
+          TRAPCLR   IO
+          MOVE      C1 TO NDATFLG2
+          RETURN
+NDATGNE2 MOVE      NDATNME2 TO FILENAME
+         CALL      FILEGONE
+.
+         TRAPCLR   IO
+         RETURN
+...............................................................................
+.
+. ENTRY POINT : NDATOPN3
+. REQUIRED    :
+. RETURNED    : 'NDATFLG3' SET TO '1', IF OPENNED.
+. DESCRIPTION : OPEN NIN DATACARD FILE, InDEXED
+.               DISPLAY ERROR AND ABORT IF NOT ON-LINE.
+.
+NDATOPN3 TRAP      NDATGNE3 IF IO
+         BRANCH    NDATLOCK TO NDATOPN2L,NDATOPN3R
+NDATOPN3L OPEN      NDATFLE3,NDATNME3
+          TRAPCLR   IO
+          MOVE      C1 TO NDATFLG3
+          RETURN
+NDATOPN3R OPEN      NDATFLE3,NDATNME3,LOCKMANUAL,SINGLE
+          TRAPCLR   IO
+          MOVE      C1 TO NDATFLG3
+          RETURN
+NDATGNE3 MOVE      NDATNME3 TO FILENAME
+         CALL      FILEGONE
+.
+         TRAPCLR   IO
+         RETURN
+..............................................................................
+

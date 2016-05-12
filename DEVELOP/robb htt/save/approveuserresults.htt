@@ -1,0 +1,117 @@
+<!-- custom content goes here -->
+
+<script>
+
+function approveuserSub(uid,utype)
+{
+	document.approveuserForm.action = "usermaint.plc";
+	document.approveuserForm.cgifunction.value="0";
+	document.approveuserForm.cgiuserid.value = uid;
+	document.approveuserForm.submit();
+}
+
+function denyuserSub(uid)
+{
+	document.approveuserForm.cgiuserid.value = uid;
+	document.approveuserForm.cgifunction.value = '2';
+	document.approveuserForm.submit();
+}
+
+function approveinvoiceSub(uid)
+{
+	document.approveuserForm.cgiuserid.value = uid;
+	document.approveuserForm.cgifunction.value = '3';
+	document.approveuserForm.submit();
+}
+
+function denyinvoiceSub(uid)
+{
+	document.approveuserForm.cgiuserid.value = uid;
+	document.approveuserForm.cgifunction.value = '4';
+	document.approveuserForm.submit();
+}
+</script>
+
+
+<form action='approveuser.plc' name='approveuserForm' id='approveuserForm' method='POST'>
+		<input type='hidden' name='SID' value='<%=SID%>' />
+		<input type='hidden' name='cgifunction' value='1' />
+		<input type='hidden' name='cgiuserid' value='' />
+		<input type='hidden' name='cgiusertype' value='<%=cgiusertype%>' />
+
+    <table border='0' cellpadding='2' cellspacing='2' align='center'>
+			<tr>
+					<td class='title' colspan='4' align=center>
+							Members Awaiting Approval
+							<br><br>
+					</td>
+			</tr>
+			<tr>
+					<td colspan="2" align='center'>
+						<span class='errorMsg'><%=errorMsg%></span>
+					</td>
+			</tr>
+			<tr>
+				<td>
+					<table class="datacontainer" cellpadding="2" cellspacing="0" align=center>
+						<tr>
+							<th>First Name</th>
+							<th>Last Name</th>
+							<th>Organization</th>
+							<th>Zip Code</th>
+							<th>Action</th>
+						</tr>
+<%DISPLAYRESULTS%>
+						<tr class="datarow<%=cgicolor%>">
+							 <td><%=cgifname%></td>
+							 <td><%=cgilname%></td>
+							 <td><%=cgiorganization%></td>
+							 <td><%=cgizip%></td>
+							 <td align=center>
+							 	<a href="javascript:approveuserSub('<%=cgiuserid%>');"><span title="Approve">Approve</span></a>
+								&nbsp;&nbsp;&nbsp;&nbsp;
+							 	<a href="javascript:denyuserSub('<%=cgiuserid%>');">
+							 	<span title="Deny Membership? This will delete request information">Deny</span></a>
+							 </td>
+						</tr>
+<%/DISPLAYRESULTS%>
+					</table>
+				</td>
+			</tr>
+			<tr>
+					<td class='title' colspan='4' align=center>
+							<br><br><br>
+							Members Awaiting Invoice Access
+							<br><br>
+					</td>
+			</tr>
+			<tr>
+				<td align=center>
+					<table class="datacontainer" cellpadding="2" cellspacing="0" align="center">
+						<tr>
+							<th>First Name</th>
+							<th>Last Name</th>
+							<th>Organization</th>
+							<th>Zip Code</th>
+							<th>Action</th>
+						</tr>
+<%DISPLAYRESULTS2%>
+						<tr class="datarow<%=cgicolor%>">
+							 <td><%=cgifname%></td>
+							 <td><%=cgilname%></td>
+							 <td><%=cgiorganization%></td>
+							 <td><%=cgizip%></td>
+							 <td align=center>
+							 	<a href="javascript:approveinvoiceSub('<%=cgiuserid%>');"><span title="Approve">Approve</span></a>
+								&nbsp;&nbsp;&nbsp;&nbsp;
+							 	<a href="javascript:denyinvoiceSub('<%=cgiuserid%>');">
+							 	<span title="Deny Membership? This will delete request information">Deny</span></a>
+							 </td>
+						</tr>
+<%/DISPLAYRESULTS2%>
+					</table>
+				</td>
+			</tr>
+		</table>
+</form>
+<!-- end custom content -->

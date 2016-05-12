@@ -1,0 +1,26 @@
+<!-- custom content goes here -->
+<form action='' name='optionlineinvForm' id='optionlineinvForm' method='POST'>
+	<input type='hidden' name='cgifunction' value='0' />
+	<input type='hidden' name='cgilrn' value='<%=cgilrn%>' />
+	<input type='hidden' name='SID' value='<%=SID%>' />
+<center> <!-- 09/29/2010 BJACKSON -->
+	<table border='0' cellpadding='2' cellspacing='2' align='center' width="100%">
+		<tr>
+			<td class='title' align=center>
+				View Invoice
+				<br>
+				<%=cgilrn%>
+				<br>
+				<br>
+			</td>
+		</tr>
+		<tr>
+			<td>
+<%DISPLAYRESULTS%>
+<%/DISPLAYRESULTS%>
+			</td>
+		</tr>
+	</table>
+</form>
+</center> <!-- 09/29/2010 BJACKSON -->
+<!-- end custom content -->

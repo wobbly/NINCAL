@@ -1,0 +1,37 @@
+.****************************************************************************
+.         SYSDATA.UDA
+.****************************************************************************
+.VERSION    DATE   WHO MODIFICATION
+. ------- -------- --- ---------------------------------------------------
+.# .U00   18/04/01 McO Create
+.****************************************************************************
+. To use:
+.          GETINFO   SYSTEM,SysData_D
+.          UNPACK    SysData_D INTO SysData_VL
+.****************************************************************************
+SysData_D           DIM       600
+SysData_VL          LIST
+OsType              FORM      1        Operating system type
+.                                        1 = Windows
+OsVersion           FORM      1        Operating system version
+.                                        1 = Windows NT
+.                                        2 = Windows 3.1
+.                                        3 = Window 95
+KeyType             FORM      2        Keyboard type
+KeySubType          FORM      2        Keyboard subtype
+KeyNumF             FORM      2        Function key type
+PenBased            FORM      1        Pen based ? (1 = Yes)
+HasMouse            FORM      1        Mouse present ? (1 = Yes)
+MouseButtons        FORM      1        Number of mouse buttons
+SwapMouse           FORM      1        Mouse buttons swapped ? (1 = Yes)
+ScrWidth            FORM      4        Screen width
+ScrHeight           FORM      4        Screen height
+ComputerName        DIM       15       Computer name
+UserName            DIM       20       User name
+WinDir              DIM       260      Windows directory
+SysDir              DIM       260      Windows system directory
+ColorBits	 FORM      2        Color bits
+WinHandle           INTEGER   4        Window handle (INTEGER)
+WinInstance         INTEGER   4        Window instance (INTEGER)
+                    LISTEND
+.****************************************************************************
