@@ -110,61 +110,61 @@ SkipToNextDC
 	Display *P10:13,"                                                                               "      //Clear the outputs                                  
 	Clear     NOrdFld1
 	Pack      NOrdFld2,Akey2,LstNum  //Put the LSTNUM from the datacard record in the search index for the order
-	Clear     NOrdFld3
-	Clear     NOrdFld4
-	Clear     NOrdFld6
-	Clear     NOrdFld7
-	Clear     NOrdFld8                                 
-	Call NOrdLast                    //Get the last record (most recent) in the order file that matches
-	If over
-		Goto SkipToNextDC     //If there are no orders go to the nextdata card
-	Endif
-	Goto CheckAge
-	move "0" to CountOrders           
-	loop
+           Clear     NOrdFld3
+           Clear     NOrdFld4
+           Clear     NOrdFld6
+           Clear     NOrdFld7
+           Clear     NOrdFld8                                 
+           Call NOrdLast                    //Get the last record (most recent) in the order file that matches
+           If over
+                      Goto SkipToNextDC     //If there are no orders go to the nextdata card
+           Endif
+           Goto CheckAge
+           move "0" to CountOrders           
+           loop
 SkipToNextOrd           
-		until (Countorders > 2)    //If the two most recent data cards are too old all the others are too, so skip to next DC
-		Call NOrdKGP               //Get the previous record that matches
-		Add "1" to CountOrders
-		Goto CheckAge
-	repeat
-	Goto SkipToNextDC
+                      until (Countorders > 2)    //If the two most recent data cards are too old all the others are too, so skip to next DC
+                      Call NOrdKGP               //Get the previous record that matches
+                      Add "1" to CountOrders
+                      Goto CheckAge
+           repeat
+           Goto SkipToNextDC
 GetOut           
-	Display *P10:17,"Finished writing the Webcards DB File.  Goodbye!"
-	Pause "5"
+           Display *P10:17,"Finished writing the Webcards DB File.  Goodbye!"
+           Pause "5"
 
 .Close all dem dere files
            
-	Close NDatFile
-	Close NOrdFile
-	Close Webfile
-	Close NTxtFile
-	Close NAddFile           
-	Close NSelFile     
-	Close NSltFile     
-	Close NQrcFile           
-	Close NMdccFile           
-	Close NArrFile           
-	Close NCatFile           
-	Close NSrcFile           
-	Close NMscFile           
+           Close NDatFile
+           Close NOrdFile
+           Close Webfile
+           Close NTxtFile
+           Close NAddFile           
+           Close NSelFile     
+           Close NSltFile     
+           Close NQrcFile           
+           Close NMdccFile           
+           Close NArrFile           
+           Close NCatFile           
+           Close NSrcFile           
+           Close NMscFile           
            
-	Stop
+           Stop
 
 
-	Include WebDBFunctions.inc
-	Include NRefio.inc
-	Include Nordio.inc
-	Include Ndatio.inc
-	Include NTxtio.inc
-	Include NAddio.inc
-	Include NModio.inc
-	Include NArrio.inc
-	Include NCatio.inc
-	Include NSelio.inc
-	Include NSltio.inc
-	Include NSrcio.inc
-	Include NMDCMscio.inc
-	Include NMDCCATIO.inc
-	Include NQrcio.inc
-	Include Comlogic.inc
+           Include WebDBFunctions.inc
+           Include NRefio.inc
+           Include Nordio.inc
+           Include Ndatio.inc
+           Include NTxtio.inc
+           Include NAddio.inc
+           Include NModio.inc
+           Include NArrio.inc
+           Include NCatio.inc
+           Include NSelio.inc
+           Include NSltio.inc
+           Include NSrcio.inc
+           Include NMDCMscio.inc
+           Include NMDCCATIO.inc
+           Include NQrcio.inc
+           Include Comlogic.inc

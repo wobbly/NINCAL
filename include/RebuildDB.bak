@@ -9,6 +9,25 @@
 .                                2.  Store the info necessary to build a datacard in the database
 .                                3.  Go to next record
 
+.///////////////////////////////////////////////////////////////////////////////
+.//                                                                           //
+.//   PROGRAM:   WebDBFunctions.inc                                           //
+.//                                                                           //
+.//    AUTHOR:   Robb Whiting rwhitin@nincal.com                              //
+.//                                                                           //
+.//      DATE:   2015 July 15th                                                 //
+.//                                                                           //
+.// COPYRIGHT:   2015 Names in the News California Inc.                       //
+.//              All rights reserved.                                         //
+.//                                                                           //
+.//  PURPOSE:    These are the supporting fuctions,                           //
+.//              for RebuildDB and UpdateDB.			              //
+.//              Written by RVW September 2015.                               //
+.//                                                                           //
+.//              Ver 1.00  15 Sep 2015 RVW        Created.                    //
+.//                                                                           //
+.///////////////////////////////////////////////////////////////////////////////
+
 PC EQU 0
 
 .Include some files
@@ -31,8 +50,10 @@ PC EQU 0
            Include NRefdd.inc
            Include NOrddd.inc
            
-Release   Init      "1.00"    RVW  Initial release
+Release   Init      "2.00"    RVW  
 reldate   Init      "2015 July 15th"
+.Release   Init      "1.00"    RVW  Initial release
+.reldate   Init      "2015 July 15th"
            
 .Initialize some variables
 

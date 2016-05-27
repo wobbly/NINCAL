@@ -125,7 +125,7 @@ LASTLINE  FORM      "9400"
 .Flags   1= Not Begun 2 = Not Finished 3 = Completed
 ArrangementFlag     INIT      "1"
 AddressingFlag INIT           "1"
-SouroeFlag                    INIT      "1"
+SourceFlag                    INIT      "1"
 SelectionsFlag INIT           "1"
 FormatFlag                    INIT      "1"
 SelectFlag1                   INIT      "1"
@@ -428,6 +428,7 @@ Addressing
                     MOVE      "3" to AddressingFlag                             .We are done with Addressing
                     Goto Source
           endif
+.
           loop
           until over
                     call      DataLoadRefAddressing
